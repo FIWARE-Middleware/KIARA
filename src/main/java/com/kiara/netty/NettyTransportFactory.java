@@ -97,7 +97,6 @@ public abstract class NettyTransportFactory implements TransportFactory {
         }
     }
 
-    @Override
     public ServerTransport createServerTransport(String url) throws IOException {
         try {
             final URI uri = new URI(url);
@@ -107,7 +106,6 @@ public abstract class NettyTransportFactory implements TransportFactory {
         }
     }
 
-    @Override
     public void startServer(ServerTransport serverTransport, TransportConnectionListener listener) throws InterruptedException {
         if (serverTransport == null) {
             throw new NullPointerException("serverTransport");

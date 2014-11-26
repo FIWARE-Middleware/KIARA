@@ -110,12 +110,10 @@ public class TcpHandler extends BaseHandler<Object, TcpBlockTransportFactory> {
         logger.error("Tcp Error", cause);
     }
 
-    @Override
     public TransportMessage createTransportMessage(TransportMessage transportMessage) {
         return new TcpBlockMessage(this, null);
     }
 
-    @Override
     public ListenableFuture<Void> send(TransportMessage message) {
         if (message == null) {
             throw new NullPointerException("message");

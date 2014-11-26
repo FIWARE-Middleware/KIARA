@@ -4,13 +4,15 @@ import com.kiara.client.Connection;
 import com.kiara.Context;
 import com.kiara.server.Server;
 import com.kiara.server.Service;
-import com.kiara.serialization.Cdr;
-import com.kiara.serialization.Serializer;
+import com.kiara.serialization.CDRSerializer;
+import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.Transport;
 import com.kiara.transport.impl.TransportFactory;
 import com.kiara.transport.tcp.TcpBlockTransportFactory;
+
 import io.netty.handler.codec.http.QueryStringDecoder;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -88,7 +90,7 @@ public class ContextImpl implements Context {
 
             // We should perform here negotation, but for now only a fixed transport/protocol combination
             final Transport transport = createTransport(url);
-            final Serializer serializer = createSerializer(serializerName);
+            final SerializerImpl serializer = createSerializer(serializerName);
 
             return new ConnectionImpl(transport, serializer);
         } catch (URISyntaxException ex) {
@@ -96,7 +98,7 @@ public class ContextImpl implements Context {
         }
     }
 
-    public Connection connect(Transport transport, Serializer serializer) throws IOException {
+    public Connection connect(Transport transport, SerializerImpl serializer) throws IOException {
         return new ConnectionImpl(transport, serializer);
     }
 
@@ -142,11 +144,11 @@ public class ContextImpl implements Context {
         }
     }
 
-    public Serializer createSerializer(String name) throws IOException {
+    public SerializerImpl createSerializer(String name) throws IOException {
         if (!"cdr".equals(name)) {
             throw new IOException("Unsupported serializer: " + name);
         }
-        return new Cdr();
+        return new CDRSerializer();
     }
 
 }

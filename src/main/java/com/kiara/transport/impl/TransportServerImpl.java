@@ -60,7 +60,6 @@ public class TransportServerImpl implements TransportServer, RunningService {
         // Kiara.addRunningService(this);
     }
 
-    @Override
     public void listen(ServerTransport serverTransport, TransportConnectionListener listener) {
         if (!(serverTransport instanceof ServerTransportImpl))
             throw new IllegalArgumentException("transport factory is not an instance of " + ServerTransportImpl.class.getName() + " class");
@@ -73,7 +72,6 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
-    @Override
     public void run() throws IOException {
         int numServers = 0;
         try {
@@ -88,7 +86,6 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
-    @Override
     public void close() throws IOException {
         ServerEntry[] tmp;
         synchronized (serverEntries) {
@@ -100,7 +97,6 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
-    @Override
     public void shutdownService() {
         try {
             close();

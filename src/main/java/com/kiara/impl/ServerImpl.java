@@ -3,17 +3,19 @@ package com.kiara.impl;
 import com.kiara.Context;
 import com.kiara.server.Server;
 import com.kiara.server.Service;
-import com.kiara.serialization.Serializer;
+import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.server.Servant;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.impl.TransportServer;
 import com.kiara.transport.impl.TransportServerImpl;
+
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.net.ssl.SSLException;
 
 public class ServerImpl implements Server {
@@ -36,7 +38,7 @@ public class ServerImpl implements Server {
         }
     }
 
-    public void addService(Service service, ServerTransport serverTransport, Serializer serializer) throws IOException {
+    public void addService(Service service, ServerTransport serverTransport, SerializerImpl serializer) throws IOException {
         services.add(service);
 
         ServantDispatcher srv = new ServantDispatcher(serializer, serverTransport);

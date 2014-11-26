@@ -12,7 +12,7 @@ apply plugin: 'idea'	// InteliJ IDEA integration
 apply plugin: 'project-report'
 
 //general properties
-version = '0.1'
+version = '0.1.1'
 
 description = """"""
 
@@ -58,6 +58,12 @@ dependencies {
     compile group: 'org.slf4j', name: 'slf4j-jdk14', version:'1.7.7'
     compile group: 'org.antlr', name: 'antlr4', version:'4.2.2'
     testCompile group: 'junit', name: 'junit', version:'4.10'
+}
+
+test {
+  testLogging {
+	events 'started', 'passed'
+  }
 }
 
 //antlr4.source = project.file("src/main/antlr4")

@@ -17,11 +17,10 @@
  */
 package com.kiara.impl;
 
-import com.kiara.serialization.Serializer;
+import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.server.Servant;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.impl.*;
-import com.kiara.transport.impl.TransportConnectionListener;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ import java.util.concurrent.ExecutorService;
  */
 public class ServantDispatcher implements TransportConnectionListener, TransportMessageListener {
 
-    public ServantDispatcher(Serializer ser, ServerTransport transport) {
+    public ServantDispatcher(SerializerImpl ser, ServerTransport transport) {
         m_ser = ser;
         executor = ((ServerTransportImpl) transport).getDispatchingExecutor();
         m_servants = new HashMap<String, Servant>();
@@ -54,8 +53,8 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
     public void onMessage(final TransportMessage message) {
         final ByteBuffer buffer = message.getPayload();
         final TransportImpl transport = message.getTransport();
-        final Object messageId = m_ser.deserializeMessageId(buffer);
-        final String service = m_ser.deserializeService(buffer);
+        final Object messageId = m_ser.deserializeMessageId(message);
+        final String service = m_ser.deserializeService(message);
         final Servant servant = m_servants.get(service);
 
         if (servant != null) {
@@ -86,7 +85,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         }
     }
 
-    private Serializer m_ser = null;
+    private SerializerImpl m_ser = null;
     private HashMap<String, Servant> m_servants = null;
     private final ExecutorService executor;
 }

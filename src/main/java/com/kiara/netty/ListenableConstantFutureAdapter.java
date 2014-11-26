@@ -40,38 +40,31 @@ public class ListenableConstantFutureAdapter<V> implements ListenableFuture<V> {
         this.value = value;
     }
 
-    @Override
     public void addListener(final Runnable r, final Executor exctr) {
         future.addListener(new ChannelFutureListener() {
-            @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 exctr.execute(r);
             }
         });
     }
 
-    @Override
     public boolean cancel(boolean bln) {
         return future.cancel(bln);
     }
 
-    @Override
     public boolean isCancelled() {
         return future.isCancelled();
     }
 
-    @Override
     public boolean isDone() {
         return future.isDone();
     }
 
-    @Override
     public V get() throws InterruptedException, ExecutionException {
         future.get();
         return value;
     }
 
-    @Override
     public V get(long l, TimeUnit tu) throws InterruptedException, ExecutionException, TimeoutException {
         future.get(l, tu);
         return value;
