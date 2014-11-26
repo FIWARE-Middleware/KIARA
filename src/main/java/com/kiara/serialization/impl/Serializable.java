@@ -1,6 +1,5 @@
-package com.kiara.serialization;
+package com.kiara.serialization.impl;
 
-import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.transport.impl.TransportMessage;
 
 public interface Serializable

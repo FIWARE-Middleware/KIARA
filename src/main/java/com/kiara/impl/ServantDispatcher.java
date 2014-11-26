@@ -17,6 +17,7 @@
  */
 package com.kiara.impl;
 
+import com.kiara.serialization.Serializer;
 import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.server.Servant;
 import com.kiara.transport.ServerTransport;

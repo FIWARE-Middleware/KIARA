@@ -6,14 +6,14 @@ import com.kiara.client.Connection;
 
 import java.io.IOException;
 
-import com.kiara.serialization.impl.SerializerImpl;
+import com.kiara.serialization.Serializer;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.Transport;
 
 public interface Context {
     public Connection connect(String url) throws IOException;
 
-    public Connection connect(Transport transport, SerializerImpl serializer) throws IOException;
+    public Connection connect(Transport transport, Serializer serializer) throws IOException;
     
     public Service createService();
 
@@ -24,6 +24,6 @@ public interface Context {
 
     public ServerTransport createServerTransport(String url) throws IOException;
 
-    public SerializerImpl createSerializer(String name) throws IOException;
+    public Serializer createSerializer(String name) throws IOException;
 
 }

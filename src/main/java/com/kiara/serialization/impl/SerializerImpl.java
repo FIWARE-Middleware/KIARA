@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import com.kiara.netty.TransportMessageDispatcher;
-import com.kiara.serialization.Serializable;
 import com.kiara.serialization.Serializer;
 import com.kiara.transport.impl.TransportMessage;
 

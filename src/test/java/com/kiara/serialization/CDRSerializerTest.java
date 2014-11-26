@@ -5,7 +5,7 @@ import static org.junit.Assert.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 
-import com.kiara.serialization.CDRSerializer;
+import com.kiara.serialization.impl.CDRSerializer;
 import com.kiara.transport.impl.TransportMessage;
 
 import org.junit.*;

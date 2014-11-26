@@ -1,5 +1,6 @@
 package com.kiara.serialization;
 
+import com.kiara.serialization.impl.Serializable;
 import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.transport.impl.TransportMessage;
 

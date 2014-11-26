@@ -1,4 +1,4 @@
-package com.kiara.serialization;
+package com.kiara.serialization.impl;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.google.common.reflect.TypeToken;
-import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.transport.impl.TransportMessage;
 
 public class CDRSerializer implements SerializerImpl {
