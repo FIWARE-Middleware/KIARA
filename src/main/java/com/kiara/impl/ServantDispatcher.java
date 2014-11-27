@@ -25,6 +25,7 @@ import com.kiara.transport.impl.TransportConnectionListener;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
+import java.util.concurrent.ExecutorService;
 
 /**
  *
@@ -34,7 +35,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
 
     public ServantDispatcher(Serializer ser, ServerTransport transport) {
         m_ser = ser;
-        ServerTransportImpl m_transport = (ServerTransportImpl) transport;
+        executor = ((ServerTransportImpl) transport).getDispatchingExecutor();
         m_servants = new HashMap<String, Servant>();
     }
 
@@ -50,7 +51,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         connection.removeMessageListener(this);
     }
 
-    public void onMessage(TransportMessage message) {
+    public void onMessage(final TransportMessage message) {
         final ByteBuffer buffer = message.getPayload();
         final TransportImpl transport = message.getTransport();
         final Object messageId = m_ser.deserializeMessageId(buffer);
@@ -58,20 +59,34 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         final Servant servant = m_servants.get(service);
 
         if (servant != null) {
-            ByteBuffer reply = servant.process(m_ser, buffer, messageId);
-
-            if (reply != null) {
-                TransportMessage tresponse = transport.createTransportMessage(message);
-                tresponse.setPayload(reply);
-                transport.send(tresponse);
+            if (executor == null) {
+                ByteBuffer reply = servant.process(m_ser, buffer, messageId);
+                if (reply != null) {
+                    TransportMessage tresponse = transport.createTransportMessage(message);
+                    tresponse.setPayload(reply);
+                    transport.send(tresponse);
+                } else {
+                    // TODO return an error to the client.
+                }
             } else {
-                // TODO return an error to the client.
+                executor.submit(new Runnable() {
+
+                    public void run() {
+                        ByteBuffer reply = servant.process(m_ser, buffer, messageId);
+                        if (reply != null) {
+                            TransportMessage tresponse = transport.createTransportMessage(message);
+                            tresponse.setPayload(reply);
+                            transport.send(tresponse);
+                        } else {
+                            // TODO return an error to the client.
+                        }
+                    }
+                });
             }
-        } else {
-            // TODO return an error to the client.
         }
     }
 
     private Serializer m_ser = null;
     private HashMap<String, Servant> m_servants = null;
+    private final ExecutorService executor;
 }

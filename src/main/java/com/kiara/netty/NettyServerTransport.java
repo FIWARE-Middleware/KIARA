@@ -23,6 +23,7 @@ import com.kiara.transport.impl.TransportFactory;
 import io.netty.channel.Channel;
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
@@ -33,6 +34,7 @@ public class NettyServerTransport implements ServerTransportImpl {
     private final NettyTransportFactory transportFactory;
     private Channel channel;
     private TransportConnectionListener listener;
+    private ExecutorService dispatchingExecutor;
 
     public NettyServerTransport(SocketAddress endpoint, String path, NettyTransportFactory transportFactory) {
         this.localSocketAddress = endpoint;
@@ -74,5 +76,13 @@ public class NettyServerTransport implements ServerTransportImpl {
         if (channel != null && channel.isOpen()) {
             channel.close();
         }
+    }
+
+    public void setDispatchingExecutor(ExecutorService executor) {
+        this.dispatchingExecutor = executor;
+    }
+
+    public ExecutorService getDispatchingExecutor() {
+        return dispatchingExecutor;
     }
 }
