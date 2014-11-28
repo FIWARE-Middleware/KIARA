@@ -30,26 +30,24 @@ public class Buffers {
         return ByteBuffer.wrap(string.getBytes(charsetName));
     }
 
-    public static String bufferToString(ByteBuffer buffer) {
-        if (buffer.hasArray()) {
-            return new String(buffer.array(), buffer.arrayOffset(), buffer.remaining());
+    public static String bufferToString(final ByteBuffer buffer) {
+        final ByteBuffer buf = buffer.duplicate();
+        if (buf.hasArray()) {
+            return new String(buf.array(), buf.arrayOffset(), buf.remaining());
         } else {
-            int oldPos = buffer.position();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            buffer.position(oldPos);
+            byte[] bytes = new byte[buf.remaining()];
+            buf.get(bytes);
             return new String(bytes);
         }
     }
 
-    public static String bufferToString(ByteBuffer buffer, String charsetName) throws UnsupportedEncodingException {
-        if (buffer.hasArray()) {
-            return new String(buffer.array(), buffer.arrayOffset(), buffer.remaining(), charsetName);
+    public static String bufferToString(final ByteBuffer buffer, String charsetName) throws UnsupportedEncodingException {
+        final ByteBuffer buf = buffer.duplicate();
+        if (buf.hasArray()) {
+            return new String(buf.array(), buf.arrayOffset(), buf.remaining(), charsetName);
         } else {
-            int oldPos = buffer.position();
-            byte[] bytes = new byte[buffer.remaining()];
-            buffer.get(bytes);
-            buffer.position(oldPos);
+            byte[] bytes = new byte[buf.remaining()];
+            buf.get(bytes);
             return new String(bytes, charsetName);
         }
     }

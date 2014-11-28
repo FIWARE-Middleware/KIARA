@@ -19,7 +19,6 @@ package com.kiara.netty;
 
 import com.google.common.util.concurrent.AbstractFuture;
 import com.kiara.serialization.Serializer;
-import com.kiara.transport.Transport;
 import com.kiara.transport.impl.TransportImpl;
 import com.kiara.transport.impl.TransportMessage;
 import com.kiara.transport.impl.TransportMessageListener;
@@ -42,7 +41,7 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
     }
 
     public void onMessage(TransportMessage message) {
-        final ByteBuffer buffer = message.getPayload();
+        final ByteBuffer buffer = message.getPayload().duplicate();
         buffer.rewind();
         final Object responseId = ser.deserializeMessageId(buffer);
 
@@ -50,8 +49,8 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
             return;
         }
 
-        set(message);
         transport.removeMessageListener(this);
+        set(message);
     }
 
 }
