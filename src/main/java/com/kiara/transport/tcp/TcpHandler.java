@@ -23,6 +23,7 @@ import com.kiara.netty.ListenableConstantFutureAdapter;
 import com.kiara.transport.impl.TransportConnectionListener;
 import com.kiara.transport.impl.TransportMessage;
 import com.kiara.util.Buffers;
+import com.kiara.util.HexDump;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import java.net.URI;
@@ -85,10 +86,12 @@ public class TcpHandler extends BaseHandler<Object, TcpBlockTransportFactory> {
     protected void channelRead0(final ChannelHandlerContext ctx, Object msg) throws Exception {
         logger.debug("Handler: {} / Mode: {} / Channel: {} / Message class {}", this, mode, ctx.channel(), msg.getClass());
 
+
         final TcpBlockMessage transportMessage = new TcpBlockMessage(this, (ByteBuffer) msg);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("RECEIVED CONTENT {}", new String(transportMessage.getPayload().array(), transportMessage.getPayload().arrayOffset(), transportMessage.getPayload().remaining()));
+            logger.debug("RECEIVED CONTENT {}", HexDump.dumpHexString(transportMessage.getPayload()));
+            //logger.debug("RECEIVED CONTENT {}", new String(Buffers.bufferToString(transportMessage.getPayload())));
         }
 
         if (mode == Mode.SERVER && sessionId == null && SEND_SESSION_ID) {
@@ -122,7 +125,8 @@ public class TcpHandler extends BaseHandler<Object, TcpBlockTransportFactory> {
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("SEND CONTENT: {}", Buffers.bufferToString(message.getPayload()));
+            logger.debug("SEND CONTENT {}", HexDump.dumpHexString(message.getPayload()));
+            //logger.debug("SEND CONTENT: {}", Buffers.bufferToString(message.getPayload()));
         }
 
         ChannelFuture result = channel.writeAndFlush(message.getPayload());
