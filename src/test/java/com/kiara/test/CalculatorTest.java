@@ -8,7 +8,10 @@ import com.kiara.server.Service;
 import com.kiara.transport.ServerTransport;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -23,7 +26,7 @@ import org.junit.runners.Parameterized;
 public class CalculatorTest {
 
     static {
-        // System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
+        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
 
     public static class CalculatorServantImpl extends CalculatorServant {
@@ -64,6 +67,7 @@ public class CalculatorTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
+            //serverTransport.setDispatchingExecutor(null);
             //serverTransport.setDispatchingExecutor(Executors.newSingleThreadExecutor());
             //serverTransport.setDispatchingExecutor(Executors.newFixedThreadPool(2));
             serverTransport.setDispatchingExecutor(Executors.newCachedThreadPool());
@@ -135,9 +139,49 @@ public class CalculatorTest {
     public void testCalc() throws Exception {
         assertEquals(21 + 32, calculator.add(21, 32));
         assertEquals(32 - 21, calculator.subtract(32, 21));
-        for (int i = 0; i < 100; i++) {
-            assertEquals(i + i, calculator.add(i, i));
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        // Asynchronous test
+        Future<Integer>[] result = new Future[100];
+
+        // Addition
+        for (int i = 0; i < result.length; i++) {
+            final int arg = i;
+            result[arg] = executor.submit(new Callable<Integer>() {
+
+                public Integer call() throws Exception {
+                    final int result = calculator.add(arg, arg);
+                    System.err.println(arg + "+" + arg + "=" + result);
+                    assertEquals(arg + arg, result);
+                    return result;
+                }
+            });
         }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(i + i, result[i].get().intValue());
+        }
+
+        // Subtraction
+        final int resultLength = result.length;
+        for (int i = 0; i < result.length; i++) {
+            final int arg = i;
+            result[arg] = executor.submit(new Callable<Integer>() {
+
+                public Integer call() throws Exception {
+                    final int result = calculator.subtract(resultLength, arg);
+                    System.err.println(resultLength + "-" + arg + "=" + result);
+                    assertEquals(resultLength - arg, result);
+                    return result;
+                }
+            });
+        }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(resultLength - i, result[i].get().intValue());
+        }
+
     }
 
 }
