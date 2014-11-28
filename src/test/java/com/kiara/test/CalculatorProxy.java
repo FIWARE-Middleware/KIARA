@@ -33,7 +33,12 @@ class CalculatorProxy implements CalculatorClient {
             try {
                 TransportMessage tresponse = dispatcher.get();
                 if (tresponse != null && tresponse.getPayload() != null) {
-                    int ret = m_ser.deserializeInteger(tresponse.getPayload());
+                    final ByteBuffer buf = tresponse.getPayload().duplicate();
+                    buf.rewind();
+
+                    final Object responseMessageId = m_ser.deserializeMessageId(buf);
+
+                    int ret = m_ser.deserializeInteger(buf);
                     return ret;
                 }
             } catch (Exception ex) {
@@ -65,7 +70,13 @@ class CalculatorProxy implements CalculatorClient {
             try {
                 TransportMessage tresponse = dispatcher.get();
                 if (tresponse != null && tresponse.getPayload() != null) {
-                    int ret = m_ser.deserializeInteger(tresponse.getPayload());
+
+                    final ByteBuffer buf = tresponse.getPayload().duplicate();
+                    buf.rewind();
+
+                    final Object responseMessageId = m_ser.deserializeMessageId(buf);
+
+                    int ret = m_ser.deserializeInteger(buf);
                     return ret;
                 }
             } catch (Exception ex) {
