@@ -70,6 +70,12 @@ abstract class TestSetup<CLIENT_INTERFACE> {
 
     void shutdown() throws Exception {
         System.out.println("Shutdown");
+        if (server != null)
+            server.close();
+        if (clientCtx != null)
+            clientCtx.close();
+        if (serverCtx != null)
+            serverCtx.close();
     }
 
 }

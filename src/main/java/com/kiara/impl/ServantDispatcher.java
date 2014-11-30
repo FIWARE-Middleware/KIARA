@@ -22,6 +22,9 @@ import com.kiara.serialization.impl.SerializerImpl;
 import com.kiara.server.Servant;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.impl.*;
+import com.kiara.transport.impl.TransportConnectionListener;
+import java.io.Closeable;
+import java.io.IOException;
 
 import java.nio.ByteBuffer;
 import java.util.HashMap;
@@ -31,7 +34,7 @@ import java.util.concurrent.ExecutorService;
  *
  * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
  */
-public class ServantDispatcher implements TransportConnectionListener, TransportMessageListener {
+public class ServantDispatcher implements TransportConnectionListener, TransportMessageListener, Closeable {
 
     private final SerializerImpl serializer;
     private final HashMap<String, Servant> servants;
@@ -106,4 +109,8 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         }
     }
 
+    public void close() throws IOException {
+        if (executor != null)
+            executor.shutdown();
+    }
 }

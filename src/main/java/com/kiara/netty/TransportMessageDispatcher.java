@@ -43,6 +43,10 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
         this.transport.addMessageListener(this);
     }
 
+    public Object getMessageId() {
+        return messageId;
+    }
+
     public void onMessage(TransportMessage message) {
         message.getPayload().rewind();
         final Object responseId = ser.deserializeMessageId(message);

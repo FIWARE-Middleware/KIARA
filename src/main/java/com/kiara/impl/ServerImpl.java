@@ -67,4 +67,11 @@ public class ServerImpl implements Server {
         }
     }
 
+    public void close() throws IOException {
+        transportServer.close();
+        for (ServantDispatcher servantDispatcher : servantDispatchers) {
+            servantDispatcher.close();
+        }
+    }
+
 }

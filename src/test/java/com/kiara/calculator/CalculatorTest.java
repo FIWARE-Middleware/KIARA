@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -117,7 +118,8 @@ public class CalculatorTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        calculatorSetup.shutdown();
     }
 
     @Parameterized.Parameters
@@ -182,6 +184,8 @@ public class CalculatorTest {
             assertEquals(resultLength - i, result[i].get().intValue());
         }
 
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
     }
 
 }

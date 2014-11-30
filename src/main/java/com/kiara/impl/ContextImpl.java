@@ -152,4 +152,9 @@ public class ContextImpl implements Context {
         return new CDRSerializer();
     }
 
+    @Override
+    public void close() throws IOException {
+
+    }
+
 }
