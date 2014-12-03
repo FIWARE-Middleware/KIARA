@@ -33,14 +33,34 @@ import java.util.concurrent.ExecutorService;
  */
 public class ServantDispatcher implements TransportConnectionListener, TransportMessageListener {
 
-    public ServantDispatcher(SerializerImpl ser, ServerTransport transport) {
-        m_ser = ser;
-        executor = ((ServerTransportImpl) transport).getDispatchingExecutor();
-        m_servants = new HashMap<String, Servant>();
+    private final SerializerImpl serializer;
+    private final HashMap<String, Servant> servants;
+    private final ExecutorService executor;
+
+    public ServantDispatcher(Serializer serializer, ServerTransport transport) {
+        if (serializer == null) {
+            throw new NullPointerException("serializer");
+        }
+        if (!(serializer instanceof SerializerImpl)) {
+            throw new IllegalArgumentException("serializer argument is not of type "
+                    + SerializerImpl.class.getName() + ", but " + serializer.getClass().getName());
+        }
+        if (transport == null) {
+            throw new NullPointerException("transport");
+        }
+        if (!(transport instanceof ServerTransportImpl)) {
+            throw new IllegalArgumentException("transport argument is not of type "
+                    + ServerTransportImpl.class.getName() + ", but " + transport.getClass().getName());
+        }
+        this.serializer = (SerializerImpl) serializer;
+        //TODO Send error.
+        ServerTransportImpl serverTransport = (ServerTransportImpl) transport;
+        executor = serverTransport.getDispatchingExecutor();
+        servants = new HashMap<String, Servant>();
     }
 
     public void addService(Servant servant) {
-        m_servants.put(servant.getServiceName(), servant);
+        servants.put(servant.getServiceName(), servant);
     }
 
     public void onConnectionOpened(TransportImpl connection) {
@@ -54,13 +74,13 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
     public void onMessage(final TransportMessage message) {
         final ByteBuffer buffer = message.getPayload();
         final TransportImpl transport = message.getTransport();
-        final Object messageId = m_ser.deserializeMessageId(message);
-        final String service = m_ser.deserializeService(message);
-        final Servant servant = m_servants.get(service);
+        final Object messageId = serializer.deserializeMessageId(message);
+        final String service = serializer.deserializeService(message);
+        final Servant servant = servants.get(service);
 
         if (servant != null) {
             if (executor == null) {
-                TransportMessage tpmreply = servant.process(m_ser, transport, message, messageId);
+                TransportMessage tpmreply = servant.process(serializer, transport, message, messageId);
                 if (tpmreply != null) {
                     //TransportMessage tresponse = transport.createTransportMessage(message);
                     //tresponse.setPayload(reply);
@@ -72,7 +92,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
                 executor.submit(new Runnable() {
 
                     public void run() {
-                        TransportMessage tpmreply = servant.process(m_ser, transport, message, messageId);
+                        TransportMessage tpmreply = servant.process(serializer, transport, message, messageId);
                         if (tpmreply != null) {
                             //TransportMessage tresponse = transport.createTransportMessage(message);
                             //tresponse.setPayload(reply);
@@ -86,7 +106,4 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         }
     }
 
-    private SerializerImpl m_ser = null;
-    private HashMap<String, Servant> m_servants = null;
-    private final ExecutorService executor;
 }
