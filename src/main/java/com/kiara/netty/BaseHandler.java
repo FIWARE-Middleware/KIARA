@@ -74,6 +74,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         return transportFactory;
     }
 
+    @Override
     public void addMessageListener(TransportMessageListener listener) {
         if (listener == null) {
             throw new NullPointerException("listener");
@@ -83,6 +84,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         }
     }
 
+    @Override
     public boolean removeMessageListener(TransportMessageListener listener) {
         if (listener == null) {
             return false;
@@ -114,6 +116,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         }
     }
 
+    @Override
     public SocketAddress getLocalAddress() {
         if (channel == null) {
             throw new IllegalStateException();
@@ -121,6 +124,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         return channel.localAddress();
     }
 
+    @Override
     public SocketAddress getRemoteAddress() {
         if (channel == null) {
             throw new IllegalStateException();
@@ -128,6 +132,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         return channel.remoteAddress();
     }
 
+    @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         channel = ctx.channel();
         switch (state) {
@@ -177,6 +182,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         }
     }
 
+    @Override
     public void close() throws IOException {
         if (state == State.WAIT_CLOSE || state == State.CLOSED) {
             return;
@@ -186,6 +192,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         closeChannel();
     }
 
+    @Override
     public boolean isOpen() {
         return state == State.CONNECTED && channel != null;
     }

@@ -60,11 +60,11 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
 
         if (servant != null) {
             if (executor == null) {
-                ByteBuffer reply = servant.process(m_ser, buffer, messageId);
-                if (reply != null) {
-                    TransportMessage tresponse = transport.createTransportMessage(message);
-                    tresponse.setPayload(reply);
-                    transport.send(tresponse);
+                TransportMessage tpmreply = servant.process(m_ser, transport, message, messageId);
+                if (tpmreply != null) {
+                    //TransportMessage tresponse = transport.createTransportMessage(message);
+                    //tresponse.setPayload(reply);
+                    transport.send(tpmreply);
                 } else {
                     // TODO return an error to the client.
                 }
@@ -72,11 +72,11 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
                 executor.submit(new Runnable() {
 
                     public void run() {
-                        ByteBuffer reply = servant.process(m_ser, buffer, messageId);
-                        if (reply != null) {
-                            TransportMessage tresponse = transport.createTransportMessage(message);
-                            tresponse.setPayload(reply);
-                            transport.send(tresponse);
+                        TransportMessage tpmreply = servant.process(m_ser, transport, message, messageId);
+                        if (tpmreply != null) {
+                            //TransportMessage tresponse = transport.createTransportMessage(message);
+                            //tresponse.setPayload(reply);
+                            transport.send(tpmreply);
                         } else {
                             // TODO return an error to the client.
                         }

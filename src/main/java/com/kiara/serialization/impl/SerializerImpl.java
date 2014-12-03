@@ -1,10 +1,7 @@
 package com.kiara.serialization.impl;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Vector;
+import java.util.List;
 
-import com.kiara.netty.TransportMessageDispatcher;
 import com.kiara.serialization.Serializer;
 import com.kiara.transport.impl.TransportMessage;
 
@@ -86,12 +83,12 @@ public interface SerializerImpl extends Serializer {
     public void serializeBoolean(TransportMessage message, String name, boolean value);
 
     public boolean deserializeBoolean(TransportMessage message, String name);
+    
+    
+    public void serializeString(TransportMessage message, String name, String data);
 
-
-    public void serializeString(TransportMessage message, String data);
-
-    public String deserializeString(TransportMessage message);
-
+    public String deserializeString(TransportMessage message, String name);
+    
     /*
      * Generic types
      */
@@ -103,63 +100,63 @@ public interface SerializerImpl extends Serializer {
     /*
      * Arrays
      */
-
-    public void serializeArrayChar(TransportMessage message, String name, ArrayList<Character> array);
-
-    public ArrayList<Character> deserializeArrayChar(TransportMessage message, String name, int length);
-
-    public void serializeArrayByte(TransportMessage message, String name, ArrayList<Byte> array);
-
-    public ArrayList<Byte> deserializeArrayByte(TransportMessage message, String name, int length);
-
-    public void serializeArrayI16(TransportMessage message, String name, ArrayList<Short> array);
-
-    public ArrayList<Short> deserializeArrayI16(TransportMessage message, String name, int length);
-
-    public void serializeArrayUI16(TransportMessage message, String name, ArrayList<Short> array);
-
-    public ArrayList<Short> deserializeArrayUI16(TransportMessage message, String name, int length);
-
-    public void serializeArrayI32(TransportMessage message, String name, ArrayList<Integer> array);
-
-    public ArrayList<Integer> deserializeArrayI32(TransportMessage message, String name, int length);
-
-    public void serializeArrayUI32(TransportMessage message, String name, ArrayList<Integer> array);
-
-    public ArrayList<Integer> deserializeArrayUI32(TransportMessage message, String name, int length);
-
-    public void serializeArrayI64(TransportMessage message, String name, ArrayList<Long> array);
-
-    public ArrayList<Long> deserializeArrayI64(TransportMessage message, String name, int length);
-
-    public void serializeArrayUI64(TransportMessage message, String name, ArrayList<Long> array);
-
-    public ArrayList<Long> deserializeArrayUI64(TransportMessage message, String name, int length);
-
-    public void serializeArrayFloat32(TransportMessage message, String name, ArrayList<Float> array);
-
-    public ArrayList<Float> deserializeArrayFloat32(TransportMessage message, String name, int length);
-
-    public void serializeArrayFloat64(TransportMessage message, String name, ArrayList<Double> array);
-
-    public ArrayList<Double> deserializeArrayFloat64(TransportMessage message, String name, int length);
-
-    public void serializeArrayBoolean(TransportMessage message, String name, ArrayList<Boolean> array);
-
-    public ArrayList<Boolean> deserializeArrayBoolean(TransportMessage message, String name, int length);
-
-    public void serializeArrayString(TransportMessage message, String name, ArrayList<String> array);
-
-    public ArrayList<String> deserializeArrayString(TransportMessage message, String name, int length);
-
+    
+    public void serializeArrayChar(TransportMessage message, String name, List<Character> array);
+    
+    public List<Character> deserializeArrayChar(TransportMessage message, String name, int length);
+    
+    public void serializeArrayByte(TransportMessage message, String name, List<Byte> array);
+    
+    public List<Byte> deserializeArrayByte(TransportMessage message, String name, int length);
+    
+    public void serializeArrayI16(TransportMessage message, String name, List<Short> array);
+    
+    public List<Short> deserializeArrayI16(TransportMessage message, String name, int length);
+    
+    public void serializeArrayUI16(TransportMessage message, String name, List<Short> array);
+    
+    public List<Short> deserializeArrayUI16(TransportMessage message, String name, int length);
+    
+    public void serializeArrayI32(TransportMessage message, String name, List<Integer> array);
+    
+    public List<Integer> deserializeArrayI32(TransportMessage message, String name, int length);
+    
+    public void serializeArrayUI32(TransportMessage message, String name, List<Integer> array);
+    
+    public List<Integer> deserializeArrayUI32(TransportMessage message, String name, int length);
+    
+    public void serializeArrayI64(TransportMessage message, String name, List<Long> array);
+    
+    public List<Long> deserializeArrayI64(TransportMessage message, String name, int length);
+    
+    public void serializeArrayUI64(TransportMessage message, String name, List<Long> array);
+    
+    public List<Long> deserializeArrayUI64(TransportMessage message, String name, int length);
+    
+    public void serializeArrayFloat32(TransportMessage message, String name, List<Float> array);
+    
+    public List<Float> deserializeArrayFloat32(TransportMessage message, String name, int length);
+    
+    public void serializeArrayFloat64(TransportMessage message, String name, List<Double> array);
+    
+    public List<Double> deserializeArrayFloat64(TransportMessage message, String name, int length);
+    
+    public void serializeArrayBoolean(TransportMessage message, String name, List<Boolean> array);
+    
+    public List<Boolean> deserializeArrayBoolean(TransportMessage message, String name, int length);
+    
+    public void serializeArrayString(TransportMessage message, String name, List<String> array);
+    
+    public List<String> deserializeArrayString(TransportMessage message, String name, int length);
+    
     /*
      * Array of generic types
      */
-
-    public <T extends Serializable> void serializeArray(TransportMessage message, String name, ArrayList<T> array);
-
-    public <T extends Serializable> ArrayList<T> deserializeArray(TransportMessage message, String name, Class<T> example, int length) throws InstantiationException, IllegalAccessException;
-
+    
+    public <T extends Serializable> void serializeArray(TransportMessage message, String name, List<T> array);
+    
+    public <T extends Serializable> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int length) throws InstantiationException, IllegalAccessException;
+    
     public void serializeArrayBegin(TransportMessage message, String name, int length);
 
     public void serializeArrayEnd(TransportMessage message, String name);

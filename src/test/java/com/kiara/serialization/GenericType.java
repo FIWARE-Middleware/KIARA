@@ -21,12 +21,12 @@ public class GenericType implements Serializable {
 
     public void serialize(SerializerImpl impl, TransportMessage message, String name) {
         impl.serializeI32(message, name, this.myInt);
-        impl.serializeString(message, this.myString);
+        impl.serializeString(message, name, this.myString);
     }
 
-    public void deserialize(SerializerImpl impl, TransportMessage message,String name) {
+    public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
         this.myInt = impl.deserializeI32(message, name);
-        this.myString = impl.deserializeString(message);
+        this.myString = impl.deserializeString(message, name);
     }
 
     public boolean equals(GenericType other) {
