@@ -44,8 +44,7 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
     }
 
     public void onMessage(TransportMessage message) {
-        final ByteBuffer buffer = message.getPayload().duplicate();
-        buffer.rewind();
+        message.getPayload().rewind();
         final Object responseId = ser.deserializeMessageId(message);
 
         if (!ser.equalMessageIds(messageId, responseId)) {
