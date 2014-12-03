@@ -2,10 +2,16 @@ package com.kiara.calculator;
 
 import com.kiara.Context;
 import com.kiara.client.Connection;
+import com.kiara.serialization.Serializer;
 import com.kiara.server.Server;
 import com.kiara.server.Service;
+import com.kiara.transport.ServerTransport;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -20,17 +26,19 @@ import org.junit.runners.Parameterized;
 public class CalculatorTest {
 
     static {
-        System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
+        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
 
     public static class CalculatorServantImpl extends CalculatorServant {
 
         public int add(int param1, int param2) {
+            System.out.println("Current thread: " + Thread.currentThread().toString());
             System.out.println("Adding " + param1 + " and " + param2);
             return param1 + param2;
         }
 
         public int subtract(int param1, int param2) {
+            System.out.println("Current thread: " + Thread.currentThread().toString());
             System.out.println("Subtracting " + param1 + " and " + param2);
             return param1 - param2;
         }
@@ -54,7 +62,18 @@ public class CalculatorTest {
             System.out.printf("Starting server...%n");
 
             Server server = context.createServer();
-            server.addService(service, makeServerTransportUri(transport, port), protocol);
+            //server.addService(service, makeServerTransportUri(transport, port), protocol);
+
+            ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
+            Serializer serializer = context.createSerializer(protocol);
+
+            //serverTransport.setDispatchingExecutor(null);
+            //serverTransport.setDispatchingExecutor(Executors.newSingleThreadExecutor());
+            //serverTransport.setDispatchingExecutor(Executors.newFixedThreadPool(2));
+            serverTransport.setDispatchingExecutor(Executors.newCachedThreadPool());
+
+            server.addService(service, serverTransport, serializer);
+
             return server;
         }
 
@@ -65,16 +84,18 @@ public class CalculatorTest {
 
         @Override
         protected String makeServerTransportUri(String transport, int port) {
-            if ("tcp".equals(transport))
-                return "tcp://0.0.0.0:"+port;
-            throw new IllegalArgumentException("Unknown transport "+transport);
+            if ("tcp".equals(transport)) {
+                return "tcp://0.0.0.0:" + port;
+            }
+            throw new IllegalArgumentException("Unknown transport " + transport);
         }
 
         @Override
         protected String makeClientTransportUri(String transport, int port, String protocol) {
-            if ("tcp".equals(transport))
-                return "tcp://0.0.0.0:"+port+"/?serialization="+protocol;
-            throw new IllegalArgumentException("Unknown transport "+transport);
+            if ("tcp".equals(transport)) {
+                return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
+            }
+            throw new IllegalArgumentException("Unknown transport " + transport);
         }
     }
 
@@ -101,14 +122,14 @@ public class CalculatorTest {
 
     @Parameterized.Parameters
     public static Collection configs() {
-        Object[][] data = new Object[][] {
-                { "tcp", "cdr" }
+        Object[][] data = new Object[][]{
+            {"tcp", "cdr"}
         };
         return Arrays.asList(data);
     }
 
     public CalculatorTest(String transport, String protocol) {
-        calculatorSetup =  new CalculatorSetup(9090, transport, protocol, "");
+        calculatorSetup = new CalculatorSetup(9090, transport, protocol, "");
     }
 
     /**
@@ -118,6 +139,49 @@ public class CalculatorTest {
     public void testCalc() throws Exception {
         assertEquals(21 + 32, calculator.add(21, 32));
         assertEquals(32 - 21, calculator.subtract(32, 21));
+
+        ExecutorService executor = Executors.newCachedThreadPool();
+
+        // Asynchronous test
+        Future<Integer>[] result = new Future[100];
+
+        // Addition
+        for (int i = 0; i < result.length; i++) {
+            final int arg = i;
+            result[arg] = executor.submit(new Callable<Integer>() {
+
+                public Integer call() throws Exception {
+                    final int result = calculator.add(arg, arg);
+                    System.err.println(arg + "+" + arg + "=" + result);
+                    assertEquals(arg + arg, result);
+                    return result;
+                }
+            });
+        }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(i + i, result[i].get().intValue());
+        }
+
+        // Subtraction
+        final int resultLength = result.length;
+        for (int i = 0; i < result.length; i++) {
+            final int arg = i;
+            result[arg] = executor.submit(new Callable<Integer>() {
+
+                public Integer call() throws Exception {
+                    final int result = calculator.subtract(resultLength, arg);
+                    System.err.println(resultLength + "-" + arg + "=" + result);
+                    assertEquals(resultLength - arg, result);
+                    return result;
+                }
+            });
+        }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(resultLength - i, result[i].get().intValue());
+        }
+
     }
 
 }
