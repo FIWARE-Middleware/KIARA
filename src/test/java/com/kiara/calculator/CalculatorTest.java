@@ -138,13 +138,16 @@ public class CalculatorTest {
      * Test of main method, of class CalcTestServer.
      */
     @Test
-    public void testCalc() throws Exception {
+    public void testCalcSync() throws Exception {
         assertEquals(21 + 32, calculator.add(21, 32));
         assertEquals(32 - 21, calculator.subtract(32, 21));
+    }
 
+    @Test
+    public void testCalcSyncParallel() throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
 
-        // Asynchronous test
+        // Synchronous parallel test
         Future<Integer>[] result = new Future[100];
 
         // Addition
