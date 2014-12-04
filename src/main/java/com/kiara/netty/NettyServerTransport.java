@@ -74,7 +74,11 @@ public class NettyServerTransport implements ServerTransportImpl {
 
     public void close() throws IOException {
         if (channel != null && channel.isOpen()) {
-            channel.close();
+            try {
+                channel.close().sync();
+            } catch (InterruptedException ex) {
+                throw new IOException(ex);
+            }
         }
     }
 
