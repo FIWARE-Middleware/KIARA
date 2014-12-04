@@ -15,13 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package com.kiara.serialization;
+package com.kiara.serialization.impl;
+
+import com.kiara.transport.impl.TransportMessage;
 
 /**
 *
 * @author Rafael Lara <rafaellara@eprosima.com>
-*/public interface Serializer {
+*/
+public interface Serializable {
 
+    public abstract void serialize(SerializerImpl impl, TransportMessage message, String name);
 
+    public abstract void deserialize(SerializerImpl impl, TransportMessage message, String name);
 
 }

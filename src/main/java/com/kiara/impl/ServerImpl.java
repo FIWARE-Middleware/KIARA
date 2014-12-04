@@ -8,12 +8,14 @@ import com.kiara.server.Servant;
 import com.kiara.transport.ServerTransport;
 import com.kiara.transport.impl.TransportServer;
 import com.kiara.transport.impl.TransportServerImpl;
+
 import java.io.IOException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import javax.net.ssl.SSLException;
 
 public class ServerImpl implements Server {
@@ -62,6 +64,13 @@ public class ServerImpl implements Server {
             transportServer.run();
         } catch (IOException ex) {
             throw new RuntimeException(ex);
+        }
+    }
+
+    public void close() throws IOException {
+        transportServer.close();
+        for (ServantDispatcher servantDispatcher : servantDispatchers) {
+            servantDispatcher.close();
         }
     }
 

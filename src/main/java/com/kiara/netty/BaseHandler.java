@@ -172,7 +172,6 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         if (channel != null) {
             channel.closeFuture().addListener(new ChannelFutureListener() {
 
-                @Override
                 public void operationComplete(ChannelFuture future) throws Exception {
                     future.removeListener(this);
                     state = State.CLOSED;

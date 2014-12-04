@@ -1,4 +1,4 @@
-package com.kiara.test;
+package com.kiara.calculator;
 
 import com.kiara.Context;
 import com.kiara.Kiara;
@@ -26,7 +26,7 @@ abstract class TestSetup<CLIENT_INTERFACE> {
         this.clientCtx = null;
         this.serverCtx = null;
     }
-    
+
     protected abstract String makeClientTransportUri(String transport, int port, String protocol);
 
     protected abstract String makeServerTransportUri(String transport, int port);
@@ -70,6 +70,12 @@ abstract class TestSetup<CLIENT_INTERFACE> {
 
     void shutdown() throws Exception {
         System.out.println("Shutdown");
+        if (server != null)
+            server.close();
+        if (clientCtx != null)
+            clientCtx.close();
+        if (serverCtx != null)
+            serverCtx.close();
     }
 
 }

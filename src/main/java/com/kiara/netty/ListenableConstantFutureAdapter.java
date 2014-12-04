@@ -18,8 +18,10 @@
 package com.kiara.netty;
 
 import com.google.common.util.concurrent.ListenableFuture;
+
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +45,6 @@ public class ListenableConstantFutureAdapter<V> implements ListenableFuture<V> {
     @Override
     public void addListener(final Runnable r, final Executor exctr) {
         future.addListener(new ChannelFutureListener() {
-            @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 exctr.execute(r);
             }

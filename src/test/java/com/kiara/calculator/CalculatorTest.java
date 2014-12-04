@@ -1,5 +1,6 @@
-package com.kiara.test;
+package com.kiara.calculator;
 
+import com.google.common.util.concurrent.SettableFuture;
 import com.kiara.Context;
 import com.kiara.client.Connection;
 import com.kiara.serialization.Serializer;
@@ -12,6 +13,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -44,7 +46,7 @@ public class CalculatorTest {
         }
     }
 
-    public static class CalculatorSetup extends TestSetup<Calculator> {
+    public static class CalculatorSetup extends TestSetup<CalculatorClient> {
 
         public CalculatorSetup(int port, String transport, String protocol, String configPath) {
             super(port, transport, protocol, configPath);
@@ -78,7 +80,7 @@ public class CalculatorTest {
         }
 
         @Override
-        protected Calculator createClient(Connection connection) throws Exception {
+        protected CalculatorClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(CalculatorClient.class);
         }
 
@@ -97,10 +99,12 @@ public class CalculatorTest {
             }
             throw new IllegalArgumentException("Unknown transport " + transport);
         }
+
     }
 
     private final CalculatorSetup calculatorSetup;
-    private Calculator calculator = null;
+    private CalculatorClient calculator = null;
+    private ExecutorService executor = null;
 
     @BeforeClass
     public static void setUpClass() {
@@ -114,10 +118,14 @@ public class CalculatorTest {
     public void setUp() throws Exception {
         calculator = calculatorSetup.start(100);
         Assert.assertNotNull(calculator);
+        executor = Executors.newCachedThreadPool();
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        calculatorSetup.shutdown();
+        executor.shutdown();
+        executor.awaitTermination(10, TimeUnit.MINUTES);
     }
 
     @Parameterized.Parameters
@@ -136,13 +144,16 @@ public class CalculatorTest {
      * Test of main method, of class CalcTestServer.
      */
     @Test
-    public void testCalc() throws Exception {
+    public void testCalcSync() throws Exception {
         assertEquals(21 + 32, calculator.add(21, 32));
         assertEquals(32 - 21, calculator.subtract(32, 21));
+    }
 
+    @Test
+    public void testCalcSyncParallel() throws Exception {
         ExecutorService executor = Executors.newCachedThreadPool();
 
-        // Asynchronous test
+        // Synchronous parallel test
         Future<Integer>[] result = new Future[100];
 
         // Addition
@@ -176,6 +187,59 @@ public class CalculatorTest {
                     return result;
                 }
             });
+        }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(resultLength - i, result[i].get().intValue());
+        }
+    }
+
+    @Test
+    public void testCalcAsync() throws Exception {
+        // Synchronous parallel test
+        Future<Integer>[] result = new Future[100];
+
+        // Addition
+        for (int i = 0; i < result.length; i++) {
+            final SettableFuture<Integer> resultValue = SettableFuture.create();
+            final int arg = i;
+            calculator.add(i, i, new CalculatorAsync.add_AsyncCallback() {
+
+                public void onSuccess(Integer result) {
+                    System.err.println(arg + "+" + arg + "=" + result);
+                    assertEquals(arg + arg, result.intValue());
+                    resultValue.set(result);
+                }
+
+                public void onFailure(Throwable caught) {
+                    resultValue.setException(caught);
+                }
+            });
+            result[arg] = resultValue;
+        }
+
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(i + i, result[i].get().intValue());
+        }
+
+        // Subtraction
+        final int resultLength = result.length;
+        for (int i = 0; i < result.length; i++) {
+            final SettableFuture<Integer> resultValue = SettableFuture.create();
+            final int arg = i;
+            calculator.subtract(resultLength, arg, new CalculatorAsync.subtract_AsyncCallback() {
+
+                public void onSuccess(Integer result) {
+                    System.err.println(resultLength + "-" + arg + "=" + result);
+                    assertEquals(resultLength - arg, result.intValue());
+                    resultValue.set(result);
+                }
+
+                public void onFailure(Throwable caught) {
+                    resultValue.setException(caught);
+                }
+            });
+            result[arg] = resultValue;
         }
 
         for (int i = 0; i < result.length; i++) {

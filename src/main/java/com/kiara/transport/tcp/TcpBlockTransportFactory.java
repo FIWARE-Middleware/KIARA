@@ -51,22 +51,18 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
         this.secure = secure;
     }
 
-    @Override
     public String getName() {
         return secure ? "tcps" : "tcp";
     }
 
-    @Override
     public int getPriority() {
         return secure ? 9 : 10;
     }
 
-    @Override
     public boolean isSecureTransport() {
         return secure;
     }
 
-    @Override
     public ListenableFuture<Transport> createTransport(String uri, Map<String, Object> settings) throws InvalidAddressException, IOException {
         if (uri == null) {
             throw new NullPointerException("uri");
@@ -113,13 +109,11 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
         final TcpHandler clientHandler = new TcpHandler(this, uri, null);
         clientHandler.setConnectionListener(new TransportConnectionListener() {
 
-            @Override
             public void onConnectionOpened(TransportImpl connection) {
                 clientHandler.setConnectionListener(null);
                 onConnectionActive.set(connection);
             }
 
-            @Override
             public void onConnectionClosed(TransportImpl connection) {
 
             }

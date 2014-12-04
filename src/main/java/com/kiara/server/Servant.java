@@ -1,11 +1,12 @@
 package com.kiara.server;
 
 import com.kiara.serialization.Serializer;
-import java.nio.ByteBuffer;
+import com.kiara.transport.Transport;
+import com.kiara.transport.impl.TransportMessage;
 
 public interface Servant
 {
     public String getServiceName();
 
-    public ByteBuffer process(Serializer ser, ByteBuffer buffer, Object messageId);
+    public TransportMessage process(Serializer ser, Transport transport, TransportMessage message, Object messageId);
 }
