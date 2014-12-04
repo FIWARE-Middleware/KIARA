@@ -118,6 +118,9 @@ public class TcpHandler extends BaseHandler<Object, TcpBlockTransportFactory> {
         if (message == null) {
             throw new NullPointerException("message");
         }
+        if (message.getPayload() == null) {
+            throw new NullPointerException("message payload");
+        }
         if (state != State.CONNECTED || channel == null) {
             throw new IllegalStateException("state=" + state.toString() + " channel=" + channel);
         }
