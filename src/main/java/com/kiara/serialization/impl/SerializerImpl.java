@@ -17,6 +17,7 @@
  */
 package com.kiara.serialization.impl;
 
+import java.nio.ByteBuffer;
 import java.util.List;
 
 import com.kiara.serialization.Serializer;
@@ -33,6 +34,10 @@ public interface SerializerImpl extends Serializer {
     public void serializeMessageId(TransportMessage message, Object messageId);
 
     public Object deserializeMessageId(TransportMessage message);
+    
+    public void serializeMessageId(ByteBuffer buffer, Object messageId);
+
+    public Object deserializeMessageId(ByteBuffer buffer);
 
     public boolean equalMessageIds(Object id1, Object id2);
 
@@ -122,61 +127,72 @@ public interface SerializerImpl extends Serializer {
      * Arrays
      */
     
-    public void serializeArrayChar(TransportMessage message, String name, List<Character> array);
+    public <T> void serializeArrayChar(TransportMessage message, String name, List<T> array, int... dims);
     
-    public List<Character> deserializeArrayChar(TransportMessage message, String name, int length);
+    public <T> List<T> deserializeArrayChar(TransportMessage message, String name, int... dims);
     
-    public void serializeArrayByte(TransportMessage message, String name, List<Byte> array);
     
-    public List<Byte> deserializeArrayByte(TransportMessage message, String name, int length);
+    public <T> void serializeArrayByte(TransportMessage message, String name, List<T> array, int... dims);
     
-    public void serializeArrayI16(TransportMessage message, String name, List<Short> array);
+    public <T> List<T> deserializeArrayByte(TransportMessage message, String name, int... dims);
     
-    public List<Short> deserializeArrayI16(TransportMessage message, String name, int length);
     
-    public void serializeArrayUI16(TransportMessage message, String name, List<Short> array);
+    public <T> void serializeArrayI16(TransportMessage message, String name, List<T> array, int... dims);
     
-    public List<Short> deserializeArrayUI16(TransportMessage message, String name, int length);
+    public <T> List<T> deserializeArrayI16(TransportMessage message, String name, int... dims);
     
-    public void serializeArrayI32(TransportMessage message, String name, List<Integer> array);
+    public <T> void serializeArrayUI16(TransportMessage message, String name, List<T> array, int... dims);
     
-    public List<Integer> deserializeArrayI32(TransportMessage message, String name, int length);
+    public <T> List<T> deserializeArrayUI16(TransportMessage message, String name, int... dims);
     
-    public void serializeArrayUI32(TransportMessage message, String name, List<Integer> array);
     
-    public List<Integer> deserializeArrayUI32(TransportMessage message, String name, int length);
+    public <T> void serializeArrayI32(TransportMessage message, String name, List<T> array, int... dims);
     
-    public void serializeArrayI64(TransportMessage message, String name, List<Long> array);
+    public <T> List<T> deserializeArrayI32(TransportMessage message, String name, int... dims);
     
-    public List<Long> deserializeArrayI64(TransportMessage message, String name, int length);
+    public <T> void serializeArrayUI32(TransportMessage message, String name, List<T> array, int... dims);
     
-    public void serializeArrayUI64(TransportMessage message, String name, List<Long> array);
+    public <T> List<T> deserializeArrayUI32(TransportMessage message, String name, int... dims);
     
-    public List<Long> deserializeArrayUI64(TransportMessage message, String name, int length);
     
-    public void serializeArrayFloat32(TransportMessage message, String name, List<Float> array);
+    public <T> void serializeArrayI64(TransportMessage message, String name, List<T> array, int... dims);
     
-    public List<Float> deserializeArrayFloat32(TransportMessage message, String name, int length);
+    public <T> List<T> deserializeArrayI64(TransportMessage message, String name, int... dims);
     
-    public void serializeArrayFloat64(TransportMessage message, String name, List<Double> array);
+    public <T> void serializeArrayUI64(TransportMessage message, String name, List<T> array, int... dims);
     
-    public List<Double> deserializeArrayFloat64(TransportMessage message, String name, int length);
+    public <T> List<T> deserializeArrayUI64(TransportMessage message, String name, int... dims);
     
-    public void serializeArrayBoolean(TransportMessage message, String name, List<Boolean> array);
     
-    public List<Boolean> deserializeArrayBoolean(TransportMessage message, String name, int length);
+    public <T> void serializeArrayFloat32(TransportMessage message, String name, List<T> array, int... dims);
     
-    public void serializeArrayString(TransportMessage message, String name, List<String> array);
+    public <T> List<T> deserializeArrayFloat32(TransportMessage message, String name, int... dims);
     
-    public List<String> deserializeArrayString(TransportMessage message, String name, int length);
+    public <T> void serializeArrayFloat64(TransportMessage message, String name, List<T> array, int... dims);
+    
+    public <T> List<T> deserializeArrayFloat64(TransportMessage message, String name, int... dims);
+    
+    
+    public <T> void serializeArrayBoolean(TransportMessage message, String name, List<T> array, int... dims);
+    
+    public <T> List<T> deserializeArrayBoolean(TransportMessage message, String name, int... dims);
+    
+    
+    public <T> void serializeArrayString(TransportMessage message, String name, List<T> array, int... dims);
+    
+    public <T> List<T> deserializeArrayString(TransportMessage message, String name, int... dims);
     
     /*
      * Array of generic types
      */
     
-    public <T extends Serializable> void serializeArray(TransportMessage message, String name, List<T> array);
+    public <T> void serializeArray(TransportMessage message, String name, List<T> array, int... dims);
     
-    public <T extends Serializable> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int length) throws InstantiationException, IllegalAccessException;
+    public <T> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException;
+    
+    /*
+     * Extra functions
+     */
     
     public void serializeArrayBegin(TransportMessage message, String name, int length);
 

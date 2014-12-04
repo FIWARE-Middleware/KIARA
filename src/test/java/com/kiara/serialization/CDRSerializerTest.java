@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.kiara.serialization.impl.CDRSerializer;
 import com.kiara.transport.impl.TransportMessage;
@@ -560,11 +561,11 @@ public class CDRSerializerTest {
 
     @Test
     public void serializeArrayCharTest() {
-        List<Character> in = new ArrayList<Character>();
+        ArrayList<Character> in = new ArrayList<Character>(1);
         in.add('a');
 
         try {
-            ser.serializeArrayChar(message, "", in);
+            ser.serializeArrayChar(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -575,31 +576,24 @@ public class CDRSerializerTest {
     }
 
     @Test
-    public void deserializeArrayCharTest() {
+    public <T> void deserializeArrayCharTest() {
         ArrayList<Character> in = new ArrayList<Character>();
         in.add('a');
         in.add('e');
         in.add('i');
         in.add('o');
         in.add('u');
-        List<Character> out = new ArrayList<Character>();;
+        List<T> out = null;
         
         try {
-            ser.serializeArrayChar(message, "", in);
+            ser.serializeArrayChar(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayChar(message, "", in.size());
+            out = ser.deserializeArrayChar(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -614,7 +608,7 @@ public class CDRSerializerTest {
         in.add((byte) 5);
 
         try {
-            ser.serializeArrayByte(message, "", in);
+            ser.serializeArrayByte(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -635,21 +629,14 @@ public class CDRSerializerTest {
         List<Byte> out = new ArrayList<Byte>();;
         
         try {
-            ser.serializeArrayByte(message, "", in);
+            ser.serializeArrayByte(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayByte(message, "", in.size());
+            out = ser.deserializeArrayByte(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -664,7 +651,7 @@ public class CDRSerializerTest {
         in.add((short) 5);
 
         try {
-            ser.serializeArrayI16(message, "", in);
+            ser.serializeArrayI16(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -682,24 +669,17 @@ public class CDRSerializerTest {
         in.add((short) 7);
         in.add((short) 8);
         in.add((short) 9);
-        List<Short> out = new ArrayList<Short>();;
+        List<Short> out = new ArrayList<Short>();
         
         try {
-            ser.serializeArrayI16(message, "", in);
+            ser.serializeArrayI16(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayI16(message, "", in.size());
+            out = ser.deserializeArrayI16(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -714,7 +694,7 @@ public class CDRSerializerTest {
         in.add((short) 5);
 
         try {
-            ser.serializeArrayUI16(message, "", in);
+            ser.serializeArrayUI16(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -735,21 +715,14 @@ public class CDRSerializerTest {
         List<Short> out = new ArrayList<Short>();;
         
         try {
-            ser.serializeArrayUI16(message, "", in);
+            ser.serializeArrayUI16(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayUI16(message, "", in.size());
+            out = ser.deserializeArrayUI16(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -764,7 +737,7 @@ public class CDRSerializerTest {
         in.add((int) 5);
 
         try {
-            ser.serializeArrayI32(message, "", in);
+            ser.serializeArrayI32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -785,21 +758,14 @@ public class CDRSerializerTest {
         List<Integer> out = new ArrayList<Integer>();;
         
         try {
-            ser.serializeArrayI32(message, "", in);
+            ser.serializeArrayI32(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayI32(message, "", in.size());
+            out = ser.deserializeArrayI32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -814,7 +780,7 @@ public class CDRSerializerTest {
         in.add((int) 5);
 
         try {
-            ser.serializeArrayUI32(message, "", in);
+            ser.serializeArrayUI32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -835,21 +801,14 @@ public class CDRSerializerTest {
         List<Integer> out = new ArrayList<Integer>();;
         
         try {
-            ser.serializeArrayUI32(message, "", in);
+            ser.serializeArrayUI32(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayUI32(message, "", in.size());
+            out = ser.deserializeArrayUI32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -864,7 +823,7 @@ public class CDRSerializerTest {
         in.add((long) 5);
 
         try {
-            ser.serializeArrayI64(message, "", in);
+            ser.serializeArrayI64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -885,21 +844,14 @@ public class CDRSerializerTest {
         List<Long> out = new ArrayList<Long>();;
         
         try {
-            ser.serializeArrayI64(message, "", in);
+            ser.serializeArrayI64(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayI64(message, "", in.size());
+            out = ser.deserializeArrayI64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -914,7 +866,7 @@ public class CDRSerializerTest {
         in.add((long) 5);
 
         try {
-            ser.serializeArrayUI64(message, "", in);
+            ser.serializeArrayUI64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -935,21 +887,14 @@ public class CDRSerializerTest {
         List<Long> out = new ArrayList<Long>();;
         
         try {
-            ser.serializeArrayUI64(message, "", in);
+            ser.serializeArrayUI64(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayUI64(message, "", in.size());
+            out = ser.deserializeArrayUI64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -964,7 +909,7 @@ public class CDRSerializerTest {
         in.add((float) 5.0);
 
         try {
-            ser.serializeArrayFloat32(message, "", in);
+            ser.serializeArrayFloat32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -985,21 +930,14 @@ public class CDRSerializerTest {
         List<Float> out = new ArrayList<Float>();;
         
         try {
-            ser.serializeArrayFloat32(message, "", in);
+            ser.serializeArrayFloat32(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayFloat32(message, "", in.size());
+            out = ser.deserializeArrayFloat32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (java.lang.Float.compare(in.get(i), out.get(i)) != 0) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -1014,7 +952,7 @@ public class CDRSerializerTest {
         in.add((double) 5.0);
 
         try {
-            ser.serializeArrayFloat64(message, "", in);
+            ser.serializeArrayFloat64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1035,21 +973,14 @@ public class CDRSerializerTest {
         List<Double> out = new ArrayList<Double>();;
         
         try {
-            ser.serializeArrayFloat64(message, "", in);
+            ser.serializeArrayFloat64(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayFloat64(message, "", in.size());
+            out = ser.deserializeArrayFloat64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (java.lang.Double.compare(in.get(i), out.get(i)) != 0) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -1064,7 +995,7 @@ public class CDRSerializerTest {
         in.add(true);
 
         try {
-            ser.serializeArrayBoolean(message, "", in);
+            ser.serializeArrayBoolean(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1085,21 +1016,14 @@ public class CDRSerializerTest {
         List<Boolean> out = new ArrayList<Boolean>();;
         
         try {
-            ser.serializeArrayBoolean(message, "", in);
+            ser.serializeArrayBoolean(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayBoolean(message, "", in.size());
+            out = ser.deserializeArrayBoolean(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -1114,7 +1038,7 @@ public class CDRSerializerTest {
         in.add("one");
 
         try {
-            ser.serializeArrayString(message, "", in);
+            ser.serializeArrayString(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1135,21 +1059,14 @@ public class CDRSerializerTest {
         List<String> out = new ArrayList<String>();;
         
         try {
-            ser.serializeArrayString(message, "", in);
+            ser.serializeArrayString(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArrayString(message, "", in.size());
+            out = ser.deserializeArrayString(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i).compareTo(out.get(i)) != 0) {
-                error = true;
-            }
-        }
-
-        assertTrue(!error);
+        assertTrue(Objects.deepEquals(in, out));
 
         reset();
     }
@@ -1164,7 +1081,7 @@ public class CDRSerializerTest {
         in.add(new GenericType(1, "one"));
 
         try {
-            ser.serializeArray(message, "", in);
+            ser.serializeArray(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1185,9 +1102,9 @@ public class CDRSerializerTest {
         List<GenericType> out = new ArrayList<GenericType>();;
         
         try {
-            ser.serializeArray(message, "", in);
+            ser.serializeArray(message, "", in, 5);
             message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", GenericType.class, in.size());
+            out = ser.deserializeArray(message, "", GenericType.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }

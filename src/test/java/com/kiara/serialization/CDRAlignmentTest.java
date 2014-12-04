@@ -596,7 +596,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayChar(message, "", in);
+            ser.serializeArrayChar(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -619,10 +619,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayChar(message, "", in);
+            ser.serializeArrayChar(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayChar(message, "", in.size());
+            out = ser.deserializeArrayChar(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -651,7 +651,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayByte(message, "", in);
+            ser.serializeArrayByte(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -674,10 +674,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayByte(message, "", in);
+            ser.serializeArrayByte(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayByte(message, "", in.size());
+            out = ser.deserializeArrayByte(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -706,7 +706,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayI16(message, "", in);
+            ser.serializeArrayI16(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -729,10 +729,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayI16(message, "", in);
+            ser.serializeArrayI16(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI16(message, "", in.size());
+            out = ser.deserializeArrayI16(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -761,7 +761,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayUI16(message, "", in);
+            ser.serializeArrayUI16(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -784,10 +784,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI16(message, "", in);
+            ser.serializeArrayUI16(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI16(message, "", in.size());
+            out = ser.deserializeArrayUI16(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -816,7 +816,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayI32(message, "", in);
+            ser.serializeArrayI32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -839,10 +839,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayI32(message, "", in);
+            ser.serializeArrayI32(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI32(message, "", in.size());
+            out = ser.deserializeArrayI32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -871,7 +871,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayUI32(message, "", in);
+            ser.serializeArrayUI32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -894,10 +894,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI32(message, "", in);
+            ser.serializeArrayUI32(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI32(message, "", in.size());
+            out = ser.deserializeArrayUI32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -926,7 +926,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayI64(message, "", in);
+            ser.serializeArrayI64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -949,10 +949,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayI64(message, "", in);
+            ser.serializeArrayI64(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI64(message, "", in.size());
+            out = ser.deserializeArrayI64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -981,7 +981,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayUI64(message, "", in);
+            ser.serializeArrayUI64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1004,10 +1004,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI64(message, "", in);
+            ser.serializeArrayUI64(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI64(message, "", in.size());
+            out = ser.deserializeArrayUI64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1036,7 +1036,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayFloat32(message, "", in);
+            ser.serializeArrayFloat32(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1059,10 +1059,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayFloat32(message, "", in);
+            ser.serializeArrayFloat32(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayFloat32(message, "", in.size());
+            out = ser.deserializeArrayFloat32(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1091,7 +1091,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayFloat64(message, "", in);
+            ser.serializeArrayFloat64(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1114,10 +1114,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayFloat64(message, "", in);
+            ser.serializeArrayFloat64(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayFloat64(message, "", in.size());
+            out = ser.deserializeArrayFloat64(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1146,7 +1146,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayBoolean(message, "", in);
+            ser.serializeArrayBoolean(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1169,10 +1169,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayBoolean(message, "", in);
+            ser.serializeArrayBoolean(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayBoolean(message, "", in.size());
+            out = ser.deserializeArrayBoolean(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1201,7 +1201,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArrayString(message, "", in);
+            ser.serializeArrayString(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1224,10 +1224,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArrayString(message, "", in);
+            ser.serializeArrayString(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayString(message, "", in.size());
+            out = ser.deserializeArrayString(message, "", 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1256,7 +1256,7 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", c);
-            ser.serializeArray(message, "", in);
+            ser.serializeArray(message, "", in, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -1279,10 +1279,10 @@ public class CDRAlignmentTest {
 
         try {
             ser.serializeChar(message, "", cin);
-            ser.serializeArray(message, "", in);
+            ser.serializeArray(message, "", in, 5);
             message.getPayload().rewind();
             cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArray(message, "", GenericType.class, in.size());
+            out = ser.deserializeArray(message, "", GenericType.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }

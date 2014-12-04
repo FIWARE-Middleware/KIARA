@@ -29,9 +29,12 @@ public class GenericType implements Serializable {
         this.myString = impl.deserializeString(message, name);
     }
 
-    public boolean equals(GenericType other) {
-        if (other.myInt == this.myInt && other.myString.compareTo(this.myString) == 0) {
-            return true;
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof GenericType) {
+            if (((GenericType) other).myInt == this.myInt && ((GenericType) other).myString.compareTo(this.myString) == 0) {
+                return true;
+            }
         }
 
         return false;

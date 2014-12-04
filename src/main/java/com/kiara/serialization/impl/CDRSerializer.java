@@ -17,6 +17,7 @@
  */
 package com.kiara.serialization.impl;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -77,15 +78,64 @@ public class CDRSerializer implements SerializerImpl {
 
         return 0;
     }
+    
+    private <T> int calculatePadding(ByteBuffer buffer, T type) {
+        int pos = buffer.position();
+        int align = 0;
+
+        if (type instanceof Short) {
+            align = pos % (Short.SIZE / 8);
+            if (align != 0) {
+                int padding_len = (Short.SIZE / 8) - align;
+                return padding_len;
+            }
+        } else if (type instanceof Integer) {
+            align = pos % (Integer.SIZE / 8);
+            if (align != 0) {
+                int padding_len = (Integer.SIZE / 8) - align;
+                return padding_len;
+            }
+        } else if (type instanceof Long) {
+            align = pos % (Long.SIZE / 8);
+            if (align != 0) {
+                int padding_len = (Long.SIZE / 8) - align;
+                return padding_len;
+            }
+        } else if (type instanceof Float) {
+            align = pos % (Float.SIZE / 8);
+            if (align != 0) {
+                int padding_len = (Float.SIZE / 8) - align;
+                return padding_len;
+            }
+        } else if (type instanceof Double) {
+            align = pos % (Double.SIZE / 8);
+            if (align != 0) {
+                int padding_len = (Double.SIZE / 8) - align;
+                return padding_len;
+            }
+        }
+
+        return 0;
+    }
 
     private void writePadding(TransportMessage message, int padding_len) {
         byte[] padding = new byte[padding_len];
         message.getPayload().put(padding);
     }
+    
+    private void writePadding(ByteBuffer buffer, int padding_len) {
+        byte[] padding = new byte[padding_len];
+        buffer.put(padding);
+    }
 
     private void jumpPadding(TransportMessage message, int padding_len) {
         int pos = message.getPayload().position();
         message.getPayload().position(pos+padding_len);
+    }
+    
+    private void jumpPadding(ByteBuffer buffer, int padding_len) {
+        int pos = buffer.position();
+        buffer.position(pos+padding_len);
     }
 
     @Override
@@ -113,6 +163,25 @@ public class CDRSerializer implements SerializerImpl {
     public Object deserializeMessageId(TransportMessage message) {
         final int id = deserializeI32(message, "");
         return id;
+    }
+    
+    @Override
+    public void serializeMessageId(ByteBuffer buffer, Object messageId) {
+        int padding_len = calculatePadding(buffer, messageId);
+        if (padding_len != 0) {
+            writePadding(buffer, padding_len);
+        }
+        buffer.putInt((Integer) messageId);
+    }
+    
+    @Override
+    public Object deserializeMessageId(ByteBuffer buffer) {
+        int value = 0;
+        int padding_len = calculatePadding(buffer, value);
+        if (padding_len != 0) {
+            jumpPadding(buffer, padding_len);
+        }
+        return buffer.getInt();
     }
     
     @Override
@@ -384,261 +453,504 @@ public class CDRSerializer implements SerializerImpl {
     /*
      * Arrays
      */
-
-    @Override
-    public void serializeArrayChar(TransportMessage message, String name, List<Character> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeChar(message, name, array.get(i));
+    
+    private int[] trimDimensions(int[] dims) {
+        int[] ret = new int[dims.length-1];
+        for (int i=0; i < dims.length; ++i) {
+            if (i != 0) {
+                ret[i-1] = dims[i];
+            }
         }
+        return ret;
     }
 
-    @Override
-    public List<Character> deserializeArrayChar(TransportMessage message, String name, int length) {
-        List<Character> ret = new ArrayList<Character>();
+   @Override
+    public <T> void serializeArrayChar(TransportMessage message, String name, List<T> array, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            char currentVal = this.deserializeChar(message, name);
-            ret.add(i, currentVal);
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayChar(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Character) {
+            for (int i=0; i < len; ++i) {
+                this.serializeChar(message, name, (Character) array.get(i));
+            }
         }
-
-        return ret;
+    }
+    
+   @SuppressWarnings("unchecked")
+   @Override
+    public <T> List<T> deserializeArrayChar(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayChar(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Character) this.deserializeChar(message, name));
+            }
+        }
+        
+        return array;
     }
     
     @Override
-    public void serializeArrayByte(TransportMessage message, String name, List<Byte> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeByte(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Byte> deserializeArrayByte(TransportMessage message, String name, int length) {
-        List<Byte> ret = new ArrayList<Byte>();
+    public <T> void serializeArrayByte(TransportMessage message, String name, List<T> array, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            byte currentVal = this.deserializeByte(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayI16(TransportMessage message, String name, List<Short> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeI16(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Short> deserializeArrayI16(TransportMessage message, String name, int length) {
-        List<Short> ret = new ArrayList<Short>();
+        int len = dims[0];
         
-        for (int i=0; i < length; i++) {
-            short currentVal = this.deserializeI16(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayUI16(TransportMessage message, String name, List<Short> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeUI16(message, name, array.get(i));
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayByte(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Byte) {
+            for (int i=0; i < len; ++i) {
+                this.serializeByte(message, name, (Byte) array.get(i));
+            }
         }
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Short> deserializeArrayUI16(TransportMessage message, String name, int length) {
-        List<Short> ret = new ArrayList<Short>();
+    public <T> List<T> deserializeArrayByte(TransportMessage message, String name, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            short currentVal = this.deserializeUI16(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayI32(TransportMessage message, String name, List<Integer> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeI32(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Integer> deserializeArrayI32(TransportMessage message, String name, int length) {
-        List<Integer> ret = new ArrayList<Integer>();
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
         
-        for (int i=0; i < length; i++) {
-            int currentVal = this.deserializeI32(message, name);
-            ret.add(i, currentVal);
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayByte(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Byte) this.deserializeByte(message, name));
+            }
         }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayUI32(TransportMessage message, String name, List<Integer> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeUI32(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Integer> deserializeArrayUI32(TransportMessage message, String name, int length) {
-        List<Integer> ret = new ArrayList<Integer>();
         
-        for (int i=0; i < length; i++) {
-            int currentVal = this.deserializeUI32(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
+        return array;
     }
 
     @Override
-    public void serializeArrayI64(TransportMessage message, String name, List<Long> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeI64(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Long> deserializeArrayI64(TransportMessage message, String name, int length) {
-        List<Long> ret = new ArrayList<Long>();
+    public <T> void serializeArrayI16(TransportMessage message, String name, List<T> array, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            long currentVal = this.deserializeI64(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayUI64(TransportMessage message, String name, List<Long> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeUI64(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Long> deserializeArrayUI64(TransportMessage message, String name, int length) {
-        List<Long> ret = new ArrayList<Long>();
+        int len = dims[0];
         
-        for (int i=0; i < length; i++) {
-            long currentVal = this.deserializeUI64(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayFloat32(TransportMessage message, String name, List<Float> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeFloat32(message, name, array.get(i));
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayI16(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Short) {
+            for (int i=0; i < len; ++i) {
+                this.serializeI16(message, name, (Short) array.get(i));
+            }
         }
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Float> deserializeArrayFloat32(TransportMessage message, String name, int length) {
-        List<Float> ret = new ArrayList<Float>();
+    public <T> List<T> deserializeArrayI16(TransportMessage message, String name, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            float currentVal = (float) this.deserializeFloat32(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayFloat64(TransportMessage message, String name, List<Double> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeFloat64(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Double> deserializeArrayFloat64(TransportMessage message, String name, int length) {
-        List<Double> ret = new ArrayList<Double>();
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
         
-        for (int i=0; i < length; i++) {
-            double currentVal = (double) this.deserializeFloat64(message, name);
-            ret.add(i, currentVal);
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayI16(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Short) this.deserializeI16(message, name));
+            }
         }
-
-        return ret;
-    }
-
-    @Override
-    public void serializeArrayBoolean(TransportMessage message, String name, List<Boolean> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeBoolean(message, name, array.get(i));
-        }
-    }
-
-    @Override
-    public List<Boolean> deserializeArrayBoolean(TransportMessage message, String name, int length) {
-        List<Boolean> ret = new ArrayList<Boolean>();
         
-        for (int i=0; i < length; i++) {
-            boolean currentVal = this.deserializeBoolean(message, name);
-            ret.add(i, currentVal);
-        }
-
-        return ret;
+        return array;
     }
 
     @Override
-    public void serializeArrayString(TransportMessage message, String name, List<String> array) {
-        for (int i=0; i < array.size(); i++) {
-            this.serializeString(message, "", array.get(i));
-        }
-    }
-
-    @Override
-    public List<String> deserializeArrayString(TransportMessage message, String name, int length) {
-        List<String> ret = new ArrayList<String>();
+    public <T> void serializeArrayUI16(TransportMessage message, String name, List<T> array, int... dims) {
         
-        for (int i=0; i < length; i++) {
-            String currentVal = this.deserializeString(message, "");
-            ret.add(i, currentVal);
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayUI16(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Short) {
+            for (int i=0; i < len; ++i) {
+                this.serializeUI16(message, name, (Short) array.get(i));
+            }
         }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayUI16(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayUI16(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Short) this.deserializeUI16(message, name));
+            }
+        }
+        
+        return array;
+    }
 
-        return ret;
+    @Override
+    public <T> void serializeArrayI32(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayI32(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Integer) {
+            for (int i=0; i < len; ++i) {
+                this.serializeI32(message, name, (Integer) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayI32(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayI32(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Integer) this.deserializeI32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayUI32(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayUI32(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Integer) {
+            for (int i=0; i < len; ++i) {
+                this.serializeUI32(message, name, (Integer) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayUI32(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayUI32(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Integer) this.deserializeUI32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayI64(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayI64(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Long) {
+            for (int i=0; i < len; ++i) {
+                this.serializeI64(message, name, (Long) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayI64(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayI64(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Long) this.deserializeI64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayUI64(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayUI64(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Long) {
+            for (int i=0; i < len; ++i) {
+                this.serializeUI64(message, name, (Long) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayUI64(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayUI64(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Long) this.deserializeUI64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayFloat32(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayFloat32(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Float) {
+            for (int i=0; i < len; ++i) {
+                this.serializeFloat32(message, name, (Float) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayFloat32(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayFloat32(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Float) this.deserializeFloat32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayFloat64(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayFloat64(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Double) {
+            for (int i=0; i < len; ++i) {
+                this.serializeFloat64(message, name, (Double) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayFloat64(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayFloat64(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Double) this.deserializeFloat64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayBoolean(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayBoolean(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Boolean) {
+            for (int i=0; i < len; ++i) {
+                this.serializeBoolean(message, name, (Boolean) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayBoolean(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayBoolean(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (Boolean) this.deserializeBoolean(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeArrayString(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<?> inner_array = (List<?>) array.get(i);
+                this.serializeArrayString(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof String) {
+            for (int i=0; i < len; ++i) {
+                this.serializeString(message, name, (String) array.get(i));
+            }
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> List<T> deserializeArrayString(TransportMessage message, String name, int... dims) {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArrayString(message, name, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((T) (String) this.deserializeString(message, name));
+            }
+        }
+        
+        return array;
     }
 
     /*
      * Array of generic types
      */
     
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Serializable> void serializeArray(TransportMessage message, String name, List<T> array) {
-        this.serializeArrayBegin(message, name, array.size());
-        for (int i=0; i < array.size(); i++) {
-            array.get(i).serialize(this, message, name);
+    public <T> void serializeArray(TransportMessage message, String name, List<T> array, int... dims) {
+        
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<? extends Serializable> inner_array = (List<? extends Serializable>) array.get(i);
+                this.serializeArray(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Serializable) {
+            for (int i=0; i < len; ++i) {
+                this.serialize(message, name, (Serializable) array.get(i));
+            }
         }
-        this.serializeArrayEnd(message, name);
     }
-
+    
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends Serializable> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int length) throws InstantiationException, IllegalAccessException {
-        this.deserializeArrayBegin(message, name);
-        List<T> ret = new ArrayList<T>();
-        T object;
-
-        for (int i=0; i < length; i++) {
-            object = example.newInstance();
-            object.deserialize(this, message, name);
-            ret.add(i, object);
+    public <T> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException {
+        
+        int len = dims[0];
+        ArrayList<T> array = new ArrayList<T>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((T) this.deserializeArray(message, name, example, trimDimensions(dims)));
+            }
+        } else {
+            T object;
+            for (int i=0; i < len; ++i) {
+                object = example.newInstance();
+                ((Serializable) object).deserialize(this, message, name);
+                array.add(object);
+            }
         }
-        this.deserializeArrayEnd(message, name);
-        return ret;
+        
+        return array;
     }
 
     @Override
