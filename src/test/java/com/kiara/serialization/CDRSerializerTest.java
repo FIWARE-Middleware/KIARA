@@ -24,7 +24,7 @@ public class CDRSerializerTest {
         this.ser = new CDRSerializer();
         this.buffer = ByteBuffer.allocate(500);
         this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer);
+        this.message = new MockTransportMessage(buffer); 
     }
 
     @After

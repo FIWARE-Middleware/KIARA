@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class CalculatorTest {
+public class CalculatorTest { 
 
     static {
         //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");

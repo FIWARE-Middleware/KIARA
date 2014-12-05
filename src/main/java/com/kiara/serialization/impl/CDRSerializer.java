@@ -483,18 +483,18 @@ public class CDRSerializer implements SerializerImpl {
     
    @SuppressWarnings("unchecked")
    @Override
-    public <T> List<T> deserializeArrayChar(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayChar(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayChar(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayChar(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Character) this.deserializeChar(message, name));
+                array.add((M) (Character) this.deserializeChar(message, name));
             }
         }
         
@@ -520,18 +520,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayByte(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayByte(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayByte(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayByte(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Byte) this.deserializeByte(message, name));
+                array.add((M) (Byte) this.deserializeByte(message, name));
             }
         }
         
@@ -557,18 +557,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayI16(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayI16(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayI16(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayI16(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Short) this.deserializeI16(message, name));
+                array.add((M) (Short) this.deserializeI16(message, name));
             }
         }
         
@@ -594,18 +594,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayUI16(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayUI16(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayUI16(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayUI16(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Short) this.deserializeUI16(message, name));
+                array.add((M) (Short) this.deserializeUI16(message, name));
             }
         }
         
@@ -631,18 +631,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayI32(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayI32(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayI32(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayI32(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Integer) this.deserializeI32(message, name));
+                array.add((M) (Integer) this.deserializeI32(message, name));
             }
         }
         
@@ -668,18 +668,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayUI32(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayUI32(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayUI32(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayUI32(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Integer) this.deserializeUI32(message, name));
+                array.add((M) (Integer) this.deserializeUI32(message, name));
             }
         }
         
@@ -705,18 +705,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayI64(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayI64(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayI64(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayI64(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Long) this.deserializeI64(message, name));
+                array.add((M) (Long) this.deserializeI64(message, name));
             }
         }
         
@@ -742,18 +742,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayUI64(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayUI64(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayUI64(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayUI64(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Long) this.deserializeUI64(message, name));
+                array.add((M) (Long) this.deserializeUI64(message, name));
             }
         }
         
@@ -779,18 +779,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayFloat32(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayFloat32(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayFloat32(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayFloat32(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Float) this.deserializeFloat32(message, name));
+                array.add((M) (Float) this.deserializeFloat32(message, name));
             }
         }
         
@@ -816,18 +816,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayFloat64(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayFloat64(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayFloat64(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayFloat64(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Double) this.deserializeFloat64(message, name));
+                array.add((M) (Double) this.deserializeFloat64(message, name));
             }
         }
         
@@ -853,18 +853,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayBoolean(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayBoolean(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayBoolean(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayBoolean(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (Boolean) this.deserializeBoolean(message, name));
+                array.add((M) (Boolean) this.deserializeBoolean(message, name));
             }
         }
         
@@ -890,18 +890,18 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArrayString(TransportMessage message, String name, int... dims) {
+    public <T, M> List<M> deserializeArrayString(TransportMessage message, String name, int... dims) {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArrayString(message, name, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayString(message, name, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((T) (String) this.deserializeString(message, name));
+                array.add((M) (String) this.deserializeString(message, name));
             }
         }
         
@@ -932,21 +932,21 @@ public class CDRSerializer implements SerializerImpl {
     
     @SuppressWarnings("unchecked")
     @Override
-    public <T> List<T> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException {
+    public <T, M> List<M> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException {
         
         int len = dims[0];
-        ArrayList<T> array = new ArrayList<T>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((T) this.deserializeArray(message, name, example, trimDimensions(dims)));
+                array.add((M) this.deserializeArray(message, name, example, trimDimensions(dims)));
             }
         } else {
             T object;
             for (int i=0; i < len; ++i) {
                 object = example.newInstance();
                 ((Serializable) object).deserialize(this, message, name);
-                array.add(object);
+                array.add((M) object);
             }
         }
         

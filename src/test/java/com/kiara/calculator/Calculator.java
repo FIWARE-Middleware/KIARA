@@ -24,7 +24,7 @@
  */
  
  
-package com.kiara.calculator;
+package com.kiara.calculator; 
 
 /**
  * Interface containing the synchronous method definition. 
