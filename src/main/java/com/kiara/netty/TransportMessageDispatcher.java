@@ -47,16 +47,18 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
         return messageId;
     }
 
-    public void onMessage(TransportMessage message) {
+    @Override
+    public boolean onMessage(TransportMessage message) {
         message.getPayload().rewind();
         final Object responseId = ser.deserializeMessageId(message);
 
         if (!ser.equalMessageIds(messageId, responseId)) {
-            return;
+            return false;
         }
 
         transport.removeMessageListener(this);
         set(message);
+        return true;
     }
 
 }

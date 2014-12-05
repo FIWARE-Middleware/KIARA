@@ -111,7 +111,8 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         }
         if (currentListeners != null) {
             for (TransportMessageListener listener : currentListeners) {
-                listener.onMessage(message);
+                if (listener.onMessage(message))
+                    break;
             }
         }
     }

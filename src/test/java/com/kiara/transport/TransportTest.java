@@ -106,11 +106,13 @@ public class TransportTest {
             return port;
         }
 
-        public void onMessage(TransportMessage message) {
+        @Override
+        public boolean onMessage(TransportMessage message) {
             final TransportImpl transport = message.getTransport();
             final TransportMessage tresponse = transport.createTransportMessage(message);
             tresponse.setPayload(message.getPayload().duplicate());
             transport.send(tresponse);
+            return true;
         }
 
         public void run() {
@@ -154,7 +156,8 @@ public class TransportTest {
 
         final TransportMessageListener messageListener = new TransportMessageListener() {
 
-            public void onMessage(TransportMessage message) {
+            @Override
+            public boolean onMessage(TransportMessage message) {
                 message.getTransport().removeMessageListener(this);
                 try {
                     sync.put(message.getPayload());
@@ -165,6 +168,7 @@ public class TransportTest {
                         System.err.println("Exception: " + ex1);
                     }
                 }
+                return true;
             }
         };
 

@@ -22,5 +22,6 @@ package com.kiara.transport.impl;
  * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
  */
 public interface TransportMessageListener {
-    public void onMessage(TransportMessage message);
+    /** Returns true if message is processed. */
+    public boolean onMessage(TransportMessage message);
 }

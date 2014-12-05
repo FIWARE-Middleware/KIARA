@@ -28,7 +28,6 @@ package com.kiara.calculator;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
 
 import com.kiara.netty.TransportMessageDispatcher;
 import com.kiara.serialization.Serializer;
@@ -96,13 +95,11 @@ class CalculatorProxy implements CalculatorClient {
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload().duplicate();
+	                final ByteBuffer buf = tresponse.getPayload();
 	        		buf.rewind();
-	        		TransportMessage copy = m_transport.createTransportMessage(null);
-	        		copy.setPayload(buf);
-	        		final Object responseMessageId = m_ser.deserializeMessageId(copy);
-					
-					int ret = m_ser.deserializeI32(copy, "");
+				final Object responseMessageId = m_ser.deserializeMessageId(tresponse);
+
+					int ret = m_ser.deserializeI32(tresponse, "");
 					return ret;
 	            }
 	        } catch (Exception ex) {
@@ -134,13 +131,11 @@ class CalculatorProxy implements CalculatorClient {
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload().duplicate();
+	                final ByteBuffer buf = tresponse.getPayload();
 	        		buf.rewind();
-	        		TransportMessage copy = m_transport.createTransportMessage(null);
-	        		copy.setPayload(buf);
-	        		final Object responseMessageId = m_ser.deserializeMessageId(copy);
-					
-					int ret = m_ser.deserializeI32(copy, "");
+				final Object responseMessageId = m_ser.deserializeMessageId(tresponse);
+
+					int ret = m_ser.deserializeI32(tresponse, "");
 					return ret;
 	            }
 	        } catch (Exception ex) {
@@ -175,12 +170,10 @@ class CalculatorProxy implements CalculatorClient {
 			Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
 
 				public void onSuccess(TransportMessage result) {
-					final ByteBuffer buf = result.getPayload().duplicate();
+					final ByteBuffer buf = result.getPayload();
 	        		buf.rewind();
-	        		TransportMessage copy = m_transport.createTransportMessage(null);
-	        		copy.setPayload(buf);
-	        		
-					callback.process(copy, m_ser);
+
+					callback.process(result, m_ser);
 				}
 
 				public void onFailure(Throwable t) {
@@ -218,12 +211,10 @@ class CalculatorProxy implements CalculatorClient {
 			Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
 
 				public void onSuccess(TransportMessage result) {
-					final ByteBuffer buf = result.getPayload().duplicate();
+					final ByteBuffer buf = result.getPayload();
 	        		buf.rewind();
-	        		TransportMessage copy = m_transport.createTransportMessage(null);
-	        		copy.setPayload(buf);
-	        		
-					callback.process(copy, m_ser);
+
+					callback.process(result, m_ser);
 				}
 
 				public void onFailure(Throwable t) {

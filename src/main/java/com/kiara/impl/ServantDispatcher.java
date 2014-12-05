@@ -74,7 +74,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         connection.removeMessageListener(this);
     }
 
-    public void onMessage(final TransportMessage message) {
+    public boolean onMessage(final TransportMessage message) {
         final ByteBuffer buffer = message.getPayload();
         final TransportImpl transport = message.getTransport();
         final Object messageId = serializer.deserializeMessageId(message);
@@ -107,6 +107,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
                 });
             }
         }
+        return true;
     }
 
     public void close() throws IOException {
