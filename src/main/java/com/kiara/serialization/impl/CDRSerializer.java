@@ -952,6 +952,498 @@ public class CDRSerializer implements SerializerImpl {
         
         return array;
     }
+    
+    /*
+     * Sequences of simple types
+     */
+    
+    @Override
+    public <T> void serializeSequenceChar(TransportMessage message, String name, List<T> sequence) {
+        if (sequence.size() > 0) {
+            this.serializeI32(message, "", ((List<?>) sequence).size());
+            if (sequence.get(0) instanceof List) {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeSequenceChar(message, name, (List<?>) sequence.get(i));
+                }
+            } else {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeChar(message, name, (Character) sequence.get(i));
+                }
+            }
+        }
+    }
+    
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T, M> List<M> deserializeSequenceChar(TransportMessage message, String name, int depth) {
+       
+       int length = this.deserializeI32(message, "");
+       
+       ArrayList<M> array = new ArrayList<M>(length);
+       
+       if (depth != 1) {
+           for (int i=0; i < length; ++i) {
+               array.add((M) this.deserializeSequenceChar(message, name, depth-1));
+           }
+       } else if (depth == 1) {
+           for (int i=0; i < length; ++i) {
+               array.add((M) (Character) this.deserializeChar(message, name));
+           }
+       }
+       
+       return array;
+    }
+   
+   @Override
+   public <T> void serializeSequenceByte(TransportMessage message, String name, List<T> sequence) {
+       if (sequence.size() > 0) {
+           this.serializeI32(message, "", ((List<?>) sequence).size());
+           if (sequence.get(0) instanceof List) {
+               for (int i=0; i < sequence.size(); ++i) {
+                   this.serializeSequenceByte(message, name, (List<?>) sequence.get(i));
+               }
+           } else {
+               for (int i=0; i < sequence.size(); ++i) {
+                   this.serializeByte(message, name, (Byte) sequence.get(i));
+               }
+           }
+       }
+   }
+   
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T, M> List<M> deserializeSequenceByte(TransportMessage message, String name, int depth) {
+      
+      int length = this.deserializeI32(message, "");
+      
+      ArrayList<M> array = new ArrayList<M>(length);
+      
+      if (depth != 1) {
+          for (int i=0; i < length; ++i) {
+              array.add((M) this.deserializeSequenceByte(message, name, depth-1));
+          }
+      } else if (depth == 1) {
+          for (int i=0; i < length; ++i) {
+              array.add((M) (Byte) this.deserializeByte(message, name));
+          }
+      }
+      
+      return array;
+   }
+  
+      @Override
+      public <T> void serializeSequenceI16(TransportMessage message, String name, List<T> sequence) {
+          if (sequence.size() > 0) {
+              this.serializeI32(message, "", ((List<?>) sequence).size());
+              if (sequence.get(0) instanceof List) {
+                  for (int i=0; i < sequence.size(); ++i) {
+                      this.serializeSequenceI16(message, name, (List<?>) sequence.get(i));
+                  }
+              } else {
+                  for (int i=0; i < sequence.size(); ++i) {
+                      this.serializeI16(message, name, (Short) sequence.get(i));
+                  }
+              }
+          }
+      }
+      
+     @SuppressWarnings("unchecked")
+     @Override
+     public <T, M> List<M> deserializeSequenceI16(TransportMessage message, String name, int depth) {
+         
+         int length = this.deserializeI32(message, "");
+         
+         ArrayList<M> array = new ArrayList<M>(length);
+         
+         if (depth != 1) {
+             for (int i=0; i < length; ++i) {
+                 array.add((M) this.deserializeSequenceI16(message, name, depth-1));
+             }
+         } else if (depth == 1) {
+             for (int i=0; i < length; ++i) {
+                 array.add((M) (Short) this.deserializeI16(message, name));
+             }
+         }
+         
+         return array;
+     }
+     
+     @Override
+     public <T> void serializeSequenceUI16(TransportMessage message, String name, List<T> sequence) {
+         if (sequence.size() > 0) {
+             this.serializeI32(message, "", ((List<?>) sequence).size());
+             if (sequence.get(0) instanceof List) {
+                 for (int i=0; i < sequence.size(); ++i) {
+                     this.serializeSequenceUI16(message, name, (List<?>) sequence.get(i));
+                 }
+             } else {
+                 for (int i=0; i < sequence.size(); ++i) {
+                     this.serializeUI16(message, name, (Short) sequence.get(i));
+                 }
+             }
+         }
+     }
+     
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> List<M> deserializeSequenceUI16(TransportMessage message, String name, int depth) {
+        
+        int length = this.deserializeI32(message, "");
+        
+        ArrayList<M> array = new ArrayList<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSequenceUI16(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Short) this.deserializeUI16(message, name));
+            }
+        }
+        
+        return array;
+    }
+    
+    @Override
+    public <T> void serializeSequenceI32(TransportMessage message, String name, List<T> sequence) {
+        if (sequence.size() > 0) {
+            this.serializeI32(message, "", ((List<?>) sequence).size());
+            if (sequence.get(0) instanceof List) {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeSequenceI32(message, name, (List<?>) sequence.get(i));
+                }
+            } else {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeI32(message, name, (Integer) sequence.get(i));
+                }
+            }
+        }
+    }
+    
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T, M> List<M> deserializeSequenceI32(TransportMessage message, String name, int depth) {
+       
+       int length = this.deserializeI32(message, "");
+       
+       ArrayList<M> array = new ArrayList<M>(length);
+       
+       if (depth != 1) {
+           for (int i=0; i < length; ++i) {
+               array.add((M) this.deserializeSequenceI32(message, name, depth-1));
+           }
+       } else if (depth == 1) {
+           for (int i=0; i < length; ++i) {
+               array.add((M) (Integer) this.deserializeI32(message, name));
+           }
+       }
+       
+       return array;
+   }
+   
+   @Override
+   public <T> void serializeSequenceUI32(TransportMessage message, String name, List<T> sequence) {
+       if (sequence.size() > 0) {
+           this.serializeI32(message, "", ((List<?>) sequence).size());
+           if (sequence.get(0) instanceof List) {
+               for (int i=0; i < sequence.size(); ++i) {
+                   this.serializeSequenceUI32(message, name, (List<?>) sequence.get(i));
+               }
+           } else {
+               for (int i=0; i < sequence.size(); ++i) {
+                   this.serializeUI32(message, name, (Integer) sequence.get(i));
+               }
+           }
+       }
+   }
+   
+  @SuppressWarnings("unchecked")
+  @Override
+  public <T, M> List<M> deserializeSequenceUI32(TransportMessage message, String name, int depth) {
+      
+      int length = this.deserializeI32(message, "");
+      
+      ArrayList<M> array = new ArrayList<M>(length);
+      
+      if (depth != 1) {
+          for (int i=0; i < length; ++i) {
+              array.add((M) this.deserializeSequenceUI32(message, name, depth-1));
+          }
+      } else if (depth == 1) {
+          for (int i=0; i < length; ++i) {
+              array.add((M) (Integer) this.deserializeUI32(message, name));
+          }
+      }
+      
+      return array;
+  }
+  
+  @Override
+  public <T> void serializeSequenceI64(TransportMessage message, String name, List<T> sequence) {
+      if (sequence.size() > 0) {
+          this.serializeI32(message, "", ((List<?>) sequence).size());
+          if (sequence.get(0) instanceof List) {
+              for (int i=0; i < sequence.size(); ++i) {
+                  this.serializeSequenceI64(message, name, (List<?>) sequence.get(i));
+              }
+          } else {
+              for (int i=0; i < sequence.size(); ++i) {
+                  this.serializeI64(message, name, (Long) sequence.get(i));
+              }
+          }
+      }
+  }
+  
+     @SuppressWarnings("unchecked")
+     @Override
+     public <T, M> List<M> deserializeSequenceI64(TransportMessage message, String name, int depth) {
+         
+         int length = this.deserializeI32(message, "");
+         
+         ArrayList<M> array = new ArrayList<M>(length);
+         
+         if (depth != 1) {
+             for (int i=0; i < length; ++i) {
+                 array.add((M) this.deserializeSequenceI64(message, name, depth-1));
+             }
+         } else if (depth == 1) {
+             for (int i=0; i < length; ++i) {
+                 array.add((M) (Long) this.deserializeI64(message, name));
+             }
+         }
+         
+         return array;
+     }
+     
+     @Override
+     public <T> void serializeSequenceUI64(TransportMessage message, String name, List<T> sequence) {
+         if (sequence.size() > 0) {
+             this.serializeI32(message, "", ((List<?>) sequence).size());
+             if (sequence.get(0) instanceof List) {
+                 for (int i=0; i < sequence.size(); ++i) {
+                     this.serializeSequenceUI64(message, name, (List<?>) sequence.get(i));
+                 }
+             } else {
+                 for (int i=0; i < sequence.size(); ++i) {
+                     this.serializeUI64(message, name, (Long) sequence.get(i));
+                 }
+             }
+         }
+     }
+     
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> List<M> deserializeSequenceUI64(TransportMessage message, String name, int depth) {
+        
+        int length = this.deserializeI32(message, "");
+        
+        ArrayList<M> array = new ArrayList<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSequenceUI64(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Long) this.deserializeUI64(message, name));
+            }
+        }
+        
+        return array;
+    }
+    
+    @Override
+    public <T> void serializeSequenceFloat32(TransportMessage message, String name, List<T> sequence) {
+        if (sequence.size() > 0) {
+            this.serializeI32(message, "", ((List<?>) sequence).size());
+            if (sequence.get(0) instanceof List) {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeSequenceFloat32(message, name, (List<?>) sequence.get(i));
+                }
+            } else {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeFloat32(message, name, (Float) sequence.get(i));
+                }
+            }
+        }
+    }
+    
+       @SuppressWarnings("unchecked")
+       @Override
+       public <T, M> List<M> deserializeSequenceFloat32(TransportMessage message, String name, int depth) {
+           
+           int length = this.deserializeI32(message, "");
+           
+           ArrayList<M> array = new ArrayList<M>(length);
+           
+           if (depth != 1) {
+               for (int i=0; i < length; ++i) {
+                   array.add((M) this.deserializeSequenceFloat32(message, name, depth-1));
+               }
+           } else if (depth == 1) {
+               for (int i=0; i < length; ++i) {
+                   array.add((M) (Float) this.deserializeFloat32(message, name));
+               }
+           }
+           
+           return array;
+       }
+       
+       @Override
+       public <T> void serializeSequenceFloat64(TransportMessage message, String name, List<T> sequence) {
+           if (sequence.size() > 0) {
+               this.serializeI32(message, "", ((List<?>) sequence).size());
+               if (sequence.get(0) instanceof List) {
+                   for (int i=0; i < sequence.size(); ++i) {
+                       this.serializeSequenceFloat64(message, name, (List<?>) sequence.get(i));
+                   }
+               } else {
+                   for (int i=0; i < sequence.size(); ++i) {
+                       this.serializeFloat64(message, name, (Double) sequence.get(i));
+                   }
+               }
+           }
+       }
+       
+      @SuppressWarnings("unchecked")
+      @Override
+      public <T, M> List<M> deserializeSequenceFloat64(TransportMessage message, String name, int depth) {
+          
+          int length = this.deserializeI32(message, "");
+          
+          ArrayList<M> array = new ArrayList<M>(length);
+          
+          if (depth != 1) {
+              for (int i=0; i < length; ++i) {
+                  array.add((M) this.deserializeSequenceFloat64(message, name, depth-1));
+              }
+          } else if (depth == 1) {
+              for (int i=0; i < length; ++i) {
+                  array.add((M) (Double) this.deserializeFloat64(message, name));
+              }
+          }
+          
+          return array;
+      }
+      
+      @Override
+      public <T> void serializeSequenceBoolean(TransportMessage message, String name, List<T> sequence) {
+          if (sequence.size() > 0) {
+              this.serializeI32(message, "", ((List<?>) sequence).size());
+              if (sequence.get(0) instanceof List) {
+                  for (int i=0; i < sequence.size(); ++i) {
+                      this.serializeSequenceBoolean(message, name, (List<?>) sequence.get(i));
+                  }
+              } else {
+                  for (int i=0; i < sequence.size(); ++i) {
+                      this.serializeBoolean(message, name, (Boolean) sequence.get(i));
+                  }
+              }
+          }
+      }
+      
+         @SuppressWarnings("unchecked")
+         @Override
+         public <T, M> List<M> deserializeSequenceBoolean(TransportMessage message, String name, int depth) {
+             
+             int length = this.deserializeI32(message, "");
+             
+             ArrayList<M> array = new ArrayList<M>(length);
+             
+             if (depth != 1) {
+                 for (int i=0; i < length; ++i) {
+                     array.add((M) this.deserializeSequenceBoolean(message, name, depth-1));
+                 }
+             } else if (depth == 1) {
+                 for (int i=0; i < length; ++i) {
+                     array.add((M) (Boolean) this.deserializeBoolean(message, name));
+                 }
+             }
+             
+             return array;
+         }
+         
+         @Override
+         public <T> void serializeSequenceString(TransportMessage message, String name, List<T> sequence) {
+             if (sequence.size() > 0) {
+                 this.serializeI32(message, "", ((List<?>) sequence).size());
+                 if (sequence.get(0) instanceof List) {
+                     for (int i=0; i < sequence.size(); ++i) {
+                         this.serializeSequenceString(message, name, (List<?>) sequence.get(i));
+                     }
+                 } else {
+                     for (int i=0; i < sequence.size(); ++i) {
+                         this.serializeString(message, name, (String) sequence.get(i));
+                     }
+                 }
+             }
+         }
+         
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T, M> List<M> deserializeSequenceString(TransportMessage message, String name, int depth) {
+            
+            int length = this.deserializeI32(message, "");
+            
+            ArrayList<M> array = new ArrayList<M>(length);
+            
+            if (depth != 1) {
+                for (int i=0; i < length; ++i) {
+                    array.add((M) this.deserializeSequenceString(message, name, depth-1));
+                }
+            } else if (depth == 1) {
+                for (int i=0; i < length; ++i) {
+                    array.add((M) (String) this.deserializeString(message, name));
+                }
+            }
+            
+            return array;
+        }
+        
+        @Override
+        public <T> void serializeSequence(TransportMessage message, String name, List<T> sequence) {
+            if (sequence.size() > 0) {
+                this.serializeI32(message, "", ((List<?>) sequence).size());
+                if (sequence.get(0) instanceof List) {
+                    for (int i=0; i < sequence.size(); ++i) {
+                        this.serializeSequence(message, name, (List<?>) sequence.get(i));
+                    }
+                } else {
+                    for (int i=0; i < sequence.size(); ++i) {
+                        this.serialize(message, name, (Serializable) sequence.get(i));
+                    }
+                }
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        public <T, M> List<M> deserializeSequence(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException {
+            int length = this.deserializeI32(message, "");
+            
+            ArrayList<M> array = new ArrayList<M>(length);
+            
+            if (depth != 1) {
+                for (int i=0; i < length; ++i) {
+                    array.add((M) this.deserializeSequence(message, name, example, depth-1));
+                }
+            } else if (depth == 1) {
+                T object;
+                for (int i=0; i < length; ++i) {
+                    object = example.newInstance();
+                    ((Serializable) object).deserialize(this, message, name);
+                    array.add((M) object);
+                }
+            }
+            
+            return array;
+        }
+     
+   
+   /*
+    * Auxiliary functions
+    */
 
     @Override
     public void serializeArrayBegin(TransportMessage message, String name,int length) {
@@ -973,6 +1465,8 @@ public class CDRSerializer implements SerializerImpl {
     public void deserializeArrayEnd(TransportMessage message, String name) {
         // Do nothing
     }
+
+    
 
 
 

@@ -191,6 +191,73 @@ public interface SerializerImpl extends Serializer {
     public <T, M> List<M> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException;
     
     /*
+     * Sequences
+     */
+    
+    public <T> void serializeSequenceChar(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceChar(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSequenceByte(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceByte(TransportMessage message, String name, int depth);
+    
+ 
+    public <T> void serializeSequenceI16(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceI16(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSequenceUI16(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceUI16(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSequenceI32(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceI32(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSequenceUI32(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceUI32(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSequenceI64(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceI64(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSequenceUI64(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceUI64(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSequenceFloat32(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceFloat32(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSequenceFloat64(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceFloat64(TransportMessage message, String name, int depth);
+    
+
+    public <T> void serializeSequenceBoolean(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceBoolean(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSequenceString(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequenceString(TransportMessage message, String name, int depth);
+    
+    /*
+     * Sequences of generic types
+     */
+    
+    public <T> void serializeSequence(TransportMessage message, String name, List<T> sequence);
+    
+    public <T, M> List<M> deserializeSequence(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException;
+    
+    /*
      * Extra functions
      */
     

@@ -44,4 +44,20 @@ public class GenericType implements Serializable {
         return "GenericType";
     }
 
+    public int getMyInt() {
+        return this.myInt;
+    }
+
+    public void setMyInt(int myInt) {
+        this.myInt = myInt;
+    }
+
+    public String getMyString() {
+        return this.myString;
+    }
+
+    public void setMyString(String myString) {
+        this.myString = myString;
+    }
+
 }
