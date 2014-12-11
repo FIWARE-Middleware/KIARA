@@ -1,6 +1,5 @@
 package com.kiara.complextypes;
 
-import com.kiara.calculator.*;
 import com.google.common.util.concurrent.SettableFuture;
 import com.kiara.Context;
 import com.kiara.client.Connection;
@@ -201,7 +200,7 @@ public class TestServiceTest {
      * Test of main method, of class CalcTestServer.
      */
     @Test
-    public void testCalcSync() throws Exception {
+    public void testComplexTypesSync() throws Exception {
         MyStruct value = testService.only_return_func();
 
         Assert.assertNotNull(value);
@@ -229,7 +228,7 @@ public class TestServiceTest {
     }
 
     @Test
-    public void testCalcSyncParallel() throws Exception {
+    public void testComplexTypesParallel() throws Exception {
         final Future<MyStruct> value = executor.submit(new Callable<MyStruct>() {
 
             @Override
@@ -287,7 +286,7 @@ public class TestServiceTest {
     }
 
     @Test
-    public void testCalcAsync() throws Exception {
+    public void testComplexTypesAsync() throws Exception {
         final SettableFuture<MyStruct> value = SettableFuture.create();
         testService.only_return_func(new TestServiceAsync.only_return_func_AsyncCallback() {
 
