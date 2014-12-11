@@ -1466,6 +1466,69 @@ public class CDRSerializer implements SerializerImpl {
         // Do nothing
     }
 
+    @Override
+    public void serializeStructBegin(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public void serializeStructEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public int deserializeStructBegin(TransportMessage message, String name) {
+        // Do nothing
+        return 0;
+    }
+
+    @Override
+    public void deserializeStructEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+    
+    @Override
+    public void serializeSequenceBegin(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public void serializeSequenceEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public int deserializeSequenceBegin(TransportMessage message, String name) {
+        // Do nothing
+        return 0;
+    }
+
+    @Override
+    public void deserializeSequenceEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+    
+    @Override
+    public void serializeUnionBegin(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public void serializeUnionEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+
+    @Override
+    public int deserializeUnionBegin(TransportMessage message, String name) {
+        // Do nothing
+        return 0;
+    }
+
+    @Override
+    public void deserializeUnionEnd(TransportMessage message, String name) {
+        // Do nothing
+    }
+
     
 
 

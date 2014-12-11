@@ -258,7 +258,7 @@ public interface SerializerImpl extends Serializer {
     public <T, M> List<M> deserializeSequence(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException;
     
     /*
-     * Extra functions
+     * Extra array functions
      */
     
     public void serializeArrayBegin(TransportMessage message, String name, int length);
@@ -268,6 +268,42 @@ public interface SerializerImpl extends Serializer {
     public int deserializeArrayBegin(TransportMessage message, String name);
 
     public void deserializeArrayEnd(TransportMessage message, String name);
+    
+    /*
+     * Extra struct functions
+     */
+    
+    public void serializeStructBegin(TransportMessage message, String name);
+
+    public void serializeStructEnd(TransportMessage message, String name);
+
+    public int deserializeStructBegin(TransportMessage message, String name);
+
+    public void deserializeStructEnd(TransportMessage message, String name);
+    
+    /*
+     * Extra sequence functions
+     */
+    
+    public void serializeSequenceBegin(TransportMessage message, String name);
+
+    public void serializeSequenceEnd(TransportMessage message, String name);
+
+    public int deserializeSequenceBegin(TransportMessage message, String name);
+
+    public void deserializeSequenceEnd(TransportMessage message, String name);
+    
+    /*
+     * Extra union functions
+     */
+    
+    public void serializeUnionBegin(TransportMessage message, String name);
+
+    public void serializeUnionEnd(TransportMessage message, String name);
+
+    public int deserializeUnionBegin(TransportMessage message, String name);
+
+    public void deserializeUnionEnd(TransportMessage message, String name);
 
 
 
