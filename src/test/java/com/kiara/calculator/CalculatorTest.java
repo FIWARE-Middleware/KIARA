@@ -7,7 +7,10 @@ import com.kiara.client.Connection;
 import com.kiara.serialization.Serializer;
 import com.kiara.server.Server;
 import com.kiara.server.Service;
+import com.kiara.test.TestUtils;
+import com.kiara.test.TypeFactory;
 import com.kiara.transport.ServerTransport;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
@@ -49,8 +52,12 @@ public class CalculatorTest {
 
     public static class CalculatorSetup extends TestSetup<CalculatorClient> {
 
-        public CalculatorSetup(int port, String transport, String protocol, String configPath) {
+        private final ExecutorService serverDispatchingExecutor;
+
+        public CalculatorSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
             super(port, transport, protocol, configPath);
+            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
+            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
         }
 
         @Override
@@ -70,10 +77,7 @@ public class CalculatorTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            //serverTransport.setDispatchingExecutor(null);
-            //serverTransport.setDispatchingExecutor(Executors.newSingleThreadExecutor());
-            //serverTransport.setDispatchingExecutor(Executors.newFixedThreadPool(2));
-            serverTransport.setDispatchingExecutor(Executors.newCachedThreadPool());
+            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
 
             server.addService(service, serverTransport, serializer);
 
@@ -99,6 +103,15 @@ public class CalculatorTest {
                 return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
             }
             throw new IllegalArgumentException("Unknown transport " + transport);
+        }
+
+        @Override
+        public void shutdown() throws Exception {
+            super.shutdown();
+            if (serverDispatchingExecutor != null) {
+                serverDispatchingExecutor.shutdown();
+                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
+            }
         }
 
     }
@@ -131,14 +144,24 @@ public class CalculatorTest {
 
     @Parameterized.Parameters
     public static Collection configs() {
-        Object[][] data = new Object[][]{
-            {"tcp", "cdr"}
-        };
-        return Arrays.asList(data);
+        Collection<Object[]> params = new ArrayList<>();
+        final String[] transports = {"tcp"};
+        final String[] protocols = {"cdr"};
+        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
+
+        for (String transport : transports) {
+            for (String protocol : protocols) {
+                for (TypeFactory executorFactory : executorFactories) {
+                    Object[] config = new Object[]{transport, protocol, executorFactory};
+                    params.add(config);
+                }
+            }
+        }
+        return params;
     }
 
-    public CalculatorTest(String transport, String protocol) {
-        calculatorSetup = new CalculatorSetup(9090, transport, protocol, "");
+    public CalculatorTest(String transport, String protocol, TypeFactory<ExecutorService> serverExecutorFactory) {
+        calculatorSetup = new CalculatorSetup(9090, transport, protocol, "", serverExecutorFactory);
     }
 
     /**
@@ -204,12 +227,14 @@ public class CalculatorTest {
             final int arg = i;
             calculator.add(i, i, new CalculatorAsync.add_AsyncCallback() {
 
+                @Override
                 public void onSuccess(Integer result) {
                     System.err.println(arg + "+" + arg + "=" + result);
                     assertEquals(arg + arg, result.intValue());
                     resultValue.set(result);
                 }
 
+                @Override
                 public void onFailure(Throwable caught) {
                     resultValue.setException(caught);
                 }
@@ -228,12 +253,14 @@ public class CalculatorTest {
             final int arg = i;
             calculator.subtract(resultLength, arg, new CalculatorAsync.subtract_AsyncCallback() {
 
+                @Override
                 public void onSuccess(Integer result) {
                     System.err.println(resultLength + "-" + arg + "=" + result);
                     assertEquals(resultLength - arg, result.intValue());
                     resultValue.set(result);
                 }
 
+                @Override
                 public void onFailure(Throwable caught) {
                     resultValue.setException(caught);
                 }
