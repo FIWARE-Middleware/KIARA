@@ -328,7 +328,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, final return_param_func_AsyncCallback callback) {
 
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(100);
+			ByteBuffer buffer = ByteBuffer.allocate(return_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        trequest.setPayload(buffer);
 
