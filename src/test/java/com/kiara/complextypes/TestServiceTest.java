@@ -7,6 +7,8 @@ import com.kiara.serialization.Serializer;
 import com.kiara.server.Server;
 import com.kiara.server.Service;
 import com.kiara.test.TestSetup;
+import com.kiara.test.TestUtils;
+import com.kiara.test.TypeFactory;
 import com.kiara.transport.ServerTransport;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -104,8 +106,12 @@ public class TestServiceTest {
 
     public static class TestServiceSetup extends TestSetup<TestServiceClient> {
 
-        public TestServiceSetup(int port, String transport, String protocol, String configPath) {
+        private final ExecutorService serverDispatchingExecutor;
+
+        public TestServiceSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
             super(port, transport, protocol, configPath);
+            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
+            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
         }
 
         @Override
@@ -125,10 +131,7 @@ public class TestServiceTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            //serverTransport.setDispatchingExecutor(null);
-            //serverTransport.setDispatchingExecutor(Executors.newSingleThreadExecutor());
-            //serverTransport.setDispatchingExecutor(Executors.newFixedThreadPool(2));
-            serverTransport.setDispatchingExecutor(Executors.newCachedThreadPool());
+            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
 
             server.addService(service, serverTransport, serializer);
 
@@ -154,6 +157,15 @@ public class TestServiceTest {
                 return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
             }
             throw new IllegalArgumentException("Unknown transport " + transport);
+        }
+
+        @Override
+        public void shutdown() throws Exception {
+            super.shutdown();
+            if (serverDispatchingExecutor != null) {
+                serverDispatchingExecutor.shutdown();
+                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
+            }
         }
 
     }
@@ -186,19 +198,26 @@ public class TestServiceTest {
 
     @Parameterized.Parameters
     public static Collection configs() {
-        Object[][] data = new Object[][]{
-            {"tcp", "cdr"}
-        };
-        return Arrays.asList(data);
+        Collection<Object[]> params = new ArrayList<>();
+        final String[] transports = {"tcp"};
+        final String[] protocols = {"cdr"};
+        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
+
+        for (String transport : transports) {
+            for (String protocol : protocols) {
+                for (TypeFactory executorFactory : executorFactories) {
+                    Object[] config = new Object[]{transport, protocol, executorFactory};
+                    params.add(config);
+                }
+            }
+        }
+        return params;
     }
 
-    public TestServiceTest(String transport, String protocol) {
-        testServiceSetup = new TestServiceSetup(9090, transport, protocol, "");
+    public TestServiceTest(String transport, String protocol, TypeFactory<ExecutorService> serverExecutorFactory) {
+        testServiceSetup = new TestServiceSetup(9090, transport, protocol, "", serverExecutorFactory);
     }
 
-    /**
-     * Test of main method, of class CalcTestServer.
-     */
     @Test
     public void testComplexTypesSync() throws Exception {
         MyStruct value = testService.only_return_func();
@@ -249,6 +268,7 @@ public class TestServiceTest {
             final int arg = i;
             result[arg] = executor.submit(new Callable<MyStruct>() {
 
+                @Override
                 public MyStruct call() throws Exception {
                     MyStruct s = testService.return_param_func(value.get(), arg);
                     Assert.assertNotNull(s);
@@ -285,6 +305,10 @@ public class TestServiceTest {
         }).get();
     }
 
+    /**
+     *
+     * @throws Exception
+     */
     @Test
     public void testComplexTypesAsync() throws Exception {
         final SettableFuture<MyStruct> value = SettableFuture.create();
@@ -312,11 +336,12 @@ public class TestServiceTest {
             final int arg = i;
             testService.return_param_func(value.get(), arg, new TestServiceAsync.return_param_func_AsyncCallback() {
 
+                @Override
                 public void onSuccess(MyStruct result) {
                     resultValue.set(result);
                 }
 
-
+                @Override
                 public void onFailure(Throwable caught) {
                     resultValue.setException(caught);
                 }
@@ -330,6 +355,6 @@ public class TestServiceTest {
             Assert.assertEquals("return_param_func", result[i].get().getmyString());
         }
 
-     }
+    }
 
 }

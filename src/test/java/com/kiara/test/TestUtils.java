@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
@@ -51,6 +53,32 @@ public class TestUtils {
         } catch (UnknownHostException ex) {
             return false;
         }
+    }
+
+    public static TypeFactory[] createExecutorFactories() {
+       final TypeFactory[] executorFactories = {
+            null,
+            new TypeFactory<ExecutorService>() {
+                @Override
+                public ExecutorService create() {
+                    return Executors.newSingleThreadExecutor();
+                }
+            },
+            new TypeFactory<ExecutorService>() {
+
+                @Override
+                public ExecutorService create() {
+                    return Executors.newFixedThreadPool(2);
+                }
+            },
+            new TypeFactory<ExecutorService>() {
+                @Override
+                public ExecutorService create() {
+                    return Executors.newCachedThreadPool();
+                }
+            }
+        };
+       return executorFactories;
     }
 
 }
