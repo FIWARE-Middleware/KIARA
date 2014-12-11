@@ -1,5 +1,6 @@
 package com.kiara.calculator;
 
+import com.kiara.test.TestSetup;
 import com.google.common.util.concurrent.SettableFuture;
 import com.kiara.Context;
 import com.kiara.client.Connection;
@@ -151,8 +152,6 @@ public class CalculatorTest {
 
     @Test
     public void testCalcSyncParallel() throws Exception {
-        ExecutorService executor = Executors.newCachedThreadPool();
-
         // Synchronous parallel test
         Future<Integer>[] result = new Future[100];
 

@@ -1,4 +1,4 @@
-package com.kiara.calculator;
+package com.kiara.test;
 
 import com.kiara.Context;
 import com.kiara.Kiara;
@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 
-abstract class TestSetup<CLIENT_INTERFACE> {
+public abstract class TestSetup<CLIENT_INTERFACE> {
     private final int port;
     private final String transport;
     private final String protocol;
@@ -68,7 +68,7 @@ abstract class TestSetup<CLIENT_INTERFACE> {
         return createClient(connection);
     }
 
-    void shutdown() throws Exception {
+    public void shutdown() throws Exception {
         System.out.println("Shutdown");
         if (server != null)
             server.close();
