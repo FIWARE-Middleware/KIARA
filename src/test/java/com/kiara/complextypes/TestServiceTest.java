@@ -11,7 +11,6 @@ import com.kiara.test.TestUtils;
 import com.kiara.test.TypeFactory;
 import com.kiara.transport.ServerTransport;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -198,20 +197,7 @@ public class TestServiceTest {
 
     @Parameterized.Parameters
     public static Collection configs() {
-        Collection<Object[]> params = new ArrayList<>();
-        final String[] transports = {"tcp"};
-        final String[] protocols = {"cdr"};
-        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
-
-        for (String transport : transports) {
-            for (String protocol : protocols) {
-                for (TypeFactory executorFactory : executorFactories) {
-                    Object[] config = new Object[]{transport, protocol, executorFactory};
-                    params.add(config);
-                }
-            }
-        }
-        return params;
+        return TestUtils.createDefaultTestConfig();
     }
 
     public TestServiceTest(String transport, String protocol, TypeFactory<ExecutorService> serverExecutorFactory) {

@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -56,7 +58,7 @@ public class TestUtils {
     }
 
     public static TypeFactory[] createExecutorFactories() {
-       final TypeFactory[] executorFactories = {
+        final TypeFactory[] executorFactories = {
             null,
             new TypeFactory<ExecutorService>() {
                 @Override
@@ -78,7 +80,24 @@ public class TestUtils {
                 }
             }
         };
-       return executorFactories;
+        return executorFactories;
+    }
+
+    public static Collection<?> createDefaultTestConfig() {
+        Collection<Object[]> params = new ArrayList<>();
+        final String[] transports = {"tcp"};
+        final String[] protocols = {"cdr"};
+        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
+
+        for (String transport : transports) {
+            for (String protocol : protocols) {
+                for (TypeFactory executorFactory : executorFactories) {
+                    Object[] config = new Object[]{transport, protocol, executorFactory};
+                    params.add(config);
+                }
+            }
+        }
+        return params;
     }
 
 }

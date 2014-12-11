@@ -10,8 +10,6 @@ import com.kiara.server.Service;
 import com.kiara.test.TestUtils;
 import com.kiara.test.TypeFactory;
 import com.kiara.transport.ServerTransport;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -37,12 +35,14 @@ public class CalculatorTest {
 
     public static class CalculatorServantImpl extends CalculatorServant {
 
+        @Override
         public int add(int param1, int param2) {
             System.out.println("Current thread: " + Thread.currentThread().toString());
             System.out.println("Adding " + param1 + " and " + param2);
             return param1 + param2;
         }
 
+        @Override
         public int subtract(int param1, int param2) {
             System.out.println("Current thread: " + Thread.currentThread().toString());
             System.out.println("Subtracting " + param1 + " and " + param2);
@@ -144,20 +144,7 @@ public class CalculatorTest {
 
     @Parameterized.Parameters
     public static Collection configs() {
-        Collection<Object[]> params = new ArrayList<>();
-        final String[] transports = {"tcp"};
-        final String[] protocols = {"cdr"};
-        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
-
-        for (String transport : transports) {
-            for (String protocol : protocols) {
-                for (TypeFactory executorFactory : executorFactories) {
-                    Object[] config = new Object[]{transport, protocol, executorFactory};
-                    params.add(config);
-                }
-            }
-        }
-        return params;
+        return TestUtils.createDefaultTestConfig();
     }
 
     public CalculatorTest(String transport, String protocol, TypeFactory<ExecutorService> serverExecutorFactory) {
@@ -183,6 +170,7 @@ public class CalculatorTest {
             final int arg = i;
             result[arg] = executor.submit(new Callable<Integer>() {
 
+                @Override
                 public Integer call() throws Exception {
                     final int result = calculator.add(arg, arg);
                     System.err.println(arg + "+" + arg + "=" + result);
@@ -202,6 +190,7 @@ public class CalculatorTest {
             final int arg = i;
             result[arg] = executor.submit(new Callable<Integer>() {
 
+                @Override
                 public Integer call() throws Exception {
                     final int result = calculator.subtract(resultLength, arg);
                     System.err.println(resultLength + "-" + arg + "=" + result);
