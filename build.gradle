@@ -28,7 +28,7 @@ tasks.withType(JavaCompile) {
 }
 
 // maven-plugin properties
-group = 'com.kiara'
+group = 'org.fiware.kiara'
 
 //// antlr4-plugin configuration
 //// make the Java compile task depend on the antlr4 task
@@ -69,7 +69,7 @@ test {
 //antlr4.source = project.file("src/main/antlr4")
 //antlr4.listener = true
 //antlr4.visitor = true
-//antlr4.extraArgs=['-package', 'com.kiara']
+//antlr4.extraArgs=['-package', 'org.fiware.kiara']
 
 //// make the Java compile task depend on the antlr4 task
 //compileJava.dependsOn antlr4
