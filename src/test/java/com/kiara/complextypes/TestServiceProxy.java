@@ -136,11 +136,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					MyStruct ret = m_ser.deserialize(tresponse, "", MyStruct.class);
 					return ret;
@@ -171,11 +171,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					return;
 	            }
@@ -204,11 +204,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					MyStruct ret = m_ser.deserialize(tresponse, "", MyStruct.class);
 					return ret;
@@ -240,11 +240,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					return;
 	            }
@@ -274,11 +274,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					return;
 	            }
@@ -307,11 +307,11 @@ class TestServiceProxy implements TestServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					return;
 	            }
@@ -348,7 +348,7 @@ class TestServiceProxy implements TestServiceClient {
 
 				public void onSuccess(TransportMessage result) {
 					final ByteBuffer buf = result.getPayload();
-				buf.rewind();
+	        		buf.rewind();
 
 					callback.process(result, m_ser);
 				}
@@ -369,7 +369,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void only_param_func(/*in*/ MyStruct param1, final only_param_func_AsyncCallback callback) {
 
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(100);
+			ByteBuffer buffer = ByteBuffer.allocate(only_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        trequest.setPayload(buffer);
 
@@ -388,7 +388,7 @@ class TestServiceProxy implements TestServiceClient {
 
 				public void onSuccess(TransportMessage result) {
 					final ByteBuffer buf = result.getPayload();
-				buf.rewind();
+	        		buf.rewind();
 
 					callback.process(result, m_ser);
 				}
@@ -409,7 +409,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void only_return_func(final only_return_func_AsyncCallback callback) {
 
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(100);
+			ByteBuffer buffer = ByteBuffer.allocate(only_return_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        trequest.setPayload(buffer);
 
@@ -427,7 +427,7 @@ class TestServiceProxy implements TestServiceClient {
 
 				public void onSuccess(TransportMessage result) {
 					final ByteBuffer buf = result.getPayload();
-				buf.rewind();
+	        		buf.rewind();
 
 					callback.process(result, m_ser);
 				}

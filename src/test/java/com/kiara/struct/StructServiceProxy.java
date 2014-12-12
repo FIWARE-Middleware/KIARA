@@ -91,11 +91,11 @@ class StructServiceProxy implements StructServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					PrimitiveTypesStruct ret = m_ser.deserialize(tresponse, "", PrimitiveTypesStruct.class);
 					return ret;
@@ -126,11 +126,11 @@ class StructServiceProxy implements StructServiceClient {
 	        m_transport.send(trequest);
 
 	        try {
-			TransportMessage tresponse = dispatcher.get();
-			if (tresponse != null && tresponse.getPayload() != null) {
+	        	TransportMessage tresponse = dispatcher.get();
+	        	if (tresponse != null && tresponse.getPayload() != null) {
 	                final ByteBuffer buf = tresponse.getPayload();
-				buf.rewind();
-				final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		buf.rewind();
+	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
 
 					OuterStruct ret = m_ser.deserialize(tresponse, "", OuterStruct.class);
 					return ret;
@@ -167,7 +167,7 @@ class StructServiceProxy implements StructServiceClient {
 
 				public void onSuccess(TransportMessage result) {
 					final ByteBuffer buf = result.getPayload();
-				buf.rewind();
+	        		buf.rewind();
 
 					callback.process(result, m_ser);
 				}
@@ -207,7 +207,7 @@ class StructServiceProxy implements StructServiceClient {
 
 				public void onSuccess(TransportMessage result) {
 					final ByteBuffer buf = result.getPayload();
-				buf.rewind();
+	        		buf.rewind();
 
 					callback.process(result, m_ser);
 				}

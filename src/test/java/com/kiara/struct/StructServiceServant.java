@@ -99,8 +99,8 @@ public abstract class StructServiceServant implements Servant, StructService
 
 			ByteBuffer retBuffer = ByteBuffer.allocate(sendReceivePrimitives_required_size());
 		    TransportMessage retMsg = transportImpl.createTransportMessage(null);
-			retMsg.setPayload(retBuffer);
-			serImpl.serializeMessageId(retMsg, messageId);
+		 	retMsg.setPayload(retBuffer);
+		 	serImpl.serializeMessageId(retMsg, messageId);
 			serImpl.serialize(retMsg, "", ret);
 			retMsg.getPayload().flip();
 			return retMsg;
@@ -122,8 +122,8 @@ public abstract class StructServiceServant implements Servant, StructService
 
 			ByteBuffer retBuffer = ByteBuffer.allocate(sendReceiveStruct_required_size());
 		    TransportMessage retMsg = transportImpl.createTransportMessage(null);
-			retMsg.setPayload(retBuffer);
-			serImpl.serializeMessageId(retMsg, messageId);
+		 	retMsg.setPayload(retBuffer);
+		 	serImpl.serializeMessageId(retMsg, messageId);
 			serImpl.serialize(retMsg, "", ret);
 			retMsg.getPayload().flip();
 			return retMsg;

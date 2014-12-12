@@ -123,28 +123,28 @@ public class InnerStruct implements Serializable {
 	/*
 	 * Method to get the attribute innerLongAtt.
 	 */
-	public int getinnerLongAtt() {
+	public int getInnerLongAtt() {
 		return this.innerLongAtt;
 	}
 
 	/*
 	 * Method to set the attribute innerLongAtt.
 	 */
-	public void setinnerLongAtt(int innerLongAtt) {
+	public void setInnerLongAtt(int innerLongAtt) {
 		this.innerLongAtt = innerLongAtt;
 	}
 
 	/*
 	 * Method to get the attribute innerStringAtt.
 	 */
-	public java.lang.String getinnerStringAtt() {
+	public java.lang.String getInnerStringAtt() {
 		return this.innerStringAtt;
 	}
 
 	/*
 	 * Method to set the attribute innerStringAtt.
 	 */
-	public void setinnerStringAtt(java.lang.String innerStringAtt) {
+	public void setInnerStringAtt(java.lang.String innerStringAtt) {
 		this.innerStringAtt = innerStringAtt;
 	}
 }

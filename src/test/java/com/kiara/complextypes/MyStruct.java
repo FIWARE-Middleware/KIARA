@@ -163,70 +163,70 @@ public class MyStruct implements Serializable {
 	/*
 	 * Method to get the attribute myInt.
 	 */
-	public int getmyInt() {
+	public int getMyInt() {
 		return this.myInt;
 	}
 
 	/*
 	 * Method to set the attribute myInt.
 	 */
-	public void setmyInt(int myInt) {
+	public void setMyInt(int myInt) {
 		this.myInt = myInt;
 	}
 
 	/*
 	 * Method to get the attribute myString.
 	 */
-	public java.lang.String getmyString() {
+	public java.lang.String getMyString() {
 		return this.myString;
 	}
 
 	/*
 	 * Method to set the attribute myString.
 	 */
-	public void setmyString(java.lang.String myString) {
+	public void setMyString(java.lang.String myString) {
 		this.myString = myString;
 	}
 
 	/*
 	 * Method to get the attribute arrayInt.
 	 */
-	public List<List<Integer>> getarrayInt() {
+	public List<List<Integer>> getArrayInt() {
 		return this.arrayInt;
 	}
 
 	/*
-	 * Method to set the attribute arrayInt.
+	 * Method to set the attribute ArrayInt.
 	 */
-	public void setarrayInt(List<List<Integer>> arrayInt) {
+	public void setArrayInt(List<List<Integer>> arrayInt) {
 		this.arrayInt = arrayInt;
 	}
 
 	/*
 	 * Method to get the attribute arrayString.
 	 */
-	public List<java.lang.String> getarrayString() {
+	public List<java.lang.String> getArrayString() {
 		return this.arrayString;
 	}
 
 	/*
-	 * Method to set the attribute arrayString.
+	 * Method to set the attribute ArrayString.
 	 */
-	public void setarrayString(List<java.lang.String> arrayString) {
+	public void setArrayString(List<java.lang.String> arrayString) {
 		this.arrayString = arrayString;
 	}
 
 	/*
 	 * Method to get the attribute sequenceInt.
 	 */
-	public List<Integer> getsequenceInt() {
+	public List<Integer> getSequenceInt() {
 		return this.sequenceInt;
 	}
 
 	/*
 	 * Method to set the attribute sequenceInt.
 	 */
-	public void setsequenceInt(List<Integer> sequenceInt) {
+	public void setSequenceInt(List<Integer> sequenceInt) {
 		this.sequenceInt = sequenceInt;
 	}
 }

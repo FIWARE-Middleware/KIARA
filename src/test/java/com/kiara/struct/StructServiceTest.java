@@ -37,21 +37,21 @@ public class StructServiceTest {
 
         public static PrimitiveTypesStruct createPrimitiveTypesStruct() {
             PrimitiveTypesStruct s = new PrimitiveTypesStruct();
-            s.setmyChar('a');
-            s.setmyByte((byte)42);
-            s.setmyUShort((short)65534);
-            s.setmyShort((short)-40001);
-            s.setmyBoolean(true);
-            s.setmyUInt(80000);
-            s.setmyInt(-80000);
-            s.setmyULong(90000);
-            s.setmyLong(-90000);
-            s.setmyString("Test");
-            s.setmyFloat((float) -2.0);
-            s.setmyDouble(-100000.0);
-            s.setmyBoolean(true);
-            s.setmyString("Test123456789");
-            s.setmyString5("12345");
+            s.setMyChar('a');
+            s.setMyByte((byte)42);
+            s.setMyUShort((short)65534);
+            s.setMyShort((short)-40001);
+            s.setMyBoolean(true);
+            s.setMyUInt(80000);
+            s.setMyInt(-80000);
+            s.setMyULong(90000);
+            s.setMyLong(-90000);
+            s.setMyString("Test");
+            s.setMyFloat((float) -2.0);
+            s.setMyDouble(-100000.0);
+            s.setMyBoolean(true);
+            s.setMyString("Test123456789");
+            s.setMyString5("12345");
             return s;
         }
 
@@ -178,7 +178,7 @@ public class StructServiceTest {
     public void testStructTypesSync() throws Exception {
         PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
         for (int i = 0; i < 10; i++) {
-            value.setmyInt(i);
+            value.setMyInt(i);
             PrimitiveTypesStruct result = structService.sendReceivePrimitives(value);
 
             Assert.assertNotNull(result);
@@ -200,7 +200,7 @@ public class StructServiceTest {
                 @Override
                 public PrimitiveTypesStruct call() throws Exception {
                     PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
-                    value.setmyInt(arg);
+                    value.setMyInt(arg);
                     PrimitiveTypesStruct s = structService.sendReceivePrimitives(value);
                     Assert.assertNotNull(s);
                     return s;
@@ -209,9 +209,9 @@ public class StructServiceTest {
         }
 
         for (int i = 0; i < result.length; i++) {
-            assertEquals(i, result[i].get().getmyInt());
+            assertEquals(i, result[i].get().getMyInt());
             PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
-            value.setmyInt(i);
+            value.setMyInt(i);
             assertEquals(value, result[i].get());
         }
     }
@@ -225,7 +225,7 @@ public class StructServiceTest {
             final SettableFuture<PrimitiveTypesStruct> resultValue = SettableFuture.create();
             final int arg = i;
             PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
-            value.setmyInt(arg);
+            value.setMyInt(arg);
             structService.sendReceivePrimitives(value, new StructServiceAsync.sendReceivePrimitives_AsyncCallback() {
 
                 @Override
@@ -244,7 +244,7 @@ public class StructServiceTest {
 
         for (int i = 0; i < result.length; i++) {
             Assert.assertNotNull(result[i].get());
-            Assert.assertEquals(i, result[i].get().getmyInt());
+            Assert.assertEquals(i, result[i].get().getMyInt());
         }
     }
 

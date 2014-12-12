@@ -144,42 +144,42 @@ public class OuterStruct implements Serializable {
 	/*
 	 * Method to get the attribute outerLongAtt.
 	 */
-	public int getouterLongAtt() {
+	public int getOuterLongAtt() {
 		return this.outerLongAtt;
 	}
 
 	/*
 	 * Method to set the attribute outerLongAtt.
 	 */
-	public void setouterLongAtt(int outerLongAtt) {
+	public void setOuterLongAtt(int outerLongAtt) {
 		this.outerLongAtt = outerLongAtt;
 	}
 
 	/*
 	 * Method to get the attribute midStructAtt.
 	 */
-	public MidStruct getmidStructAtt() {
+	public MidStruct getMidStructAtt() {
 		return this.midStructAtt;
 	}
 
 	/*
 	 * Method to set the attribute midStructAtt.
 	 */
-	public void setmidStructAtt(MidStruct midStructAtt) {
+	public void setMidStructAtt(MidStruct midStructAtt) {
 		this.midStructAtt = midStructAtt;
 	}
 
 	/*
 	 * Method to get the attribute innerStructAtt.
 	 */
-	public InnerStruct getinnerStructAtt() {
+	public InnerStruct getInnerStructAtt() {
 		return this.innerStructAtt;
 	}
 
 	/*
 	 * Method to set the attribute innerStructAtt.
 	 */
-	public void setinnerStructAtt(InnerStruct innerStructAtt) {
+	public void setInnerStructAtt(InnerStruct innerStructAtt) {
 		this.innerStructAtt = innerStructAtt;
 	}
 }

@@ -39,8 +39,8 @@ public class TestServiceTest {
 
         public static MyStruct createMyStruct(int value, String str) {
             MyStruct s = new MyStruct();
-            s.setmyInt(value);
-            s.setmyString(str);
+            s.setMyInt(value);
+            s.setMyString(str);
             List<List<Integer>> array = new ArrayList<>();
             for (int i = 0; i < 10; ++i) {
                 ArrayList<Integer> inner = new ArrayList<>();
@@ -49,27 +49,27 @@ public class TestServiceTest {
                 }
                 array.add(inner);
             }
-            s.setarrayInt(array);
+            s.setArrayInt(array);
 
             List<String> arrayString = new ArrayList<>();
             for (int i = 0; i < 10; ++i) {
                 arrayString.add(str + " " + i);
             }
-            s.setarrayString(arrayString);
+            s.setArrayString(arrayString);
 
             List<Integer> sequenceLong = new ArrayList<>();
             for (int i = 0; i < 8; ++i) {
                 sequenceLong.add(i);
             }
-            s.setsequenceInt(sequenceLong);
+            s.setSequenceInt(sequenceLong);
             return s;
         }
 
         @Override
         public MyStruct return_param_func(MyStruct param1, int param2) {
             System.out.println("Current thread: " + Thread.currentThread().toString());
-            param1.setmyString("return_param_func");
-            param1.setmyInt(param2);
+            param1.setMyString("return_param_func");
+            param1.setMyInt(param2);
             return param1;
         }
 
@@ -209,15 +209,15 @@ public class TestServiceTest {
         MyStruct value = testService.only_return_func();
 
         Assert.assertNotNull(value);
-        Assert.assertEquals(42, value.getmyInt());
-        Assert.assertEquals("only_return_func", value.getmyString());
+        Assert.assertEquals(42, value.getMyInt());
+        Assert.assertEquals("only_return_func", value.getMyString());
         Assert.assertEquals(TestServiceServantImpl.createMyStruct(42, "only_return_func"), value);
 
         for (int i = 0; i < 10; ++i) {
             value = testService.return_param_func(value, i);
             Assert.assertNotNull(value);
-            Assert.assertEquals(i, value.getmyInt());
-            Assert.assertEquals("return_param_func", value.getmyString());
+            Assert.assertEquals(i, value.getMyInt());
+            Assert.assertEquals("return_param_func", value.getMyString());
         }
 
         value = TestServiceServantImpl.createMyStruct(1, "only_param_func");
@@ -242,8 +242,8 @@ public class TestServiceTest {
             }
         });
 
-        Assert.assertEquals(42, value.get().getmyInt());
-        Assert.assertEquals("only_return_func", value.get().getmyString());
+        Assert.assertEquals(42, value.get().getMyInt());
+        Assert.assertEquals("only_return_func", value.get().getMyString());
         Assert.assertEquals(value.get(), TestServiceServantImpl.createMyStruct(42, "only_return_func"));
 
         // Synchronous parallel test
@@ -258,14 +258,14 @@ public class TestServiceTest {
                 public MyStruct call() throws Exception {
                     MyStruct s = testService.return_param_func(value.get(), arg);
                     Assert.assertNotNull(s);
-                    Assert.assertEquals("return_param_func", s.getmyString());
+                    Assert.assertEquals("return_param_func", s.getMyString());
                     return s;
                 }
             });
         }
 
         for (int i = 0; i < result.length; i++) {
-            assertEquals(i, result[i].get().getmyInt());
+            assertEquals(i, result[i].get().getMyInt());
         }
 
         executor.submit(new Runnable() {
@@ -311,8 +311,8 @@ public class TestServiceTest {
             }
         });
 
-        Assert.assertEquals(42, value.get().getmyInt());
-        Assert.assertEquals("only_return_func", value.get().getmyString());
+        Assert.assertEquals(42, value.get().getMyInt());
+        Assert.assertEquals("only_return_func", value.get().getMyString());
         Assert.assertEquals(TestServiceServantImpl.createMyStruct(42, "only_return_func"), value.get());
 
         Future<MyStruct>[] result = new Future[100];
@@ -338,7 +338,7 @@ public class TestServiceTest {
 
         for (int i = 0; i < result.length; i++) {
             Assert.assertNotNull(result[i].get());
-            Assert.assertEquals("return_param_func", result[i].get().getmyString());
+            Assert.assertEquals("return_param_func", result[i].get().getMyString());
         }
 
     }

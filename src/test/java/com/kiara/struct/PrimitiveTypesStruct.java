@@ -244,182 +244,182 @@ public class PrimitiveTypesStruct implements Serializable {
 	/*
 	 * Method to get the attribute myChar.
 	 */
-	public char getmyChar() {
+	public char getMyChar() {
 		return this.myChar;
 	}
 
 	/*
 	 * Method to set the attribute myChar.
 	 */
-	public void setmyChar(char myChar) {
+	public void setMyChar(char myChar) {
 		this.myChar = myChar;
 	}
 
 	/*
 	 * Method to get the attribute myByte.
 	 */
-	public byte getmyByte() {
+	public byte getMyByte() {
 		return this.myByte;
 	}
 
 	/*
 	 * Method to set the attribute myByte.
 	 */
-	public void setmyByte(byte myByte) {
+	public void setMyByte(byte myByte) {
 		this.myByte = myByte;
 	}
 
 	/*
 	 * Method to get the attribute myUShort.
 	 */
-	public short getmyUShort() {
+	public short getMyUShort() {
 		return this.myUShort;
 	}
 
 	/*
 	 * Method to set the attribute myUShort.
 	 */
-	public void setmyUShort(short myUShort) {
+	public void setMyUShort(short myUShort) {
 		this.myUShort = myUShort;
 	}
 
 	/*
 	 * Method to get the attribute myShort.
 	 */
-	public short getmyShort() {
+	public short getMyShort() {
 		return this.myShort;
 	}
 
 	/*
 	 * Method to set the attribute myShort.
 	 */
-	public void setmyShort(short myShort) {
+	public void setMyShort(short myShort) {
 		this.myShort = myShort;
 	}
 
 	/*
 	 * Method to get the attribute myUInt.
 	 */
-	public int getmyUInt() {
+	public int getMyUInt() {
 		return this.myUInt;
 	}
 
 	/*
 	 * Method to set the attribute myUInt.
 	 */
-	public void setmyUInt(int myUInt) {
+	public void setMyUInt(int myUInt) {
 		this.myUInt = myUInt;
 	}
 
 	/*
 	 * Method to get the attribute myInt.
 	 */
-	public int getmyInt() {
+	public int getMyInt() {
 		return this.myInt;
 	}
 
 	/*
 	 * Method to set the attribute myInt.
 	 */
-	public void setmyInt(int myInt) {
+	public void setMyInt(int myInt) {
 		this.myInt = myInt;
 	}
 
 	/*
 	 * Method to get the attribute myULong.
 	 */
-	public long getmyULong() {
+	public long getMyULong() {
 		return this.myULong;
 	}
 
 	/*
 	 * Method to set the attribute myULong.
 	 */
-	public void setmyULong(long myULong) {
+	public void setMyULong(long myULong) {
 		this.myULong = myULong;
 	}
 
 	/*
 	 * Method to get the attribute myLong.
 	 */
-	public long getmyLong() {
+	public long getMyLong() {
 		return this.myLong;
 	}
 
 	/*
 	 * Method to set the attribute myLong.
 	 */
-	public void setmyLong(long myLong) {
+	public void setMyLong(long myLong) {
 		this.myLong = myLong;
 	}
 
 	/*
 	 * Method to get the attribute myFloat.
 	 */
-	public float getmyFloat() {
+	public float getMyFloat() {
 		return this.myFloat;
 	}
 
 	/*
 	 * Method to set the attribute myFloat.
 	 */
-	public void setmyFloat(float myFloat) {
+	public void setMyFloat(float myFloat) {
 		this.myFloat = myFloat;
 	}
 
 	/*
 	 * Method to get the attribute myDouble.
 	 */
-	public double getmyDouble() {
+	public double getMyDouble() {
 		return this.myDouble;
 	}
 
 	/*
 	 * Method to set the attribute myDouble.
 	 */
-	public void setmyDouble(double myDouble) {
+	public void setMyDouble(double myDouble) {
 		this.myDouble = myDouble;
 	}
 
 	/*
 	 * Method to get the attribute myBoolean.
 	 */
-	public boolean getmyBoolean() {
+	public boolean getMyBoolean() {
 		return this.myBoolean;
 	}
 
 	/*
 	 * Method to set the attribute myBoolean.
 	 */
-	public void setmyBoolean(boolean myBoolean) {
+	public void setMyBoolean(boolean myBoolean) {
 		this.myBoolean = myBoolean;
 	}
 
 	/*
 	 * Method to get the attribute myString.
 	 */
-	public java.lang.String getmyString() {
+	public java.lang.String getMyString() {
 		return this.myString;
 	}
 
 	/*
 	 * Method to set the attribute myString.
 	 */
-	public void setmyString(java.lang.String myString) {
+	public void setMyString(java.lang.String myString) {
 		this.myString = myString;
 	}
 
 	/*
 	 * Method to get the attribute myString5.
 	 */
-	public java.lang.String getmyString5() {
+	public java.lang.String getMyString5() {
 		return this.myString5;
 	}
 
 	/*
 	 * Method to set the attribute myString5.
 	 */
-	public void setmyString5(java.lang.String myString5) {
+	public void setMyString5(java.lang.String myString5) {
 		this.myString5 = myString5;
 	}
 }

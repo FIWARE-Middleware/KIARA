@@ -128,28 +128,28 @@ public class MidStruct implements Serializable {
 	/*
 	 * Method to get the attribute midLongAtt.
 	 */
-	public int getmidLongAtt() {
+	public int getMidLongAtt() {
 		return this.midLongAtt;
 	}
 
 	/*
 	 * Method to set the attribute midLongAtt.
 	 */
-	public void setmidLongAtt(int midLongAtt) {
+	public void setMidLongAtt(int midLongAtt) {
 		this.midLongAtt = midLongAtt;
 	}
 
 	/*
 	 * Method to get the attribute innerStructAtt.
 	 */
-	public InnerStruct getinnerStructAtt() {
+	public InnerStruct getInnerStructAtt() {
 		return this.innerStructAtt;
 	}
 
 	/*
 	 * Method to set the attribute innerStructAtt.
 	 */
-	public void setinnerStructAtt(InnerStruct innerStructAtt) {
+	public void setInnerStructAtt(InnerStruct innerStructAtt) {
 		this.innerStructAtt = innerStructAtt;
 	}
 }
