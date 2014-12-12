@@ -59,21 +59,24 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         //TODO Send error.
         ServerTransportImpl serverTransport = (ServerTransportImpl) transport;
         executor = serverTransport.getDispatchingExecutor();
-        servants = new HashMap<String, Servant>();
+        servants = new HashMap<>();
     }
 
     public void addService(Servant servant) {
         servants.put(servant.getServiceName(), servant);
     }
 
+    @Override
     public void onConnectionOpened(TransportImpl connection) {
         connection.addMessageListener(this);
     }
 
+    @Override
     public void onConnectionClosed(TransportImpl connection) {
         connection.removeMessageListener(this);
     }
 
+    @Override
     public boolean onMessage(final TransportMessage message) {
         final ByteBuffer buffer = message.getPayload();
         final TransportImpl transport = message.getTransport();
@@ -94,6 +97,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
             } else {
                 executor.submit(new Runnable() {
 
+                    @Override
                     public void run() {
                         TransportMessage tpmreply = servant.process(serializer, transport, message, messageId);
                         if (tpmreply != null) {
@@ -110,8 +114,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         return true;
     }
 
+    @Override
     public void close() throws IOException {
-        if (executor != null)
-            executor.shutdown();
     }
 }
