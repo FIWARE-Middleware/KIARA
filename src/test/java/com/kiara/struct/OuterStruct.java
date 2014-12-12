@@ -24,7 +24,7 @@
  */
 
 
-package com.kiara.typesupport;
+package com.kiara.struct;
 
 import java.util.List;
 import java.util.ArrayList;

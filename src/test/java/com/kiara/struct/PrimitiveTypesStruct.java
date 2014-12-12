@@ -24,7 +24,7 @@
  */
 
 
-package com.kiara.typesupport;
+package com.kiara.struct;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -69,9 +69,9 @@ public class PrimitiveTypesStruct implements Serializable {
 
 	private boolean myBoolean;
 
-	private java.lang.String myStryng;
+	private java.lang.String myString;
 
-	private java.lang.String myStryng5;
+	private java.lang.String myString5;
 
 
 	/*
@@ -101,9 +101,9 @@ public class PrimitiveTypesStruct implements Serializable {
 
 		this.myBoolean = false;
 
-		this.myStryng = "";
+		this.myString = "";
 
-		this.myStryng5 = "";
+		this.myString5 = "";
 	}
 
 	/*
@@ -135,9 +135,9 @@ public class PrimitiveTypesStruct implements Serializable {
 
 		impl.serializeBoolean(message, name, this.myBoolean);
 
-		impl.serializeString(message, name, this.myStryng);
+		impl.serializeString(message, name, this.myString);
 
-		impl.serializeString(message, name, this.myStryng5);
+		impl.serializeString(message, name, this.myString5);
 	}
 
 	/*
@@ -169,9 +169,9 @@ public class PrimitiveTypesStruct implements Serializable {
 
 			this.myBoolean = impl.deserializeBoolean(message, name);
 
-			this.myStryng = impl.deserializeString(message, name);
+			this.myString = impl.deserializeString(message, name);
 
-			this.myStryng5 = impl.deserializeString(message, name);
+			this.myString5 = impl.deserializeString(message, name);
 	}
 
 	/*
@@ -205,9 +205,9 @@ public class PrimitiveTypesStruct implements Serializable {
 
 			comparison = comparison && (this.myBoolean == ((PrimitiveTypesStruct) other).myBoolean);
 
-			comparison = comparison && (this.myStryng.compareTo(((PrimitiveTypesStruct) other).myStryng) == 0);
+			comparison = comparison && (this.myString.compareTo(((PrimitiveTypesStruct) other).myString) == 0);
 
-			comparison = comparison && (this.myStryng5.compareTo(((PrimitiveTypesStruct) other).myStryng5) == 0);
+			comparison = comparison && (this.myString5.compareTo(((PrimitiveTypesStruct) other).myString5) == 0);
 
 		}
 
@@ -396,30 +396,30 @@ public class PrimitiveTypesStruct implements Serializable {
 	}
 
 	/*
-	 * Method to get the attribute myStryng.
+	 * Method to get the attribute myString.
 	 */
-	public java.lang.String getmyStryng() {
-		return this.myStryng;
+	public java.lang.String getmyString() {
+		return this.myString;
 	}
 
 	/*
-	 * Method to set the attribute myStryng.
+	 * Method to set the attribute myString.
 	 */
-	public void setmyStryng(java.lang.String myStryng) {
-		this.myStryng = myStryng;
+	public void setmyString(java.lang.String myString) {
+		this.myString = myString;
 	}
 
 	/*
-	 * Method to get the attribute myStryng5.
+	 * Method to get the attribute myString5.
 	 */
-	public java.lang.String getmyStryng5() {
-		return this.myStryng5;
+	public java.lang.String getmyString5() {
+		return this.myString5;
 	}
 
 	/*
-	 * Method to set the attribute myStryng5.
+	 * Method to set the attribute myString5.
 	 */
-	public void setmyStryng5(java.lang.String myStryng5) {
-		this.myStryng5 = myStryng5;
+	public void setmyString5(java.lang.String myString5) {
+		this.myString5 = myString5;
 	}
 }

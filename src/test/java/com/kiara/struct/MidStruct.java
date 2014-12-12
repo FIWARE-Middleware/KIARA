@@ -24,7 +24,7 @@
  */
 
 
-package com.kiara.typesupport;
+package com.kiara.struct;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -36,54 +36,59 @@ import com.kiara.serialization.impl.CDRSerializer;
 import com.kiara.transport.impl.TransportMessage;
 
 /**
- * Class definition for the user defined type InnerStruct.
+ * Class definition for the user defined type MidStruct.
  *
  * @author Kiaragen tool.
  *
  */
-public class InnerStruct implements Serializable {
+public class MidStruct implements Serializable {
 
 	/*
 	 *	Attributes
 	 */
 
-	private int innerLongAtt;
+	private int midLongAtt;
 
-	private java.lang.String innerStringAtt;
+	private InnerStruct innerStructAtt;
 
 
 	/*
 	 *	Default constructor
 	 */
-	public InnerStruct() {
+	public MidStruct() {
 
-		this.innerLongAtt = 0;
+		this.midLongAtt = 0;
 
-		this.innerStringAtt = "";
+		this.innerStructAtt = new InnerStruct();
 	}
 
 	/*
-	 * This method serializes a InnerStruct.
+	 * This method serializes a MidStruct.
 	 *
 	 * @see com.kiara.serialization.impl.Serializable#serialize(com.kiara.serialization.impl.SerializerImpl, com.kiara.transport.impl.TransportMessage, java.lang.String)
 	 */
 	public void serialize(SerializerImpl impl, TransportMessage message, String name) {
 
-		impl.serializeI32(message, name, this.innerLongAtt);
+		impl.serializeI32(message, name, this.midLongAtt);
 
-		impl.serializeString(message, name, this.innerStringAtt);
+		impl.serialize(message, name, this.innerStructAtt);
 	}
 
 	/*
-	 * This method deserializes a InnerStruct.
+	 * This method deserializes a MidStruct.
 	 *
 	 * @see com.kiara.serialization.impl.Serializable#deserialize(com.kiara.serialization.impl.SerializerImpl, com.kiara.transport.impl.TransportMessage, java.lang.String)
 	 */
 	public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
 
-			this.innerLongAtt = impl.deserializeI32(message, name);
+			this.midLongAtt = impl.deserializeI32(message, name);
 
-			this.innerStringAtt = impl.deserializeString(message, name);
+		try {
+			this.innerStructAtt = impl.deserialize(message, name, InnerStruct.class);
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/*
@@ -93,11 +98,11 @@ public class InnerStruct implements Serializable {
 	public boolean equals(Object other) {
 		boolean comparison = true;
 
-		if (other instanceof InnerStruct) {
+		if (other instanceof MidStruct) {
 
-			comparison = comparison && (this.innerLongAtt == ((InnerStruct) other).innerLongAtt);
+			comparison = comparison && (this.midLongAtt == ((MidStruct) other).midLongAtt);
 
-			comparison = comparison && (this.innerStringAtt.compareTo(((InnerStruct) other).innerStringAtt) == 0);
+			comparison = comparison && this.innerStructAtt.equals(((MidStruct) other).innerStructAtt);
 
 		}
 
@@ -114,37 +119,37 @@ public class InnerStruct implements Serializable {
 	    int current_align = current_alignment;
 
 	    current_align += 4 + CDRSerializer.alignment(current_align, 4);
-	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 255 + 1;
+	    current_align = InnerStruct.getMaxCdrSerializedSize(current_align);
 
 	    return current_align;
 	}
 
 
 	/*
-	 * Method to get the attribute innerLongAtt.
+	 * Method to get the attribute midLongAtt.
 	 */
-	public int getinnerLongAtt() {
-		return this.innerLongAtt;
+	public int getmidLongAtt() {
+		return this.midLongAtt;
 	}
 
 	/*
-	 * Method to set the attribute innerLongAtt.
+	 * Method to set the attribute midLongAtt.
 	 */
-	public void setinnerLongAtt(int innerLongAtt) {
-		this.innerLongAtt = innerLongAtt;
+	public void setmidLongAtt(int midLongAtt) {
+		this.midLongAtt = midLongAtt;
 	}
 
 	/*
-	 * Method to get the attribute innerStringAtt.
+	 * Method to get the attribute innerStructAtt.
 	 */
-	public java.lang.String getinnerStringAtt() {
-		return this.innerStringAtt;
+	public InnerStruct getinnerStructAtt() {
+		return this.innerStructAtt;
 	}
 
 	/*
-	 * Method to set the attribute innerStringAtt.
+	 * Method to set the attribute innerStructAtt.
 	 */
-	public void setinnerStringAtt(java.lang.String innerStringAtt) {
-		this.innerStringAtt = innerStringAtt;
+	public void setinnerStructAtt(InnerStruct innerStructAtt) {
+		this.innerStructAtt = innerStructAtt;
 	}
 }
