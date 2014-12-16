@@ -41,21 +41,24 @@ Install gpg (or the newer gpg2 release) with your OS package manager or download
 
 Create a Private Key Pair
 ```    
-`$ gpg --gen-key`
+$ gpg --gen-key
 ```
+
 * give default values when asked for type, size, time of validity and confirm the key data.
 * give your full name, email and (optional) comment
 * give a good pass phrase for your private key
 
 You can list all your keys (or secret keys):
-```    
+```
 $ gpg2 --list-keys
 /home/jdoe/.gnupg/pubring.gpg
 ------------------------------
 pub   1024D/C6EED57A 2010-01-13
 uid                  John Doe (FIWARE) <jdoe@fiware.org>
 sub   2048g/D704745C 2010-01-13
-
+```
+or secret keys:
+```
 $ gpg2 --list-secret-keys
 /home/jdoe/.gnupg/secring.gpg
 ------------------------------
@@ -63,14 +66,17 @@ sec   1024D/C6EED57A 2010-01-13
 uid                  John Doe (FIWARE) <jdoe@fiware.org>
 ssb   2048g/D704745C 2010-01-13
 ```
+
 To distribute your public key (make it available for other people) to verify files, it has to be published to a public key-server:
 
+```
 $ gpg2 --keyserver hkp://pool.sks-keyservers.net --send-keys C6EED57A
 ```
 Now other people can import the public key to their key-chain:
 ```
-* gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys C6EED57A
+$ gpg2 --keyserver hkp://pool.sks-keyservers.net --recv-keys C6EED57A
 ```
+
 ### Set up Gradle
 Create the file `~/.gradle/gradle.properties` and add the following settings:
 ```
@@ -121,9 +127,10 @@ Create the file `~/.m2/settins.xml` and add the following settings:
 </settings>
 ```    
 After this you can install the artefacts locally using:
-
-    $ mvn install
-    
+```
+$ mvn install
+```    
 and upload the release artifacts with:
-
-    $ mvn upload -P release
+```
+$ mvn upload -P release
+```
