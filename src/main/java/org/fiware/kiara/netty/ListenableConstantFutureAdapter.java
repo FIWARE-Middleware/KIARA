@@ -29,7 +29,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <V>
  */
 public class ListenableConstantFutureAdapter<V> implements ListenableFuture<V> {

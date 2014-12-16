@@ -19,7 +19,7 @@ package org.fiware.kiara.serialization;
 
 /**
 *
-* @author Rafael Lara <rafaellara@eprosima.com>
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */public interface Serializer {
 
 

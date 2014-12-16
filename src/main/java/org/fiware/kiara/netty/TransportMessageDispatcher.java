@@ -28,7 +28,7 @@ import org.fiware.kiara.transport.impl.TransportMessageListener;
 import java.nio.ByteBuffer;
 
 /**
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class TransportMessageDispatcher extends AbstractFuture<TransportMessage> implements TransportMessageListener {
 

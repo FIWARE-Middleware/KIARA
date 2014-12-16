@@ -18,7 +18,7 @@
 package org.fiware.kiara.test;
 
 /**
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
 public interface TypeFactory<T> {

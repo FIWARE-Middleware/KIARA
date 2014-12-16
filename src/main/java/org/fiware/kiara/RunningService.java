@@ -20,7 +20,7 @@ package org.fiware.kiara;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface RunningService {
     public void shutdownService();

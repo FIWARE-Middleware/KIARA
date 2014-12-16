@@ -22,7 +22,7 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 
 /**
 *
-* @author Rafael Lara <rafaellara@eprosima.com>
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public interface AsyncCallback<T> {
 

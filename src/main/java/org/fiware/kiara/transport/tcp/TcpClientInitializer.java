@@ -34,7 +34,7 @@ import java.nio.ByteOrder;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 class TcpClientInitializer extends ChannelInitializer<SocketChannel> {
     private final SslContext sslCtx;

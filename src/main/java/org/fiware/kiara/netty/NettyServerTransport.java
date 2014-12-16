@@ -26,7 +26,7 @@ import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 
 /**
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class NettyServerTransport implements ServerTransportImpl {
     private final String path;

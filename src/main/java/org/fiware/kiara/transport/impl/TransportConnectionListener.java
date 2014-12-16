@@ -19,7 +19,7 @@ package org.fiware.kiara.transport.impl;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface TransportConnectionListener {
     public void onConnectionOpened(TransportImpl connection);

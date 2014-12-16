@@ -48,7 +48,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class TransportTest {
 

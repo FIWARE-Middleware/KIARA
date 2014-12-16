@@ -23,7 +23,7 @@ import java.net.SocketAddress;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface ServerTransportImpl extends ServerTransport, Closeable {
 

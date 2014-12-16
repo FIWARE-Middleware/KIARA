@@ -35,7 +35,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class ServantDispatcher implements TransportConnectionListener, TransportMessageListener, Closeable {
 
