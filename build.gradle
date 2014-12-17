@@ -91,11 +91,11 @@ extraArchive {
 
 nexus {
     sign = true
-    // To upload to ossrh (Maven Central Repo) comment the following urls
+    // To upload to OSSRH comment/remove the following urls
     repositoryUrl = "file:$buildDir/repos/"
     snapshotRepositoryUrl = "file:$buildDir/repos/"
 }
-// To upload to ossrh (Maven Central Repository)
+// To upload to OSSRH
 // set the following values in your ~/.gradle/gradle.properties file
 //signing.keyId=
 //signing.password=
