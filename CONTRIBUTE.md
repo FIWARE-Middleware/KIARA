@@ -21,7 +21,7 @@ For individual Projects the service is called **OpenSource Software Repository H
     * access -> https://oss.sonatype.org/content/groups/public
 * The public releases are also available in http://search.maven.org
     * Directlink for 'org.fiware.kiara' group id artifacts:
-      -> http://search.maven.org/#search|ga|1|g:"org.fiware.kiara" 
+      -> http://search.maven.org/#search|ga|1|g:org.fiware.kiara 
 
 KIARA is [registered](https://issues.sonatype.org/browse/OSSRH-12836) for the group id `org.fiware.kiara`.
 
@@ -141,7 +141,7 @@ $ mvn install
 ```
 and upload the release artifacts to staging area with:
 ```sh
-$ mvn upload -P release
+$ mvn deploy -P release
 ```
 Depending on the version name it is uploaded as:
 * snapshot release if `version` ends with `-SNAPSHOT`: e.g. `<version>0.1.1-SNAPSHOT</version>'`
