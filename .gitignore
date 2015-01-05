@@ -1,5 +1,34 @@
+# IntelliJ IDEA files
+*.iml
+*.ipr
+*.ids
+*.iws
+.idea/
+
+# Eclipse files
+.project
+.metadata
+local.properties
+.classpath
+.settings/
+.loadpath
+bin/
+
+# Gradle files
+build/
+.gradle/
+
+# Maven files
+target/
+
+# OS dependent files
+.DS_Store
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
 *~
-/target
-/build
-/.gradle
-/bin
+# Thumbnails
+._*
+# Other
+*.md.html
