@@ -75,7 +75,7 @@ modifyPom {
           developer {
             id 'dmrub'
             name 'Dmitri Rubinstein'
-            email 'mach@zhaw.ch'
+            email 'Dmitri.Rubinstein@dfki.de'
           }
           developer {
             id 'mach'
