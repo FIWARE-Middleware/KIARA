@@ -95,13 +95,7 @@ extraArchive {
 nexus {
     sign = true
     // To upload to OSSRH comment/remove the following urls
-    repositoryUrl = "file:$buildDir/repos/"
-    snapshotRepositoryUrl = "file:$buildDir/repos/"
+    //repositoryUrl = "file:$buildDir/repos/"
+    //snapshotRepositoryUrl = "file:$buildDir/repos/"
 }
-// To upload to OSSRH
-// set the following values in your ~/.gradle/gradle.properties file
-//signing.keyId=
-//signing.password=
-//signing.secretKeyRingFile=
-//nexusUsername=
-//nexusPassword=
+
