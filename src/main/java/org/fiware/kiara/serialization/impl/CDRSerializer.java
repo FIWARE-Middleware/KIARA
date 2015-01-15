@@ -43,8 +43,8 @@ public class CDRSerializer implements SerializerImpl {
         return (dataSize - (current_alignment % dataSize)) & (dataSize-1);
     }
 
-    private <T> int calculatePadding(TransportMessage message, T type) {
-        int pos = message.getPayload().position();
+    private <T> int calculatePadding(int position, T type) {
+        int pos = position;
         int align = 0;
 
         if (type instanceof Short) {
@@ -81,61 +81,28 @@ public class CDRSerializer implements SerializerImpl {
 
         return 0;
     }
-    
+
+    private <T> int calculatePadding(TransportMessage message, T type) {
+        return calculatePadding(message.getPayload().position(), type);
+    }
+
     private <T> int calculatePadding(ByteBuffer buffer, T type) {
-        int pos = buffer.position();
-        int align = 0;
-
-        if (type instanceof Short) {
-            align = pos % (Short.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Short.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Integer) {
-            align = pos % (Integer.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Integer.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Long) {
-            align = pos % (Long.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Long.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Float) {
-            align = pos % (Float.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Float.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Double) {
-            align = pos % (Double.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Double.SIZE / 8) - align;
-                return padding_len;
-            }
-        }
-
-        return 0;
+        return calculatePadding(buffer.position(), type);
     }
 
     private void writePadding(TransportMessage message, int padding_len) {
-        byte[] padding = new byte[padding_len];
-        message.getPayload().put(padding);
+        writePadding(message.getPayload(), padding_len);
     }
-    
+
     private void writePadding(ByteBuffer buffer, int padding_len) {
         byte[] padding = new byte[padding_len];
         buffer.put(padding);
     }
 
     private void jumpPadding(TransportMessage message, int padding_len) {
-        int pos = message.getPayload().position();
-        message.getPayload().position(pos+padding_len);
+        jumpPadding(message.getPayload(), padding_len);
     }
-    
+
     private void jumpPadding(ByteBuffer buffer, int padding_len) {
         int pos = buffer.position();
         buffer.position(pos+padding_len);
