@@ -28,7 +28,7 @@ package org.fiware.kiara.complextypes;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
+import java.io.IOException;
 
 import org.fiware.kiara.netty.TransportMessageDispatcher;
 import org.fiware.kiara.serialization.Serializer;
@@ -36,7 +36,8 @@ import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
-import java.nio.ByteBuffer;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 /**
  * Class containing the proxy implementation for all the services. 
@@ -118,19 +119,23 @@ class TestServiceProxy implements TestServiceClient {
 		return op_size;
 	}
 	
+    @Override
 	public MyStruct return_param_func(/*in*/ MyStruct param1, /*in*/ int param2) {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(return_param_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(return_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
-	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "return_param_func");
-			m_ser.serialize(trequest, "", param1);
-			m_ser.serializeI32(trequest, "", param2);
-			trequest.getPayload().flip();
+	        final Object messageId = m_ser.getNewMessageId();
+            try { 
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "return_param_func");
+			    m_ser.serialize(bos, "", param1);
+			    m_ser.serializeI32(bos, "", param2);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
 			
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
@@ -138,41 +143,46 @@ class TestServiceProxy implements TestServiceClient {
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
-	        		
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
+
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
-						MyStruct ret = m_ser.deserialize(tresponse, ""	, MyStruct.class);
+						MyStruct ret = m_ser.deserialize(bis, ""	, MyStruct.class);
 						return ret;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return null;
 	}
 
+    @Override
 	public void only_param_func(/*in*/ MyStruct param1) {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(only_param_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(only_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
-	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "only_param_func");
-			m_ser.serialize(trequest, "", param1);
-			trequest.getPayload().flip();
+	        final Object messageId = m_ser.getNewMessageId();
+
+            try { 
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "only_param_func");
+			    m_ser.serialize(bos, "", param1);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
 			
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
@@ -180,221 +190,238 @@ class TestServiceProxy implements TestServiceClient {
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
 	        		
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
 						return;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return;
 	}
 
+    @Override
 	public MyStruct only_return_func() {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(only_return_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(only_return_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "only_return_func");
-			trequest.getPayload().flip();
-			
+            try {
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "only_return_func");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
+
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
 	        
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
 	        		
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
-						MyStruct ret = m_ser.deserialize(tresponse, ""	, MyStruct.class);
+						MyStruct ret = m_ser.deserialize(bis, ""	, MyStruct.class);
 						return ret;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return null;
 	}
 
+    @Override
 	public void oneway_return_param_func(/*in*/ MyStruct param1, /*in*/ int param2) {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(oneway_return_param_func_required_size());
-			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
-	        
-	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "oneway_return_param_func");
-			m_ser.serialize(trequest, "", param1);
-			m_ser.serializeI32(trequest, "", param2);
-			trequest.getPayload().flip();
-			
+            final BinaryOutputStream bos = new BinaryOutputStream(oneway_return_param_func_required_size());
+            final TransportMessage trequest = m_transport.createTransportMessage(null);
+
+	        final Object messageId = m_ser.getNewMessageId();
+            try {
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "oneway_return_param_func");
+			    m_ser.serialize(bos, "", param1);
+			    m_ser.serializeI32(bos, "", param2);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
+
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
 	        
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
 	        		
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+                    final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
 						return;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return;
 	}
 
+    @Override
 	public void oneway_only_param_func(/*in*/ MyStruct param1) {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(oneway_only_param_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(oneway_only_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "oneway_only_param_func");
-			m_ser.serialize(trequest, "", param1);
-			trequest.getPayload().flip();
-			
+            try {
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "oneway_only_param_func");
+			    m_ser.serialize(bos, "", param1);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
+
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
 	        
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
-	        		
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
+
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
 						return;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return;
 	}
 
+    @Override
 	public void oneway_only_return_func() {	
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(oneway_only_return_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(oneway_only_return_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "oneway_only_return_func");
-			trequest.getPayload().flip();
-			
+            try {
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "oneway_only_return_func");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
+
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
 	        m_transport.send(trequest);
 	        
 	        try {
 	        	TransportMessage tresponse = dispatcher.get();
 	        	if (tresponse != null && tresponse.getPayload() != null) {
-	                final ByteBuffer buf = tresponse.getPayload();
-	        		buf.rewind();
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
 	        		
 	        		// Deserialize response message ID
-	        		final Object responseMessageId = m_ser.deserializeMessageId(buf);
+	        		final Object responseMessageId = m_ser.deserializeMessageId(bis);
 	        		
 	        		// Deserialize return code (0 = OK, anything else = WRONG)
-	        		int retCode = m_ser.deserializeUI32(tresponse, "");
+	        		int retCode = m_ser.deserializeUI32(bis, "");
 	        		if (retCode == 0) { // Function execution was OK.
 						return;
 		            }
-					
+
 				}
-	        } catch (Exception ex) {
+	        }
+	        catch (Exception ex) {
 	            throw new RuntimeException(ex);
 	        }
-			
+
 		}
 		
 		return;
 	}
 
 	
+    @Override
 	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, final return_param_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(return_param_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(return_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "return_param_func");
-			m_ser.serialize(trequest, "", param1);
-			m_ser.serializeI32(trequest, "", param2);
-			
-			trequest.getPayload().flip();
-			
+            try {
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "return_param_func");
+			    m_ser.serialize(bos, "", param1);
+			    m_ser.serializeI32(bos, "", param2);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
+
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
-					
-			
+
 			Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
 
+                @Override
 				public void onSuccess(TransportMessage result) {
-					final ByteBuffer buf = result.getPayload();
-	        		buf.rewind();
-	        		
 					callback.process(result, m_ser);
 				}
 
+                @Override
 				public void onFailure(Throwable t) {
 					callback.onFailure(t);
 				}
@@ -408,33 +435,35 @@ class TestServiceProxy implements TestServiceClient {
 		return;
 	}
 
+    @Override
 	public void only_param_func(/*in*/ MyStruct param1, final only_param_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(only_param_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(only_param_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
-	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "only_param_func");
-			m_ser.serialize(trequest, "", param1);
-			
-			trequest.getPayload().flip();
+	        final Object messageId = m_ser.getNewMessageId();
+            try { 
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "only_param_func");
+			    m_ser.serialize(bos, "", param1);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
 			
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
-					
 			
 			Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
 
+                @Override
 				public void onSuccess(TransportMessage result) {
-					final ByteBuffer buf = result.getPayload();
-	        		buf.rewind();
 	        		
 					callback.process(result, m_ser);
 				}
 
+                @Override
 				public void onFailure(Throwable t) {
 					callback.onFailure(t);
 				}
@@ -448,32 +477,33 @@ class TestServiceProxy implements TestServiceClient {
 		return;
 	}
 
+    @Override
 	public void only_return_func(final only_return_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-			ByteBuffer buffer = ByteBuffer.allocate(only_return_func_required_size());
+            final BinaryOutputStream bos = new BinaryOutputStream(only_return_func_required_size());
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
-	        trequest.setPayload(buffer);
 	        
-	        final Object messageId = m_ser.getNewMessageId(); 
-	        m_ser.serializeMessageId(trequest, messageId);   
-			m_ser.serializeService(trequest, "TestService");
-			m_ser.serializeOperation(trequest, "only_return_func");
-			
-			trequest.getPayload().flip();
+	        final Object messageId = m_ser.getNewMessageId();
+            try { 
+	            m_ser.serializeMessageId(bos, messageId);   
+			    m_ser.serializeService(bos, "TestService");
+			    m_ser.serializeOperation(bos, "only_return_func");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            trequest.setPayload(bos.getByteBuffer());
 			
 			final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, m_ser, m_transport);
-					
-			
+
 			Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
 
+                @Override
 				public void onSuccess(TransportMessage result) {
-					final ByteBuffer buf = result.getPayload();
-	        		buf.rewind();
-	        		
 					callback.process(result, m_ser);
 				}
 
+                @Override
 				public void onFailure(Throwable t) {
 					callback.onFailure(t);
 				}

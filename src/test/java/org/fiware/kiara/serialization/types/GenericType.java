@@ -1,8 +1,10 @@
 package org.fiware.kiara.serialization.types;
 
+import java.io.IOException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.transport.impl.TransportMessage;
 
 public class GenericType implements Serializable {
 
@@ -19,14 +21,16 @@ public class GenericType implements Serializable {
         this.myString = myString;
     }
 
-    public void serialize(SerializerImpl impl, TransportMessage message, String name) {
-        impl.serializeI32(message, name, this.myInt);
-        impl.serializeString(message, name, this.myString);
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream bos, String name) throws IOException {
+        impl.serializeI32(bos, name, this.myInt);
+        impl.serializeString(bos, name, this.myString);
     }
 
-    public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
-        this.myInt = impl.deserializeI32(message, name);
-        this.myString = impl.deserializeString(message, name);
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream bis, String name) throws IOException {
+        this.myInt = impl.deserializeI32(bis, name);
+        this.myString = impl.deserializeString(bis, name);
     }
 
     @Override

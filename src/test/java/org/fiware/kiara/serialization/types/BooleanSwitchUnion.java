@@ -26,6 +26,7 @@
  
 package org.fiware.kiara.serialization.types;
 
+import java.io.IOException;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
@@ -34,6 +35,8 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 public class BooleanSwitchUnion implements Serializable {
        
@@ -55,7 +58,7 @@ public class BooleanSwitchUnion implements Serializable {
        /*
         * @param other An object instance of Object
         */
-        @Override
+       @Override
        public boolean equals(Object other) {
                boolean comparison = true;
                
@@ -81,9 +84,10 @@ public class BooleanSwitchUnion implements Serializable {
        /*
         * This method serializes a BooleanSwitchUnion.
         *
-        * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
+	    * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryOutputStream, java.lang.String)
         */
-       public void serialize(SerializerImpl impl, TransportMessage message, String name) {
+        @Override
+        public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
                impl.serializeBoolean(message, name, this.m_d);
                Boolean bool_disc = this.m_d;
                switch(bool_disc.toString()) {
@@ -99,9 +103,10 @@ public class BooleanSwitchUnion implements Serializable {
        /*
         * This method deserializes a BooleanSwitchUnion.
         *
-        * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
+	    * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryInputStream, java.lang.String)
         */
-       public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
+        @Override
+        public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
                this.m_d = impl.deserializeBoolean(message, name);
                Boolean bool_disc = this.m_d;
                switch(bool_disc.toString()) {
@@ -112,7 +117,7 @@ public class BooleanSwitchUnion implements Serializable {
                                this.stringVal = impl.deserializeString(message, name);
                                break;
                }
-       }
+        }
 
        
        /*

@@ -21,6 +21,7 @@ package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 
 /**
  * Very similar to the java.io.ByteArrayOutputStream but this version is not
@@ -50,6 +51,10 @@ public class BinaryOutputStream extends OutputStream {
 
     public int getBufferLength() {
         return size;
+    }
+
+    public ByteBuffer getByteBuffer() {
+        return ByteBuffer.wrap(getBuffer(), getBufferOffset(), getBufferLength());
     }
 
     public void setBuffer(byte[] buffer) {
@@ -172,7 +177,7 @@ public class BinaryOutputStream extends OutputStream {
     public void writeDouble(double v) throws IOException {
         writeLong(Double.doubleToLongBits(v));
     }
-    
+
     public void writeDoubleLE(double v) throws IOException {
         writeLongLE(Double.doubleToLongBits(v));
     }

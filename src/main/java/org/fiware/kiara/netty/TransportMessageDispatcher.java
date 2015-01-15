@@ -18,14 +18,13 @@
 package org.fiware.kiara.netty;
 
 import com.google.common.util.concurrent.AbstractFuture;
-import org.fiware.kiara.serialization.Serializer;
+import java.io.IOException;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportImpl;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.transport.impl.TransportMessageListener;
 
-import java.nio.ByteBuffer;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 
 /**
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
@@ -49,8 +48,12 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
 
     @Override
     public boolean onMessage(TransportMessage message) {
-        message.getPayload().rewind();
-        final Object responseId = ser.deserializeMessageId(message);
+        final Object responseId;
+        try {
+            responseId = ser.deserializeMessageId(BinaryInputStream.fromByteBuffer(message.getPayload()));
+        } catch (IOException ex) {
+            return false;
+        }
 
         if (!ser.equalMessageIds(messageId, responseId)) {
             return false;

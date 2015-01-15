@@ -7,6 +7,8 @@ import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 import org.junit.After;
 import org.junit.Before;
@@ -42,20 +44,20 @@ public class CDRSequenceTest {
     /*
      * CharSequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceCharTest() {
         ArrayList<Character> in = new ArrayList<Character>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add('A');
         }
 
         List<Character> out = null;
-        
+
         try {
-            ser.serializeSequenceChar(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceChar(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceChar(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceChar(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -64,24 +66,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceCharTest() {
         List<ArrayList<Character>> in = new ArrayList<ArrayList<Character>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Character> inner = new ArrayList<Character>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add('A');
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceChar(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceChar(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceChar(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceChar(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -90,24 +93,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * ByteSequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceByteTest() {
         ArrayList<Byte> in = new ArrayList<Byte>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((byte) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceByte(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceByte(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceByte(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceByte(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -116,24 +119,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceByteTest() {
         List<ArrayList<Byte>> in = new ArrayList<ArrayList<Byte>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Byte> inner = new ArrayList<Byte>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((byte) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceByte(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceByte(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceByte(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceByte(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -142,24 +146,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * I16SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceI16Test() {
         ArrayList<Short> in = new ArrayList<Short>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((short) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI16(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI16(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -168,24 +172,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceI16Test() {
         List<ArrayList<Short>> in = new ArrayList<ArrayList<Short>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Short> inner = new ArrayList<Short>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((short) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI16(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI16(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -194,24 +199,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * UI16SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceUI16Test() {
         ArrayList<Short> in = new ArrayList<Short>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((short) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI16(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI16(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -220,24 +225,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceUI16Test() {
         List<ArrayList<Short>> in = new ArrayList<ArrayList<Short>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Short> inner = new ArrayList<Short>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((short) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI16(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI16(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -246,24 +252,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * I32SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceI32Test() {
         ArrayList<Integer> in = new ArrayList<Integer>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((int) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI32(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -272,24 +278,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceI32Test() {
         List<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Integer> inner = new ArrayList<Integer>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((int) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI32(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI32(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -298,24 +305,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * UI32SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceUI32Test() {
         ArrayList<Integer> in = new ArrayList<Integer>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((int) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI32(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -324,24 +331,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceUI32Test() {
         List<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Integer> inner = new ArrayList<Integer>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((int) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI32(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI32(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -350,24 +358,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * I64SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceI64Test() {
         ArrayList<Long> in = new ArrayList<Long>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((long) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI64(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -376,24 +384,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceI64Test() {
         List<ArrayList<Long>> in = new ArrayList<ArrayList<Long>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Long> inner = new ArrayList<Long>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((long) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceI64(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceI64(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -402,24 +411,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * UI32SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceUI64Test() {
         ArrayList<Long> in = new ArrayList<Long>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((long) 5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI64(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -428,24 +437,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceUI64Test() {
         List<ArrayList<Long>> in = new ArrayList<ArrayList<Long>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Long> inner = new ArrayList<Long>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((long) 5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceUI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceUI64(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceUI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceUI64(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -454,24 +464,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * Float32SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceFloat32Test() {
         ArrayList<Float> in = new ArrayList<Float>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((float) 5.5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceFloat32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceFloat32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceFloat32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceFloat32(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -480,24 +490,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceFloat32Test() {
         List<ArrayList<Float>> in = new ArrayList<ArrayList<Float>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Float> inner = new ArrayList<Float>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((float) 5.5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceFloat32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceFloat32(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceFloat32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceFloat32(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -506,24 +517,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * Float64SequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceFloat64Test() {
         ArrayList<Double> in = new ArrayList<Double>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((double) 5.5);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceFloat64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceFloat64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceFloat64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceFloat64(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -532,24 +543,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceFloat64Test() {
         List<ArrayList<Double>> in = new ArrayList<ArrayList<Double>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Double> inner = new ArrayList<Double>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((double) 5.5);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceFloat64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceFloat64(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceFloat64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceFloat64(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -558,16 +570,15 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * BooleanSequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceBooleanTest() {
         ArrayList<Boolean> in = new ArrayList<Boolean>(1);
-        for(int i=0; i < 10; ++i) {
-            if (i%2 == 0) {
+        for (int i = 0; i < 10; ++i) {
+            if (i % 2 == 0) {
                 in.add((boolean) true);
             } else {
                 in.add((boolean) false);
@@ -575,11 +586,12 @@ public class CDRSequenceTest {
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceBoolean(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceBoolean(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceBoolean(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceBoolean(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -588,14 +600,14 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceBooleanTest() {
         List<ArrayList<Boolean>> in = new ArrayList<ArrayList<Boolean>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<Boolean> inner = new ArrayList<Boolean>(5);
-            for (int j=0; j < 5; ++j) {
-                if (i%2 == 0) {
+            for (int j = 0; j < 5; ++j) {
+                if (i % 2 == 0) {
                     inner.add((boolean) true);
                 } else {
                     inner.add((boolean) false);
@@ -605,11 +617,12 @@ public class CDRSequenceTest {
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceBoolean(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceBoolean(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceBoolean(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceBoolean(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -618,24 +631,24 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * StringSequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceStringTest() {
         ArrayList<String> in = new ArrayList<String>(1);
-        for(int i=0; i < 10; ++i) {
+        for (int i = 0; i < 10; ++i) {
             in.add((String) "Hello World " + i);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceString(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceString(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceString(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceString(bis, "", 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -644,24 +657,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceStringTest() {
         List<ArrayList<String>> in = new ArrayList<ArrayList<String>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<String> inner = new ArrayList<String>(5);
-            for (int j=0; j < 5; ++j) {
+            for (int j = 0; j < 5; ++j) {
                 inner.add((String) "Hello World " + j);
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequenceString(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequenceString(message, "", 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequenceString(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequenceString(bis, "", 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -670,7 +684,7 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     /*
      * EnumSequenceTest
      */
@@ -685,9 +699,10 @@ public class CDRSequenceTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", GenericEnumeration.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", GenericEnumeration.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -719,9 +734,10 @@ public class CDRSequenceTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", GenericEnumeration.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", GenericEnumeration.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -734,20 +750,20 @@ public class CDRSequenceTest {
     /*
      * StringSequenceTest
      */
-
     @Test
     public <T> void deserializeSequenceTest() {
         ArrayList<GenericType> in = new ArrayList<GenericType>(1);
-        for(int i=0; i < 10; ++i) {
-            in.add(new GenericType(i, "Hello World "+i));
+        for (int i = 0; i < 10; ++i) {
+            in.add(new GenericType(i, "Hello World " + i));
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", GenericType.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", GenericType.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -756,24 +772,25 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
+
     @Test
     public <T> void deserializeMultiDimSequenceTest() {
         List<ArrayList<GenericType>> in = new ArrayList<ArrayList<GenericType>>(3);
-        for(int i=0; i < 3; ++i) {
+        for (int i = 0; i < 3; ++i) {
             ArrayList<GenericType> inner = new ArrayList<GenericType>(5);
-            for (int j=0; j < 5; ++j) {
-                inner.add(new GenericType(j, "Hello World "+j));
+            for (int j = 0; j < 5; ++j) {
+                inner.add(new GenericType(j, "Hello World " + j));
             }
             in.add(inner);
         }
 
         List<T> out = null;
-        
+
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", GenericType.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", GenericType.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -782,6 +799,5 @@ public class CDRSequenceTest {
 
         reset();
     }
-    
-    
+
 }

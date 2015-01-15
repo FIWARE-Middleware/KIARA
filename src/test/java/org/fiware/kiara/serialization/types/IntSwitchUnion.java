@@ -26,6 +26,7 @@
  
 package org.fiware.kiara.serialization.types;
 
+import java.io.IOException;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
@@ -34,6 +35,8 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 public class IntSwitchUnion implements Serializable {
 	
@@ -87,9 +90,10 @@ public class IntSwitchUnion implements Serializable {
 	/*
 	 * This method serializes a IntSwitchUnion.
 	 *
-	 * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
+	 * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryOutputStream, java.lang.String)
 	 */
-	public void serialize(SerializerImpl impl, TransportMessage message, String name) {
+        @Override
+	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
 	        impl.serializeI32(message, name, this.m_d);
 	        switch(this.m_d) {
 			case 0:
@@ -108,10 +112,11 @@ public class IntSwitchUnion implements Serializable {
 	/*
 	 * This method deserializes a IntSwitchUnion.
 	 *
-	 * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
+	 * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryInputStream, java.lang.String)
 	 */
-	public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
-	        this.m_d = impl.deserializeI32(message, name);
+        @Override
+        public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+                this.m_d = impl.deserializeI32(message, name);
 	        switch(this.m_d) {
 			case 0:
 			case 1:
