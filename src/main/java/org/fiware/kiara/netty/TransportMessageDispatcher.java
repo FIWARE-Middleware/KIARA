@@ -48,11 +48,15 @@ public class TransportMessageDispatcher extends AbstractFuture<TransportMessage>
 
     @Override
     public boolean onMessage(TransportMessage message) {
-        final Object responseId;
-        try {
-            responseId = ser.deserializeMessageId(BinaryInputStream.fromByteBuffer(message.getPayload()));
-        } catch (IOException ex) {
-            return false;
+        Object responseId = message.getMessageId();
+        if (responseId == null) {
+            try {
+                responseId = ser.deserializeMessageId(BinaryInputStream.fromByteBuffer(message.getPayload()));
+            } catch (IOException ex) {
+                return false;
+            }
+            if (responseId != null)
+                message.setMessageId(responseId);
         }
 
         if (!ser.equalMessageIds(messageId, responseId)) {

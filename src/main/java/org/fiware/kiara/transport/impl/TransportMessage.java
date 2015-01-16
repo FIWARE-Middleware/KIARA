@@ -26,6 +26,10 @@ import java.nio.ByteBuffer;
  */
 public abstract class TransportMessage {
 
+    public static final class Names {
+        public static final String MESSAGE_ID = "message-id";
+    }
+
     private final TransportImpl transport;
     private ByteBuffer payload;
 
@@ -61,6 +65,14 @@ public abstract class TransportMessage {
         if (payload == null)
             return 0;
         return payload.remaining();
+    }
+
+    public Object getMessageId() {
+        return get(Names.MESSAGE_ID);
+    }
+
+    public TransportMessage setMessageId(Object messageId) {
+        return set(Names.MESSAGE_ID, messageId);
     }
 
     public abstract TransportMessage set(String name, Object value);
