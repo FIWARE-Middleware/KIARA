@@ -554,5 +554,85 @@ public class CDRSerializerTest {
 
         reset();
     }
+    
+    /*
+     * Enumeration types
+     */
+    
+    @Test
+    public void serializeEnumTest() {
+        GenericEnumeration in = GenericEnumeration.second_val;
+
+        try {
+            ser.serializeEnum(message, "", in);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(true);
+
+        reset();
+    }
+
+    @Test
+    public void deserializeEnumTest() {
+        GenericEnumeration in= GenericEnumeration.second_val;
+        GenericEnumeration out = null;
+
+        try {
+            ser.serializeEnum(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserializeEnum(message, "", GenericEnumeration.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        assertTrue(in.equals(out));
+
+        reset();
+    }
+    
+    /*
+     * Enumeration types
+     */
+    
+    @Test
+    public void serializeUnionTest() {
+        GenericUnion in = new GenericUnion();
+        in._d(3);
+        in.setAtt3("New Value");
+
+        try {
+            ser.serialize(message, "", in);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(true);
+
+        reset();
+    }
+
+    @Test
+    public void deserializeUnionTest() {
+        GenericUnion in = new GenericUnion();
+        in._d(2);
+        in.setAtt2((float) 3.5); 
+        GenericUnion out = null;
+
+        try {
+            ser.serialize(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserialize(message, "", GenericUnion.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        assertTrue(in.equals(out));
+
+        reset();
+    }
 
 }
