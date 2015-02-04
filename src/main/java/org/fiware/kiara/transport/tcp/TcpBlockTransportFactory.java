@@ -19,21 +19,25 @@ package org.fiware.kiara.transport.tcp;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+
 import org.fiware.kiara.transport.Transport;
-import org.fiware.kiara.transport.impl.InvalidAddressException;
+import org.fiware.kiara.exceptions.impl.InvalidAddressException;
 import org.fiware.kiara.netty.NettyTransportFactory;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
 import org.fiware.kiara.transport.impl.TransportImpl;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
 import java.util.Map;
+
 import javax.net.ssl.SSLException;
 
 /**

@@ -15,26 +15,27 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.transport.impl;
+package org.fiware.kiara.exceptions;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class InvalidAddressException extends Exception {
+public class RemoteException extends Exception {
 
-    public InvalidAddressException() {
+    public RemoteException() {
     }
 
-    public InvalidAddressException(String message) {
+    public RemoteException(String message) {
         super(message);
     }
 
-    public InvalidAddressException(String message, Throwable cause) {
+    public RemoteException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidAddressException(Throwable cause) {
+    public RemoteException(Throwable cause) {
         super(cause);
     }
+
 }

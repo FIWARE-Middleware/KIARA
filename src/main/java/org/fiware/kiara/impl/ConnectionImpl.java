@@ -1,20 +1,29 @@
 package org.fiware.kiara.impl;
 
 import org.fiware.kiara.client.Connection;
+import org.fiware.kiara.exceptions.ConnectException;
+import org.fiware.kiara.exceptions.impl.InvalidAddressException;
 import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.transport.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.concurrent.ExecutionException;
 
 public class ConnectionImpl implements Connection {
-    private final Transport transport;
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionImpl.class);
     private final Serializer serializer;
-
+    private final Transport transport;
     public ConnectionImpl(Transport transport, Serializer serializer) {
         super();
         this.transport = transport;
         this.serializer = serializer;
     }
-
+    
     public Transport getTransport() {
         return transport;
     }
