@@ -927,6 +927,10 @@ public class CDRSerializer implements SerializerImpl {
             for (int i=0; i < len; ++i) {
                 this.serialize(message, name, (Serializable) array.get(i));
             }
+        } else if(array.get(0) instanceof Enum) {
+            for (int i=0; i < len; ++i) {
+                this.serializeEnum(message, name, (Enum) array.get(i));
+            }
         }
     }
     
@@ -944,9 +948,17 @@ public class CDRSerializer implements SerializerImpl {
         } else {
             T object;
             for (int i=0; i < len; ++i) {
-                object = example.newInstance();
-                ((Serializable) object).deserialize(this, message, name);
-                array.add((M) object);
+                if (example.isEnum()) {
+                    Enum enumObject = null;
+                    Class<? extends Enum> enumClass = (Class<? extends Enum>) example;
+                    enumObject = this.deserializeEnum(message, name, enumClass);
+                    array.add((M) enumObject);
+
+                } else {
+                    object = example.newInstance();
+                    ((Serializable) object).deserialize(this, message, name);
+                    array.add((M) object);
+                }
             }
         }
         
@@ -1544,7 +1556,7 @@ public class CDRSerializer implements SerializerImpl {
         return (E) ret;
     }
 
-    @SuppressWarnings("unchecked")
+    /*@SuppressWarnings("unchecked")
     @Override
     public <E extends Enum> void serializeArrayEnum(TransportMessage message, String name, List<E> array, int... dims) {
         int len = dims[0];
@@ -1563,17 +1575,17 @@ public class CDRSerializer implements SerializerImpl {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <E extends Enum> List<E> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims) {
+    public <E, M> List<M> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims) {
         int len = dims[0];
-        ArrayList<E> array = new ArrayList<E>(len);
+        ArrayList<M> array = new ArrayList<M>(len);
         
         if (dims.length > 1) {
             for (int i=0; i < len; ++i) {
-                array.add((E) this.deserializeArrayEnum(message, name, example, trimDimensions(dims)));
+                array.add((M) this.deserializeArrayEnum(message, name, example, trimDimensions(dims)));
             }
         } else {
             for (int i=0; i < len; ++i) {
-                array.add((E) this.deserializeEnum(message, name, example));
+                array.add((Enum) this.deserializeEnum(message, name, example));
             }
         }
         
@@ -1599,22 +1611,22 @@ public class CDRSerializer implements SerializerImpl {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <E extends Enum> List<E> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth) {
+    public <E, M> List<M> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth) {
         int length = this.deserializeI32(message, "");
         
-        ArrayList<E> array = new ArrayList<E>(length);
+        ArrayList<M> array = new ArrayList<M>(length);
         
         if (depth != 1) {
             for (int i=0; i < length; ++i) {
-                array.add((E) this.deserializeSequenceEnum(message, name, example, depth-1));
+                array.add((M) this.deserializeSequenceEnum(message, name, example, depth-1));
             }
         } else if (depth == 1) {
             for (int i=0; i < length; ++i) {
-                array.add((E) this.deserializeEnum(message, name, example));
+                array.add((M) this.deserializeEnum(message, name, example));
             }
         }
         
         return array;
-    }
+    }*/
 
 }
