@@ -305,8 +305,22 @@ public interface SerializerImpl extends Serializer {
 
     public void deserializeUnionEnd(TransportMessage message, String name);
 
+    
+    /*
+     * Enum types
+     */
 
-
+    public <E extends Enum> void serializeEnum(TransportMessage message, String name, E value);
+    
+    public <E extends Enum> E deserializeEnum(TransportMessage message,String name, Class<E> example);
+    
+    public <E extends Enum> void serializeArrayEnum(TransportMessage message, String name, List<E> array, int... dims);
+    
+    public <E extends Enum> List<E> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims);
+    
+    public <E extends Enum> void serializeSequenceEnum(TransportMessage message, String name, List<E> sequence);
+    
+    public <E extends Enum> List<E> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth);
 
 
 }
