@@ -1528,10 +1528,93 @@ public class CDRSerializer implements SerializerImpl {
     public void deserializeUnionEnd(TransportMessage message, String name) {
         // Do nothing
     }
-
     
+    /*
+     * Enumerations types
+     */
+    
+    @Override
+    public <E extends Enum> void serializeEnum(TransportMessage message, String name, E value) {
+        this.serializeUI32(message, name, value.ordinal());
+    }
+    
+    @Override
+    public <E extends Enum> E deserializeEnum(TransportMessage message,String name, Class<E> example) {
+        Enum ret = example.getEnumConstants()[this.deserializeUI32(message, name)];
+        return (E) ret;
+    }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> void serializeArrayEnum(TransportMessage message, String name, List<E> array, int... dims) {
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<E> inner_array = (List<E>) array.get(i);
+                this.serializeArrayEnum(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Enum) {
+            for (int i=0; i < len; ++i) {
+                this.serializeEnum(message, name, (E) array.get(i));
+            }
+        }
+    }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> List<E> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims) {
+        int len = dims[0];
+        ArrayList<E> array = new ArrayList<E>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((E) this.deserializeArrayEnum(message, name, example, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((E) this.deserializeEnum(message, name, example));
+            }
+        }
+        
+        return array;
+    }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> void serializeSequenceEnum(TransportMessage message, String name, List<E> sequence) {
+        if (sequence.size() > 0) {
+            this.serializeI32(message, "", ((List<?>) sequence).size());
+            if (sequence.get(0) instanceof List) {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeSequenceEnum(message, name, (List<E>) sequence.get(i));
+                }
+            } else {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeEnum(message, name, (E) sequence.get(i));
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> List<E> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        ArrayList<E> array = new ArrayList<E>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((E) this.deserializeSequenceEnum(message, name, example, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((E) this.deserializeEnum(message, name, example));
+            }
+        }
+        
+        return array;
+    }
 
 }
