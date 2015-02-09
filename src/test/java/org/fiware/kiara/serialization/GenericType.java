@@ -39,6 +39,11 @@ public class GenericType implements Serializable {
 
         return false;
     }
+    
+    @Override
+    public int hashCode() {
+        return myInt;
+    }
 
     public String getClassName() {
         return "GenericType";

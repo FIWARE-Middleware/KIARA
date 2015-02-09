@@ -19,7 +19,10 @@ package org.fiware.kiara.serialization.impl;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.fiware.kiara.transport.impl.TransportMessage;
@@ -1554,6 +1557,521 @@ public class CDRSerializer implements SerializerImpl {
     public <E extends Enum> E deserializeEnum(TransportMessage message,String name, Class<E> example) {
         Enum ret = example.getEnumConstants()[this.deserializeUI32(message, name)];
         return (E) ret;
+    }
+    
+    /*
+     * Sets
+     */
+
+    @Override
+    public <T> void serializeSetChar(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetChar(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeChar(message, name, (Character) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetChar(TransportMessage message,String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetChar(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Character) this.deserializeChar(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetByte(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetByte(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeByte(message, name, (Byte) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetByte(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetByte(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Byte) this.deserializeByte(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetI16(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetI16(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeI16(message, name, (Short) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetI16(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetI16(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Short) this.deserializeI16(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetUI16(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetUI16(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeUI16(message, name, (Short) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetUI16(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetUI16(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Short) this.deserializeUI16(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetI32(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetI32(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeI32(message, name, (Integer) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetI32(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetI32(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Integer) this.deserializeI32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetUI32(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetUI32(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeUI32(message, name, (Integer) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetUI32(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetUI32(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Integer) this.deserializeUI32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetI64(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetI64(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeI64(message, name, (Long) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetI64(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetI64(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Long) this.deserializeI64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetUI64(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetUI64(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeUI64(message, name, (Long) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetUI64(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetUI64(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Long) this.deserializeUI64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetFloat32(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetFloat32(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeFloat32(message, name, (Float) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetFloat32(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetFloat32(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Float) this.deserializeFloat32(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetFloat64(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetFloat64(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeFloat64(message, name, (Double) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetFloat64(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetFloat64(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Double) this.deserializeFloat64(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetBoolean(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetBoolean(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeBoolean(message, name, (Boolean) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetBoolean(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetBoolean(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (Boolean) this.deserializeBoolean(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @Override
+    public <T> void serializeSetString(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSetString(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeString(message, name, (String) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSetString(TransportMessage message, String name, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSetString(message, name, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) (String) this.deserializeString(message, name));
+            }
+        }
+        
+        return array;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> void serializeSet(TransportMessage message, String name, Set<T> set) {
+        if (set.size() > 0) {
+            this.serializeI32(message, "", ((Set<?>) set).size());
+            Object firstElement = set.iterator().next();
+            if (firstElement instanceof Set) {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serializeSet(message, name, (Set<?>) it.next());
+                }
+            } else {
+                Iterator<?> it = set.iterator();
+                while(it.hasNext()) {
+                    this.serialize(message, name, (Serializable) (T) it.next());
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> Set<M> deserializeSet(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException {
+        int length = this.deserializeI32(message, "");
+        
+        HashSet<M> array = new HashSet<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSet(message, name, example, depth-1));
+            }
+        } else if (depth == 1) {
+            T object;
+            for (int i=0; i < length; ++i) {
+                object = example.newInstance();
+                ((Serializable) object).deserialize(this, message, name);
+                array.add((M) object);
+            }
+        }
+        
+        return array;
     }
 
     /*@SuppressWarnings("unchecked")

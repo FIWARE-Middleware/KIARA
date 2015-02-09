@@ -19,6 +19,7 @@ package org.fiware.kiara.serialization.impl;
 
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Set;
 
 import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.transport.impl.TransportMessage;
@@ -321,6 +322,73 @@ public interface SerializerImpl extends Serializer {
     public <E extends Enum> void serializeSequenceEnum(TransportMessage message, String name, List<E> sequence);
     
     public <E, M> List<M> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth);*/
+    
+    /*
+     * Sets
+     */
+    
+    public <T> void serializeSetChar(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetChar(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSetByte(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetByte(TransportMessage message, String name, int depth);
+    
+ 
+    public <T> void serializeSetI16(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetI16(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSetUI16(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetUI16(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSetI32(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetI32(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSetUI32(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetUI32(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSetI64(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetI64(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSetUI64(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetUI64(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSetFloat32(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetFloat32(TransportMessage message, String name, int depth);
+    
+    public <T> void serializeSetFloat64(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetFloat64(TransportMessage message, String name, int depth);
+    
+
+    public <T> void serializeSetBoolean(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetBoolean(TransportMessage message, String name, int depth);
+    
+    
+    public <T> void serializeSetString(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSetString(TransportMessage message, String name, int depth);
+    
+    /*
+     * Sets of generic types
+     */
+    
+    public <T> void serializeSet(TransportMessage message, String name, Set<T> set);
+    
+    public <T, M> Set<M> deserializeSet(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException;
 
 
 }

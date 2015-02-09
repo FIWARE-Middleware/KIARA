@@ -5,12 +5,13 @@ import static org.junit.Assert.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.impl.TransportMessage;
-
 import org.junit.*;
 
 public class CDRSerializerTest {
@@ -594,7 +595,7 @@ public class CDRSerializerTest {
     }
     
     /*
-     * Enumeration types
+     * Union types
      */
     
     @Test
@@ -634,5 +635,5 @@ public class CDRSerializerTest {
 
         reset();
     }
-
+    
 }

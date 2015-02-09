@@ -23,8 +23,7 @@
  *
  */
  
-
-
+ 
 package org.fiware.kiara.calculator;
 
 import org.fiware.kiara.transport.impl.TransportMessage;
@@ -32,7 +31,7 @@ import org.fiware.kiara.client.AsyncCallback;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
- * Interface containing the asynchronous method definition.
+ * Interface containing the asynchronous method definition. 
  *
  * @author Kiaragen tool.
  *
@@ -44,30 +43,40 @@ public interface CalculatorAsync {
 	public static abstract class add_AsyncCallback implements AsyncCallback<Integer> {
 		public void process(TransportMessage message, SerializerImpl ser) {
 			try {
+				// Deserialize message ID
 				final Object messageId = ser.deserializeMessageId(message);
-				int result = ser.deserializeI32(message, "");
-				onSuccess(result);
+				
+				// Deserialize return code (0 = OK, anything else = WRONG)
+	    		int retCode = ser.deserializeUI32(message, "");
+	    		if (retCode == 0) { // Function execution was OK.
+					int result = ser.deserializeI32(message, "");
+					onSuccess(result);
+				} 
 			} catch (Exception ex) {
 				onFailure(ex);
 			}
 		}
 	}
-
 
 	public void subtract(/*in*/ int n1, /*in*/ int n2, subtract_AsyncCallback callback);
 
 	public static abstract class subtract_AsyncCallback implements AsyncCallback<Integer> {
 		public void process(TransportMessage message, SerializerImpl ser) {
 			try {
+				// Deserialize message ID
 				final Object messageId = ser.deserializeMessageId(message);
-				int result = ser.deserializeI32(message, "");
-				onSuccess(result);
+				
+				// Deserialize return code (0 = OK, anything else = WRONG)
+	    		int retCode = ser.deserializeUI32(message, "");
+	    		if (retCode == 0) { // Function execution was OK.
+					int result = ser.deserializeI32(message, "");
+					onSuccess(result);
+				} 
 			} catch (Exception ex) {
 				onFailure(ex);
 			}
 		}
 	}
-
 
 	
 }
