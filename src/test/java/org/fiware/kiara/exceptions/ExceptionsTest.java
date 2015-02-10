@@ -15,6 +15,7 @@ import org.fiware.kiara.transport.ServerTransport;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -25,7 +26,9 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Rule;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,6 +56,7 @@ public class ExceptionsTest {
                 throw new DividedByZeroException();
             }
             return param1 / param2;
+            //return 0;
         }
 
         @Override
@@ -172,24 +176,20 @@ public class ExceptionsTest {
         
         try {
             exceptions.divide(21, 0);
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof DividedByZeroException) {
-                assertTrue(true);
-            } else {
-                assertTrue(false);
-            }
-            
+            assertTrue(false);
+        } catch (DividedByZeroException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
         }
         
         try {
             exceptions.function();
-        } catch (RuntimeException e) {
-            if (e.getCause() instanceof SecondException) {
-                assertTrue(true);
-            } else {
-                assertTrue(false);
-            }
-            
+            assertTrue(false);
+        } catch (SecondException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            assertTrue(false);
         }
         
     }
@@ -206,122 +206,129 @@ public class ExceptionsTest {
 
                 @Override
                 public Float call() throws Exception {
-                    /*expectedException.expect(DividedByZeroException.class);
-                    float result = exceptions.divide(arg, arg);
-                    return result;*/
-                    try {
-                        final float result = exceptions.divide(21, 0);
-                        return result;
-                    } catch (RuntimeException e) {
-                        if (e.getCause() instanceof DividedByZeroException) {
-                            assertTrue(true);
-                        } else {
-                            assertTrue(false);
-                        }
-                        
-                    }
-                    return (float) 0;
-                    
+                    final float result = exceptions.divide(21, 0);
+                    return result;
                 }
             });
+        }
+        
+        for (int i = 0; i < result.length; i++) {
+            //assertTrue(true);
+            try {
+               result[i].get(); 
+            } catch (ExecutionException ex) {
+                if (ex.getCause() instanceof DividedByZeroException) {
+                    assertTrue(true);
+                } else {
+                    assertTrue(false);
+                }
+            }
         }
 
         // Function
         Future<Integer>[] result2 = new Future[100];
-        final int resultLength = result.length;
         for (int i = 0; i < result.length; i++) {
             final int arg = i;
             result2[arg] = executor.submit(new Callable<Integer>() {
 
                 @Override
                 public Integer call() throws Exception {
-                    try {
-                        final int result = exceptions.function();
-                        return result;
-                    } catch (RuntimeException e) {
-                        if (e.getCause() instanceof SecondException) {
-                            assertTrue(true);
-                        } else {
-                            assertTrue(false);
-                        }
-                        
-                    }
-                    return 0;
+                    final int result = exceptions.function();
+                    assertTrue(false);
+                    return result;
                 }
             });
+        }
+        
+        for (int i = 0; i < result2.length; i++) {
+            try {
+                result2[i].get(); 
+             } catch (ExecutionException ex) {
+                 if (ex.getCause() instanceof SecondException) {
+                     assertTrue(true);
+                 } else {
+                     assertTrue(false);
+                 }
+             }
         }
     }
 
     @Test
     public void testExceptionsAsync() throws Exception {
         // Synchronous parallel test
-        Future<Integer>[] result = new Future[100];
+        Future<Float>[] result = new Future[100];
 
         // Addition
         for (int i = 0; i < result.length; i++) {
-            final SettableFuture<Integer> resultValue = SettableFuture.create();
+            final SettableFuture<Float> resultValue = SettableFuture.create();
             final int arg = i;
             //expectedException.expect(DividedByZeroException.class);
-            exceptions.divide((float) i, (float) i, new ExceptionsAsync.divide_AsyncCallback() {
+            exceptions.divide((float) i, (float) 0, new ExceptionsAsync.divide_AsyncCallback() {
 
                 @Override
                 public void onSuccess(Float result) {
                     System.err.println(arg + "+" + arg + "=" + result);
                     assertTrue(false);
-                    //resultValue.set(result);
                 }
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    //resultValue.setException(caught);
-                    if (caught instanceof DividedByZeroException) {
-                        assertTrue(true);
-                    } else {
-                        assertTrue(false);
-                    }
+                    resultValue.setException(caught);
                 }
             });
             result[arg] = resultValue;
         }
 
-        /*for (int i = 0; i < result.length; i++) {
-            assertEquals(i + i, result[i].get().intValue());
-        }*/
+        for (int i = 0; i < result.length; i++) {
+            //assertEquals(i + i, result[i].get().intValue());
+            try {
+                result[i].get();
+            }catch (ExecutionException ex) {
+                if (ex.getCause() instanceof DividedByZeroException) {
+                    assertTrue(true);
+                } else {
+                    assertTrue(false);
+                }
+            }
+        }
 
-        // Subtraction
-        
+        // Synchronous parallel test
         Future<Integer>[] result2 = new Future[100];
-        final int resultLength = result2.length;
+        
+        // Addition
+        
         for (int i = 0; i < result2.length; i++) {
             final SettableFuture<Integer> resultValue = SettableFuture.create();
             final int arg = i;
-            //expectedException.expect(SecondException.class);
+            
             exceptions.function(new ExceptionsAsync.function_AsyncCallback() {
-
+                
                 @Override
                 public void onSuccess(Integer result) {
-                    System.err.println(resultLength + "-" + arg + "=" + result);
-                    //assertEquals(resultLength - arg, result.intValue());
+                    System.err.println(arg + "+" + arg + "=" + result);
                     assertTrue(false);
-                    //resultValue.set(result);
                 }
 
                 @Override
                 public void onFailure(Throwable caught) {
-                    //.setException(caught);
-                    if (caught instanceof SecondException) {
-                        assertTrue(true);
-                    } else {
-                        assertTrue(false);
-                    }
+                    resultValue.setException(caught);
                 }
             });
             result2[arg] = resultValue;
         }
 
-        /*for (int i = 0; i < result.length; i++) {
-            assertEquals(resultLength - i, result[i].get().intValue());
-        }*/
+        for (int i = 0; i < result2.length; i++) {
+            //assertEquals(i + i, result[i].get().intValue());
+            try {
+                result2[i].get();
+            }catch (ExecutionException ex) {
+                if (ex.getCause() instanceof SecondException) {
+                    assertTrue(true);
+                } else {
+                    assertTrue(false);
+                }
+            }
+        }
 
     }
 

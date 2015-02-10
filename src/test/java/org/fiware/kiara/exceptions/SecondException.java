@@ -36,7 +36,7 @@ import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 /**
- * Class definition for the user defined type ExceptionTwo. 
+ * Class definition for the user defined type SecondException. 
  *
  * @author Kiaragen tool.
  *
@@ -59,7 +59,7 @@ public class SecondException extends Exception implements Serializable {
 	}
 	
 	/*
-	 * This method serializes a ExceptionTwo.
+	 * This method serializes a SecondException.
 	 *
 	 * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
 	 */
@@ -69,7 +69,7 @@ public class SecondException extends Exception implements Serializable {
 	}
 
 	/*
-	 * This method deserializes a ExceptionTwo.
+	 * This method deserializes a SecondException.
 	 *
 	 * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
 	 */
@@ -107,7 +107,7 @@ public class SecondException extends Exception implements Serializable {
 	{
 	    int current_align = current_alignment;
 	    
-	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 12 + 1;
+	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 15 + 1;
 	            
 	    current_align += 4 + CDRSerializer.alignment(current_align, 4);
 	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 255 + 1;
