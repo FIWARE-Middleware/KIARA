@@ -15,6 +15,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.GenericEnumeration;
+import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 public class CDRSetTest {
@@ -679,6 +681,66 @@ public class CDRSetTest {
             ser.serializeSetString(message, "", in);
             message.getPayload().rewind();
             out = ser.deserializeSetString(message, "", 2);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+        reset();
+    }
+    
+    /*
+     * EnumSetTest
+     */
+
+    @Test
+    public <T> void deserializeSetEnumTest() {
+        Set<GenericEnumeration> in = new HashSet<GenericEnumeration>();
+        for(int i=0; i < 10; ++i) {
+            in.add(GenericEnumeration.second_val);
+        }
+
+        Set<GenericEnumeration> out = null;
+        
+        try {
+            ser.serializeSet(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserializeSet(message, "", GenericEnumeration.class, 1);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+        reset();
+    }
+    
+    @Test
+    public <T> void deserializeMultiDimSetEnumTest() {
+        Set<HashSet<GenericEnumeration>> in = new HashSet<HashSet<GenericEnumeration>>(2);
+        for(int i=0; i < 2; ++i) {
+            HashSet<GenericEnumeration> inner = new HashSet<GenericEnumeration>(3);
+            for (int j=0; j < 3; ++j) {
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        inner.add(GenericEnumeration.third_val);
+                    } else {
+                        inner.add(GenericEnumeration.second_val);
+                    }
+                } else {
+                    inner.add(GenericEnumeration.first_val);
+                }
+            }
+            in.add(inner);
+        }
+
+        Set<T> out = null;
+        
+        try {
+            ser.serializeSet(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserializeSet(message, "", GenericEnumeration.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }

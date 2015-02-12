@@ -1426,7 +1426,11 @@ public class CDRSerializer implements SerializerImpl {
                     }
                 } else {
                     for (int i=0; i < sequence.size(); ++i) {
-                        this.serialize(message, name, (Serializable) sequence.get(i));
+                        if (sequence.get(i) instanceof Serializable) {
+                            this.serialize(message, name, (Serializable) sequence.get(i));
+                        } else if (sequence.get(i) instanceof Enum) {
+                            this.serializeEnum(message, name, (Enum) sequence.get(i));
+                        }
                     }
                 }
             }
@@ -1446,9 +1450,17 @@ public class CDRSerializer implements SerializerImpl {
             } else if (depth == 1) {
                 T object;
                 for (int i=0; i < length; ++i) {
-                    object = example.newInstance();
-                    ((Serializable) object).deserialize(this, message, name);
-                    array.add((M) object);
+                    if (example.isEnum()) {
+                        Enum enumObject = null;
+                        Class<? extends Enum> enumClass = (Class<? extends Enum>) example;
+                        enumObject = this.deserializeEnum(message, name, enumClass);
+                        array.add((M) enumObject);
+
+                    } else {
+                        object = example.newInstance();
+                        ((Serializable) object).deserialize(this, message, name);
+                        array.add((M) object);
+                    }
                 }
             }
             
@@ -2045,7 +2057,12 @@ public class CDRSerializer implements SerializerImpl {
             } else {
                 Iterator<?> it = set.iterator();
                 while(it.hasNext()) {
-                    this.serialize(message, name, (Serializable) (T) it.next());
+                    Object obj = it.next();
+                    if (obj instanceof Serializable) {
+                        this.serialize(message, name, (Serializable) (T) obj);
+                    } else if (obj instanceof Enum) {
+                        this.serializeEnum(message, name, (Enum) obj);
+                    }
                 }
             }
         }
@@ -2065,9 +2082,17 @@ public class CDRSerializer implements SerializerImpl {
         } else if (depth == 1) {
             T object;
             for (int i=0; i < length; ++i) {
-                object = example.newInstance();
-                ((Serializable) object).deserialize(this, message, name);
-                array.add((M) object);
+                if (example.isEnum()) {
+                    Enum enumObject = null;
+                    Class<? extends Enum> enumClass = (Class<? extends Enum>) example;
+                    enumObject = this.deserializeEnum(message, name, enumClass);
+                    array.add((M) enumObject);
+
+                } else {
+                    object = example.newInstance();
+                    ((Serializable) object).deserialize(this, message, name);
+                    array.add((M) object);
+                }
             }
         }
         

@@ -11,6 +11,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.GenericEnumeration;
+import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.junit.*;
 
@@ -519,44 +521,6 @@ public class CDRSerializerTest {
     }
 
     /*
-     * Generic types
-     */
-
-    @Test
-    public void serializeTest() {
-        GenericType in = new GenericType(1, "one");
-
-        try {
-            ser.serialize(message, "", in);
-        } catch (Exception e) {
-            assertTrue(false);
-        }
-
-        assertTrue(true);
-
-        reset();
-    }
-
-    @Test
-    public void deserializeTest() {
-        GenericType in = new GenericType(1, "one");
-        GenericType out = new GenericType();
-
-        try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", GenericType.class);
-        } catch (Exception e) {
-            e.printStackTrace();
-            assertTrue(false);
-        }
-
-        assertTrue(in.equals(out));
-
-        reset();
-    }
-    
-    /*
      * Enumeration types
      */
     
@@ -584,6 +548,44 @@ public class CDRSerializerTest {
             ser.serializeEnum(message, "", in);
             message.getPayload().rewind();
             out = ser.deserializeEnum(message, "", GenericEnumeration.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        assertTrue(in.equals(out));
+
+        reset();
+    }
+    
+    /*
+     * Generic types
+     */
+
+    @Test
+    public void serializeTest() {
+        GenericType in = new GenericType(1, "one");
+
+        try {
+            ser.serialize(message, "", in);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(true);
+
+        reset();
+    }
+
+    @Test
+    public void deserializeTest() {
+        GenericType in = new GenericType(1, "one");
+        GenericType out = new GenericType();
+
+        try {
+            ser.serialize(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserialize(message, "", GenericType.class);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

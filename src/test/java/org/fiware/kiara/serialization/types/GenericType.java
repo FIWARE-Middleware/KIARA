@@ -1,4 +1,4 @@
-package org.fiware.kiara.serialization;
+package org.fiware.kiara.serialization.types;
 
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;

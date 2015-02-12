@@ -10,8 +10,8 @@ import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 public class CDRAlignmentTest {

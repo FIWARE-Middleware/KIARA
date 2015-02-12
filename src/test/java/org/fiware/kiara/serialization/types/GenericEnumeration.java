@@ -1,4 +1,4 @@
-package org.fiware.kiara.serialization;
+package org.fiware.kiara.serialization.types;
 
 public enum GenericEnumeration {
     first_val,

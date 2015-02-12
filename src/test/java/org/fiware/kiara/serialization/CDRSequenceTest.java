@@ -11,8 +11,9 @@ import java.util.Objects;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.GenericEnumeration;
+import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 public class CDRSequenceTest {
@@ -661,6 +662,66 @@ public class CDRSequenceTest {
             ser.serializeSequenceString(message, "", in);
             message.getPayload().rewind();
             out = ser.deserializeSequenceString(message, "", 2);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+        reset();
+    }
+    
+    /*
+     * EnumSequenceTest
+     */
+
+    @Test
+    public <T> void deserializeSequenceEnumTest() {
+        ArrayList<GenericEnumeration> in = new ArrayList<GenericEnumeration>(1);
+        for(int i=0; i < 10; ++i) {
+            in.add(GenericEnumeration.second_val);
+        }
+
+        List<T> out = null;
+        
+        try {
+            ser.serializeSequence(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserializeSequence(message, "", GenericEnumeration.class, 1);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+        reset();
+    }
+    
+    @Test
+    public <T> void deserializeMultiDimSequenceEnumTest() {
+        List<ArrayList<GenericEnumeration>> in = new ArrayList<ArrayList<GenericEnumeration>>(3);
+        for(int i=0; i < 3; ++i) {
+            ArrayList<GenericEnumeration> inner = new ArrayList<GenericEnumeration>(5);
+            for (int j=0; j < 5; ++j) {
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        inner.add(GenericEnumeration.third_val);
+                    } else {
+                        inner.add(GenericEnumeration.second_val);
+                    }
+                } else {
+                    inner.add(GenericEnumeration.first_val);
+                }
+            }
+            in.add(inner);
+        }
+
+        List<T> out = null;
+        
+        try {
+            ser.serializeSequence(message, "", in);
+            message.getPayload().rewind();
+            out = ser.deserializeSequence(message, "", GenericEnumeration.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
