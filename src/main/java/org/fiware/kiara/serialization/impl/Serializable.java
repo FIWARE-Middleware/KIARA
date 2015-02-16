@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.serialization.impl;
 
-import org.fiware.kiara.transport.impl.TransportMessage;
+import java.io.IOException;
 
 /**
 *
@@ -25,8 +25,8 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 */
 public interface Serializable {
 
-    public abstract void serialize(SerializerImpl impl, TransportMessage message, String name);
+    public abstract void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException;
 
-    public abstract void deserialize(SerializerImpl impl, TransportMessage message, String name);
+    public abstract void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException;
 
 }

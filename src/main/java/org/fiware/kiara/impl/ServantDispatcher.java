@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.concurrent.ExecutorService;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 
 /**
  *
@@ -81,38 +82,42 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
 
     @Override
     public boolean onMessage(final TransportMessage message) {
-        final ByteBuffer buffer = message.getPayload();
-        final TransportImpl transport = message.getTransport();
-        final Object messageId = serializer.deserializeMessageId(message);
-        final String service = serializer.deserializeService(message);
-        final Servant servant = servants.get(service);
+        try {
+            final ByteBuffer buffer = message.getPayload();
+            final TransportImpl transport = message.getTransport();
+            final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(buffer);
+            final Object messageId = serializer.deserializeMessageId(bis);
+            final String service = serializer.deserializeService(bis);
+            final Servant servant = servants.get(service);
 
-        if (servant != null) {
-            if (executor == null) {
-                TransportMessage tpmreply = servant.process(serializer, transport, message, messageId);
-                if (tpmreply != null) {
-                    //TransportMessage tresponse = transport.createTransportMessage(message);
-                    //tresponse.setPayload(reply);
-                    transport.send(tpmreply);
-                } else {
-                    // TODO return an error to the client.
-                }
-            } else {
-                executor.submit(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        TransportMessage tpmreply = servant.process(serializer, transport, message, messageId);
-                        if (tpmreply != null) {
-                            //TransportMessage tresponse = transport.createTransportMessage(message);
-                            //tresponse.setPayload(reply);
-                            transport.send(tpmreply);
-                        } else {
-                            // TODO return an error to the client.
-                        }
+            if (servant != null) {
+                if (executor == null) {
+                    TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
+                    if (tpmreply != null) {
+                        //TransportMessage tresponse = transport.createTransportMessage(message);
+                        //tresponse.setPayload(reply);
+                        transport.send(tpmreply);
+                    } else {
+                        // TODO return an error to the client.
                     }
-                });
+                } else {
+                    executor.submit(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
+                            if (tpmreply != null) {
+                                //TransportMessage tresponse = transport.createTransportMessage(message);
+                                //tresponse.setPayload(reply);
+                                transport.send(tpmreply);
+                            } else {
+                                // TODO return an error to the client.
+                            }
+                        }
+                    });
+                }
             }
+        } catch (IOException ex) {
         }
         return true;
     }

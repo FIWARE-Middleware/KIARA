@@ -28,10 +28,11 @@ package org.fiware.kiara.exceptions;
 
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.client.AsyncCallback;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
- * Interface containing the asynchronous method definition. 
+ * Interface containing the asynchronous method definition.
  *
  * @author Kiaragen tool.
  *
@@ -41,21 +42,24 @@ public interface ExceptionsAsync {
 	public void divide(/*in*/ float n1, /*in*/ float n2, divide_AsyncCallback callback);
 
 	public static abstract class divide_AsyncCallback implements AsyncCallback<Float> {
+                @Override
 		public void process(TransportMessage message, SerializerImpl ser) {
 			try {
+                                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
+
 				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(message);
+				final Object messageId = ser.deserializeMessageId(bis);
 				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(message, "");
+	    		int retCode = ser.deserializeUI32(bis, "");
 	    		if (retCode == 0) { // Function execution was OK.
-					float result = ser.deserializeFloat32(message, "");
+					float result = ser.deserializeFloat32(bis, "");
 					onSuccess(result);
-				} 
+				}
 				else {
-					String name = ser.deserializeString(message, "");
+					String name = ser.deserializeString(bis, "");
 					if (name.equals("DividedByZeroException")) {
 						DividedByZeroException exception = new DividedByZeroException();
-						exception.deserialize(ser, message, "");
+						exception.deserialize(ser, bis, "");
 						throw exception;
 					}
 				}
@@ -68,26 +72,29 @@ public interface ExceptionsAsync {
 	public void function(function_AsyncCallback callback);
 
 	public static abstract class function_AsyncCallback implements AsyncCallback<Integer> {
+		@Override
 		public void process(TransportMessage message, SerializerImpl ser) {
 			try {
+                                                            final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
+
 				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(message);
+				final Object messageId = ser.deserializeMessageId(bis);
 				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(message, "");
+	    		int retCode = ser.deserializeUI32(bis, "");
 	    		if (retCode == 0) { // Function execution was OK.
-					int result = ser.deserializeI32(message, "");
+					int result = ser.deserializeI32(bis, "");
 					onSuccess(result);
-				} 
+				}
 				else {
-					String name = ser.deserializeString(message, "");
+					String name = ser.deserializeString(bis, "");
 					if (name.equals("FirstException")) {
 						FirstException exception = new FirstException();
-						exception.deserialize(ser, message, "");
+						exception.deserialize(ser, bis, "");
 						throw exception;
 					}
 					if (name.equals("SecondException")) {
 						SecondException exception = new SecondException();
-						exception.deserialize(ser, message, "");
+						exception.deserialize(ser, bis, "");
 						throw exception;
 					}
 				}

@@ -30,7 +30,7 @@ import org.junit.runners.Parameterized;
 public class CalculatorTest { 
 
     static {
-        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
+        System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
 
     public static class CalculatorServantImpl extends CalculatorServant {

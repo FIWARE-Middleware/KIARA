@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 import org.junit.After;
 import org.junit.Before;
@@ -59,9 +61,10 @@ public class CDRUnionTest {
         IntSwitchUnion out = null;
 
         try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", IntSwitchUnion.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserialize(bis, "", IntSwitchUnion.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -84,9 +87,10 @@ public class CDRUnionTest {
         List<IntSwitchUnion> out = null;
 
         try {
-            ser.serializeArray(message, "", in, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", IntSwitchUnion.class, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", IntSwitchUnion.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -113,9 +117,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeArray(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", IntSwitchUnion.class, 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 3, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", IntSwitchUnion.class, 3, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -138,9 +143,10 @@ public class CDRUnionTest {
         List<IntSwitchUnion> out = null;
 
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", IntSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", IntSwitchUnion.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -167,9 +173,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", IntSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", IntSwitchUnion.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -193,9 +200,10 @@ public class CDRUnionTest {
         Set<IntSwitchUnion> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", IntSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", IntSwitchUnion.class, 1);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -224,9 +232,10 @@ public class CDRUnionTest {
         Set<T> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", IntSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", IntSwitchUnion.class, 2);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -250,9 +259,10 @@ public class CDRUnionTest {
         CharSwitchUnion out = null;
 
         try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", CharSwitchUnion.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserialize(bis, "", CharSwitchUnion.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -275,9 +285,10 @@ public class CDRUnionTest {
         List<CharSwitchUnion> out = null;
 
         try {
-            ser.serializeArray(message, "", in, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", CharSwitchUnion.class, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", CharSwitchUnion.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -304,9 +315,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeArray(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", CharSwitchUnion.class, 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 3, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", CharSwitchUnion.class, 3, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -329,9 +341,10 @@ public class CDRUnionTest {
         List<CharSwitchUnion> out = null;
 
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", CharSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", CharSwitchUnion.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -358,9 +371,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", CharSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", CharSwitchUnion.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -384,9 +398,10 @@ public class CDRUnionTest {
         Set<CharSwitchUnion> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", CharSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", CharSwitchUnion.class, 1);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -415,9 +430,10 @@ public class CDRUnionTest {
         Set<T> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", CharSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", CharSwitchUnion.class, 2);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -442,9 +458,10 @@ public class CDRUnionTest {
         BooleanSwitchUnion out = null;
 
         try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", BooleanSwitchUnion.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserialize(bis, "", BooleanSwitchUnion.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -467,9 +484,10 @@ public class CDRUnionTest {
         List<BooleanSwitchUnion> out = null;
 
         try {
-            ser.serializeArray(message, "", in, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", BooleanSwitchUnion.class, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", BooleanSwitchUnion.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -496,9 +514,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeArray(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", BooleanSwitchUnion.class, 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 3, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", BooleanSwitchUnion.class, 3, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -521,9 +540,10 @@ public class CDRUnionTest {
         List<BooleanSwitchUnion> out = null;
 
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", BooleanSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", BooleanSwitchUnion.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -550,9 +570,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", BooleanSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", BooleanSwitchUnion.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -576,9 +597,10 @@ public class CDRUnionTest {
         Set<BooleanSwitchUnion> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", BooleanSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", BooleanSwitchUnion.class, 1);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -607,9 +629,10 @@ public class CDRUnionTest {
         Set<T> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", BooleanSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", BooleanSwitchUnion.class, 2);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -633,9 +656,10 @@ public class CDRUnionTest {
         EnumSwitchUnion out = null;
 
         try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", EnumSwitchUnion.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserialize(bis, "", EnumSwitchUnion.class);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -658,9 +682,10 @@ public class CDRUnionTest {
         List<EnumSwitchUnion> out = null;
 
         try {
-            ser.serializeArray(message, "", in, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", EnumSwitchUnion.class, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", EnumSwitchUnion.class, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -687,9 +712,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeArray(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArray(message, "", EnumSwitchUnion.class, 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeArray(bos, "", in, 3, 5);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeArray(bis, "", EnumSwitchUnion.class, 3, 5);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -712,9 +738,10 @@ public class CDRUnionTest {
         List<EnumSwitchUnion> out = null;
 
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", EnumSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", EnumSwitchUnion.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -741,9 +768,10 @@ public class CDRUnionTest {
         List<T> out = null;
         
         try {
-            ser.serializeSequence(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSequence(message, "", EnumSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSequence(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSequence(bis, "", EnumSwitchUnion.class, 2);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -767,9 +795,10 @@ public class CDRUnionTest {
         Set<EnumSwitchUnion> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", EnumSwitchUnion.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", EnumSwitchUnion.class, 1);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -798,9 +827,10 @@ public class CDRUnionTest {
         Set<T> out = null;
         
         try {
-            ser.serializeSet(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeSet(message, "", EnumSwitchUnion.class, 2);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeSet(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeSet(bis, "", EnumSwitchUnion.class, 2);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);

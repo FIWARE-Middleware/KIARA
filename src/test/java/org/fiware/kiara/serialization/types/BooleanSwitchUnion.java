@@ -26,6 +26,7 @@
  
 package org.fiware.kiara.serialization.types;
 
+import java.io.IOException;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
@@ -34,198 +35,213 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 public class BooleanSwitchUnion implements Serializable {
-       
-       private boolean m_d;
-       
-       private int intVal;
-       private java.lang.String stringVal;
-       
-       public BooleanSwitchUnion() {
-               this.intVal = 0;
-               this.stringVal = "";
-       }
-       
-       public void _d(boolean discriminator) {
-               this.m_d = discriminator;
-       }
-       
+	
+	private boolean m_d;
+	
+	private int intVal;
+	private java.lang.String stringVal;
+	
+	public BooleanSwitchUnion() {
+		this.intVal = 0;
+		this.stringVal = "";
+	}
+	
+	public void _d(boolean discriminator) {
+		this.m_d = discriminator;
+	}
+	
 
-       /*
-        * @param other An object instance of Object
-        */
-        @Override
-       public boolean equals(Object other) {
-               boolean comparison = true;
-               
-               if (other instanceof BooleanSwitchUnion) {
-               
-                       Boolean bool_disc = this.m_d;
-                       switch(bool_disc.toString()) {
-               
-                               case "true":
-                                       comparison = comparison && (this.intVal == ((BooleanSwitchUnion) other).intVal);
-                                       break;
+	/*
+	 * @param other An object instance of Object
+	 */
+	 @Override
+	public boolean equals(Object other) {
+		boolean comparison = true;
+		
+		if (other instanceof BooleanSwitchUnion) {
+		
+			Boolean bool_disc = this.m_d;
+			switch(bool_disc.toString()) {
+		
+				case "true":
+					comparison = comparison && (this.intVal == ((BooleanSwitchUnion) other).intVal);
+					break;
 
-                               case "false":
-                                       comparison = comparison && (this.stringVal.compareTo(((BooleanSwitchUnion) other).stringVal) == 0);
-                                       break;
+				case "false":
+					comparison = comparison && (this.stringVal.compareTo(((BooleanSwitchUnion) other).stringVal) == 0);
+					break;
 
-                       }
-               }
-               
-               return comparison;
-       }
-       
-       /*
-        * This method serializes a BooleanSwitchUnion.
-        *
-        * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
-        */
-       public void serialize(SerializerImpl impl, TransportMessage message, String name) {
-               impl.serializeBoolean(message, name, this.m_d);
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "true":
-                               impl.serializeI32(message, name, this.intVal);
-                               break;
-                       case "false":
-                               impl.serializeString(message, name, this.stringVal);
-                               break;
-               }
-       }
+			}
+		}
+		
+		return comparison;
+	}
+	
+	/*
+	 * This method serializes a BooleanSwitchUnion.
+	 *
+	 * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryOutputStream, java.lang.String)
+	 */
+	@Override
+	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+		impl.serializeBoolean(message, name, this.m_d);
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "true":
+				impl.serializeI32(message, name, this.intVal);
+				break;
+			case "false":
+				impl.serializeString(message, name, this.stringVal);
+				break;
+		}
+	}
 
-       /*
-        * This method deserializes a BooleanSwitchUnion.
-        *
-        * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.transport.impl.TransportMessage, java.lang.String)
-        */
-       public void deserialize(SerializerImpl impl, TransportMessage message, String name) {
-               this.m_d = impl.deserializeBoolean(message, name);
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "true":
-                               this.intVal = impl.deserializeI32(message, name);
-                               break;
-                       case "false":
-                               this.stringVal = impl.deserializeString(message, name);
-                               break;
-               }
-       }
+	/*
+	 * This method deserializes a BooleanSwitchUnion.
+	 *
+	 * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryInputStream, java.lang.String)
+	 */
+	@Override
+	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+		this.m_d = impl.deserializeBoolean(message, name);
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "true":
+				this.intVal = impl.deserializeI32(message, name);
+				break;
+			case "false":
+				this.stringVal = impl.deserializeString(message, name);
+				break;
+		}
+	}
 
-       
-       /*
-        * Method to get the attribute intVal.
-        */
-       public int getIntVal() {
-               boolean canDoIt = false;
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "true":
-                               canDoIt=true;
-                               break;
-                       default:
-                               break;
-               }
-               if (!canDoIt) {
-                       throw new UnsupportedOperationException("Invalid union value");
-               }
-               return this.intVal;
-       }
+	
+	/*
+	 * Method to get the attribute intVal.
+	 */
+	public int getIntVal() {
+		boolean canDoIt = false;
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "true":
+				canDoIt=true;
+				break;
+			default:
+				break;
+		}
+		if (!canDoIt) {
+			throw new UnsupportedOperationException("Invalid union value");
+		}
+		return this.intVal;
+	}
 
-       /*
-        * Method to set the attribute intVal.
-        */
-       public void setIntVal(int intVal) {
-               boolean canDoIt = false;
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "true":
-                               canDoIt=true;
-                               break;
-                       default:
-                               break;
-               }
-               if (!canDoIt) {
-                       throw new UnsupportedOperationException("Invalid union value");
-               }
-               this.intVal = intVal;
-       }
+	/*
+	 * Method to set the attribute intVal.
+	 */
+	public void setIntVal(int intVal) {
+		boolean canDoIt = false;
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "true":
+				canDoIt=true;
+				break;
+			default:
+				break;
+		}
+		if (!canDoIt) {
+			throw new UnsupportedOperationException("Invalid union value");
+		}
+		this.intVal = intVal;
+	}
 
-       /*
-        * Method to get the attribute stringVal.
-        */
-       public java.lang.String getStringVal() {
-               boolean canDoIt = false;
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "false":
-                               canDoIt=true;
-                               break;
-                       default:
-                               break;
-               }
-               if (!canDoIt) {
-                       throw new UnsupportedOperationException("Invalid union value");
-               }
-               return this.stringVal;
-       }
+	/*
+	 * Method to get the attribute stringVal.
+	 */
+	public java.lang.String getStringVal() {
+		boolean canDoIt = false;
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "false":
+				canDoIt=true;
+				break;
+			default:
+				break;
+		}
+		if (!canDoIt) {
+			throw new UnsupportedOperationException("Invalid union value");
+		}
+		return this.stringVal;
+	}
 
-       /*
-        * Method to set the attribute stringVal.
-        */
-       public void setStringVal(java.lang.String stringVal) {
-               boolean canDoIt = false;
-               Boolean bool_disc = this.m_d;
-               switch(bool_disc.toString()) {
-                       case "false":
-                               canDoIt=true;
-                               break;
-                       default:
-                               break;
-               }
-               if (!canDoIt) {
-                       throw new UnsupportedOperationException("Invalid union value");
-               }
-               this.stringVal = stringVal;
-       }
-       
-       /*
-        *This method calculates the maximum size in CDR for this class.
-        * 
-        * @param current_alignment Integer containing the current position in the buffer.
-        */
-       public static int getMaxCdrSerializedSize(int current_alignment)
-       {
-           int current_align = current_alignment;
-           int sum = 0;
-           int current_sum = 0;
-           
-           current_align += 1 + CDRSerializer.alignment(current_align, 1);
-                   
+	/*
+	 * Method to set the attribute stringVal.
+	 */
+	public void setStringVal(java.lang.String stringVal) {
+		boolean canDoIt = false;
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+			case "false":
+				canDoIt=true;
+				break;
+			default:
+				break;
+		}
+		if (!canDoIt) {
+			throw new UnsupportedOperationException("Invalid union value");
+		}
+		this.stringVal = stringVal;
+	}
+	
+	/*
+	 *This method calculates the maximum size in CDR for this class.
+	 * 
+	 * @param current_alignment Integer containing the current position in the buffer.
+	 */
+	public static int getMaxCdrSerializedSize(int current_alignment)
+	{
+	    int current_align = current_alignment;
+	    int sum = 0;
+	    int current_sum = 0;
+	    
+	    current_align += 1 + CDRSerializer.alignment(current_align, 1);
+	            
 
-           current_sum += 4 + CDRSerializer.alignment(current_sum, 4);
-           if (current_sum > sum) {
-               sum = current_sum;
-           }
-           current_sum = 0;
+	    current_sum += 4 + CDRSerializer.alignment(current_sum, 4);
+	    if (current_sum > sum) {
+	    	sum = current_sum;
+	    }
+	    current_sum = 0;
 
-               
-           current_sum += 4 + CDRSerializer.alignment(current_sum, 4) + 255 + 1;
-           if (current_sum > sum) {
-               sum = current_sum;
-           }
-           current_sum = 0;
+	        
+	    current_sum += 4 + CDRSerializer.alignment(current_sum, 4) + 255 + 1;
+	    if (current_sum > sum) {
+	    	sum = current_sum;
+	    }
+	    current_sum = 0;
 
-               
-           
-           return sum + (current_align - current_alignment);
-       }
-       
-       @Override
-       public int hashCode() {
-           return Boolean.toString(this.m_d).hashCode() + this.stringVal.hashCode();
-       }
-       
+	        
+	    
+	    return sum + (current_align - current_alignment);
+	}
+	
+	@Override
+	public int hashCode() {
+		Boolean bool_disc = this.m_d;
+		switch(bool_disc.toString()) {
+		case "true":
+				return Objects.hash(this.m_d, this.intVal);
+			
+		case "false":
+				return Objects.hash(this.m_d, this.stringVal);
+			
+		default:
+			return -1;
+		}
+	}
+	
 }
+ 
