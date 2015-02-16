@@ -219,5 +219,10 @@ public class MyStruct implements Serializable {
      */
     public void setSequenceInt(List<Integer> sequenceInt) {
         this.sequenceInt = sequenceInt;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.myInt, this.myString, this.arrayInt, this.arrayString, this.sequenceInt);
     }
 }

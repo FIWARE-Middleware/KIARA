@@ -173,5 +173,10 @@ public class OuterStruct implements Serializable {
      */
     public void setInnerStructAtt(InnerStruct innerStructAtt) {
         this.innerStructAtt = innerStructAtt;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.outerLongAtt, this.midStructAtt, this.innerStructAtt);
     }
 }

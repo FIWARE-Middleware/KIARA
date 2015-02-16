@@ -143,5 +143,10 @@ public class InnerStruct implements Serializable {
      */
     public void setInnerStringAtt(java.lang.String innerStringAtt) {
         this.innerStringAtt = innerStringAtt;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.innerLongAtt, this.innerStringAtt);
     }
 }

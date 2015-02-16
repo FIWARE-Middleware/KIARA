@@ -147,5 +147,10 @@ public class MidStruct implements Serializable {
      */
     public void setInnerStructAtt(InnerStruct innerStructAtt) {
         this.innerStructAtt = innerStructAtt;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.midLongAtt, this.innerStructAtt);
     }
 }

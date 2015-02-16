@@ -385,5 +385,10 @@ public class PrimitiveTypesStruct implements Serializable {
      */
     public void setMyString5(java.lang.String myString5) {
         this.myString5 = myString5;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.myChar, this.myByte, this.myUShort, this.myShort, this.myUInt, this.myInt, this.myULong, this.myLong, this.myFloat, this.myDouble, this.myBoolean, this.myString, this.myString5);
     }
 }
