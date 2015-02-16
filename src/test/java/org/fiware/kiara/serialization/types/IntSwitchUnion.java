@@ -92,10 +92,10 @@ public class IntSwitchUnion implements Serializable {
 	 *
 	 * @see org.fiware.kiara.serialization.impl.Serializable#serialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryOutputStream, java.lang.String)
 	 */
-        @Override
+	@Override
 	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-	        impl.serializeI32(message, name, this.m_d);
-	        switch(this.m_d) {
+		impl.serializeI32(message, name, this.m_d);
+		switch(this.m_d) {
 			case 0:
 			case 1:
 				impl.serializeI32(message, name, this.intVal);
@@ -114,20 +114,20 @@ public class IntSwitchUnion implements Serializable {
 	 *
 	 * @see org.fiware.kiara.serialization.impl.Serializable#deserialize(org.fiware.kiara.serialization.impl.SerializerImpl, org.fiware.kiara.serialization.impl.BinaryInputStream, java.lang.String)
 	 */
-        @Override
-        public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-                this.m_d = impl.deserializeI32(message, name);
-	        switch(this.m_d) {
+	@Override
+	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+		this.m_d = impl.deserializeI32(message, name);
+		switch(this.m_d) {
 			case 0:
 			case 1:
-			    this.intVal = impl.deserializeI32(message, name);
-			    break;
+				this.intVal = impl.deserializeI32(message, name);
+				break;
 			case 2:
-			    this.stringVal = impl.deserializeString(message, name);
-			    break;
+				this.stringVal = impl.deserializeString(message, name);
+				break;
 			default:
-    			    this.floatVal = impl.deserializeFloat32(message, name);
-    			    break;
+				this.floatVal = impl.deserializeFloat32(message, name);
+				break;
 		}
 	}
 
@@ -288,9 +288,20 @@ public class IntSwitchUnion implements Serializable {
 	}
 	
 	@Override
-        public int hashCode() {
-            return this.m_d + this.stringVal.hashCode() + (int) this.floatVal;
-        }
+	public int hashCode() {
+		switch(this.m_d) {
+		case 0:
+		case 1:
+				return Objects.hash(this.m_d, this.intVal);
+			
+		case 2:
+				return Objects.hash(this.m_d, this.stringVal);
+			
+		default:
+				return Objects.hash(this.m_d, this.floatVal);
+			
+		}
+	}
 	
 }
  
