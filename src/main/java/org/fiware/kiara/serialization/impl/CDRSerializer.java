@@ -570,7 +570,8 @@ public class CDRSerializer implements SerializerImpl {
                 List<?> inner_array = (List<?>) array.get(i);
                 this.serializeArrayI32(message, name, inner_array, trimDimensions(dims));
             }
-        } else if (array.get(0) instanceof Integer) {
+        } 
+        else if (array.get(0) instanceof Integer) {
             for (int i=0; i < len; ++i) {
                 this.serializeI32(message, name, (Integer) array.get(i));
             }

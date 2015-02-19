@@ -5,11 +5,13 @@ import static org.junit.Assert.assertTrue;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -1077,5 +1079,7 @@ public class CDRArrayTest {
 
         reset();
     }
+    
+   
 
 }
