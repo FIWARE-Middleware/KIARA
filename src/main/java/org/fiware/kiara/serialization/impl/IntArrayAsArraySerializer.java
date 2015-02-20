@@ -18,40 +18,34 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
- * @param <T>
  */
-public class ArrayAsArraySerializer<T> implements Serializer<T[]> {
+public class IntArrayAsArraySerializer implements Serializer<int[]> {
 
     private final int arrayDim;
-    private final Class<T> componentType;
-    private final Serializer<T> elementSerializer;
 
-    public <M extends Serializer<T>> ArrayAsArraySerializer(int arrayDim, Class<T> componentType, M elementSerializer) {
-        this.elementSerializer = elementSerializer;
-        this.componentType = componentType;
+    public IntArrayAsArraySerializer(int arrayDim) {
         this.arrayDim = arrayDim;
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T[] object) throws IOException {
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, int[] object) throws IOException {
         impl.serializeArrayBegin(message, name, arrayDim);
         for (int i = 0; i < arrayDim; ++i) {
-            elementSerializer.write(impl, message, name, object[i]);
+            impl.serializeI32(message, name, object[i]);
         }
         impl.serializeArrayEnd(message, name);
     }
 
     @Override
-    public T[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+    public int[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         impl.deserializeArrayBegin(message, name);
-        T[] array = (T[])Array.newInstance(componentType, arrayDim);
+        int[] array = new int[arrayDim];
         for (int i = 0; i < arrayDim; ++i) {
-            array[i] = elementSerializer.read(impl, message, name);
+            array[i] = impl.deserializeI32(message, name);
         }
         impl.deserializeArrayEnd(message, name);
         return array;

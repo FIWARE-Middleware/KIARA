@@ -26,27 +26,29 @@ import java.util.ArrayList;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
-public class SequenceAsListSerializer<T> implements Serializer<List<T>> {
+public class ListAsSequenceSerializer<T> implements Serializer<List<T>> {
 
     private final Serializer<T> elementSerializer;
 
-    public <M extends Serializer<T>> SequenceAsListSerializer(M elementSerializer) {
+    public <M extends Serializer<T>> ListAsSequenceSerializer(M elementSerializer) {
         this.elementSerializer = elementSerializer;
     }
 
     @Override
     public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<T> sequence) throws IOException {
-        impl.serializeI32(message, "", sequence.size());
-
+        impl.serializeSequenceBegin(message, name);
         final int length = sequence.size();
+        impl.serializeI32(message, "", length);
         for (int i = 0; i < length; ++i) {
             elementSerializer.write(impl, message, name, sequence.get(i));
         }
+        impl.serializeSequenceEnd(message, name);
     }
 
     @Override
     public List<T> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        int length = impl.deserializeI32(message, "");
+        impl.deserializeSequenceBegin(message, name);
+        final int length = impl.deserializeI32(message, "");
 
         List<T> array = new ArrayList<>(length);
 
@@ -54,6 +56,7 @@ public class SequenceAsListSerializer<T> implements Serializer<List<T>> {
             array.add(elementSerializer.read(impl, message, name));
         }
 
+        impl.deserializeSequenceEnd(message, name);
         return array;
     }
 

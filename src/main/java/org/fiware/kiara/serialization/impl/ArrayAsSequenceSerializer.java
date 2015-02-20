@@ -18,39 +18,45 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
-public class ArrayAsListSerializer<T> implements Serializer<List<T>> {
+public class ArrayAsSequenceSerializer<T> implements Serializer<T[]> {
 
+    private final Class<T> componentType;
     private final Serializer<T> elementSerializer;
-    private final int arrayDim;
 
-    public <M extends Serializer<T>> ArrayAsListSerializer(M elementSerializer, int arrayDim) {
+    public <M extends Serializer<T>> ArrayAsSequenceSerializer(Class<T> componentType, M elementSerializer) {
         this.elementSerializer = elementSerializer;
-        this.arrayDim = arrayDim;
+        this.componentType = componentType;
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<T> sequence) throws IOException {
-            for (int i = 0; i < arrayDim; ++i) {
-                elementSerializer.write(impl, message, name, sequence.get(i));
-            }
-    }
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T[] object) throws IOException {
+        impl.serializeSequenceBegin(message, name);
 
-    @Override
-    public List<T> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        List<T> array = new ArrayList<T>(arrayDim);
+        final int length = object.length;
+        impl.serializeI32(message, "", length);
 
-        for (int i = 0; i < arrayDim; ++i) {
-            array.add(elementSerializer.read(impl, message, name));
+        for (int i = 0; i < length; ++i) {
+            elementSerializer.write(impl, message, name, object[i]);
         }
+        impl.serializeSequenceEnd(message, name);
+    }
 
+    @Override
+    public T[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        impl.deserializeSequenceBegin(message, name);
+        final int length = impl.deserializeI32(message, "");
+        T[] array = (T[]) Array.newInstance(componentType, length);
+        for (int i = 0; i < length; ++i) {
+            array[i] = elementSerializer.read(impl, message, name);
+        }
+        impl.deserializeArrayEnd(message, name);
         return array;
     }
 

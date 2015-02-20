@@ -18,42 +18,39 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.util.List;
+import java.util.ArrayList;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
-public class ArrayAsArraySerializer<T> implements Serializer<T[]> {
+public class ListAsArraySerializer<T> implements Serializer<List<T>> {
 
     private final int arrayDim;
-    private final Class<T> componentType;
     private final Serializer<T> elementSerializer;
 
-    public <M extends Serializer<T>> ArrayAsArraySerializer(int arrayDim, Class<T> componentType, M elementSerializer) {
-        this.elementSerializer = elementSerializer;
-        this.componentType = componentType;
+    public <M extends Serializer<T>> ListAsArraySerializer(int arrayDim, M elementSerializer) {
         this.arrayDim = arrayDim;
+        this.elementSerializer = elementSerializer;
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T[] object) throws IOException {
-        impl.serializeArrayBegin(message, name, arrayDim);
-        for (int i = 0; i < arrayDim; ++i) {
-            elementSerializer.write(impl, message, name, object[i]);
-        }
-        impl.serializeArrayEnd(message, name);
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<T> sequence) throws IOException {
+            for (int i = 0; i < arrayDim; ++i) {
+                elementSerializer.write(impl, message, name, sequence.get(i));
+            }
     }
 
     @Override
-    public T[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        impl.deserializeArrayBegin(message, name);
-        T[] array = (T[])Array.newInstance(componentType, arrayDim);
+    public List<T> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        List<T> array = new ArrayList<T>(arrayDim);
+
         for (int i = 0; i < arrayDim; ++i) {
-            array[i] = elementSerializer.read(impl, message, name);
+            array.add(elementSerializer.read(impl, message, name));
         }
-        impl.deserializeArrayEnd(message, name);
+
         return array;
     }
 
