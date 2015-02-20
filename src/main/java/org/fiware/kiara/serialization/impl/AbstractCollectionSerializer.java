@@ -18,46 +18,44 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.util.Collection;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <E>
+ * @param <T>
  */
-public class ArrayAsSequenceSerializer<E> implements Serializer<E[]> {
+public abstract class AbstractCollectionSerializer<E, T extends Collection<E>> implements Serializer<T> {
 
-    private final Class<E> componentType;
     private final Serializer<E> elementSerializer;
 
-    public <M extends Serializer<E>> ArrayAsSequenceSerializer(Class<E> componentType, M elementSerializer) {
+    public <S extends Serializer<E>> AbstractCollectionSerializer(S elementSerializer) {
         this.elementSerializer = elementSerializer;
-        this.componentType = componentType;
     }
 
-    @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, E[] object) throws IOException {
-        impl.serializeSequenceBegin(message, name);
+    protected abstract T createContainer(int initialCapacity);
 
-        final int length = object.length;
+    @Override
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException {
+        final int length = object.size();
         impl.serializeI32(message, "", length);
-
-        for (int i = 0; i < length; ++i) {
-            elementSerializer.write(impl, message, name, object[i]);
+        for (E element : object) {
+            elementSerializer.write(impl, message, name, element);
         }
-        impl.serializeSequenceEnd(message, name);
     }
 
     @Override
-    public E[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        impl.deserializeSequenceBegin(message, name);
+    public T read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         final int length = impl.deserializeI32(message, "");
-        E[] array = (E[]) Array.newInstance(componentType, length);
+
+        T container = createContainer(length);
+
         for (int i = 0; i < length; ++i) {
-            array[i] = elementSerializer.read(impl, message, name);
+            container.add(elementSerializer.read(impl, message, name));
         }
-        impl.deserializeArrayEnd(message, name);
-        return array;
+
+        return container;
     }
 
 }

@@ -17,39 +17,23 @@
  */
 package org.fiware.kiara.serialization.impl;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <E>
  */
-public class ListAsSequenceSerializer<E> extends AbstractCollectionSerializer<E, List<E>> {
+public class SetAsSetSerializer<E> extends AbstractCollectionSerializer<E, Set<E>> {
 
-    public <M extends Serializer<E>> ListAsSequenceSerializer(M elementSerializer) {
+    public <M extends Serializer<E>> SetAsSetSerializer(M elementSerializer) {
         super(elementSerializer);
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<E> sequence) throws IOException {
-        impl.serializeSequenceBegin(message, name);
-        super.write(impl, message, name, sequence);
-        impl.serializeSequenceEnd(message, name);
-    }
-
-    @Override
-    public List<E> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        impl.deserializeSequenceBegin(message, name);
-        List<E> result = super.read(impl, message, name);
-        impl.deserializeSequenceEnd(message, name);
-        return result;
-    }
-
-    @Override
-    protected List<E> createContainer(int initialCapacity) {
-        return new ArrayList<>(initialCapacity);
+    protected Set<E> createContainer(int initialCapacity) {
+        return new HashSet<>(initialCapacity);
     }
 
 }

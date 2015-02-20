@@ -8,7 +8,9 @@ package org.fiware.kiara.serialization;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.fiware.kiara.serialization.impl.ArrayAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ArrayAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
@@ -19,6 +21,7 @@ import org.fiware.kiara.serialization.impl.IntArrayAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.IntegerSerializer;
 import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
+import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -127,6 +130,30 @@ public class NewSerializerTest {
         int[][] result = s2.read(ser, bis, "");
 
         Assert.assertArrayEquals(new int[][]{{1, 2, 3}, {3, 2, 1}}, result);
+    }
+
+    @Test
+    public void setSerializationTest() throws IOException {
+
+        // serialize set<int>> = {1,2,3,5,8}
+        Set<Integer> array = new HashSet<>();
+        array.add(1);
+        array.add(2);
+        array.add(3);
+        array.add(5);
+        array.add(8);
+
+        org.fiware.kiara.serialization.impl.Serializer<Set<Integer>> s1
+                = new SetAsSetSerializer<>(new IntegerSerializer());
+
+        BinaryOutputStream bos = new BinaryOutputStream();
+
+        s1.write(ser, bos, "", array);
+
+        BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+        Set<Integer> result = ser.deserializeSetI32(bis, "", 1);
+
+        Assert.assertEquals(array, result);
     }
 
 }

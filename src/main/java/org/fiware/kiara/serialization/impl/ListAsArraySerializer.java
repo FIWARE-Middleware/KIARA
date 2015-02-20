@@ -24,34 +24,32 @@ import java.util.ArrayList;
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
- * @param <T>
+ * @param <E>
  */
-public class ListAsArraySerializer<T> implements Serializer<List<T>> {
+public class ListAsArraySerializer<E> extends AbstractCollectionAsArraySerializer<E, List<E>> {
 
-    private final int arrayDim;
-    private final Serializer<T> elementSerializer;
-
-    public <M extends Serializer<T>> ListAsArraySerializer(int arrayDim, M elementSerializer) {
-        this.arrayDim = arrayDim;
-        this.elementSerializer = elementSerializer;
+    public <S extends Serializer<E>> ListAsArraySerializer(int arrayDim, S elementSerializer) {
+        super(arrayDim, elementSerializer);
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<T> sequence) throws IOException {
-            for (int i = 0; i < arrayDim; ++i) {
-                elementSerializer.write(impl, message, name, sequence.get(i));
-            }
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, List<E> sequence) throws IOException {
+        impl.serializeArrayBegin(message, name, sequence.size());
+        super.write(impl, message, name, sequence);
+        impl.serializeArrayEnd(message, name);
     }
 
     @Override
-    public List<T> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        List<T> array = new ArrayList<T>(arrayDim);
+    public List<E> read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        impl.deserializeArrayBegin(message, name);
+        List<E> result = super.read(impl, message, name);
+        impl.deserializeArrayEnd(message, name);
+        return result;
+    }
 
-        for (int i = 0; i < arrayDim; ++i) {
-            array.add(elementSerializer.read(impl, message, name));
-        }
-
-        return array;
+    @Override
+    protected List<E> createContainer(int initialCapacity) {
+        return new ArrayList<>(initialCapacity);
     }
 
 }

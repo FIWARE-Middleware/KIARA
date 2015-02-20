@@ -18,43 +18,44 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.Iterator;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <E>
+ * @param <T>
  */
-public class ArrayAsArraySerializer<E> implements Serializer<E[]> {
+public abstract class AbstractCollectionAsArraySerializer<E, T extends Collection<E>> implements Serializer<T> {
 
-    private final int arrayDim;
-    private final Class<E> componentType;
+    protected final int arrayDim;
     private final Serializer<E> elementSerializer;
 
-    public <M extends Serializer<E>> ArrayAsArraySerializer(int arrayDim, Class<E> componentType, M elementSerializer) {
-        this.elementSerializer = elementSerializer;
-        this.componentType = componentType;
+    public <S extends Serializer<E>> AbstractCollectionAsArraySerializer(int arrayDim, S elementSerializer) {
         this.arrayDim = arrayDim;
+        this.elementSerializer = elementSerializer;
+    }
+
+    protected abstract T createContainer(int initialCapacity);
+
+    @Override
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException {
+        Iterator<E> iter = object.iterator();
+        for (int i = 0; i < arrayDim; ++i) {
+            elementSerializer.write(impl, message, name, iter.next());
+        }
     }
 
     @Override
-    public void write(SerializerImpl impl, BinaryOutputStream message, String name, E[] object) throws IOException {
-        impl.serializeArrayBegin(message, name, arrayDim);
-        for (int i = 0; i < arrayDim; ++i) {
-            elementSerializer.write(impl, message, name, object[i]);
-        }
-        impl.serializeArrayEnd(message, name);
-    }
+    public T read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        T container = createContainer(arrayDim);
 
-    @Override
-    public E[] read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        impl.deserializeArrayBegin(message, name);
-        E[] array = (E[])Array.newInstance(componentType, arrayDim);
         for (int i = 0; i < arrayDim; ++i) {
-            array[i] = elementSerializer.read(impl, message, name);
+            container.add(elementSerializer.read(impl, message, name));
         }
-        impl.deserializeArrayEnd(message, name);
-        return array;
+
+        return container;
     }
 
 }
