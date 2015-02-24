@@ -8,8 +8,10 @@ package org.fiware.kiara.serialization;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.fiware.kiara.serialization.impl.ArrayAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ArrayAsSequenceSerializer;
@@ -21,7 +23,9 @@ import org.fiware.kiara.serialization.impl.IntArrayAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.IntegerSerializer;
 import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
+import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
 import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
+import org.fiware.kiara.serialization.impl.StringSerializer;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -154,6 +158,29 @@ public class NewSerializerTest {
         Set<Integer> result = ser.deserializeSetI32(bis, "", 1);
 
         Assert.assertEquals(array, result);
+    }
+
+    @Test
+    public void mapSerializationTest() throws IOException {
+        // serialize map<int, string> = { (1, "a"), (2, "b") (5, "d") , (8, "x")}
+        Map<Integer, String> map = new HashMap<>();
+        map.put(1, "a");
+        map.put(2, "b");
+        map.put(5, "d");
+        map.put(8, "x");
+
+        org.fiware.kiara.serialization.impl.Serializer<Map<Integer, String>> s1
+                = new MapAsMapSerializer<>(new IntegerSerializer(), new StringSerializer());
+
+        BinaryOutputStream bos = new BinaryOutputStream();
+
+        s1.write(ser, bos, "", map);
+
+        BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+
+        Object result = s1.read(ser, bis, "");
+
+        Assert.assertEquals(map, result);
     }
 
 }

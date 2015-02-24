@@ -18,20 +18,23 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.util.Collection;
+import java.util.Map;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
- * @param <E>
+ * @param <K>
+ * @param <V>
  * @param <T>
  */
-public abstract class AbstractCollectionSerializer<E, T extends Collection<E>> implements Serializer<T> {
+public abstract class AbstractMapSerializer<K, V, T extends Map<K, V>> implements Serializer<T> {
 
-    private final Serializer<E> elementSerializer;
+    private final Serializer<K> keySerializer;
+    private final Serializer<V> valueSerializer;
 
-    public <S extends Serializer<E>> AbstractCollectionSerializer(S elementSerializer) {
-        this.elementSerializer = elementSerializer;
+    public <KS extends Serializer<K>, VS extends Serializer<V>> AbstractMapSerializer(KS keySerializer, VS valueSerializer) {
+        this.keySerializer = keySerializer;
+        this.valueSerializer = valueSerializer;
     }
 
     protected abstract T createContainer(int initialCapacity);
@@ -40,8 +43,9 @@ public abstract class AbstractCollectionSerializer<E, T extends Collection<E>> i
     public void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException {
         final int length = object.size();
         impl.serializeI32(message, name, length);
-        for (E element : object) {
-            elementSerializer.write(impl, message, name, element);
+        for (Map.Entry<K, V> entry : object.entrySet()) {
+            keySerializer.write(impl, message, name, entry.getKey());
+            valueSerializer.write(impl, message, name, entry.getValue());
         }
     }
 
@@ -52,7 +56,9 @@ public abstract class AbstractCollectionSerializer<E, T extends Collection<E>> i
         T container = createContainer(length);
 
         for (int i = 0; i < length; ++i) {
-            container.add(elementSerializer.read(impl, message, name));
+            K key = keySerializer.read(impl, message, name);
+            V value = valueSerializer.read(impl, message, name);
+            container.put(key, value);
         }
 
         return container;

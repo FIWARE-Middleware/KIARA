@@ -18,44 +18,32 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.util.Collection;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
- * @param <E>
  * @param <T>
  */
-public abstract class AbstractCollectionSerializer<E, T extends Collection<E>> implements Serializer<T> {
+public class ObjectSerializer<T extends Serializable> implements Serializer<T> {
 
-    private final Serializer<E> elementSerializer;
+    private final Class<T> objectClass;
 
-    public <S extends Serializer<E>> AbstractCollectionSerializer(S elementSerializer) {
-        this.elementSerializer = elementSerializer;
+    public ObjectSerializer(Class<T> objectClass) {
+        this.objectClass = objectClass;
     }
-
-    protected abstract T createContainer(int initialCapacity);
 
     @Override
     public void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException {
-        final int length = object.size();
-        impl.serializeI32(message, name, length);
-        for (E element : object) {
-            elementSerializer.write(impl, message, name, element);
-        }
+        impl.serialize(message, name, object);
     }
 
     @Override
     public T read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        final int length = impl.deserializeI32(message, name);
-
-        T container = createContainer(length);
-
-        for (int i = 0; i < length; ++i) {
-            container.add(elementSerializer.read(impl, message, name));
+        try {
+            return impl.deserialize(message, name, objectClass);
+        } catch (InstantiationException | IllegalAccessException ex) {
+            throw new IOException(ex);
         }
-
-        return container;
     }
 
 }
