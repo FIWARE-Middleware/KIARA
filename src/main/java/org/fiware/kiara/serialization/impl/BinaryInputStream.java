@@ -81,11 +81,12 @@ public class BinaryInputStream extends InputStream {
     }
 
     public int getPosition() {
-        return this.pos;
+        return this.pos - getBufferOffset();
     }
 
     public void setPosition(int pos) {
-        this.pos = pos <= limit ? pos : limit;
+        final int localPos = pos + getBufferOffset();
+        this.pos = localPos <= limit ? localPos : limit;
     }
 
     @Override
