@@ -26,8 +26,8 @@ import java.io.IOException;
  */
 public interface Serializer<T> {
 
-    void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException;
+    public void write(SerializerImpl impl, BinaryOutputStream message, String name, T object) throws IOException;
 
-    T read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException;
+    public T read(SerializerImpl impl, BinaryInputStream message, String name) throws IOException;
 
 }
