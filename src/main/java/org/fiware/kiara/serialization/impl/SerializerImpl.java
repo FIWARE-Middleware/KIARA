@@ -112,6 +112,10 @@ public interface SerializerImpl extends Serializer {
 
     public String deserializeString(BinaryInputStream message, String name) throws IOException;
 
+    public void serializeData(BinaryOutputStream message, String name, byte [] data, int offset, int length) throws IOException;
+
+    public byte[] deserializeData(BinaryInputStream message, String name) throws IOException;
+
     /*
      * Generic types
      */

@@ -381,6 +381,23 @@ public class CDRSerializer implements SerializerImpl {
         return new String(bytes);
     }
 
+
+    @Override
+    public void serializeData(BinaryOutputStream message, String name, byte[] data, int offset, int length) throws IOException {
+        // serialize as sequence<octet>
+        this.serializeUI32(message, name, length);
+        message.write(data, offset, length);
+    }
+
+    @Override
+    public byte[] deserializeData(BinaryInputStream message, String name) throws IOException {
+        // deserialize as sequence<octet>
+        final int length = this.deserializeUI32(message, name);
+        byte[] bytes = new byte[length];
+        message.readFully(bytes);
+        return bytes;
+    }
+
     /*
      * Generic types
      */
