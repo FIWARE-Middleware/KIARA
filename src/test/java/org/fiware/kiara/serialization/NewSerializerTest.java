@@ -1,11 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 German Research Center for Artificial Intelligence (DFKI)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.fiware.kiara.serialization;
 
 import java.io.IOException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -13,11 +29,19 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.IvParameterSpec;
 import org.fiware.kiara.serialization.impl.ArrayAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ArrayAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.impl.CipherProvider;
+import org.fiware.kiara.serialization.impl.Encryptor;
 import org.fiware.kiara.serialization.impl.IntArrayAsArraySerializer;
 import org.fiware.kiara.serialization.impl.IntArrayAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.IntegerSerializer;
@@ -26,17 +50,17 @@ import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
 import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
 import org.fiware.kiara.serialization.impl.StringSerializer;
+import org.fiware.kiara.util.HexDump;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 /**
  *
- * @author rubinste
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class NewSerializerTest {
 
@@ -181,6 +205,100 @@ public class NewSerializerTest {
         Object result = s1.read(ser, bis, "");
 
         Assert.assertEquals(map, result);
+    }
+
+    private static class TestCipherProvider implements CipherProvider {
+
+        private static SecretKeyFactory factory = null;
+        private static SecretKey defaultKey = null;
+        private static IvParameterSpec defaultIV = null;
+        private static SecureRandom sr = null;
+
+        static {
+            try {
+                KeyGenerator kgen = KeyGenerator.getInstance("AES");
+                sr = SecureRandom.getInstance("SHA1PRNG");
+                sr.setSeed("default".getBytes());
+                kgen.init(128, sr);
+                defaultKey = kgen.generateKey();
+                defaultIV = new IvParameterSpec(sr.generateSeed(16));
+            } catch (NoSuchAlgorithmException ex) {
+            }
+        }
+
+        @Override
+        public Cipher getEncryptionCipher(String keyName) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+            if ("default".equals(keyName)) {
+                /* Encrypt the message. */
+                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                cipher.init(Cipher.ENCRYPT_MODE, defaultKey, defaultIV);
+                return cipher;
+            }
+            return null;
+        }
+
+        @Override
+        public Cipher getDecryptionCipher(String keyName) throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException {
+            if ("default".equals(keyName)) {
+                /* Encrypt the message. */
+                Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+                cipher.init(Cipher.DECRYPT_MODE, defaultKey, defaultIV);
+                return cipher;
+            }
+            return null;
+        }
+
+    }
+
+    @Test
+    public void encryptionSerializationTest() throws IOException {
+        CipherProvider cipherProvider = new TestCipherProvider();
+
+        String[] keys = {null, "default"};
+        for (String key : keys) {
+            org.fiware.kiara.serialization.impl.Serializer<String> s1 = new Encryptor<>(new StringSerializer(), key, cipherProvider);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            final String str = "TEST1234";
+            s1.write(ser, bos, "", str);
+
+            System.err.println(HexDump.dumpHexString(bos.getByteBuffer()));
+
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+
+            Object result = s1.read(ser, bis, "");
+
+            Assert.assertEquals(str, result);
+        }
+    }
+
+    @Test
+    public void encryptionSerializationTest2() throws IOException {
+        CipherProvider cipherProvider = new TestCipherProvider();
+
+        String[] keys = {null, "default"};
+        for (String key : keys) {
+
+            Map<Integer, String> map = new HashMap<>();
+            map.put(1, "a");
+            map.put(2, "b");
+            map.put(5, "d");
+            map.put(8, "x");
+
+            org.fiware.kiara.serialization.impl.Serializer<Map<Integer, String>> s1
+                    = new Encryptor<>(new MapAsMapSerializer<>(new IntegerSerializer(), new StringSerializer()), key, cipherProvider);
+
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            s1.write(ser, bos, "", map);
+
+            System.err.println(HexDump.dumpHexString(bos.getByteBuffer()));
+
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+
+            Object result = s1.read(ser, bis, "");
+
+            Assert.assertEquals(map, result);
+        }
     }
 
 }
