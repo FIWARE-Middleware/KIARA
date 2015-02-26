@@ -37,19 +37,16 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.IvParameterSpec;
 import org.fiware.kiara.serialization.impl.ArrayAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ArrayAsSequenceSerializer;
+import org.fiware.kiara.serialization.impl.BasicSerializers;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.CipherProvider;
 import org.fiware.kiara.serialization.impl.Encryptor;
-import org.fiware.kiara.serialization.impl.IntArrayAsArraySerializer;
-import org.fiware.kiara.serialization.impl.IntArrayAsSequenceSerializer;
-import org.fiware.kiara.serialization.impl.IntegerSerializer;
 import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
 import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
-import org.fiware.kiara.serialization.impl.StringSerializer;
 import org.fiware.kiara.util.HexDump;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,20 +86,20 @@ public class NewSerializerTest {
     @Test
     public void arraySerializationTest() throws IOException {
 
-        // serialize int[2][3] = { {1,2,3}, {3,2,1} }
+        // serialize long[2][3] = { {1,2,3}, {3,2,1} }
         List<List<Integer>> array = new ArrayList<>();
         array.add(Arrays.asList(1, 2, 3));
         array.add(Arrays.asList(3, 2, 1));
 
         org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s1
-                = new ListAsArraySerializer<>(2, new ListAsArraySerializer<>(3, new IntegerSerializer()));
+                = new ListAsArraySerializer<>(2, new ListAsArraySerializer<>(3, new BasicSerializers.I32Serializer()));
 
         BinaryOutputStream bos = new BinaryOutputStream();
 
         s1.write(ser, bos, "", array);
 
-        // deserialize int[2][3]
-        org.fiware.kiara.serialization.impl.Serializer<int[][]> s2 = new ArrayAsArraySerializer<>(2, int[].class, new IntArrayAsArraySerializer(3));
+        // deserialize long[2][3]
+        org.fiware.kiara.serialization.impl.Serializer<int[][]> s2 = new ArrayAsArraySerializer<>(2, int[].class, new BasicSerializers.ArrayAsI32ArraySerializer(3));
 
         BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
         int[][] result = s2.read(ser, bis, "");
@@ -113,13 +110,13 @@ public class NewSerializerTest {
     @Test
     public void sequenceSerializationTest() throws IOException {
 
-        // serialize list<list<int>> = { {1,2,3}, {3,2,1} }
+        // serialize list<list<long>> = { {1,2,3}, {3,2,1} }
         List<List<Integer>> array = new ArrayList<>();
         array.add(Arrays.asList(1, 2, 3));
         array.add(Arrays.asList(3, 2, 1));
 
         org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s1
-                = new ListAsSequenceSerializer<>(new ListAsSequenceSerializer<>(new IntegerSerializer()));
+                = new ListAsSequenceSerializer<>(new ListAsSequenceSerializer<>(new BasicSerializers.I32Serializer()));
 
         BinaryOutputStream bos = new BinaryOutputStream();
 
@@ -127,7 +124,7 @@ public class NewSerializerTest {
 
         // deserialize list<list<int>>
         org.fiware.kiara.serialization.impl.Serializer<int[][]> s2
-                = new ArrayAsSequenceSerializer<>(int[].class, new IntArrayAsSequenceSerializer());
+                = new ArrayAsSequenceSerializer<>(int[].class, new BasicSerializers.ArrayAsI32SequenceSerializer());
 
         BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
         int[][] result = s2.read(ser, bis, "");
@@ -138,21 +135,21 @@ public class NewSerializerTest {
     @Test
     public void sequenceArraySerializationTest() throws IOException {
 
-        // serialize list<int[3]> = { {1,2,3}, {3,2,1} }
+        // serialize list<long[3]> = { {1,2,3}, {3,2,1} }
         List<List<Integer>> array = new ArrayList<>();
         array.add(Arrays.asList(1, 2, 3));
         array.add(Arrays.asList(3, 2, 1));
 
         org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s1
-                = new ListAsSequenceSerializer<>(new ListAsArraySerializer<>(3, new IntegerSerializer()));
+                = new ListAsSequenceSerializer<>(new ListAsArraySerializer<>(3, new BasicSerializers.I32Serializer()));
 
         BinaryOutputStream bos = new BinaryOutputStream();
 
         s1.write(ser, bos, "", array);
 
-        // deserialize list<int[3]>
+        // deserialize list<long[3]>
         org.fiware.kiara.serialization.impl.Serializer<int[][]> s2
-                = new ArrayAsSequenceSerializer<>(int[].class, new IntArrayAsArraySerializer(3));
+                = new ArrayAsSequenceSerializer<>(int[].class, new BasicSerializers.ArrayAsI32ArraySerializer(3));
 
         BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
         int[][] result = s2.read(ser, bis, "");
@@ -172,7 +169,7 @@ public class NewSerializerTest {
         array.add(8);
 
         org.fiware.kiara.serialization.impl.Serializer<Set<Integer>> s1
-                = new SetAsSetSerializer<>(new IntegerSerializer());
+                = new SetAsSetSerializer<>(new BasicSerializers.I32Serializer());
 
         BinaryOutputStream bos = new BinaryOutputStream();
 
@@ -194,7 +191,7 @@ public class NewSerializerTest {
         map.put(8, "x");
 
         org.fiware.kiara.serialization.impl.Serializer<Map<Integer, String>> s1
-                = new MapAsMapSerializer<>(new IntegerSerializer(), new StringSerializer());
+                = new MapAsMapSerializer<>(new BasicSerializers.I32Serializer(), new BasicSerializers.StringSerializer());
 
         BinaryOutputStream bos = new BinaryOutputStream();
 
@@ -256,7 +253,7 @@ public class NewSerializerTest {
 
         String[] keys = {null, "default"};
         for (String key : keys) {
-            org.fiware.kiara.serialization.impl.Serializer<String> s1 = new Encryptor<>(new StringSerializer(), key, cipherProvider);
+            org.fiware.kiara.serialization.impl.Serializer<String> s1 = new Encryptor<>(new BasicSerializers.StringSerializer(), key, cipherProvider);
             BinaryOutputStream bos = new BinaryOutputStream();
             final String str = "TEST1234";
             s1.write(ser, bos, "", str);
@@ -285,7 +282,10 @@ public class NewSerializerTest {
             map.put(8, "x");
 
             org.fiware.kiara.serialization.impl.Serializer<Map<Integer, String>> s1
-                    = new Encryptor<>(new MapAsMapSerializer<>(new IntegerSerializer(), new StringSerializer()), key, cipherProvider);
+                    = new Encryptor<>(new MapAsMapSerializer<>(
+                                    new BasicSerializers.I32Serializer(),
+                                    new BasicSerializers.StringSerializer()),
+                            key, cipherProvider);
 
             BinaryOutputStream bos = new BinaryOutputStream();
 
