@@ -43,6 +43,7 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.CipherProvider;
 import org.fiware.kiara.serialization.impl.Encryptor;
+import org.fiware.kiara.serialization.impl.EnumSerializer;
 import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
@@ -202,6 +203,32 @@ public class NewSerializerTest {
         Object result = s1.read(ser, bis, "");
 
         Assert.assertEquals(map, result);
+    }
+
+    private static enum TestEnum {
+
+        ONE, TWO, THREE
+    }
+
+    @Test
+    public void enumSerializationTest() throws IOException {
+        List<TestEnum> enumList = new ArrayList<>();
+        enumList.add(TestEnum.ONE);
+        enumList.add(TestEnum.THREE);
+        enumList.add(TestEnum.TWO);
+
+        org.fiware.kiara.serialization.impl.Serializer<List<TestEnum>> s1
+                = new ListAsSequenceSerializer<>(new EnumSerializer<>(TestEnum.class));
+
+        BinaryOutputStream bos = new BinaryOutputStream();
+
+        s1.write(ser, bos, "", enumList);
+
+        BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+
+        Object result = s1.read(ser, bis, "");
+
+        Assert.assertEquals(enumList, result);
     }
 
     private static class TestCipherProvider implements CipherProvider {
