@@ -19,19 +19,9 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
     }
     
     @Override
-    public DynamicTypeImpl getContentType() {
-        return this.m_contentType;
-    }
-    
-    @Override
-    public void setContentType(DynamicDataImpl contentType) {
-        this.m_contentType = contentType;
-    }
-
-    @Override
     public DynamicData getElementAt(int index) {
         if (index >= this.m_maxSize) {
-            throw new DynamicTypeException(this.m_className + " A DynamicArrayDataType object cannot be assigned as content to another DynamicArrayDataType."); 
+            throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the list boundaries (" + this.m_maxSize + ")."); 
         }
         
         return this.m_members.get(index);
@@ -40,7 +30,7 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
     @Override
     public boolean setElementAt(DynamicData value, int index) {
         if (index >= this.m_maxSize) {
-            throw new DynamicTypeException(this.m_className + " A DynamicArrayDataType object cannot be assigned as content to another DynamicArrayDataType."); 
+            throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the list boundaries (" + this.m_maxSize + ")."); 
         }
         
         if (value.getClass() == this.m_contentType.getClass()) {

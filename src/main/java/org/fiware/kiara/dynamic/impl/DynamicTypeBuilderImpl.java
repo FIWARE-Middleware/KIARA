@@ -4,13 +4,17 @@ import org.fiware.kiara.dynamic.DynamicTypeBuilder;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicMapImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicSetImpl;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunction;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.SequenceTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptor;
 
 public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
@@ -55,7 +59,9 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         case SEQUENCE_TYPE:
             return this.createListType((SequenceTypeDescriptor) dataDescriptor);
         case MAP_TYPE:
+            return this.createMapType((MapTypeDescriptor) dataDescriptor);
         case SET_TYPE:
+            return this.createSetType((SetTypeDescriptor) dataDescriptor);
         
         case ENUM_TYPE:
         case UNION_TYPE:
@@ -87,12 +93,52 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
     private DynamicListImpl createListType(SequenceTypeDescriptor listDescriptor) {
         DynamicListImpl ret = new DynamicListImpl(listDescriptor);
         if (listDescriptor.getContentType() == null) {
-            throw new DynamicTypeException("DynamicTypeBuilder - The content type for this array descriptor has not been defined.");
+            throw new DynamicTypeException("DynamicTypeBuilder - The content type for this list descriptor has not been defined.");
         }
         ret.setContentType(this.createData(listDescriptor.getContentType()));
         for (int i=0; i < listDescriptor.getMaxSize(); ++i) {
             ret.setElementAt(this.createData(listDescriptor.getContentType()), i);
         }
+        return ret;
+    }
+    
+    private DynamicSetImpl createSetType(SetTypeDescriptor setDescriptor) {
+        DynamicSetImpl ret = new DynamicSetImpl(setDescriptor);
+        if (setDescriptor.getContentType() == null) {
+            throw new DynamicTypeException("DynamicTypeBuilder - The content type for this set descriptor has not been defined.");
+        }
+        
+        ret.setContentType(this.createData(setDescriptor.getContentType()));
+        for (int i=0; i < setDescriptor.getMaxSize(); ++i) {
+            DynamicDataImpl data = this.createData(setDescriptor.getContentType());
+            data.registerVisitor(ret);
+            ret.setElementAt(data, i);
+        }
+        return ret;
+    }
+    
+    private DynamicMapImpl createMapType(MapTypeDescriptor mapDescriptor) {
+        if (mapDescriptor.getKeyTypeDescriptor() == null) {
+            throw new DynamicTypeException("DynamicTypeBuilder - The content key type for this map descriptor has not been defined.");
+        }
+        
+        if (mapDescriptor.getValueTypeDescriptor() == null) {
+            throw new DynamicTypeException("DynamicTypeBuilder - The content value type for this map descriptor has not been defined.");
+        }
+        
+        DynamicMapImpl ret = new DynamicMapImpl(mapDescriptor);
+        
+        ret.setKeyContentType(this.createData(mapDescriptor.getKeyTypeDescriptor()));
+        ret.setValueContentType(this.createData(mapDescriptor.getValueTypeDescriptor()));
+        
+        for (int i=0; i < mapDescriptor.getMaxSize(); ++i) {
+            DynamicDataImpl key = this.createData(mapDescriptor.getKeyTypeDescriptor());
+            key.registerVisitor(ret);
+            DynamicDataImpl value = this.createData(mapDescriptor.getValueTypeDescriptor());
+            value.registerVisitor(ret);
+            ret.setElementAt(key, value, i);
+        }
+        
         return ret;
     }
 

@@ -7,6 +7,8 @@ public class MapTypeDescriptor extends ConstructedTypeDescriptor {
     private DataTypeDescriptor m_keyDescriptor = null;
     private DataTypeDescriptor m_valueDescriptor = null;
     
+    private int m_maximumSize;
+    
     public MapTypeDescriptor() {
         super(TypeKind.MAP_TYPE, "map");
         this.m_name = "map";
@@ -33,6 +35,26 @@ public class MapTypeDescriptor extends ConstructedTypeDescriptor {
             return true;
         }
         return false;
+    }
+    
+    @Override
+    public DataTypeDescriptor getKeyTypeDescriptor() {
+        return this.m_keyDescriptor;
+    }
+
+    @Override
+    public DataTypeDescriptor getValueTypeDescriptor() {
+        return this.m_valueDescriptor;
+    }
+    
+    @Override
+    public void setMaxSize(int size) {
+        this.m_maximumSize = size;
+    }
+    
+    @Override
+    public int getMaxSize() {
+        return this.m_maximumSize;
     }
     
     

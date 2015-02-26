@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.fiware.kiara.dynamic.DynamicArray;
 import org.fiware.kiara.dynamic.DynamicData;
+import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
@@ -30,6 +31,20 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
         }
         this.m_maxSize = totalSize;
         this.m_members = new ArrayList<DynamicData>(totalSize);
+    }
+    
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicArray) {
+            if (((DynamicArray) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
+                boolean isEquals = true;
+                for (int i=0; i < ((DynamicArrayImpl) anotherObject).getTypeDescriptor().getMaxSize(); ++i) {
+                    isEquals = isEquals & ((DynamicArrayImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                }
+                return isEquals;
+            }
+        }
+        return false;
     }
     
     @Override
@@ -104,13 +119,14 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
            index = index + coord * multiplyDimensions(dimIndex);
            dimIndex++;
         }
+        //System.out.println("LinearIndex:  " + index);
         return index;
     }
     
     private int multiplyDimensions(int dimIndex) {
         int ret = 1;
         for (int i = dimIndex; i < this.m_dimensions.size(); ++i) {
-            ret = ret * this.m_dimensions.get(dimIndex);
+            ret = ret * this.m_dimensions.get(i);
         }
         return ret;
     }

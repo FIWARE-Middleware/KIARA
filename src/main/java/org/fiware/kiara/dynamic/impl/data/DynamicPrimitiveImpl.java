@@ -1,12 +1,18 @@
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
+
 import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
+import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptor;
+
+import com.google.common.base.Objects;
 
 public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrimitive {
     
@@ -24,8 +30,12 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         Class<?> c = value.getClass();
         if (isPrimitive(c)) {
             if(this.typeFits(value)) {
-                checkStringSize(value);
-                this.m_value = value; // TODO Check if value is primitive or not
+                if (this.m_visitor != null) {
+                    (this.m_visitor).exists(this, value);
+                } else {
+                    checkStringSize(value);
+                    this.m_value = value; // TODO Check if value is primitive or not
+                }
                 return true;
             } else {
                 throw new DynamicTypeException(this.m_className + " - A value of type " + value.getClass() + " cannot be assigned to a " + this.m_typeDescriptor.getKind() + " dynamic type.");
@@ -33,6 +43,12 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         }
         
         return false;
+    }
+    
+    @Override
+    public void visit(Object... params) {
+        checkStringSize(params[0]);
+        this.m_value = params[0]; // TODO Check if value is primitive or not
     }
     
     @Override
@@ -55,13 +71,37 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         return this.m_value;
     }
     
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicPrimitive) {
+            if (((DynamicPrimitive) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
+               // if (this.m_typeDescriptor.getKind() == TypeKind.STRING_TYPE) {
+                    if (((DynamicPrimitive) anotherObject).get().equals(this.m_value)) {
+                        return true;
+                    }
+                /*} else {
+                    if (((DynamicPrimitive) anotherObject).get() == this.m_value) {
+                        return true;
+                    }
+                }*/
+            }
+        }
+        return false;
+    }
+    
+   /* @Override
+    public int hashCode() {
+        System.out.println("Se ejecuta hash");
+        return Objects.hashCode(this.m_typeDescriptor.getKind()) + Objects.hashCode(this.m_value);
+    }*/
+    
     private void checkStringSize(Object value) {
         if (value.getClass().equals(String.class)) {
             String stringValue = (String) value;
             if (stringValue.length() > this.m_maxLength) {
                 throw new DynamicTypeException(this.m_className + " - The length of the String value cannot greater than the one specified in the type descriptor.");
             }
-            this.m_maxLength = stringValue.length();
+            //this.m_maxLength = stringValue.length();
         }
     }
     

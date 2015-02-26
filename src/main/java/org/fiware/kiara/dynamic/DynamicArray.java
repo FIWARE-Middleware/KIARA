@@ -1,6 +1,6 @@
 package org.fiware.kiara.dynamic;
 
-public interface DynamicArray {
+public interface DynamicArray extends DynamicContainer {
     
     public DynamicData getElementAt(int... position);
     

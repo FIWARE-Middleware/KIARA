@@ -84,6 +84,10 @@ public interface TypeDescriptor {
     
     public boolean setKeyTypeDescriptor(DataTypeDescriptor keyDescriptor);
     
+    public DataTypeDescriptor getKeyTypeDescriptor();
+    
     public boolean setValueTypeDescriptor(DataTypeDescriptor valueDescriptor);
+    
+    public DataTypeDescriptor getValueTypeDescriptor();
 
 }

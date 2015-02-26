@@ -1,5 +1,7 @@
 package org.fiware.kiara.dynamic.impl;
 
+import java.beans.PropertyChangeSupport;
+
 import org.fiware.kiara.dynamic.DynamicType;
 import org.fiware.kiara.typecode.TypeDescriptor;
 

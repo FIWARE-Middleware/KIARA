@@ -14,6 +14,11 @@ public class ArrayTypeDescriptor extends ContainerTypeDescriptor {
     public void setMaxSize(int size) {
         throw new TypeDescriptorException("ArrayTypeDescriptor - Array type descriptions do not support maximum size. Use setDimensions function instead.");
     }
+    
+    @Override
+    public int getMaxSize() {
+        return this.m_linearSize;
+    }
 
     public ArrayTypeDescriptor(int... dimensions) {
         super(TypeKind.ARRAY_TYPE, "array");

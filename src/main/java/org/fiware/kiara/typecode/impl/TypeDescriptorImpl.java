@@ -171,5 +171,11 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     
     @Override
     public boolean setValueTypeDescriptor(DataTypeDescriptor valueDescriptor) {return false;}
+
+    @Override
+    public DataTypeDescriptor getKeyTypeDescriptor() {return null;}
+
+    @Override
+    public DataTypeDescriptor getValueTypeDescriptor() {return null;}
     
 }
