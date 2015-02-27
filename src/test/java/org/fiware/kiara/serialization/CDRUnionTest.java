@@ -2,52 +2,32 @@ package org.fiware.kiara.serialization;
 
 import static org.junit.Assert.assertTrue;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.fiware.kiara.serialization.impl.BinaryInputStream;
-import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
-import org.junit.After;
+import org.fiware.kiara.serialization.impl.*;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.types.BooleanSwitchUnion;
 import org.fiware.kiara.serialization.types.CharSwitchUnion;
 import org.fiware.kiara.serialization.types.EnumSwitchUnion;
 import org.fiware.kiara.serialization.types.EnumSwitcher;
-import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.serialization.types.IntSwitchUnion;
-import org.fiware.kiara.transport.impl.TransportMessage;
 
 
 public class CDRUnionTest {
-    
+
     private CDRSerializer ser;
-    private ByteBuffer buffer;
-    private TransportMessage message;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
-        this.buffer = ByteBuffer.allocate(500);
-        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer);
     }
 
-    @After
-    public void detach() {
-        this.message.getPayload().clear();
-    }
-
-    public void reset() {
-        this.message.getPayload().clear();
-    }
-    
     /*
      * IntUnionTest
      */
@@ -71,40 +51,43 @@ public class CDRUnionTest {
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeArrayIntSwitchUnionTest() {
-        List<IntSwitchUnion> in = new ArrayList<IntSwitchUnion>();
+        List<IntSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             IntSwitchUnion obj = new IntSwitchUnion();
             obj._d(2);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<IntSwitchUnion>> s
+                = new ListAsArraySerializer<>(5, new ObjectSerializer<>(IntSwitchUnion.class));
+
         List<IntSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", IntSwitchUnion.class, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimArrayIntSwitchUnionTest() {
-        List<ArrayList<IntSwitchUnion>> in = new ArrayList<ArrayList<IntSwitchUnion>>(3);
+    public void deserializeMultiDimArrayIntSwitchUnionTest() {
+        List<List<IntSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<IntSwitchUnion> inner = new ArrayList<IntSwitchUnion>(5);
+            ArrayList<IntSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 IntSwitchUnion obj = new IntSwitchUnion();
                 obj._d(2);
@@ -114,53 +97,60 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<IntSwitchUnion>>> s
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new ObjectSerializer<>(IntSwitchUnion.class)));
+
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 3, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", IntSwitchUnion.class, 3, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeSequenceIntSwitchUnionTest() {
-        List<IntSwitchUnion> in = new ArrayList<IntSwitchUnion>();
+        List<IntSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             IntSwitchUnion obj = new IntSwitchUnion();
             obj._d(2);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<IntSwitchUnion>> s
+                = new ListAsSequenceSerializer<>(new ObjectSerializer<>(IntSwitchUnion.class));
+
         List<IntSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", IntSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSequenceIntSwitchUnionTest() {
-        List<ArrayList<IntSwitchUnion>> in = new ArrayList<ArrayList<IntSwitchUnion>>(3);
+    public void deserializeMultiDimSequenceIntSwitchUnionTest() {
+        List<List<IntSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<IntSwitchUnion> inner = new ArrayList<IntSwitchUnion>(5);
+            ArrayList<IntSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 IntSwitchUnion obj = new IntSwitchUnion();
                 obj._d(2);
@@ -170,25 +160,28 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<IntSwitchUnion>>> s
+                = new ListAsSequenceSerializer<>(new ListAsSequenceSerializer<>(new ObjectSerializer<>(IntSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", IntSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeSetIntSwitchUnionTest() {
-        Set<IntSwitchUnion> in = new HashSet<IntSwitchUnion>();
+    public void deserializeSetIntSwitchUnionTest() {
+        Set<IntSwitchUnion> in = new HashSet<>();
         IntSwitchUnion obj;
         for(int i=0; i < 10; ++i) {
             obj = new IntSwitchUnion();
@@ -197,13 +190,16 @@ public class CDRUnionTest {
             in.add(obj);
         }
 
+        org.fiware.kiara.serialization.impl.Serializer<Set<IntSwitchUnion>> s
+                = new SetAsSetSerializer<>(new ObjectSerializer<>(IntSwitchUnion.class));
+
         Set<IntSwitchUnion> out = null;
-        
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", IntSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -211,15 +207,15 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSetIntSwitchUnionTest() {
+    public void deserializeMultiDimSetIntSwitchUnionTest() {
         int c = 0;
-        Set<HashSet<IntSwitchUnion>> in = new HashSet<HashSet<IntSwitchUnion>>(2);
+        Set<Set<IntSwitchUnion>> in = new HashSet<>(2);
         for(int i=0; i < 2; ++i) {
-            HashSet<IntSwitchUnion> inner = new HashSet<IntSwitchUnion>(3);
+            HashSet<IntSwitchUnion> inner = new HashSet<>(3);
             for (int j=0; j < 3; ++j) {
                 IntSwitchUnion obj = new IntSwitchUnion();
                 obj._d(2);
@@ -228,14 +224,17 @@ public class CDRUnionTest {
             }
             in.add(inner);
         }
-        
-        Set<T> out = null;
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<Set<Set<IntSwitchUnion>>> s
+                = new SetAsSetSerializer<>(new SetAsSetSerializer<>(new ObjectSerializer<>(IntSwitchUnion.class)));
+
+        Set<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", IntSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -243,9 +242,9 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     /*
      * CharUnionTest
      */
@@ -255,7 +254,7 @@ public class CDRUnionTest {
         CharSwitchUnion in = new CharSwitchUnion();
         in._d('3');
         in.setStringVal("MyString");
-        
+
         CharSwitchUnion out = null;
 
         try {
@@ -269,40 +268,43 @@ public class CDRUnionTest {
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeArrayCharSwitchUnionTest() {
-        List<CharSwitchUnion> in = new ArrayList<CharSwitchUnion>();
+        List<CharSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             CharSwitchUnion obj = new CharSwitchUnion();
             obj._d('3');
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<CharSwitchUnion>> s
+                = new ListAsArraySerializer<>(5, new ObjectSerializer<>(CharSwitchUnion.class));
+
         List<CharSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", CharSwitchUnion.class, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimArrayCharSwitchUnionTest() {
-        List<ArrayList<CharSwitchUnion>> in = new ArrayList<ArrayList<CharSwitchUnion>>(3);
+    public void deserializeMultiDimArrayCharSwitchUnionTest() {
+        List<List<CharSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<CharSwitchUnion> inner = new ArrayList<CharSwitchUnion>(5);
+            ArrayList<CharSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 CharSwitchUnion obj = new CharSwitchUnion();
                 obj._d('3');
@@ -312,53 +314,59 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<CharSwitchUnion>>> s
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new ObjectSerializer<>(CharSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 3, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", CharSwitchUnion.class, 3, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeSequenceCharSwitchUnionTest() {
-        List<CharSwitchUnion> in = new ArrayList<CharSwitchUnion>();
+        List<CharSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             CharSwitchUnion obj = new CharSwitchUnion();
             obj._d('3');
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<CharSwitchUnion>> s
+                = new ListAsSequenceSerializer<>(new ObjectSerializer<>(CharSwitchUnion.class));
+
         List<CharSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", CharSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSequenceCharSwitchUnionTest() {
-        List<ArrayList<CharSwitchUnion>> in = new ArrayList<ArrayList<CharSwitchUnion>>(3);
+    public void deserializeMultiDimSequenceCharSwitchUnionTest() {
+        List<List<CharSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<CharSwitchUnion> inner = new ArrayList<CharSwitchUnion>(5);
+            List<CharSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 CharSwitchUnion obj = new CharSwitchUnion();
                 obj._d('3');
@@ -368,25 +376,29 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<CharSwitchUnion>>> s
+                = new ListAsSequenceSerializer<>(
+                    new ListAsSequenceSerializer<>(new ObjectSerializer<>(CharSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", CharSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeSetCharSwitchUnionTest() {
-        Set<CharSwitchUnion> in = new HashSet<CharSwitchUnion>();
+    public void deserializeSetCharSwitchUnionTest() {
+        Set<CharSwitchUnion> in = new HashSet<>();
         CharSwitchUnion obj;
         for(int i=0; i < 10; ++i) {
             obj = new CharSwitchUnion();
@@ -395,13 +407,16 @@ public class CDRUnionTest {
             in.add(obj);
         }
 
+        org.fiware.kiara.serialization.impl.Serializer<Set<CharSwitchUnion>> s
+                = new SetAsSetSerializer<>(new ObjectSerializer<>(CharSwitchUnion.class));
+
         Set<CharSwitchUnion> out = null;
-        
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", CharSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -409,15 +424,15 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSetCharSwitchUnionTest() {
+    public void deserializeMultiDimSetCharSwitchUnionTest() {
         int c = 0;
-        Set<HashSet<CharSwitchUnion>> in = new HashSet<HashSet<CharSwitchUnion>>(2);
+        Set<Set<CharSwitchUnion>> in = new HashSet<>(2);
         for(int i=0; i < 2; ++i) {
-            HashSet<CharSwitchUnion> inner = new HashSet<CharSwitchUnion>(3);
+            HashSet<CharSwitchUnion> inner = new HashSet<>(3);
             for (int j=0; j < 3; ++j) {
                 CharSwitchUnion obj = new CharSwitchUnion();
                 obj._d('3');
@@ -426,14 +441,17 @@ public class CDRUnionTest {
             }
             in.add(inner);
         }
-        
-        Set<T> out = null;
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<Set<Set<CharSwitchUnion>>> s
+                = new SetAsSetSerializer<>(new SetAsSetSerializer<>(new ObjectSerializer<>(CharSwitchUnion.class)));
+
+        Set<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", CharSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -441,10 +459,10 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
-    
+
+
     /*
      * BooleanUnionTest
      */
@@ -468,40 +486,43 @@ public class CDRUnionTest {
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeArrayBooleanSwitchUnionTest() {
-        List<BooleanSwitchUnion> in = new ArrayList<BooleanSwitchUnion>();
+        List<BooleanSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             BooleanSwitchUnion obj = new BooleanSwitchUnion();
             obj._d(false);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<BooleanSwitchUnion>> s
+                = new ListAsArraySerializer<>(5, new ObjectSerializer<>(BooleanSwitchUnion.class));
+
         List<BooleanSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", BooleanSwitchUnion.class, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimArrayBooleanSwitchUnionTest() {
-        List<ArrayList<BooleanSwitchUnion>> in = new ArrayList<ArrayList<BooleanSwitchUnion>>(3);
+    public void deserializeMultiDimArrayBooleanSwitchUnionTest() {
+        List<List<BooleanSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<BooleanSwitchUnion> inner = new ArrayList<BooleanSwitchUnion>(5);
+            ArrayList<BooleanSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 BooleanSwitchUnion obj = new BooleanSwitchUnion();
                 obj._d(false);
@@ -511,53 +532,59 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<BooleanSwitchUnion>>> s
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new ObjectSerializer<>(BooleanSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 3, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", BooleanSwitchUnion.class, 3, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeSequenceBooleanSwitchUnionTest() {
-        List<BooleanSwitchUnion> in = new ArrayList<BooleanSwitchUnion>();
+        List<BooleanSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             BooleanSwitchUnion obj = new BooleanSwitchUnion();
             obj._d(false);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<BooleanSwitchUnion>> s
+                = new ListAsSequenceSerializer<>(new ObjectSerializer<>(BooleanSwitchUnion.class));
+
         List<BooleanSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", BooleanSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSequenceBooleanSwitchUnionTest() {
-        List<ArrayList<BooleanSwitchUnion>> in = new ArrayList<ArrayList<BooleanSwitchUnion>>(3);
+    public void deserializeMultiDimSequenceBooleanSwitchUnionTest() {
+        List<List<BooleanSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<BooleanSwitchUnion> inner = new ArrayList<BooleanSwitchUnion>(5);
+            ArrayList<BooleanSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 BooleanSwitchUnion obj = new BooleanSwitchUnion();
                 obj._d(false);
@@ -567,25 +594,28 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<BooleanSwitchUnion>>> s
+                = new ListAsSequenceSerializer<>(new ListAsSequenceSerializer<>(new ObjectSerializer<>(BooleanSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", BooleanSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeSetBooleanSwitchUnionTest() {
-        Set<BooleanSwitchUnion> in = new HashSet<BooleanSwitchUnion>();
+    public void deserializeSetBooleanSwitchUnionTest() {
+        Set<BooleanSwitchUnion> in = new HashSet<>();
         BooleanSwitchUnion obj;
         for(int i=0; i < 10; ++i) {
             obj = new BooleanSwitchUnion();
@@ -594,13 +624,16 @@ public class CDRUnionTest {
             in.add(obj);
         }
 
+        org.fiware.kiara.serialization.impl.Serializer<Set<BooleanSwitchUnion>> s
+                = new SetAsSetSerializer<>(new ObjectSerializer<>(BooleanSwitchUnion.class));
+
         Set<BooleanSwitchUnion> out = null;
-        
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", BooleanSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -608,15 +641,15 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSetBooleanSwitchUnionTest() {
+    public void deserializeMultiDimSetBooleanSwitchUnionTest() {
         int c = 0;
-        Set<HashSet<BooleanSwitchUnion>> in = new HashSet<HashSet<BooleanSwitchUnion>>(2);
+        Set<Set<BooleanSwitchUnion>> in = new HashSet<>(2);
         for(int i=0; i < 2; ++i) {
-            HashSet<BooleanSwitchUnion> inner = new HashSet<BooleanSwitchUnion>(3);
+            HashSet<BooleanSwitchUnion> inner = new HashSet<>(3);
             for (int j=0; j < 3; ++j) {
                 BooleanSwitchUnion obj = new BooleanSwitchUnion();
                 obj._d(false);
@@ -625,14 +658,17 @@ public class CDRUnionTest {
             }
             in.add(inner);
         }
-        
-        Set<T> out = null;
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<Set<Set<BooleanSwitchUnion>>> s
+                = new SetAsSetSerializer<>(new SetAsSetSerializer<>(new ObjectSerializer<>(BooleanSwitchUnion.class)));
+
+        Set<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", BooleanSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -640,9 +676,9 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     /*
      * EnumUnionTest
      */
@@ -666,40 +702,43 @@ public class CDRUnionTest {
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeArrayEnumSwitchUnionTest() {
-        List<EnumSwitchUnion> in = new ArrayList<EnumSwitchUnion>();
+        List<EnumSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             EnumSwitchUnion obj = new EnumSwitchUnion();
             obj._d(EnumSwitcher.option_3);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<EnumSwitchUnion>> s
+                = new ListAsArraySerializer<>(5, new ObjectSerializer<>(EnumSwitchUnion.class));
+
         List<EnumSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", EnumSwitchUnion.class, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimArrayEnumSwitchUnionTest() {
-        List<ArrayList<EnumSwitchUnion>> in = new ArrayList<ArrayList<EnumSwitchUnion>>(3);
+    public void deserializeMultiDimArrayEnumSwitchUnionTest() {
+        List<List<EnumSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<EnumSwitchUnion> inner = new ArrayList<EnumSwitchUnion>(5);
+            ArrayList<EnumSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 EnumSwitchUnion obj = new EnumSwitchUnion();
                 obj._d(EnumSwitcher.option_3);
@@ -709,53 +748,59 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<EnumSwitchUnion>>> s
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new ObjectSerializer<>(EnumSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeArray(bos, "", in, 3, 5);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeArray(bis, "", EnumSwitchUnion.class, 3, 5);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
     public void deserializeSequenceEnumSwitchUnionTest() {
-        List<EnumSwitchUnion> in = new ArrayList<EnumSwitchUnion>();
+        List<EnumSwitchUnion> in = new ArrayList<>();
         for (int i=0; i < 5; ++i) {
             EnumSwitchUnion obj = new EnumSwitchUnion();
             obj._d(EnumSwitcher.option_3);
             obj.setStringVal("MyString");
             in.add(obj);
         }
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<List<EnumSwitchUnion>> s
+                = new ListAsSequenceSerializer<>(new ObjectSerializer<>(EnumSwitchUnion.class));
+
         List<EnumSwitchUnion> out = null;
 
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", EnumSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(in.equals(out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSequenceEnumSwitchUnionTest() {
-        List<ArrayList<EnumSwitchUnion>> in = new ArrayList<ArrayList<EnumSwitchUnion>>(3);
+    public void deserializeMultiDimSequenceEnumSwitchUnionTest() {
+        List<List<EnumSwitchUnion>> in = new ArrayList<>(3);
         for(int i=0; i < 3; ++i) {
-            ArrayList<EnumSwitchUnion> inner = new ArrayList<EnumSwitchUnion>(5);
+            ArrayList<EnumSwitchUnion> inner = new ArrayList<>(5);
             for (int j=0; j < 5; ++j) {
                 EnumSwitchUnion obj = new EnumSwitchUnion();
                 obj._d(EnumSwitcher.option_3);
@@ -765,25 +810,28 @@ public class CDRUnionTest {
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<EnumSwitchUnion>>> s
+                = new ListAsSequenceSerializer<>(new ListAsSequenceSerializer<>(new ObjectSerializer<>(EnumSwitchUnion.class)));
+
+        List<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSequence(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSequence(bis, "", EnumSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeSetEnumSwitchUnionTest() {
-        Set<EnumSwitchUnion> in = new HashSet<EnumSwitchUnion>();
+    public void deserializeSetEnumSwitchUnionTest() {
+        Set<EnumSwitchUnion> in = new HashSet<>();
         EnumSwitchUnion obj;
         for(int i=0; i < 10; ++i) {
             obj = new EnumSwitchUnion();
@@ -792,13 +840,16 @@ public class CDRUnionTest {
             in.add(obj);
         }
 
+        org.fiware.kiara.serialization.impl.Serializer<Set<EnumSwitchUnion>> s
+                = new SetAsSetSerializer<>(new ObjectSerializer<>(EnumSwitchUnion.class));
+
         Set<EnumSwitchUnion> out = null;
-        
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", EnumSwitchUnion.class, 1);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -806,15 +857,15 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
+
     @Test
-    public <T> void deserializeMultiDimSetEnumSwitchUnionTest() {
+    public void deserializeMultiDimSetEnumSwitchUnionTest() {
         int c = 0;
-        Set<HashSet<EnumSwitchUnion>> in = new HashSet<HashSet<EnumSwitchUnion>>(2);
+        Set<Set<EnumSwitchUnion>> in = new HashSet<>(2);
         for(int i=0; i < 2; ++i) {
-            HashSet<EnumSwitchUnion> inner = new HashSet<EnumSwitchUnion>(3);
+            HashSet<EnumSwitchUnion> inner = new HashSet<>(3);
             for (int j=0; j < 3; ++j) {
                 EnumSwitchUnion obj = new EnumSwitchUnion();
                 obj._d(EnumSwitcher.option_3);
@@ -823,14 +874,17 @@ public class CDRUnionTest {
             }
             in.add(inner);
         }
-        
-        Set<T> out = null;
-        
+
+        org.fiware.kiara.serialization.impl.Serializer<Set<Set<EnumSwitchUnion>>> s
+                = new SetAsSetSerializer<>(new SetAsSetSerializer<>(new ObjectSerializer<>(EnumSwitchUnion.class)));
+
+        Set<?> out = null;
+
         try {
             BinaryOutputStream bos = new BinaryOutputStream();
-            ser.serializeSet(bos, "", in);
+            s.write(ser, bos, "", in);
             BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-            out = ser.deserializeSet(bis, "", EnumSwitchUnion.class, 2);
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -838,11 +892,11 @@ public class CDRUnionTest {
         
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
+
     }
-    
-    
-    
+
+
+
     
     
 }
