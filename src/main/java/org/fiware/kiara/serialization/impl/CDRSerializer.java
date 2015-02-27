@@ -429,7 +429,8 @@ public class CDRSerializer implements SerializerImpl {
         return ret;
     }
 
-   @Override
+    @Deprecated
+    @Override
     public <T> void serializeArrayChar(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
         int len = dims[0];
@@ -445,9 +446,10 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
-   @SuppressWarnings("unchecked")
-   @Override
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    @Override
     public <T, M> List<M> deserializeArrayChar(BinaryInputStream message, String name, int... dims) throws IOException {
 
         int len = dims[0];
@@ -466,6 +468,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayByte(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -482,7 +485,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayByte(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -503,6 +507,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayI16(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -519,7 +524,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayI16(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -540,6 +546,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayUI16(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -556,7 +563,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayUI16(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -577,6 +585,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayI32(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -594,7 +603,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayI32(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -615,6 +625,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayUI32(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -631,7 +642,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayUI32(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -652,6 +664,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayI64(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -668,7 +681,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayI64(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -689,6 +703,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayUI64(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -705,7 +720,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayUI64(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -726,6 +742,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayFloat32(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -742,7 +759,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayFloat32(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -763,6 +781,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayFloat64(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -779,7 +798,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayFloat64(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -800,6 +820,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayBoolean(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -816,7 +837,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayBoolean(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -837,6 +859,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeArrayString(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
 
@@ -853,7 +876,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArrayString(BinaryInputStream message, String name, int... dims) throws IOException {
@@ -877,7 +901,8 @@ public class CDRSerializer implements SerializerImpl {
     /*
      * Array of generic types
      */
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T> void serializeArray(BinaryOutputStream message, String name, List<T> array, int... dims) throws IOException {
@@ -899,7 +924,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeArray(BinaryInputStream message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException, IOException {
@@ -935,6 +961,7 @@ public class CDRSerializer implements SerializerImpl {
      * Sequences of simple types
      */
 
+    @Deprecated
     @Override
     public <T> void serializeSequenceChar(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
         if (sequence.size() > 0) {
@@ -950,10 +977,11 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T, M> List<M> deserializeSequenceChar(BinaryInputStream message, String name, int depth) throws IOException {
+
+    @Deprecated
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T, M> List<M> deserializeSequenceChar(BinaryInputStream message, String name, int depth) throws IOException {
 
        int length = this.deserializeI32(message, "");
 
@@ -972,8 +1000,9 @@ public class CDRSerializer implements SerializerImpl {
        return array;
     }
 
-   @Override
-   public <T> void serializeSequenceByte(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
+    @Deprecated
+    @Override
+    public <T> void serializeSequenceByte(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
        if (sequence.size() > 0) {
            this.serializeI32(message, "", ((List<?>) sequence).size());
            if (sequence.get(0) instanceof List) {
@@ -985,9 +1014,10 @@ public class CDRSerializer implements SerializerImpl {
                    this.serializeByte(message, name, (Byte) sequence.get(i));
                }
            }
-       }
-   }
-   
+        }
+    }
+
+    @Deprecated
   @SuppressWarnings("unchecked")
   @Override
   public <T, M> List<M> deserializeSequenceByte(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1009,6 +1039,7 @@ public class CDRSerializer implements SerializerImpl {
       return array;
    }
 
+    @Deprecated
       @Override
       public <T> void serializeSequenceI16(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
           if (sequence.size() > 0) {
@@ -1024,7 +1055,8 @@ public class CDRSerializer implements SerializerImpl {
               }
           }
       }
-      
+
+     @Deprecated
      @SuppressWarnings("unchecked")
      @Override
      public <T, M> List<M> deserializeSequenceI16(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1046,6 +1078,8 @@ public class CDRSerializer implements SerializerImpl {
          return array;
      }
 
+
+     @Deprecated
      @Override
      public <T> void serializeSequenceUI16(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
          if (sequence.size() > 0) {
@@ -1061,7 +1095,8 @@ public class CDRSerializer implements SerializerImpl {
              }
          }
      }
-     
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeSequenceUI16(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1083,6 +1118,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSequenceI32(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
         if (sequence.size() > 0) {
@@ -1098,7 +1134,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+    @Deprecated
    @SuppressWarnings("unchecked")
    @Override
    public <T, M> List<M> deserializeSequenceI32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1120,6 +1157,7 @@ public class CDRSerializer implements SerializerImpl {
        return array;
    }
 
+    @Deprecated
    @Override
    public <T> void serializeSequenceUI32(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
        if (sequence.size() > 0) {
@@ -1135,7 +1173,8 @@ public class CDRSerializer implements SerializerImpl {
            }
        }
    }
-   
+
+    @Deprecated
   @SuppressWarnings("unchecked")
   @Override
   public <T, M> List<M> deserializeSequenceUI32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1157,6 +1196,7 @@ public class CDRSerializer implements SerializerImpl {
       return array;
   }
 
+    @Deprecated
   @Override
   public <T> void serializeSequenceI64(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
       if (sequence.size() > 0) {
@@ -1172,7 +1212,8 @@ public class CDRSerializer implements SerializerImpl {
           }
       }
   }
-  
+
+    @Deprecated
      @SuppressWarnings("unchecked")
      @Override
      public <T, M> List<M> deserializeSequenceI64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1194,6 +1235,7 @@ public class CDRSerializer implements SerializerImpl {
          return array;
      }
 
+    @Deprecated
      @Override
      public <T> void serializeSequenceUI64(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
          if (sequence.size() > 0) {
@@ -1209,7 +1251,8 @@ public class CDRSerializer implements SerializerImpl {
              }
          }
      }
-     
+
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> List<M> deserializeSequenceUI64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1231,6 +1274,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSequenceFloat32(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
         if (sequence.size() > 0) {
@@ -1246,7 +1290,8 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
     }
-    
+
+       @Deprecated
        @SuppressWarnings("unchecked")
        @Override
        public <T, M> List<M> deserializeSequenceFloat32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1268,6 +1313,7 @@ public class CDRSerializer implements SerializerImpl {
            return array;
        }
 
+       @Deprecated
        @Override
        public <T> void serializeSequenceFloat64(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
            if (sequence.size() > 0) {
@@ -1283,7 +1329,8 @@ public class CDRSerializer implements SerializerImpl {
                }
            }
        }
-       
+
+      @Deprecated
       @SuppressWarnings("unchecked")
       @Override
       public <T, M> List<M> deserializeSequenceFloat64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1305,6 +1352,7 @@ public class CDRSerializer implements SerializerImpl {
           return array;
       }
 
+      @Deprecated
       @Override
       public <T> void serializeSequenceBoolean(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
           if (sequence.size() > 0) {
@@ -1320,7 +1368,8 @@ public class CDRSerializer implements SerializerImpl {
               }
           }
       }
-      
+
+         @Deprecated
          @SuppressWarnings("unchecked")
          @Override
          public <T, M> List<M> deserializeSequenceBoolean(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1342,6 +1391,7 @@ public class CDRSerializer implements SerializerImpl {
              return array;
          }
 
+         @Deprecated
          @Override
          public <T> void serializeSequenceString(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
              if (sequence.size() > 0) {
@@ -1357,7 +1407,8 @@ public class CDRSerializer implements SerializerImpl {
                  }
              }
          }
-         
+
+        @Deprecated
         @SuppressWarnings("unchecked")
         @Override
         public <T, M> List<M> deserializeSequenceString(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1379,6 +1430,7 @@ public class CDRSerializer implements SerializerImpl {
             return array;
         }
 
+        @Deprecated
         @Override
         public <T> void serializeSequence(BinaryOutputStream message, String name, List<T> sequence) throws IOException {
             if (sequence.size() > 0) {
@@ -1399,6 +1451,7 @@ public class CDRSerializer implements SerializerImpl {
             }
         }
 
+        @Deprecated
         @SuppressWarnings("unchecked")
         @Override
         public <T, M> List<M> deserializeSequence(BinaryInputStream message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException, IOException {
@@ -1538,6 +1591,7 @@ public class CDRSerializer implements SerializerImpl {
      * Sets
      */
 
+    @Deprecated
     @Override
     public <T> void serializeSetChar(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1557,6 +1611,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetChar(BinaryInputStream message,String name, int depth) throws IOException {
@@ -1577,6 +1632,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetByte(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1596,6 +1652,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetByte(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1616,6 +1673,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetI16(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1635,6 +1693,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetI16(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1655,6 +1714,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetUI16(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1674,6 +1734,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetUI16(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1694,6 +1755,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetI32(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1713,6 +1775,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetI32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1733,6 +1796,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetUI32(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1752,6 +1816,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetUI32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1772,6 +1837,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetI64(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1791,6 +1857,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetI64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1811,6 +1878,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetUI64(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1830,6 +1898,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetUI64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1850,6 +1919,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetFloat32(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1869,6 +1939,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetFloat32(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1889,6 +1960,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetFloat64(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1908,6 +1980,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetFloat64(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1928,6 +2001,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetBoolean(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1947,6 +2021,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetBoolean(BinaryInputStream message, String name, int depth) throws IOException {
@@ -1967,6 +2042,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @Override
     public <T> void serializeSetString(BinaryOutputStream message, String name, Set<T> set) throws IOException {
         if (set.size() > 0) {
@@ -1986,6 +2062,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSetString(BinaryInputStream message, String name, int depth) throws IOException {
@@ -2006,6 +2083,7 @@ public class CDRSerializer implements SerializerImpl {
         return array;
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T> void serializeSet(BinaryOutputStream message, String name, Set<T> set) throws IOException {
@@ -2031,6 +2109,7 @@ public class CDRSerializer implements SerializerImpl {
         }
     }
 
+    @Deprecated
     @SuppressWarnings("unchecked")
     @Override
     public <T, M> Set<M> deserializeSet(BinaryInputStream message, String name, Class<T> example, int depth) throws IOException, InstantiationException, IllegalAccessException {
