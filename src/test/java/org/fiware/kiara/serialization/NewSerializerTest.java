@@ -177,7 +177,7 @@ public class NewSerializerTest {
         s1.write(ser, bos, "", array);
 
         BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
-        Set<Integer> result = ser.deserializeSetI32(bis, "", 1);
+        Set<Integer> result = s1.read(ser, bis, "");
 
         Assert.assertEquals(array, result);
     }
