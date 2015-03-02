@@ -15,7 +15,7 @@ public enum TypeKind {
     STRING_TYPE,
     
     ARRAY_TYPE,
-    SEQUENCE_TYPE,
+    LIST_TYPE,
     MAP_TYPE,
     SET_TYPE,
     

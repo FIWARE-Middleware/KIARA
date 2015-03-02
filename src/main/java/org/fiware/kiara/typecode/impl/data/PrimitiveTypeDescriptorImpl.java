@@ -1,13 +1,15 @@
 package org.fiware.kiara.typecode.impl.data;
 
+import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 
-public class PrimitiveTypeDescriptor extends DataTypeDescriptor {
+public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implements PrimitiveTypeDescriptor {
 
     private boolean m_primitive = false;
     private int m_maxFixedLength = 0;
     
-    public PrimitiveTypeDescriptor(TypeKind kind, String name) {
+    public PrimitiveTypeDescriptorImpl(TypeKind kind, String name) {
         super(kind, name);
         this.initialize();
         if (name != null && name.length() != 0) {
@@ -34,6 +36,8 @@ public class PrimitiveTypeDescriptor extends DataTypeDescriptor {
     public void setMaxFixedLength(int length) {
         if (this.m_kind == TypeKind.STRING_TYPE) {
             this.m_maxFixedLength = length;
+        } else {
+            throw new TypeDescriptorException("PrimitiveTypeDescriptor - Only PrimitiveTypeDescriptor objects whose kind is STRING_TYPE are allowed to have maximum fixed length.");
         }
     }
     
@@ -41,8 +45,9 @@ public class PrimitiveTypeDescriptor extends DataTypeDescriptor {
     public int getMaxFixedLength() {
         if (this.m_kind == TypeKind.STRING_TYPE) {
             return this.m_maxFixedLength;
+        } else {
+            throw new TypeDescriptorException("PrimitiveTypeDescriptor - Only PrimitiveTypeDescriptor objects whose kind is STRING_TYPE are allowed to have maximum fixed length.");
         }
-        return -1;
     }
     
     /*

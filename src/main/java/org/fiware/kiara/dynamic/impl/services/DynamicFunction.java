@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 //import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptor;
-import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 
 
 public class DynamicFunction /*extends DynamicTypeImpl*/ {
     
-    public DynamicFunction(FunctionTypeDescriptor functionTypeDescriptor) {
+    public DynamicFunction(FunctionTypeDescriptorImpl functionTypeDescriptor) {
         //super(functionTypeDescriptor);
         
         /*DataTypeDescriptor returnType = functionTypeDescriptor.getReturnType();

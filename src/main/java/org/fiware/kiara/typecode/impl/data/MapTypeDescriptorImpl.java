@@ -1,15 +1,18 @@
 package org.fiware.kiara.typecode.impl.data;
 
+import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 
-public class MapTypeDescriptor extends ConstructedTypeDescriptor {
+public class MapTypeDescriptorImpl extends ConstructedTypeDescriptorImpl implements MapTypeDescriptor {
 
     private DataTypeDescriptor m_keyDescriptor = null;
     private DataTypeDescriptor m_valueDescriptor = null;
     
     private int m_maximumSize;
     
-    public MapTypeDescriptor() {
+    public MapTypeDescriptorImpl() {
         super(TypeKind.MAP_TYPE, "map");
         this.m_name = "map";
     }
@@ -49,6 +52,9 @@ public class MapTypeDescriptor extends ConstructedTypeDescriptor {
     
     @Override
     public void setMaxSize(int size) {
+        if (size <= 0) {
+            throw new TypeDescriptorException("ListTypeDescriptor - Maximum map size must be greater than zero.");
+        }
         this.m_maximumSize = size;
     }
     

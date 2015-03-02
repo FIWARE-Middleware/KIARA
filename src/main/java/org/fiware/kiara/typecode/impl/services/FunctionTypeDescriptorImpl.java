@@ -3,24 +3,26 @@ package org.fiware.kiara.typecode.impl.services;
 import java.util.ArrayList;
 
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
-public class FunctionTypeDescriptor extends TypeDescriptorImpl {
+public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements FunctionTypeDescriptor {
     
     private DataTypeDescriptor m_returnDescriptor;
     private ArrayList<DataTypeDescriptor> m_parametersDescriptors;
-    private ArrayList<ExceptionTypeDescriptor> m_exceptionsDescriptors;
+    private ArrayList<ExceptionTypeDescriptorImpl> m_exceptionsDescriptors;
 
-    protected FunctionTypeDescriptor() {
+    protected FunctionTypeDescriptorImpl() {
         super(TypeKind.FUNCTION_TYPE, "function");
     }
     
-    protected FunctionTypeDescriptor(
+    protected FunctionTypeDescriptorImpl(
             DataTypeDescriptor returnDescriptor, 
             ArrayList<DataTypeDescriptor> parametersDescriptors, 
-            ArrayList<ExceptionTypeDescriptor> exceptionsDescriptors) {
+            ArrayList<ExceptionTypeDescriptorImpl> exceptionsDescriptors) {
         super(TypeKind.FUNCTION_TYPE, "function");
         this.m_returnDescriptor = returnDescriptor;
         this.m_parametersDescriptors = parametersDescriptors;
@@ -43,7 +45,7 @@ public class FunctionTypeDescriptor extends TypeDescriptorImpl {
     }
     
     @Override
-    public ArrayList<ExceptionTypeDescriptor> getExceptions() {
+    public ArrayList<ExceptionTypeDescriptorImpl> getExceptions() {
         return this.m_exceptionsDescriptors;
     }
 

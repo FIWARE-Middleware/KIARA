@@ -6,6 +6,6 @@ public interface Visitor {
 
     public void visit(Object... params);
     
-    public boolean exists(DynamicDataImpl value, Object... params);
+    public boolean notify(DynamicDataImpl value, Object... params);
     
 }

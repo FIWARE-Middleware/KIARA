@@ -11,8 +11,9 @@ import org.fiware.kiara.serialization.MockTransportMessage;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.TypeKind;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void booleanPrimitiveTest() {
         
-        DataTypeDescriptor booleanDesc = new PrimitiveTypeDescriptor(TypeKind.BOOLEAN_TYPE, "");
+        PrimitiveTypeDescriptor booleanDesc = new PrimitiveTypeDescriptorImpl(TypeKind.BOOLEAN_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(booleanDesc);
         dyn.set(false);
         assertEquals(dyn.get(), false);
@@ -62,7 +63,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void bytePrimitiveTest() {
         
-        DataTypeDescriptor byteDesc = new PrimitiveTypeDescriptor(TypeKind.BYTE_TYPE, "");
+        PrimitiveTypeDescriptor byteDesc = new PrimitiveTypeDescriptorImpl(TypeKind.BYTE_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(byteDesc);
         if (!dyn.set((byte) 4)) {
             assertTrue(false);
@@ -78,7 +79,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void int16PrimitiveTest() {
         
-        DataTypeDescriptor int16Desc = new PrimitiveTypeDescriptor(TypeKind.INT_16_TYPE, "");
+        PrimitiveTypeDescriptor int16Desc = new PrimitiveTypeDescriptorImpl(TypeKind.INT_16_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(int16Desc);
         if (!dyn.set((short) 4)) {
             assertTrue(false);
@@ -94,7 +95,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void uint16PrimitiveTest() {
         
-        DataTypeDescriptor uint16Desc = new PrimitiveTypeDescriptor(TypeKind.UINT_16_TYPE, "");
+        PrimitiveTypeDescriptor uint16Desc = new PrimitiveTypeDescriptorImpl(TypeKind.UINT_16_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(uint16Desc);
         if (!dyn.set((short) 4)) {
             assertTrue(false);
@@ -110,7 +111,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void int32PrimitiveTest() {
         
-        DataTypeDescriptor int32Desc = new PrimitiveTypeDescriptor(TypeKind.INT_32_TYPE, "");
+        PrimitiveTypeDescriptor int32Desc = new PrimitiveTypeDescriptorImpl(TypeKind.INT_32_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(int32Desc);
         if (!dyn.set((int) 4)) {
             assertTrue(false);
@@ -126,7 +127,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void uint32PrimitiveTest() {
         
-        DataTypeDescriptor uint32Desc = new PrimitiveTypeDescriptor(TypeKind.UINT_32_TYPE, "");
+        PrimitiveTypeDescriptor uint32Desc = new PrimitiveTypeDescriptorImpl(TypeKind.UINT_32_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(uint32Desc);
         if (!dyn.set((int) 4)) {
             assertTrue(false);
@@ -142,7 +143,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void int64PrimitiveTest() {
         
-        DataTypeDescriptor int64Desc = new PrimitiveTypeDescriptor(TypeKind.INT_64_TYPE, "");
+        PrimitiveTypeDescriptor int64Desc = new PrimitiveTypeDescriptorImpl(TypeKind.INT_64_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(int64Desc);
         if (!dyn.set((long) 4)) {
             assertTrue(false);
@@ -158,7 +159,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void uint64PrimitiveTest() {
         
-        DataTypeDescriptor uint64Desc = new PrimitiveTypeDescriptor(TypeKind.UINT_64_TYPE, "");
+        PrimitiveTypeDescriptor uint64Desc = new PrimitiveTypeDescriptorImpl(TypeKind.UINT_64_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(uint64Desc);
         if (!dyn.set((long) 4)) {
             assertTrue(false);
@@ -174,7 +175,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void float32PrimitiveTest() {
         
-        DataTypeDescriptor float32Desc = new PrimitiveTypeDescriptor(TypeKind.FLOAT_32_TYPE, "");
+        PrimitiveTypeDescriptor float32Desc = new PrimitiveTypeDescriptorImpl(TypeKind.FLOAT_32_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(float32Desc);
         if (!dyn.set((float) 4)) {
             assertTrue(false);
@@ -190,7 +191,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void float64PrimitiveTest() {
         
-        DataTypeDescriptor float64Desc = new PrimitiveTypeDescriptor(TypeKind.FLOAT_64_TYPE, "");
+        PrimitiveTypeDescriptor float64Desc = new PrimitiveTypeDescriptorImpl(TypeKind.FLOAT_64_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(float64Desc);
         if (!dyn.set((double) 4)) {
             assertTrue(false);
@@ -206,7 +207,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void charPrimitiveTest() {
         
-        DataTypeDescriptor charDesc = new PrimitiveTypeDescriptor(TypeKind.CHAR_8_TYPE, "");
+        PrimitiveTypeDescriptor charDesc = new PrimitiveTypeDescriptorImpl(TypeKind.CHAR_8_TYPE, "");
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(charDesc);
         if (!dyn.set((char) 'S')) {
             assertTrue(false);
@@ -222,7 +223,7 @@ public class DynamicPrimitiveTest {
     @Test
     public void stringPrimitiveTest() {
         
-        DataTypeDescriptor stringDesc = new PrimitiveTypeDescriptor(TypeKind.STRING_TYPE, "");
+        PrimitiveTypeDescriptor stringDesc = new PrimitiveTypeDescriptorImpl(TypeKind.STRING_TYPE, "");
         stringDesc.setMaxFixedLength(5);
         DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(stringDesc);
         if (!dyn.set((String) "Test")) {

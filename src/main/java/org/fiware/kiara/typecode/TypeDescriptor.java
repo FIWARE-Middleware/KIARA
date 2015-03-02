@@ -2,9 +2,11 @@ package org.fiware.kiara.typecode;
 
 import java.util.ArrayList;
 
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptor;
-import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 public interface TypeDescriptor {
     
@@ -20,7 +22,7 @@ public interface TypeDescriptor {
     
     public boolean isPrimitive();
     
-    public boolean isString();
+    //public boolean isString();
     
     // ---------------------- Constructed -----------------------
     
@@ -30,15 +32,15 @@ public interface TypeDescriptor {
     
     public boolean isArray();
     
-    public boolean isSequence();
+    public boolean isList();
     
     public boolean isMap();
     
     public boolean isSet();
     
-    public void setMaxSize(int length);
+    /*public void setMaxSize(int length);
     
-    public int getMaxSize();
+    public int getMaxSize();*/
     
     // ----------------------- Membered -----------------------
     
@@ -56,21 +58,21 @@ public interface TypeDescriptor {
     
     public boolean isService();
     
-    public ArrayList<FunctionTypeDescriptor> getFunctions();
+    //public ArrayList<FunctionTypeDescriptor> getFunctions();
     
     // --------------------- Function ------------------------------
     
     public boolean isFunction();
     
-    public DataTypeDescriptor getReturnType();
+    /*public DataTypeDescriptor getReturnType();
     
     public ArrayList<DataTypeDescriptor> getParameters();
     
-    public ArrayList<ExceptionTypeDescriptor> getExceptions();
+    public ArrayList<ExceptionTypeDescriptorImpl> getExceptions();*/
     
     // ------------------------------------------------------------
     
-    public void setMaxFixedLength(int length);
+    /*public void setMaxFixedLength(int length);
     
     public int getMaxFixedLength();
     
@@ -88,6 +90,6 @@ public interface TypeDescriptor {
     
     public boolean setValueTypeDescriptor(DataTypeDescriptor valueDescriptor);
     
-    public DataTypeDescriptor getValueTypeDescriptor();
+    public DataTypeDescriptor getValueTypeDescriptor();*/
 
 }

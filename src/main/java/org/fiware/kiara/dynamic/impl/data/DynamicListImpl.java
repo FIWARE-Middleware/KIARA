@@ -6,13 +6,15 @@ import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicList;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.ListTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
 public class DynamicListImpl extends DynamicContainerImpl implements DynamicList {
     
     private int m_maxSize;
 
-    public DynamicListImpl(DataTypeDescriptor dataDescriptor) {
+    public DynamicListImpl(ListTypeDescriptor dataDescriptor) {
         super(dataDescriptor, "DynamicListImpl");
         this.m_maxSize = dataDescriptor.getMaxSize();
         this.m_members = new ArrayList<DynamicData>(this.m_maxSize);

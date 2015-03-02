@@ -6,14 +6,15 @@ import java.util.List;
 import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.SetTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
 public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
 
     private int m_maxSize;
     private List<Boolean> m_validData;
     
-    public DynamicSetImpl(DataTypeDescriptor dataDescriptor) {
+    public DynamicSetImpl(SetTypeDescriptor dataDescriptor) {
         super(dataDescriptor, "DynamicSetImpl");
         this.m_maxSize = dataDescriptor.getMaxSize();
         this.m_members = new ArrayList<DynamicData>(this.m_maxSize); 
@@ -52,8 +53,14 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
     }
     
     @Override
-    public boolean exists(DynamicDataImpl value, Object... params) {
-        value.visit(params);
+    public boolean notify(DynamicDataImpl value, Object... params) {
+        if (this.m_visitor != null) {
+            this.m_visitor.notify(this, appendParams(value, params));
+        } else {
+            value.visit(params);
+            
+        }
+        
         int index = getIndex(value);
         boolean exists = false;
         if (index != -1) {
@@ -69,7 +76,16 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
             }
             //System.out.println("NOT Added");
         }
+        
         return false;
+    }
+    
+    @Override
+    public void visit(Object... params) {
+        DynamicDataImpl value = (DynamicDataImpl) params[0];
+        
+        value.visit(trimParams(params));
+        
     }
     
     private int getIndex(DynamicDataImpl dynData) {

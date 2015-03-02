@@ -2,9 +2,9 @@ package org.fiware.kiara.typecode.impl.data;
 
 import org.fiware.kiara.typecode.TypeKind;
 
-public class ExceptionTypeDescriptor extends MemberedTypeDescriptor {
+public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl {
 
-    public ExceptionTypeDescriptor(TypeKind kind, String name) {
+    public ExceptionTypeDescriptorImpl(TypeKind kind, String name) {
         super(kind, name);
     }
     

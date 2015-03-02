@@ -6,7 +6,8 @@ import java.util.HashMap;
 import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicMap;
 import org.fiware.kiara.exceptions.DynamicTypeException;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.MapTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
 public class DynamicMapImpl extends DynamicConstructedImpl implements DynamicMap {
     
@@ -18,9 +19,9 @@ public class DynamicMapImpl extends DynamicConstructedImpl implements DynamicMap
     private DynamicData m_keyContentType;
     private DynamicData m_valueContentType;
 
-    public DynamicMapImpl(DataTypeDescriptor dataDescriptor) {
-        super(dataDescriptor, "DynamicMapImpl");
-        this.m_maxSize = dataDescriptor.getMaxSize();
+    public DynamicMapImpl(MapTypeDescriptor mapDescriptor) {
+        super(mapDescriptor, "DynamicMapImpl");
+        this.m_maxSize = mapDescriptor.getMaxSize();
         //this.m_members = new HashMap<DynamicData, DynamicData>(this.m_maxSize);
         this.m_validData = new ArrayList<Boolean>(this.m_maxSize);
         this.m_keyMembers = new ArrayList<DynamicData>(this.m_maxSize);
@@ -93,7 +94,7 @@ public class DynamicMapImpl extends DynamicConstructedImpl implements DynamicMap
     }
     
     @Override
-    public boolean exists(DynamicDataImpl value, Object... params) {
+    public boolean notify(DynamicDataImpl value, Object... params) {
         value.visit(params);
         int index = getIndex(value);
         boolean exists = false;

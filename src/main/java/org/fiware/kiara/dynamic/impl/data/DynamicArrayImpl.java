@@ -6,21 +6,23 @@ import org.fiware.kiara.dynamic.DynamicArray;
 import org.fiware.kiara.dynamic.DynamicData;
 import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
+import org.fiware.kiara.dynamic.impl.data.visitor.Visitor;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptor;
+import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 
-public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl implements DynamicArray {
+public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArray {
     
     private int m_maxSize;
     private ArrayList<Integer> m_dimensions;
-    //private DynamicData m_contentType
-
-    public DynamicArrayImpl(ArrayTypeDescriptor typeDescriptor) {
-        super(typeDescriptor, "DynamicArrayImpl");
+    private int temporalAccessIndex = -1;
+    
+    public DynamicArrayImpl(ArrayTypeDescriptor arrayDescriptor) {
+        super(arrayDescriptor, "DynamicArrayImpl");
         this.m_members = new ArrayList<DynamicData>();
-        this.m_maxSize = typeDescriptor.getMaxSize();
-        this.m_dimensions = new ArrayList<Integer>(typeDescriptor.getDimensions());
+        this.m_maxSize = arrayDescriptor.getMaxSize();
+        this.m_dimensions = new ArrayList<Integer>(arrayDescriptor.getDimensions());
         this.initializeAray();
     }
     
@@ -38,7 +40,7 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
         if (anotherObject instanceof DynamicArray) {
             if (((DynamicArray) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
                 boolean isEquals = true;
-                for (int i=0; i < ((DynamicArrayImpl) anotherObject).getTypeDescriptor().getMaxSize(); ++i) {
+                for (int i=0; i < ((ArrayTypeDescriptor) ((DynamicArrayImpl) anotherObject).getTypeDescriptor()).getMaxSize(); ++i) {
                     isEquals = isEquals & ((DynamicArrayImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
                 }
                 return isEquals;
@@ -48,16 +50,16 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
     }
     
     @Override
-    public DynamicTypeImpl getContentType() {
+    public DynamicData getContentType() {
         return this.m_contentType;
     }
     
     @Override
-    public void setContentType(DynamicDataImpl contentType) {
-        if (contentType instanceof DynamicArrayImpl) {
+    public void setContentType(DynamicData dynamicData) {
+        if (dynamicData instanceof DynamicArrayImpl) {
             throw new DynamicTypeException(this.m_className + " - A DynamicArrayDataType object cannot be assigned as content to another DynamicArrayDataType.");
         }
-        this.m_contentType = contentType;
+        this.m_contentType = dynamicData;
     }
     
     @Override
@@ -71,6 +73,8 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
         }
         
         int accessIndex = calculateAccessIndex(position);
+        
+        this.temporalAccessIndex = accessIndex;
         
         return this.m_members.get(accessIndex);
     }
@@ -91,11 +95,40 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
                 this.m_members.add(accessIndex, value);
                 return true;
             } else {
-                return (this.m_members.set(accessIndex, value) != null);
+                if (this.m_visitor != null) {
+                    (this.m_visitor).notify(this, value);
+                } else {
+                    return (this.m_members.set(accessIndex, value) != null);
+                }
             }
         }
         
         return false;
+    }
+    
+    @Override
+    public void visit(Object... params) {
+        DynamicDataImpl value = (DynamicDataImpl) params[0];
+        
+        value.visit(trimParams(params));
+        
+        //int accessIndex = (int) params[1];
+        
+        //this.m_members.set(accessIndex, value);
+    }
+    
+    @Override
+    public boolean notify(DynamicDataImpl value, Object... params) { // value = value that changes (this); params: the parameters to be used later in visit function
+        if (this.m_visitor != null) {
+            if (temporalAccessIndex != -1) {
+                this.m_visitor.notify(this, appendParams(value, params));
+                temporalAccessIndex = -1;
+            }
+        } else {
+            value.visit(params);
+        }
+        
+        return true;
     }
     
     private boolean checkBoundaries(int... position) {
@@ -108,8 +141,8 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
         return true;
     }
     
-    public void addElement(DynamicDataImpl value) {
-        this.m_members.add(value);
+    public void addElement(DynamicData dynamicData) {
+        this.m_members.add(dynamicData);
     }
     
     private int calculateAccessIndex(int... coordinates) {
@@ -129,6 +162,14 @@ public class DynamicArrayImpl extends /*DynamicArray*/ DynamicContainerImpl impl
             ret = ret * this.m_dimensions.get(i);
         }
         return ret;
+    }
+    
+    @Override
+    public void registerVisitor(Visitor visitor) {
+        super.registerVisitor(visitor);
+        for (int i=0; i < this.m_members.size(); ++i) {
+            ((DynamicDataImpl) this.m_members.get(i)).registerVisitor(this);
+        }
     }
 
 }

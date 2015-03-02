@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.TypeKind;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptor;
-import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 public class TypeDescriptorImpl implements TypeDescriptor {
 
@@ -42,10 +44,10 @@ public class TypeDescriptorImpl implements TypeDescriptor {
         return false;
     }
     
-    @Override
+    /*@Override
     public boolean isString() {
         return false;
-    }
+    }*/
     
     @Override
     public boolean isConstructed() {
@@ -63,7 +65,7 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     }
     
     @Override
-    public boolean isSequence() {
+    public boolean isList() {
         return false;
     }
     
@@ -77,7 +79,7 @@ public class TypeDescriptorImpl implements TypeDescriptor {
         return false;
     }
     
-    @Override
+    /*@Override
     public void setMaxSize(int size) {
         
     }
@@ -85,7 +87,7 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     @Override
     public int getMaxSize() {
         return 1;
-    }
+    }*/
     
     @Override
     public boolean isMembered() {
@@ -118,8 +120,13 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     public boolean isService() {
         return false;
     }
-    
+
     @Override
+    public boolean isFunction() {
+        return false;
+    }
+    
+    /*@Override
     public ArrayList<FunctionTypeDescriptor> getFunctions() {
         return null;
     }
@@ -142,13 +149,13 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     }
     
     @Override
-    public ArrayList<ExceptionTypeDescriptor> getExceptions() {
+    public ArrayList<ExceptionTypeDescriptorImpl> getExceptions() {
         return null;
-    }
+    }*/
     
     // -----------------------------------------------------------------
     
-    @Override
+    /*@Override
     public void setMaxFixedLength(int length) {}
     
     @Override
@@ -176,6 +183,6 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     public DataTypeDescriptor getKeyTypeDescriptor() {return null;}
 
     @Override
-    public DataTypeDescriptor getValueTypeDescriptor() {return null;}
+    public DataTypeDescriptor getValueTypeDescriptor() {return null;}*/
     
 }

@@ -10,7 +10,8 @@ import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.TypeKind;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 
 import com.google.common.base.Objects;
 
@@ -31,7 +32,7 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         if (isPrimitive(c)) {
             if(this.typeFits(value)) {
                 if (this.m_visitor != null) {
-                    (this.m_visitor).exists(this, value);
+                    (this.m_visitor).notify(this, value);
                 } else {
                     checkStringSize(value);
                     this.m_value = value; // TODO Check if value is primitive or not
@@ -122,7 +123,7 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         return false;
     }
     
-    private void initialize(PrimitiveTypeDescriptor typeDescriptor) {
+    private void initialize(PrimitiveTypeDescriptor dataDescriptor) {
         switch (this.m_typeDescriptor.getKind()) { 
         case BOOLEAN_TYPE:
             this.m_value = false;
@@ -152,7 +153,7 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
             this.m_value = (char) '0';
             break;
         case STRING_TYPE:
-            this.m_maxLength = typeDescriptor.getMaxFixedLength();
+            this.m_maxLength = dataDescriptor.getMaxFixedLength();
             this.m_value = (String) "";
             break;
         default:

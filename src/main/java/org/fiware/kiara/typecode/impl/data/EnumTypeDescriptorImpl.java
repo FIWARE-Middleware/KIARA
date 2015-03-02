@@ -2,9 +2,9 @@ package org.fiware.kiara.typecode.impl.data;
 
 import org.fiware.kiara.typecode.TypeKind;
 
-public class EnumTypeDescriptor extends MemberedTypeDescriptor {
+public class EnumTypeDescriptorImpl extends MemberedTypeDescriptorImpl {
 
-    public EnumTypeDescriptor() {
+    public EnumTypeDescriptorImpl() {
         super(TypeKind.ENUM_TYPE, "enum");
     }
     

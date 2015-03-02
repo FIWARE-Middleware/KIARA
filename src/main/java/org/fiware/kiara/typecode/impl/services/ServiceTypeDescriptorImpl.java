@@ -4,16 +4,18 @@ import java.util.ArrayList;
 
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
-public class ServiceTypeDescriptor extends TypeDescriptorImpl {
+public class ServiceTypeDescriptorImpl extends TypeDescriptorImpl implements ServiceTypeDescriptor {
     
     private ArrayList<FunctionTypeDescriptor> m_functionsDescriptors;
 
-    protected ServiceTypeDescriptor() {
+    protected ServiceTypeDescriptorImpl() {
         super(TypeKind.SERVICE_TYPE, "service");
     }
     
-    protected ServiceTypeDescriptor(ArrayList<FunctionTypeDescriptor> functionsDescriptors) {
+    protected ServiceTypeDescriptorImpl(ArrayList<FunctionTypeDescriptor> functionsDescriptors) {
         super(TypeKind.SERVICE_TYPE, "service");
         this.m_functionsDescriptors = functionsDescriptors;
     }
@@ -25,7 +27,7 @@ public class ServiceTypeDescriptor extends TypeDescriptorImpl {
     
     @Override
     public ArrayList<FunctionTypeDescriptor> getFunctions() {
-        return this.m_functionsDescriptors;
+        return (ArrayList<FunctionTypeDescriptor>) this.m_functionsDescriptors;
     }
 
 }

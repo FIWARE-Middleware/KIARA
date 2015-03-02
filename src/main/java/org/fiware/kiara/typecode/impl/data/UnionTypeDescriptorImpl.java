@@ -2,9 +2,9 @@ package org.fiware.kiara.typecode.impl.data;
 
 import org.fiware.kiara.typecode.TypeKind;
 
-public class UnionTypeDescriptor extends MemberedTypeDescriptor {
+public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl {
 
-    public UnionTypeDescriptor() {
+    public UnionTypeDescriptorImpl() {
         super(TypeKind.UNION_TYPE, "union");
     }
     

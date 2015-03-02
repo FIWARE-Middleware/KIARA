@@ -1,19 +1,22 @@
 package org.fiware.kiara.typecode.impl.data;
 
+import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 
-public class ContainerTypeDescriptor extends ConstructedTypeDescriptor {
+public class ContainerTypeDescriptorImpl extends ConstructedTypeDescriptorImpl implements ContainerTypeDescriptor {
 
     private DataTypeDescriptor m_contentType = null;
     
     private int m_maximumSize;
     
-    public ContainerTypeDescriptor(TypeKind kind, String name) {
+    public ContainerTypeDescriptorImpl(TypeKind kind, String name) {
         super(kind, name);
         this.m_maximumSize = 100;
     }
     
-    public ContainerTypeDescriptor(TypeKind kind, String name, DataTypeDescriptor contentType) {
+    public ContainerTypeDescriptorImpl(TypeKind kind, String name, DataTypeDescriptorImpl contentType) {
         super(kind, name);
         this.m_maximumSize = 100;
     }
