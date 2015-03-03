@@ -25,6 +25,7 @@
 package org.fiware.kiara.complextypes;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -42,6 +43,10 @@ import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
 import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
 import org.fiware.kiara.serialization.impl.Serializer;
+import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
+import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
+import org.fiware.kiara.serialization.impl.ObjectSerializer;
+import org.fiware.kiara.serialization.impl.EnumSerializer;
 
 /**
  * Class definition for the user defined type MyStruct.
@@ -59,11 +64,16 @@ public class MyStruct implements Serializable {
 	private List<java.lang.String> arrayString;
 	private List<Integer> sequenceInt;
 
-        private static final Serializer<List<List<Integer>>> s_arrayInt =
+        /*
+         *      Attribute Serializers
+         */
+
+
+        private static final org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s_arrayInt =
             new ListAsArraySerializer<>(10, new ListAsArraySerializer<>(5, new BasicSerializers.I32Serializer()));
-        private static final Serializer<List<java.lang.String>> s_arrayString =
+        private static final org.fiware.kiara.serialization.impl.Serializer<List<java.lang.String>> s_arrayString =
             new ListAsArraySerializer<>(10, new BasicSerializers.StringSerializer());
-        private static final Serializer<List<Integer>> s_sequenceInt =
+        private static final org.fiware.kiara.serialization.impl.Serializer<List<Integer>> s_sequenceInt =
             new ListAsSequenceSerializer<>(new BasicSerializers.I32Serializer());
 
         /*
@@ -88,9 +98,9 @@ public class MyStruct implements Serializable {
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
 		impl.serializeI32(message, name, this.myInt);
 		impl.serializeString(message, name, this.myString);
-                this.s_arrayInt.write(impl, message, name, this.arrayInt);
-                this.s_arrayString.write(impl, message, name, this.arrayString);
-                this.s_sequenceInt.write(impl, message, name, this.sequenceInt);
+		s_arrayInt.write(impl, message, name, this.arrayInt);
+		s_arrayString.write(impl, message, name, this.arrayString);
+		s_sequenceInt.write(impl, message, name, this.sequenceInt);
 	}
 
 	/*
@@ -146,16 +156,16 @@ public class MyStruct implements Serializable {
 
 	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 255 + 1;
 
-	    for(int i = 0; i < (10 * 5); ++i) {
+	    for(int a = 0; a < (10 * 5); ++a) {
 	        current_align += 4 + CDRSerializer.alignment(current_align, 4);
 	    }
 
-	    for(int i = 0; i < (10); ++i) {
+	    for(int a = 0; a < (10); ++a) {
 	        current_align += 4 + CDRSerializer.alignment(current_align, 4) + 10 + 1;
 	    }
 
 	    current_align += 4 + CDRSerializer.alignment(current_align, 4); // Sequence size
-	    for(int i = 0; i < 8; ++i) {
+	    for(int a = 0; a < 8; ++a) {
 	        current_align += 4 + CDRSerializer.alignment(current_align, 4);
 	    }
 	 

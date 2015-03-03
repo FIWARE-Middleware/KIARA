@@ -35,13 +35,24 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BasicSerializers;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
+import org.fiware.kiara.serialization.impl.Serializable;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
+import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
+import org.fiware.kiara.serialization.impl.Serializer;
+import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
+import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
+import org.fiware.kiara.serialization.impl.ObjectSerializer;
+import org.fiware.kiara.serialization.impl.EnumSerializer;
 public class CharSwitchUnion implements Serializable {
-	
+
 	private char m_d;
-	
+
 	private int intVal;
 	private java.lang.String stringVal;
 	private float floatVal;
