@@ -1,11 +1,18 @@
 package org.fiware.kiara.dynamic;
 
+import org.fiware.kiara.dynamic.data.DynamicArray;
+import org.fiware.kiara.dynamic.data.DynamicList;
+import org.fiware.kiara.dynamic.data.DynamicMap;
+import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.impl.DynamicTypeBuilderImpl;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.ListTypeDescriptor;
+import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.impl.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
@@ -18,6 +25,7 @@ public class DynamicTest {
     
     public static void main(String [] args) {
         
+        /*
         // Get TypeDescriptor factory instance
         TypeDescriptorBuilder descriptorBuilder = TypeDescriptorBuilderImpl.getInstance();
         
@@ -46,7 +54,7 @@ public class DynamicTest {
                 temp.set(value);
                 value++;
             }
-        }
+        }*/
         
         /*DataTypeDescriptor stringDesc = new PrimitiveTypeDescriptor(TypeKind.STRING_TYPE, "");
         stringDesc.setMaxFixedLength(6);
@@ -183,14 +191,18 @@ public class DynamicTest {
         ((DynamicPrimitive) dynMap.getKeyAt(3)).set(3);
         */
         
-        /*ArrayTypeDescriptorImpl arrayDesc = new ArrayTypeDescriptorImpl(2);
-        arrayDesc.setContentType((DataTypeDescriptor) new PrimitiveTypeDescriptorImpl(TypeKind.INT_32_TYPE, ""));
-        //arrayDesc.setDimensions(2);
-        SetTypeDescriptorImpl setDesc = new SetTypeDescriptorImpl();
+        /*TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        DynamicTypeBuilder dynamicTypeBuilder = DynamicTypeBuilderImpl.getInstance();
+        
+        ArrayTypeDescriptorImpl arrayDesc = (ArrayTypeDescriptorImpl) tdbuilder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
+        arrayDesc.setContentType((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
+        arrayDesc.setDimensions(2);
+        
+        SetTypeDescriptor setDesc =  (SetTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.SET_TYPE, "");
         setDesc.setContentType((DataTypeDescriptor) arrayDesc);
         setDesc.setMaxSize(3);
         
-        SetTypeDescriptorImpl outerSetDesc = new SetTypeDescriptorImpl();
+        SetTypeDescriptor outerSetDesc = (SetTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.SET_TYPE, "");
         outerSetDesc.setContentType((DataTypeDescriptor) setDesc);
         outerSetDesc.setMaxSize(3);
         
@@ -206,6 +218,74 @@ public class DynamicTest {
                 }
             }
         }*/
+        
+        
+        /*TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        DynamicTypeBuilder dynamicTypeBuilder = DynamicTypeBuilderImpl.getInstance();
+        
+        ArrayTypeDescriptorImpl arrayDesc = (ArrayTypeDescriptorImpl) tdbuilder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
+        arrayDesc.setContentType((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
+        arrayDesc.setDimensions(2);
+        
+        ListTypeDescriptor listDesc =  (ListTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
+        listDesc.setContentType((DataTypeDescriptor) arrayDesc);
+        listDesc.setMaxSize(3);
+        
+        SetTypeDescriptor outerSetDesc = (SetTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.SET_TYPE, "");
+        outerSetDesc.setContentType((DataTypeDescriptor) listDesc);
+        outerSetDesc.setMaxSize(3);
+        
+        //DynamicArray dynArray = (DynamicArray) builder.createData(arrayDesc);
+        
+        DynamicSet dynSet = (DynamicSet) dynamicTypeBuilder.createData((DataTypeDescriptor) outerSetDesc);
+        int counter = 0;
+        for(int m=0; m < 3; ++m) {
+            for(int i=0; i < 3; ++i) {
+                for (int j = 0; j < 2; ++j) {
+                    ((DynamicPrimitive) ((DynamicArray) ((DynamicList) dynSet.getElementAt(m)).getElementAt(i)).getElementAt(j)).set(++counter);
+                    
+                }
+            }
+        }*/
+        
+        TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        DynamicTypeBuilder dynamicTypeBuilder = DynamicTypeBuilderImpl.getInstance();
+        
+        ArrayTypeDescriptorImpl arrayDesc = (ArrayTypeDescriptorImpl) tdbuilder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
+        arrayDesc.setContentType((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
+        arrayDesc.setDimensions(2);
+        
+        ListTypeDescriptor listDesc =  (ListTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
+        listDesc.setContentType((DataTypeDescriptor) arrayDesc);
+        listDesc.setMaxSize(3);
+        
+        MapTypeDescriptor outerSetDesc = (MapTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.MAP_TYPE, "");
+        outerSetDesc.setKeyTypeDescriptor((DataTypeDescriptor) listDesc);
+        outerSetDesc.setValueTypeDescriptor((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
+        outerSetDesc.setMaxSize(3);
+        
+        //DynamicArray dynArray = (DynamicArray) builder.createData(arrayDesc);
+        
+        DynamicMap dynSet = (DynamicMap) dynamicTypeBuilder.createData((DataTypeDescriptor) outerSetDesc);
+        int counter = 0;
+        for(int m=0; m < 3; ++m) {
+            for(int i=0; i < 3; ++i) {
+                for (int j = 0; j < 2; ++j) {
+                    ((DynamicPrimitive) ((DynamicArray) ((DynamicList) dynSet.getKeyAt(m)).getElementAt(i)).getElementAt(j)).set(++counter);
+                    
+                }
+            }
+        }
+        
+        counter = 0;
+        for(int m=0; m < 3; ++m) {
+            for(int i=0; i < 3; ++i) {
+                for (int j = 0; j < 2; ++j) {
+                    ((DynamicPrimitive) ((DynamicArray) ((DynamicList) dynSet.getKeyAt(m)).getElementAt(i)).getElementAt(j)).set(33);
+                    
+                }
+            }
+        }
         
         
         System.out.println("");

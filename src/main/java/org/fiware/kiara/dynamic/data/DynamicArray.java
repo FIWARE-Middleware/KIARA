@@ -1,4 +1,4 @@
-package org.fiware.kiara.dynamic;
+package org.fiware.kiara.dynamic.data;
 
 public interface DynamicArray extends DynamicContainer {
     

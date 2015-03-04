@@ -5,7 +5,7 @@ import org.fiware.kiara.typecode.TypeKind;
 public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl {
 
     public UnionTypeDescriptorImpl() {
-        super(TypeKind.UNION_TYPE, "union");
+        super(TypeKind.UNION_TYPE/*, "union"*/);
     }
     
     @Override

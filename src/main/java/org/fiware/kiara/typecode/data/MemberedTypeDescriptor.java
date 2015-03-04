@@ -2,10 +2,10 @@ package org.fiware.kiara.typecode.data;
 
 import java.util.ArrayList;
 
+import org.fiware.kiara.typecode.TypeDescriptor;
+
 public interface MemberedTypeDescriptor extends DataTypeDescriptor {
 
-    public void addMembers(DataTypeDescriptor... members);
-    
-    public ArrayList<DataTypeDescriptor> getMembers();
+    public ArrayList<Member> getMembers();
     
 }

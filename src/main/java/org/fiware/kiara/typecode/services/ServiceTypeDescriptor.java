@@ -8,4 +8,6 @@ public interface ServiceTypeDescriptor extends TypeDescriptor {
 
     public ArrayList<FunctionTypeDescriptor> getFunctions();
     
+    public void addFunction(FunctionTypeDescriptor funcionTypeDescriptor);
+    
 }

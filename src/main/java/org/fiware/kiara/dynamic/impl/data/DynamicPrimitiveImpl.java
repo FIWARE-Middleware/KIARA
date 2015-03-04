@@ -3,10 +3,8 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
-import org.fiware.kiara.dynamic.DynamicData;
-import org.fiware.kiara.dynamic.DynamicData;
-import org.fiware.kiara.dynamic.DynamicPrimitive;
-import org.fiware.kiara.dynamic.DynamicPrimitive;
+import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.TypeKind;

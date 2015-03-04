@@ -6,7 +6,7 @@ public class ConstructedTypeDescriptorImpl extends DataTypeDescriptorImpl {
 
     private boolean m_constructed = false;
     public ConstructedTypeDescriptorImpl(TypeKind kind, String name) {
-        super(kind, name);
+        super(kind);
         this.m_constructed = true;
     }
 

@@ -1,6 +1,6 @@
-package org.fiware.kiara.dynamic;
+package org.fiware.kiara.dynamic.data;
 
-public interface DynamicList extends DynamicContainer {
+public interface DynamicSet extends DynamicContainer {
     
     public DynamicData getElementAt(int index);
     

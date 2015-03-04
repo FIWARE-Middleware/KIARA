@@ -13,15 +13,15 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 public class TypeDescriptorImpl implements TypeDescriptor {
 
     protected TypeKind m_kind = null;
-    protected String m_name;
+    //protected String m_name;
     
     /*
      * Public Methods
      */
     
-    protected TypeDescriptorImpl(TypeKind kind, String name) {
+    protected TypeDescriptorImpl(TypeKind kind) {
         this.m_kind = kind;
-        this.m_name = name;
+        //this.m_name = name;
     }
     
     @Override
@@ -34,10 +34,10 @@ public class TypeDescriptorImpl implements TypeDescriptor {
         return this.m_kind;
     }
     
-    @Override
+    /*@Override
     public String getName() {
         return this.m_name;
-    }
+    }*/
     
     @Override
     public boolean isPrimitive() {

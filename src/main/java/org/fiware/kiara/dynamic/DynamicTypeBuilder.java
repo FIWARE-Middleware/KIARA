@@ -1,5 +1,6 @@
 package org.fiware.kiara.dynamic;
 
+import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunction;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;

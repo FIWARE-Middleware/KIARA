@@ -16,8 +16,8 @@ public class DataTypeDescriptorImpl extends TypeDescriptorImpl implements DataTy
      * Public Methods
      */
     
-    public DataTypeDescriptorImpl(TypeKind kind, String name) {
-        super(kind, name);
+    public DataTypeDescriptorImpl(TypeKind kind/*, String name*/) {
+        super(kind);
     }
     
     

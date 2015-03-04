@@ -8,6 +8,8 @@ import org.fiware.kiara.typecode.impl.data.ListTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.StructTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 
 public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     
@@ -39,7 +41,7 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
         case FLOAT_64_TYPE:
         case CHAR_8_TYPE:
         case STRING_TYPE:
-            return new PrimitiveTypeDescriptorImpl(kind, name);
+            return new PrimitiveTypeDescriptorImpl(kind);
         case ARRAY_TYPE:
             return new ArrayTypeDescriptorImpl();
         case LIST_TYPE:
@@ -51,8 +53,15 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
         case ENUM_TYPE:
         case UNION_TYPE:
         case STRUCT_TYPE:
+            return new StructTypeDescriptorImpl(name);
         case EXCEPTION_TYPE:
             System.out.println("NOT SUPPORTED YET");
+            break;
+        case SERVICE_TYPE:
+            System.out.println("NOT SUPPORTED YET");
+            break;
+        case FUNCTION_TYPE:
+            return new FunctionTypeDescriptorImpl(name);
         default:
             break;
         }

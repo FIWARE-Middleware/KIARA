@@ -4,7 +4,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.fiware.kiara.dynamic.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.dynamic.impl.data.visitor.Element;
 import org.fiware.kiara.dynamic.impl.data.visitor.Visitor;

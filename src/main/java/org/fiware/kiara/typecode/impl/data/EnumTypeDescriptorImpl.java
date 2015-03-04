@@ -5,7 +5,7 @@ import org.fiware.kiara.typecode.TypeKind;
 public class EnumTypeDescriptorImpl extends MemberedTypeDescriptorImpl {
 
     public EnumTypeDescriptorImpl() {
-        super(TypeKind.ENUM_TYPE, "enum");
+        super(TypeKind.ENUM_TYPE);
     }
     
     @Override

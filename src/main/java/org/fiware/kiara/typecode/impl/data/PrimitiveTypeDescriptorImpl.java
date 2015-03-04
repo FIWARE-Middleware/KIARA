@@ -9,12 +9,12 @@ public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implemen
     private boolean m_primitive = false;
     private int m_maxFixedLength = 0;
     
-    public PrimitiveTypeDescriptorImpl(TypeKind kind, String name) {
-        super(kind, name);
+    public PrimitiveTypeDescriptorImpl(TypeKind kind) {
+        super(kind/*, name*/);
         this.initialize();
-        if (name != null && name.length() != 0) {
+        /*if (name != null && name.length() != 0) {
             this.m_name = name;
-        }
+        }*/
     }
     
     @Override
@@ -57,45 +57,45 @@ public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implemen
     private void initialize() {
         switch (this.m_kind) {
             case BOOLEAN_TYPE:
-                this.m_name = "boolean";
+                //this.m_name = "boolean";
                 this.m_primitive = true;
                 break;
             case BYTE_TYPE:
-                this.m_name = "byte";
+                //this.m_name = "byte";
                 this.m_primitive = true;
                 break;
             case INT_16_TYPE:
-                this.m_name = "short";
+                //this.m_name = "short";
                 this.m_primitive = true;
                 break;
             case INT_32_TYPE:
-                this.m_name = "int";
+                //this.m_name = "int";
                 this.m_primitive = true;
                 break;
             case INT_64_TYPE:
-                this.m_name = "long";
+                //this.m_name = "long";
                 this.m_primitive = true;
                 break;
             case FLOAT_32_TYPE:
-                this.m_name = "float";
+                //this.m_name = "float";
                 this.m_primitive = true;
                 break;
             case FLOAT_64_TYPE:
-                this.m_name = "double";
+                //this.m_name = "double";
                 this.m_primitive = true;
                 break;
             case CHAR_8_TYPE:
-                this.m_name = "char";
+                //this.m_name = "char";
                 this.m_primitive = true;
                 break;
             case STRING_TYPE:
-                this.m_name = "string";
+                //this.m_name = "string";
                 this.m_primitive = true;
                 this.m_maxFixedLength = 255;
                 break;
             
             default:
-                this.m_name = "null";
+                //this.m_name = "null";
                 break;
         }
     }

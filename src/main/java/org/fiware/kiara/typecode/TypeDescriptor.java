@@ -16,7 +16,7 @@ public interface TypeDescriptor {
     
     public TypeKind getKind();
     
-    public String getName();
+    //public String getName();
     
     public boolean isData();
     

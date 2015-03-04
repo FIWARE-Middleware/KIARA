@@ -1,8 +1,8 @@
 package org.fiware.kiara.dynamic.impl;
 
-import org.fiware.kiara.dynamic.DynamicData;
-import org.fiware.kiara.dynamic.DynamicPrimitive;
 import org.fiware.kiara.dynamic.DynamicTypeBuilder;
+import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;

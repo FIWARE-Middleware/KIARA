@@ -14,7 +14,7 @@ public class MapTypeDescriptorImpl extends ConstructedTypeDescriptorImpl impleme
     
     public MapTypeDescriptorImpl() {
         super(TypeKind.MAP_TYPE, "map");
-        this.m_name = "map";
+        //this.m_name = "map";
     }
     
     @Override

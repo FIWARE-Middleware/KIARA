@@ -2,7 +2,7 @@ package org.fiware.kiara.dynamic.impl.data;
 
 import java.util.ArrayList;
 
-import org.fiware.kiara.dynamic.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;

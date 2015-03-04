@@ -3,8 +3,8 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.fiware.kiara.dynamic.DynamicData;
-import org.fiware.kiara.dynamic.DynamicMap;
+import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicMap;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
@@ -95,7 +95,13 @@ public class DynamicMapImpl extends DynamicConstructedImpl implements DynamicMap
     
     @Override
     public boolean notify(DynamicDataImpl value, Object... params) {
-        value.visit(params);
+        if (this.m_visitor != null) {
+            this.m_visitor.notify(this, appendParams(value, params));
+        } else {
+            value.visit(params);
+            
+        }
+
         int index = getIndex(value);
         boolean exists = false;
         if (index != -1) {
