@@ -1,5 +1,5 @@
 package org.fiware.kiara.dynamic.data;
 
-public interface DynamicContainer extends DynamicConstructed {
+public interface DynamicContainer extends DynamicData {
 
 }

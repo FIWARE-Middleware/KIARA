@@ -5,15 +5,15 @@ import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 
-public class MapTypeDescriptorImpl extends ConstructedTypeDescriptorImpl implements MapTypeDescriptor {
+public class MapTypeDescriptorImpl extends ContainerTypeDescriptorImpl implements MapTypeDescriptor {
 
     private DataTypeDescriptor m_keyDescriptor = null;
-    private DataTypeDescriptor m_valueDescriptor = null;
+    //private DataTypeDescriptor m_valueDescriptor = null;
     
     private int m_maximumSize;
     
     public MapTypeDescriptorImpl() {
-        super(TypeKind.MAP_TYPE, "map");
+        super(TypeKind.MAP_TYPE);
         //this.m_name = "map";
     }
     
@@ -34,7 +34,7 @@ public class MapTypeDescriptorImpl extends ConstructedTypeDescriptorImpl impleme
     @Override
     public boolean setValueTypeDescriptor(DataTypeDescriptor valueDescriptor) {
         if (this.m_kind == TypeKind.MAP_TYPE) {
-            this.m_valueDescriptor = valueDescriptor;
+            this.m_contentType = valueDescriptor;
             return true;
         }
         return false;
@@ -47,7 +47,7 @@ public class MapTypeDescriptorImpl extends ConstructedTypeDescriptorImpl impleme
 
     @Override
     public DataTypeDescriptor getValueTypeDescriptor() {
-        return this.m_valueDescriptor;
+        return this.m_contentType;
     }
     
     @Override

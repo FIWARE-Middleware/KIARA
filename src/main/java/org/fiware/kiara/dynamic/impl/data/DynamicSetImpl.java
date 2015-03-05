@@ -7,7 +7,6 @@ import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
 public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
 
@@ -22,85 +21,57 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
     }
     
     @Override
-    public DynamicData getElementAt(int index) {
-        if (index >= this.m_maxSize) {
-            throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the set boundaries (" + this.m_maxSize + ")."); 
+    public boolean add(DynamicData element) {
+        if (element.getClass() == this.m_contentType.getClass()) {
+            if (this.m_members.size() != this.m_maxSize) {
+                if (!existsInSet(element)) {
+                    this.m_members.add(element);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                throw new DynamicTypeException(this.m_className + " Element cannot be added. The maximum size specified for this array has been reached.");
+            }
+        } else {
+            throw new DynamicTypeException(this.m_className + " Element cannot be added. The element's type does not fit with the specified content Type for this set.");
         }
-        
-        return this.m_members.get(index);
-        
     }
 
     @Override
-    public boolean setElementAt(DynamicData value, int index) {
+    public void add(int index, DynamicData element) {
         if (index >= this.m_maxSize) {
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the set boundaries (" + this.m_maxSize + ")."); 
         }
         
-        if (value.getClass() == this.m_contentType.getClass()) {
+        if (element.getClass() == this.m_contentType.getClass()) {
             if (this.m_members.size() != this.m_maxSize) {
-                this.m_members.add(index, value);
-                this.m_validData.add(false);
-                return true;
-            } else {
-                if (!existsInSet(value)) {
-                    return (this.m_members.set(index, value) != null);
+                if (!existsInSet(element)) {
+                    this.m_members.add(index, element);
                 }
-            }
-        }
-        
-        return false;
-    }
-    
-    @Override
-    public boolean notify(DynamicDataImpl value, Object... params) {
-        if (this.m_visitor != null) {
-            this.m_visitor.notify(this, appendParams(value, params));
-        } else {
-            value.visit(params);
-            
-        }
-        
-        int index = getIndex(value);
-        boolean exists = false;
-        if (index != -1) {
-            if (this.m_validData.get(index)) {
-                exists = existsInSet(value, index);
             } else {
-                exists = existsInSet(value);
+                throw new DynamicTypeException(this.m_className + " Element cannot be added. The maximum size specified for this set has been reached.");
             }
-            if (!exists) {
-                this.setValid(index);
-                //System.out.println("Added");
-                return true;
-            }
-            //System.out.println("NOT Added");
         }
-        
-        return false;
     }
-    
+
     @Override
-    public void visit(Object... params) {
-        DynamicDataImpl value = (DynamicDataImpl) params[0];
-        
-        value.visit(trimParams(params));
-        
-    }
-    
-    private int getIndex(DynamicDataImpl dynData) {
-        for (int i=0; i < this.m_members.size(); ++i) {
-            if (dynData == this.m_members.get(i)) {
-                return i;
-            }
+    public DynamicData get(int index) {
+        if (index >= this.m_maxSize) {
+            throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is greater than the maximum size of this set (" + this.m_maxSize + ")."); 
+        } else if (index >= this.m_members.size()){
+            throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the set boundaries (" + this.m_maxSize + ").");
         }
-        return -1;
+        
+        return this.m_members.get(index);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return this.m_members.isEmpty();
     }
     
-    private void setValid(int index) {
-        this.m_validData.remove(index);
-        this.m_validData.add(index, true);
-    }
+    
     
     private boolean existsInSet(DynamicData value) {
         for (int i=0; i < this.m_members.size(); ++i) {
@@ -111,29 +82,5 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
         return false;
     }
     
-    private boolean existsInSet(DynamicData value, int avoidIndex) {
-        for (int i=0; i < this.m_members.size(); ++i) {
-            if (i != avoidIndex) {
-                if (this.m_validData.get(i) && this.m_members.get(i).equals(value)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
     
-    /*public void setValidDataAt(int index, boolean value) {
-        if (index >= 0 && this.m_validData.size() > index) {
-            this.m_validData.remove(index);
-        }
-        this.m_validData.add(index, value);
-    }*/
-    
-    /*public boolean getValidDataAt(int index) {
-        if (index >= 0 && this.m_validData.size() > index) {
-            return this.m_validData.get(index);
-        }
-        return false;
-    }*/
-
 }

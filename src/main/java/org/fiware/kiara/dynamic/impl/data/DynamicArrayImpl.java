@@ -16,7 +16,7 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
     
     private int m_maxSize;
     private ArrayList<Integer> m_dimensions;
-    private int temporalAccessIndex = -1;
+    //private int temporalAccessIndex = -1;
     
     public DynamicArrayImpl(ArrayTypeDescriptor arrayDescriptor) {
         super(arrayDescriptor, "DynamicArrayImpl");
@@ -74,7 +74,7 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         
         int accessIndex = calculateAccessIndex(position);
         
-        this.temporalAccessIndex = accessIndex;
+        //this.temporalAccessIndex = accessIndex;
         
         return this.m_members.get(accessIndex);
     }
@@ -95,18 +95,18 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
                 this.m_members.add(accessIndex, value);
                 return true;
             } else {
-                if (this.m_visitor != null) {
+                /*if (this.m_visitor != null) {
                     (this.m_visitor).notify(this, value);
-                } else {
+                } else {*/
                     return (this.m_members.set(accessIndex, value) != null);
-                }
+                //}
             }
         }
         
         return false;
     }
     
-    @Override
+   /* @Override
     public void visit(Object... params) {
         DynamicDataImpl value = (DynamicDataImpl) params[0];
         
@@ -129,7 +129,7 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         }
         
         return true;
-    }
+    }*/
     
     private boolean checkBoundaries(int... position) {
         for (int i=0; i < position.length; ++i) {
@@ -164,12 +164,12 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         return ret;
     }
     
-    @Override
+    /*@Override
     public void registerVisitor(Visitor visitor) {
         super.registerVisitor(visitor);
         for (int i=0; i < this.m_members.size(); ++i) {
             ((DynamicDataImpl) this.m_members.get(i)).registerVisitor(this);
         }
-    }
+    }*/
 
 }

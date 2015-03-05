@@ -2,7 +2,7 @@ package org.fiware.kiara.typecode.data;
 
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
-public interface MapTypeDescriptor extends ConstructedTypeDescriptor {
+public interface MapTypeDescriptor extends ContainerTypeDescriptor {
     
     public boolean setKeyTypeDescriptor(DataTypeDescriptor keyDescriptor);
     

@@ -1,14 +1,15 @@
 package org.fiware.kiara.dynamic.data;
 
 
-public interface DynamicMap extends DynamicConstructed {
+public interface DynamicMap extends DynamicContainer {
     
-    public boolean setElementAt(DynamicData key, DynamicData value, int index);
+    public boolean put(DynamicData key, DynamicData value);
     
-    public DynamicData getKeyAt(int index);
+    public boolean containsKey(DynamicData key);
     
-    public DynamicData getValueAt(int index);
+    public boolean containsValue(DynamicData value);
     
-    public DynamicData getValue(DynamicData key);
+    public DynamicData get(DynamicData key);
+    
 
 }

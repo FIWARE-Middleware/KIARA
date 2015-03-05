@@ -29,12 +29,12 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         Class<?> c = value.getClass();
         if (isPrimitive(c)) {
             if(this.typeFits(value)) {
-                if (this.m_visitor != null) {
+                /*if (this.m_visitor != null) {
                     (this.m_visitor).notify(this, value);
-                } else {
+                } else {*/
                     checkStringSize(value);
                     this.m_value = value; // TODO Check if value is primitive or not
-                }
+                //}
                 return true;
             } else {
                 throw new DynamicTypeException(this.m_className + " - A value of type " + value.getClass() + " cannot be assigned to a " + this.m_typeDescriptor.getKind() + " dynamic type.");
@@ -44,11 +44,11 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         return false;
     }
     
-    @Override
+    /*@Override
     public void visit(Object... params) {
         checkStringSize(params[0]);
         this.m_value = params[0]; // TODO Check if value is primitive or not
-    }
+    }*/
     
     @Override
     public boolean set(DynamicData value) {

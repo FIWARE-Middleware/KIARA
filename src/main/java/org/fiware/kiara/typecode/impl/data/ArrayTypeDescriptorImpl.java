@@ -23,7 +23,7 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
     }
 
     public ArrayTypeDescriptorImpl() {
-        super(TypeKind.ARRAY_TYPE, "array");
+        super(TypeKind.ARRAY_TYPE);
         this.m_dimensions = new ArrayList<Integer>();
     }
     
@@ -32,12 +32,17 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
         if (contentType.getKind() == TypeKind.ARRAY_TYPE) {
             throw new TypeDescriptorException("ArrayTypeDescriptor - Array type descriptions do not support another array as its content type. Use dimensions instead.");
         }
-        super.setContentType(contentType);
+        this.m_contentType = contentType;
         return true;
     }
     
     @Override
-    public void setDimensions(int... dimensions) {
+    public DataTypeDescriptor getContentType() {
+        return this.m_contentType;
+    }
+    
+    @Override
+    public void setDimensionsLength(int... dimensions) {
         this.checkDimensions(dimensions);
         if(this.m_dimensions.size() != 0) {
             this.m_dimensions.clear();

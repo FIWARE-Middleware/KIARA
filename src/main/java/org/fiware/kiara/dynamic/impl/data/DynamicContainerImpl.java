@@ -8,7 +8,7 @@ import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
-public class DynamicContainerImpl extends DynamicConstructedImpl {
+public class DynamicContainerImpl extends DynamicDataImpl {
     
     protected DynamicData m_contentType;
     protected ArrayList<DynamicData> m_members;

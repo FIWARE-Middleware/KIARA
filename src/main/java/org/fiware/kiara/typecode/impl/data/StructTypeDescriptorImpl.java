@@ -35,7 +35,7 @@ public class StructTypeDescriptorImpl extends MemberedTypeDescriptorImpl impleme
     }    
     
     @Override
-    public TypeDescriptor getMember(String name) {
+    public DataTypeDescriptor getMember(String name) {
         for (Member member : this.m_members) {
             if (member.getName().equals(name)) {
                 return member.getTypeDescriptor();

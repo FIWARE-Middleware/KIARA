@@ -6,6 +6,6 @@ public interface StructTypeDescriptor extends MemberedTypeDescriptor {
 
     public void addMember(TypeDescriptor member, String name);
     
-    public TypeDescriptor getMember(String name);
+    public DataTypeDescriptor getMember(String name);
     
 }

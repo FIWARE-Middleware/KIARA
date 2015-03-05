@@ -50,11 +50,6 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     }*/
     
     @Override
-    public boolean isConstructed() {
-        return false;
-    }
-    
-    @Override
     public boolean isContainer() {
         return false;
     }

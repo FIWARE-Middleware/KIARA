@@ -26,8 +26,6 @@ public interface TypeDescriptor {
     
     // ---------------------- Constructed -----------------------
     
-    public boolean isConstructed();
-    
     public boolean isContainer();
     
     public boolean isArray();

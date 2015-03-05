@@ -4,8 +4,8 @@ import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicMap;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
-import org.fiware.kiara.dynamic.impl.DynamicTypeBuilderImpl;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
+import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
@@ -13,7 +13,6 @@ import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
-import org.fiware.kiara.typecode.impl.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
@@ -248,12 +247,12 @@ public class DynamicTest {
             }
         }*/
         
-        TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        /*TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
         DynamicTypeBuilder dynamicTypeBuilder = DynamicTypeBuilderImpl.getInstance();
         
         ArrayTypeDescriptorImpl arrayDesc = (ArrayTypeDescriptorImpl) tdbuilder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
         arrayDesc.setContentType((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
-        arrayDesc.setDimensions(2);
+        arrayDesc.setDimensionsLength(2);
         
         ListTypeDescriptor listDesc =  (ListTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
         listDesc.setContentType((DataTypeDescriptor) arrayDesc);
@@ -285,7 +284,44 @@ public class DynamicTest {
                     
                 }
             }
+        }*/
+        
+        
+        TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        DynamicTypeBuilder dynamicTypeBuilder = DynamicTypeBuilderImpl.getInstance();
+        
+        PrimitiveTypeDescriptor intType = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor stringType = tdbuilder.createPrimitiveType(TypeKind.STRING_TYPE);
+        
+        /*ArrayTypeDescriptorImpl arrayDesc = (ArrayTypeDescriptorImpl) tdbuilder.createArrayType(contentDescriptor, dimensionsLength)(TypeKind.ARRAY_TYPE, "");
+        arrayDesc.setContentType((DataTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.INT_32_TYPE, ""));
+        arrayDesc.setDimensionsLength(2);
+        
+        ListTypeDescriptor listDesc =  (ListTypeDescriptor) tdbuilder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
+        listDesc.setContentType((DataTypeDescriptor) arrayDesc);
+        listDesc.setMaxSize(3);*/
+        
+        MapTypeDescriptor outerSetDesc = (MapTypeDescriptor) tdbuilder.createMapType(intType, stringType, 10);
+        
+        //DynamicArray dynArray = (DynamicArray) builder.createData(arrayDesc);
+        
+        DynamicMap dynSet = (DynamicMap) dynamicTypeBuilder.createData((DataTypeDescriptor) outerSetDesc);
+        int counter = 0;
+        for(int m=0; m < 9; ++m) {
+            DynamicPrimitive dynInt= (DynamicPrimitive) dynamicTypeBuilder.createData(intType);
+            dynInt.set(++counter);
+            DynamicPrimitive dynString= (DynamicPrimitive) dynamicTypeBuilder.createData(stringType);
+            dynString.set("Hello " + counter);
+            dynSet.put(dynInt, dynString);
         }
+        
+        DynamicPrimitive dynInt= (DynamicPrimitive) dynamicTypeBuilder.createData(intType);
+        dynInt.set(2);
+        DynamicPrimitive dynString= (DynamicPrimitive) dynamicTypeBuilder.createData(stringType);
+        dynString.set("Hello " + counter);
+        dynSet.put(dynInt, dynString);
+        
+        
         
         
         System.out.println("");

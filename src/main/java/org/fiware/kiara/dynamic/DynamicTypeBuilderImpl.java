@@ -1,22 +1,25 @@
-package org.fiware.kiara.dynamic.impl;
+package org.fiware.kiara.dynamic;
 
-import org.fiware.kiara.dynamic.DynamicTypeBuilder;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
+import org.fiware.kiara.dynamic.data.DynamicStruct;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicMapImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicSetImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicStructImpl;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunction;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
+import org.fiware.kiara.typecode.data.Member;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
+import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
@@ -73,8 +76,11 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             return this.createSetType((SetTypeDescriptor) dataDescriptor);
         
         case ENUM_TYPE:
+            break;
         case UNION_TYPE:
+            break;
         case STRUCT_TYPE:
+            return this.createStructType((StructTypeDescriptor) dataDescriptor);
         case EXCEPTION_TYPE:
         default:
             break;
@@ -105,9 +111,6 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this list descriptor has not been defined.");
         }
         ret.setContentType(this.createData(listDescriptor.getContentType()));
-        for (int i=0; i < listDescriptor.getMaxSize(); ++i) {
-            ret.setElementAt(this.createData(listDescriptor.getContentType()), i);
-        }
         return ret;
     }
     
@@ -118,11 +121,6 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         }
         
         ret.setContentType(this.createData(setDescriptor.getContentType()));
-        for (int i=0; i < setDescriptor.getMaxSize(); ++i) {
-            DynamicDataImpl data = (DynamicDataImpl) this.createData(setDescriptor.getContentType());
-            data.registerVisitor(ret);
-            ret.setElementAt(data, i);
-        }
         return ret;
     }
     
@@ -139,15 +137,15 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         
         ret.setKeyContentType(this.createData((DataTypeDescriptor) mapDescriptor.getKeyTypeDescriptor()));
         ret.setValueContentType(this.createData((DataTypeDescriptor) mapDescriptor.getValueTypeDescriptor()));
-        
-        for (int i=0; i < mapDescriptor.getMaxSize(); ++i) {
-            DynamicDataImpl key = (DynamicDataImpl) this.createData((DataTypeDescriptor) mapDescriptor.getKeyTypeDescriptor());
-            key.registerVisitor(ret);
-            DynamicDataImpl value = (DynamicDataImpl) this.createData((DataTypeDescriptor) mapDescriptor.getValueTypeDescriptor());
-            value.registerVisitor(ret);
-            ret.setElementAt(key, value, i);
+        return ret;
+    }
+    
+    private DynamicStruct createStructType(StructTypeDescriptor dataDescriptor) {
+        DynamicStructImpl ret = new DynamicStructImpl(dataDescriptor);
+        for (Member member : dataDescriptor.getMembers()) {
+            DynamicData dynData = this.createData(member.getTypeDescriptor());
+            ret.addMember(dynData, member.getName());
         }
-        
         return ret;
     }
 

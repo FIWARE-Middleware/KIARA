@@ -12,11 +12,11 @@ import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 
-public class DynamicDataImpl extends DynamicTypeImpl implements DynamicData, Element, Visitor {
+public class DynamicDataImpl extends DynamicTypeImpl implements DynamicData {
     
     //protected PropertyChangeSupport m_propertyChangeSupport;
     
-    protected Visitor m_visitor;
+    //protected Visitor m_visitor;
     
     public DynamicDataImpl(DataTypeDescriptor dataDescriptor, String className) {
         super(dataDescriptor, className);
@@ -30,7 +30,7 @@ public class DynamicDataImpl extends DynamicTypeImpl implements DynamicData, Ele
         
     }*/
 
-    @Override
+    /*@Override
     public void visit(Object... params) {
         
     }
@@ -43,7 +43,7 @@ public class DynamicDataImpl extends DynamicTypeImpl implements DynamicData, Ele
     @Override
     public void registerVisitor(Visitor visitor) {
         this.m_visitor = visitor;
-    }
+    }*/
     
     public Object[] trimParams(Object[] params) {
         Object[] ret = new Object[params.length-1];

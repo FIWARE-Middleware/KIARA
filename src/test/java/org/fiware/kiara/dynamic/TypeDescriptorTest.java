@@ -6,21 +6,18 @@ import static org.junit.Assert.assertTrue;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import org.fiware.kiara.dynamic.impl.DynamicTypeBuilderImpl;
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.serialization.MockTransportMessage;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
+import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
-import org.fiware.kiara.typecode.impl.TypeDescriptorBuilderImpl;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,7 +56,7 @@ public class TypeDescriptorTest {
     public void booleanPrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.BOOLEAN_TYPE, "");
+            builder.createPrimitiveType(TypeKind.BOOLEAN_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -76,7 +73,7 @@ public class TypeDescriptorTest {
     public void bytePrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.BYTE_TYPE, "");
+            builder.createPrimitiveType(TypeKind.BYTE_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -93,7 +90,7 @@ public class TypeDescriptorTest {
     public void int16PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.INT_16_TYPE, "");
+            builder.createPrimitiveType(TypeKind.INT_16_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -110,7 +107,7 @@ public class TypeDescriptorTest {
     public void uint16PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.UINT_16_TYPE, "");
+            builder.createPrimitiveType(TypeKind.UINT_16_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -127,7 +124,7 @@ public class TypeDescriptorTest {
     public void int32PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
+            builder.createPrimitiveType(TypeKind.INT_32_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -144,7 +141,7 @@ public class TypeDescriptorTest {
     public void uint32PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.UINT_32_TYPE, "");
+            builder.createPrimitiveType(TypeKind.UINT_32_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -161,7 +158,7 @@ public class TypeDescriptorTest {
     public void int64PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.INT_64_TYPE, "");
+            builder.createPrimitiveType(TypeKind.INT_64_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -178,7 +175,7 @@ public class TypeDescriptorTest {
     public void uint64PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.UINT_64_TYPE, "");
+            builder.createPrimitiveType(TypeKind.UINT_64_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -195,7 +192,7 @@ public class TypeDescriptorTest {
     public void float32PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.FLOAT_32_TYPE, "");
+            builder.createPrimitiveType(TypeKind.FLOAT_32_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -212,7 +209,7 @@ public class TypeDescriptorTest {
     public void float64PrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.FLOAT_64_TYPE, "");
+            builder.createPrimitiveType(TypeKind.FLOAT_64_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -229,7 +226,7 @@ public class TypeDescriptorTest {
     public void charPrimitiveTest() {
         
         try {
-            builder.createTypeDescriptor(TypeKind.BOOLEAN_TYPE, "");
+            builder.createPrimitiveType(TypeKind.BOOLEAN_TYPE);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -246,7 +243,7 @@ public class TypeDescriptorTest {
     public void stringPrimitiveTest() {
         
         try {
-            PrimitiveTypeDescriptor stringDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.STRING_TYPE, "");
+            PrimitiveTypeDescriptor stringDesc = builder.createPrimitiveType(TypeKind.STRING_TYPE);
             stringDesc.setMaxFixedLength(15);
             
         } catch (TypeDescriptorException e) {
@@ -263,13 +260,12 @@ public class TypeDescriptorTest {
     /*
      * arrayTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void arrayTest() {
         try {
-            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            ArrayTypeDescriptor arrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            arrayDesc.setContentType(primitiveDesc);
-            arrayDesc.setDimensions(3, 5);
+            PrimitiveTypeDescriptor primitiveDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ArrayTypeDescriptor arrayDesc = builder.createArrayType(primitiveDesc, 3, 5);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -286,8 +282,8 @@ public class TypeDescriptorTest {
     public void arrayTestNumberOfDimensions() {
         ArrayTypeDescriptor arrayDesc;
         try {
-            arrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            arrayDesc.setDimensions(3, 8, 2);
+            PrimitiveTypeDescriptor primitiveDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            arrayDesc = builder.createArrayType(primitiveDesc, 3, 8, 2);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -300,11 +296,12 @@ public class TypeDescriptorTest {
     /*
      * arrayTestNoDimensions
      */
+    @SuppressWarnings("unused")
     @Test
     public void arrayTestNoDimensions() {
         try {
-            ArrayTypeDescriptor arrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            arrayDesc.setDimensions();
+            PrimitiveTypeDescriptor primitiveDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ArrayTypeDescriptor arrayDesc = builder.createArrayType(primitiveDesc);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
@@ -317,11 +314,12 @@ public class TypeDescriptorTest {
     /*
      * arrayTestNegativeDimensions
      */
+    @SuppressWarnings("unused")
     @Test
     public void arrayTestNegativeDimensions() {
         try {
-            ArrayTypeDescriptor arrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            arrayDesc.setDimensions(3, -1);
+            PrimitiveTypeDescriptor primitiveDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ArrayTypeDescriptor arrayDesc = builder.createArrayType(primitiveDesc, 3, -1);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
@@ -334,12 +332,13 @@ public class TypeDescriptorTest {
     /*
      * arrayTestWrongContentType
      */
+    @SuppressWarnings("unused")
     @Test
     public void arrayTestWrongContentType() {
         try {
-            ArrayTypeDescriptor arrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            ArrayTypeDescriptor innerArrayDesc = (ArrayTypeDescriptor) builder.createTypeDescriptor(TypeKind.ARRAY_TYPE, "");
-            arrayDesc.setContentType(innerArrayDesc);
+            PrimitiveTypeDescriptor primitiveDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ArrayTypeDescriptor arrayDesc = builder.createArrayType(primitiveDesc, 1);
+            ArrayTypeDescriptor innerArrayDesc = builder.createArrayType(arrayDesc, 1);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
@@ -355,13 +354,12 @@ public class TypeDescriptorTest {
     /*
      * listTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void listTest() {
         try {
-            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            ListTypeDescriptor listDesc = (ListTypeDescriptor) builder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
-            listDesc.setContentType(primitiveDesc);
-            listDesc.setMaxSize(10);
+            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ListTypeDescriptor listDesc = builder.createListType(primitiveDesc, 10);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -374,14 +372,12 @@ public class TypeDescriptorTest {
     /*
      * wrongMaxSizeListTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void wrongMaxSizeListTest() {
         try {
-            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            primitiveDesc.setMaxFixedLength(15);
-            ListTypeDescriptor listDesc = (ListTypeDescriptor) builder.createTypeDescriptor(TypeKind.LIST_TYPE, "");
-            listDesc.setContentType(primitiveDesc);
-            listDesc.setMaxSize(0);
+            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            ListTypeDescriptor listDesc = builder.createListType(primitiveDesc, -1);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
@@ -396,13 +392,12 @@ public class TypeDescriptorTest {
     /*
      * setTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void setTest() {
         try {
-            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            SetTypeDescriptor setDesc = (SetTypeDescriptor) builder.createTypeDescriptor(TypeKind.SET_TYPE, "");
-            setDesc.setContentType(primitiveDesc);
-            setDesc.setMaxSize(10);
+            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            SetTypeDescriptor listDesc = builder.createSetType(primitiveDesc, 10);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -415,14 +410,13 @@ public class TypeDescriptorTest {
     /*
      * wrongMaxSizeSetTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void wrongMaxSizeSetTest() {
         try {
-            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
+            PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
             primitiveDesc.setMaxFixedLength(15);
-            SetTypeDescriptor setDesc = (SetTypeDescriptor) builder.createTypeDescriptor(TypeKind.SET_TYPE, "");
-            setDesc.setContentType(primitiveDesc);
-            setDesc.setMaxSize(0);
+            SetTypeDescriptor setDesc = builder.createSetType(primitiveDesc, 0);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
@@ -437,16 +431,14 @@ public class TypeDescriptorTest {
     /*
      * mapTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void mapTest() {
         try {
-            PrimitiveTypeDescriptor primitiveKeyDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            PrimitiveTypeDescriptor primitiveValueDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.STRING_TYPE, "");
+            PrimitiveTypeDescriptor primitiveKeyDesc = builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            PrimitiveTypeDescriptor primitiveValueDesc = builder.createPrimitiveType(TypeKind.STRING_TYPE);
             primitiveValueDesc.setMaxFixedLength(15);
-            MapTypeDescriptor mapDesc = (MapTypeDescriptor) builder.createTypeDescriptor(TypeKind.MAP_TYPE, "");
-            mapDesc.setKeyTypeDescriptor(primitiveKeyDesc);
-            mapDesc.setValueTypeDescriptor(primitiveValueDesc);
-            mapDesc.setMaxSize(10);
+            MapTypeDescriptor mapDesc = (MapTypeDescriptor) builder.createMapType(primitiveKeyDesc, primitiveValueDesc, 15);
         } catch (TypeDescriptorException e) {
             assertTrue(false);
             return;
@@ -459,16 +451,14 @@ public class TypeDescriptorTest {
     /*
      * wrongMaxSizeMapTest
      */
+    @SuppressWarnings("unused")
     @Test
     public void wrongMaxSizeMapTest() {
         try {
-            PrimitiveTypeDescriptor primitiveKeyDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.INT_32_TYPE, "");
-            PrimitiveTypeDescriptor primitiveValueDesc = (PrimitiveTypeDescriptor) builder.createTypeDescriptor(TypeKind.STRING_TYPE, "");
+            PrimitiveTypeDescriptor primitiveKeyDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            PrimitiveTypeDescriptor primitiveValueDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.STRING_TYPE);
             primitiveValueDesc.setMaxFixedLength(15);
-            MapTypeDescriptor mapDesc = (MapTypeDescriptor) builder.createTypeDescriptor(TypeKind.MAP_TYPE, "");
-            mapDesc.setKeyTypeDescriptor(primitiveKeyDesc);
-            mapDesc.setValueTypeDescriptor(primitiveValueDesc);
-            mapDesc.setMaxSize(0);
+            MapTypeDescriptor mapDesc = (MapTypeDescriptor) builder.createMapType(primitiveKeyDesc, primitiveValueDesc, 0);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
