@@ -9,6 +9,7 @@ import java.nio.ByteOrder;
 import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
+import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.MockTransportMessage;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
@@ -17,8 +18,10 @@ import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
+import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.junit.After;
@@ -123,21 +126,12 @@ public class DynamicConstructedTest {
         for (int i=0; i < 3; ++i) {
             DynamicList innerDynList = (DynamicList) builder.createData(innerListDesc);
             for (int j=0; j < 5; ++j) {
-                //((DynamicPrimitive) ((DynamicList) ((DynamicList) dynList.getElementAt(i))).getElementAt(j)).set(++counter);
                 DynamicPrimitive dynPrimitive = (DynamicPrimitive) builder.createData(primDesc);
                 dynPrimitive.set(++counter);
                 innerDynList.add(dynPrimitive);
             }
             outerDynList.add(innerDynList);
         }
-        
-        
-        /*for (int i=0; i < 3; ++i) {
-            for (int j=0; j < 5; ++j) {
-                //((DynamicPrimitive) ((DynamicList) ((DynamicList) dynList.getElementAt(i))).getElementAt(j)).set(++counter);
-                //dynList.add();
-            }
-        }*/
         
         counter = 0;
         for (int i=0; i < 3; ++i) {
@@ -149,37 +143,7 @@ public class DynamicConstructedTest {
         reset();
     }
     
-    /*
-     * wrongDimAccessListTest
-     */
-    /*@Test
-    public void wrongDimAccessListTest() {
-        
-        PrimitiveTypeDescriptor primDesc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
-        
-        ListTypeDescriptor listDesc = (ListTypeDescriptor) tdbuilder.createListType(primDesc, 5);
-        listDesc.setContentType(primDesc);
-        listDesc.setMaxSize(5);
-        
-        ListTypeDescriptor outerListDesc = (ListTypeDescriptor) tdbuilder.createListType(listDesc, 3);
-        outerListDesc.setContentType(listDesc);
-        outerListDesc.setMaxSize(3);
-        
-        int counter = 0;
-        DynamicList dynList = (DynamicList) builder.createData(outerListDesc);
-        try {
-            for (int i=0; i < 4; ++i) {
-                for (int j=0; j < 5; ++j) {
-                    ((DynamicPrimitive) ((DynamicList) ((DynamicList) dynList.getElementAt(i))).getElementAt(j)).set(++counter);
-                }
-            }
-            assertTrue(false);
-        } catch (DynamicTypeException e) {
-            assertTrue(true);
-        }
-        
-        reset();
-    }*/
+    
     
     
 }

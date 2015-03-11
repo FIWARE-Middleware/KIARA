@@ -1,31 +1,43 @@
 package org.fiware.kiara.dynamic;
 
+import java.util.ArrayList;
+
 import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicEnum;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.data.DynamicStruct;
+import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicEnumImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicMapImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicSetImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicStructImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicUnionImpl;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunction;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
+import org.fiware.kiara.typecode.data.UnionMember;
+import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.EnumMemberImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.ListTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.UnionMemberImpl;
+import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
@@ -74,11 +86,10 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             return this.createMapType((MapTypeDescriptor) dataDescriptor);
         case SET_TYPE:
             return this.createSetType((SetTypeDescriptor) dataDescriptor);
-        
         case ENUM_TYPE:
-            break;
+            return this.createEnumType((EnumTypeDescriptor) dataDescriptor);
         case UNION_TYPE:
-            break;
+            return this.createUnionType((UnionTypeDescriptor) dataDescriptor);
         case STRUCT_TYPE:
             return this.createStructType((StructTypeDescriptor) dataDescriptor);
         case EXCEPTION_TYPE:
@@ -148,5 +159,36 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         }
         return ret;
     }
+    
+    private DynamicEnum createEnumType(EnumTypeDescriptor dataDescriptor) {
+        DynamicEnumImpl ret = new DynamicEnumImpl(dataDescriptor);
+        for (Member member : dataDescriptor.getMembers()) {
+            ret.addMember(null, member.getName());
+        }
+        return ret;
+    }
+    
+    private DynamicUnion createUnionType(UnionTypeDescriptor dataDescriptor) {
+        if (dataDescriptor.getMembers().size() == 0) {
+            throw new DynamicTypeException("DynamicTypeBuilder - No members have been assigned to this enumeration.");
+        }
+        DynamicUnionImpl ret = new DynamicUnionImpl(dataDescriptor);
+        ret.setDiscriminator(this.createData(((UnionTypeDescriptorImpl) dataDescriptor).getDiscriminator()));
+        for (Member member : dataDescriptor.getMembers()) {
+            UnionMemberImpl<?> unionMember = (UnionMemberImpl<?>) member;
+            DynamicData dynData = this.createData(unionMember.getTypeDescriptor());
+            ret.addMember(dynData, unionMember.getName(), unionMember.getLabels(), unionMember.isDefault());
+        }
+        ret.setDefaultDiscriminatorValue();
+        return ret;
+    }
+    
+    /*private ArrayList<DynamicData> createDynamicLabels(UnionMemberImpl unionMember) {
+        ArrayList<DynamicData> labels = new ArrayList<DynamicData>();
+        for (Object label : unionMember.getLabels()) {
+           this.createData(dataDescriptor)
+        }
+        return labels;
+    }*/
 
 }

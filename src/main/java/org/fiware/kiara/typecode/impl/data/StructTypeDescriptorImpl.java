@@ -27,10 +27,10 @@ public class StructTypeDescriptorImpl extends MemberedTypeDescriptorImpl impleme
             if (!this.exists(name)) {
                 this.m_members.add(new MemberImpl((DataTypeDescriptor) member, name));
             } else {
-                throw new TypeDescriptorException("MemberedTypeDescriptor - A member with name " + name + " already exists in this structure.");
+                throw new TypeDescriptorException("StructTypeDescriptorImpl - A member with name " + name + " already exists in this structure.");
             }
         } else {
-            throw new TypeDescriptorException("MemberedTypeDescriptor - A TypeDescriptor of type " + member.getKind() + " cannot be added. Only DataTypeDescriptor objects allowed.");
+            throw new TypeDescriptorException("StructTypeDescriptorImpl - A TypeDescriptor of type " + member.getKind() + " cannot be added. Only DataTypeDescriptor objects allowed.");
         }
     }    
     

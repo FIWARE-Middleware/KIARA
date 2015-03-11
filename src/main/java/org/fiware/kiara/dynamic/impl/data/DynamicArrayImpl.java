@@ -6,7 +6,6 @@ import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
-import org.fiware.kiara.dynamic.impl.data.visitor.Visitor;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;

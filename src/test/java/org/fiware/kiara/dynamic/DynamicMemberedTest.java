@@ -7,6 +7,8 @@ import java.nio.ByteOrder;
 
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.data.DynamicStruct;
+import org.fiware.kiara.dynamic.data.DynamicUnion;
+import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.serialization.MockTransportMessage;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
@@ -15,7 +17,10 @@ import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
+import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
+import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -143,6 +148,334 @@ public class DynamicMemberedTest {
             return;
         }
         assertTrue(false);
+    }
+    
+// ------------------------------- Unions --------------------------------------------
+    
+    @Test
+    public void unionCharDiscriminatorTest() {
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d('b');
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionBooleanDiscriminatorTest() {
+        PrimitiveTypeDescriptor booleanDesc = tdbuilder.createPrimitiveType(TypeKind.BOOLEAN_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", booleanDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, true);
+        unionCharDesc.addMember(uintDesc, "MyUint", false, false);
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d(false);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionIntDiscriminatorTest() {
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", intDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 1, 3);
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 2);
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d(2);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionUintDiscriminatorTest() {
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", uintDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 1, 3);
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 2);
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d(2);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionEnumDiscriminatorTest() {
+        EnumTypeDescriptor enumDesc = tdbuilder.createEnumType("MyEnum", "value_one", "value_two", "value_three");
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", enumDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, "value_one", "value_three");
+        unionCharDesc.addMember(uintDesc, "MyUint", false, "value_two");
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d("value_two");
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionWrongUnionDescriptionTest() {
+        
+        try {
+            PrimitiveTypeDescriptor floatDesc = tdbuilder.createPrimitiveType(TypeKind.FLOAT_32_TYPE);
+            UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", floatDesc);
+            assertTrue(false);
+        } catch (TypeDescriptorException e) {
+            assertTrue(true);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionWrongDiscriminatorDescriptionTest() {
+        try {
+            EnumTypeDescriptor enumDesc = tdbuilder.createEnumType("MyEnum", "value_one", "value_two", "value_three");
+            PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+            
+            UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", enumDesc);
+            unionCharDesc.addMember(intDesc, "MyInt", false, "value_one", "error");
+            
+            assertTrue(false);
+        } catch (TypeDescriptorException e) {
+            assertTrue(true);
+        }
+        
+        reset();
+    }
+    
+    @Test
+    public void unionWrongDiscriminatorSetTest() {
+        
+        try {
+            EnumTypeDescriptor enumDesc = tdbuilder.createEnumType("MyEnum", "value_one", "value_two", "value_three");
+            PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+            PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+            
+            UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", enumDesc);
+            unionCharDesc.addMember(intDesc, "MyInt", false, "value_one", "value_three");
+            unionCharDesc.addMember(uintDesc, "MyUint", false, "value_two");
+            
+            DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+            dynCharUnion._d("error");
+            assertTrue(false);
+        } catch (DynamicTypeException e) {
+            assertTrue(true);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * noDefaultUnionTest
+     */
+    @Test
+    public void unionNoDefaultTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyInt").getTypeDescriptor().getKind() == TypeKind.INT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyUint") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * defaultUnionTest
+     */
+    @Test
+    public void unionDefaultTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+        unionCharDesc.addMember(uintDesc, "MyDefaultUint", true);
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyDefaultUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyUint") == null);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * defaultUnionCaseOneTest
+     */
+    @Test
+    public void unionDefaultCaseOneTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", true, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyInt").getTypeDescriptor().getKind() == TypeKind.INT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyUint") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * defaultUnionCaseTwoTest
+     */
+    @Test
+    public void unionDefaultCaseTwoTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", true);
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * defaultUnionCaseThreeTest
+     */
+    @Test
+    public void unionDefaultCaseThreeTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", false, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyInt").getTypeDescriptor().getKind() == TypeKind.INT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyUint") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
+    }
+    
+    /*
+     * specificDefaultUnionTest
+     */
+    @Test
+    public void unionSpecificDefaultTest() {
+        
+        PrimitiveTypeDescriptor charDesc = tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        PrimitiveTypeDescriptor intDesc = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        PrimitiveTypeDescriptor uintDesc = tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        
+        UnionTypeDescriptor unionCharDesc = tdbuilder.createUnionType("MyUnion", charDesc);
+        unionCharDesc.addMember(intDesc, "MyInt", true, 'a', 'c');
+        unionCharDesc.addMember(uintDesc, "MyUint", false, 'b');
+        
+        DynamicUnion dynCharUnion = (DynamicUnion) builder.createData(unionCharDesc);
+        dynCharUnion._d('b');
+        
+        try {
+            assertTrue(dynCharUnion.getMember("MyUint").getTypeDescriptor().getKind() == TypeKind.UINT_32_TYPE);
+            assertTrue(dynCharUnion.getMember("MyInt") == null);
+        } catch (DynamicTypeException e) {
+            assertTrue(false);
+        }
+        
+        reset();
     }
 
 }

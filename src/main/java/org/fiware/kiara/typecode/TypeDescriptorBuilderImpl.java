@@ -2,17 +2,21 @@ package org.fiware.kiara.typecode;
 
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
+import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.EnumTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.ListTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.StructTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
@@ -78,6 +82,21 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     @Override
     public FunctionTypeDescriptor createFunctionType(String name) {
         FunctionTypeDescriptor ret = new FunctionTypeDescriptorImpl(name);
+        return ret;
+    }
+
+    @Override
+    public EnumTypeDescriptor createEnumType(String name, String... values) {
+        EnumTypeDescriptorImpl ret = new EnumTypeDescriptorImpl(name);
+        for (String value : values) {
+            ret.addValue(value);
+        }
+        return ret;
+    }
+
+    @Override
+    public UnionTypeDescriptor createUnionType(String name, DataTypeDescriptor discriminatorDescriptor) {
+        UnionTypeDescriptorImpl ret = new UnionTypeDescriptorImpl(name, discriminatorDescriptor);
         return ret;
     }
     

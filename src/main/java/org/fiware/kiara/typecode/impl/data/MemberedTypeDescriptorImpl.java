@@ -11,23 +11,21 @@ import org.fiware.kiara.typecode.data.MemberedTypeDescriptor;
 
 public class MemberedTypeDescriptorImpl extends DataTypeDescriptorImpl implements MemberedTypeDescriptor {
     
-    private boolean m_membered = false;
     protected ArrayList<Member> m_members;
     
     public MemberedTypeDescriptorImpl(TypeKind kind/*, String name*/) {
-        super(kind/*, name*/);
+        super(kind);
         this.m_members = new ArrayList<Member>();
     }
     
     @Override
     public boolean isMembered() {
-        return this.m_membered;
+        return true;
     }
     
     @Override
     public ArrayList<Member> getMembers() {
         return this.m_members;
-        //return null;
     }
 
     

@@ -6,8 +6,6 @@ import java.beans.PropertyChangeSupport;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
-import org.fiware.kiara.dynamic.impl.data.visitor.Element;
-import org.fiware.kiara.dynamic.impl.data.visitor.Visitor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;

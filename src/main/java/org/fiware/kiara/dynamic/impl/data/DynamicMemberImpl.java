@@ -3,7 +3,7 @@ package org.fiware.kiara.dynamic.impl.data;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMember;
 
-public class DynamicMemberImpl implements DynamicMember {
+public class DynamicMemberImpl implements DynamicMember { 
     
     private String m_name; 
     private DynamicData m_dynamicData;
