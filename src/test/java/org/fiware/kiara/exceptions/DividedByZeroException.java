@@ -27,18 +27,31 @@
 package org.fiware.kiara.exceptions;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import org.fiware.kiara.serialization.impl.BasicSerializers;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
+import org.fiware.kiara.serialization.impl.ListAsSequenceSerializer;
+import org.fiware.kiara.serialization.impl.Serializer;
+import org.fiware.kiara.serialization.impl.MapAsMapSerializer;
+import org.fiware.kiara.serialization.impl.SetAsSetSerializer;
+import org.fiware.kiara.serialization.impl.ObjectSerializer;
+import org.fiware.kiara.serialization.impl.EnumSerializer;
 
 /**
- * Class definition for the user defined type DividedByZeroException. 
+ * Class definition for the user defined type DividedByZeroException.
  *
  * @author Kiaragen tool.
  *
@@ -51,7 +64,11 @@ public class DividedByZeroException extends Exception implements Serializable {
 	 */
 	 private int code;
 	 private java.lang.String message;
-	
+
+	/*
+         *      Attribute Serializers
+         */
+
 	/*
 	 *	Default constructor
 	 */
