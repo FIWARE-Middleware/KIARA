@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.dynamic.impl.data;
 
 import java.util.ArrayList;
@@ -9,16 +26,17 @@ import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.TypeKind;
-import org.fiware.kiara.typecode.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class DynamicUnionImpl extends DynamicMemberedImpl implements DynamicUnion {
     
     private DynamicData m_discriminator;
-    
-    private Object m_nextDiscriminatorValue;
     
     private ArrayList<Boolean> m_activeMember;
     
@@ -70,18 +88,6 @@ public class DynamicUnionImpl extends DynamicMemberedImpl implements DynamicUnio
         }
         return null;
     }
-    
-    /*private DynamicData getCaseValue(DynamicUnionMemberImpl<?> unionMember) {
-        for (Object label : unionMember.getLabels()) {
-            if (label == this.m_nextDiscriminatorValue) {
-                return unionMember.getDynamicData();
-            }
-        }
-        if (unionMember.isDefault()) {
-            return unionMember.getDynamicData();
-        }
-        return null;
-    }*/
     
     @Override
     public void setMember(String name, DynamicData data) {

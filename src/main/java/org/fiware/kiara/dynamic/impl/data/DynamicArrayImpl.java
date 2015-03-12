@@ -1,21 +1,38 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.dynamic.impl.data;
 
 import java.util.ArrayList;
 
 import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicData;
-import org.fiware.kiara.dynamic.data.DynamicPrimitive;
-import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
-import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArray {
     
     private int m_maxSize;
     private ArrayList<Integer> m_dimensions;
-    //private int temporalAccessIndex = -1;
     
     public DynamicArrayImpl(ArrayTypeDescriptor arrayDescriptor) {
         super(arrayDescriptor, "DynamicArrayImpl");
@@ -73,8 +90,6 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         
         int accessIndex = calculateAccessIndex(position);
         
-        //this.temporalAccessIndex = accessIndex;
-        
         return this.m_members.get(accessIndex);
     }
 
@@ -94,43 +109,14 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
                 this.m_members.add(accessIndex, value);
                 return true;
             } else {
-                /*if (this.m_visitor != null) {
-                    (this.m_visitor).notify(this, value);
-                } else {*/
-                    return (this.m_members.set(accessIndex, value) != null);
-                //}
+                return (this.m_members.set(accessIndex, value) != null);
             }
         }
         
         return false;
     }
     
-   /* @Override
-    public void visit(Object... params) {
-        DynamicDataImpl value = (DynamicDataImpl) params[0];
-        
-        value.visit(trimParams(params));
-        
-        //int accessIndex = (int) params[1];
-        
-        //this.m_members.set(accessIndex, value);
-    }
-    
-    @Override
-    public boolean notify(DynamicDataImpl value, Object... params) { // value = value that changes (this); params: the parameters to be used later in visit function
-        if (this.m_visitor != null) {
-            if (temporalAccessIndex != -1) {
-                this.m_visitor.notify(this, appendParams(value, params));
-                temporalAccessIndex = -1;
-            }
-        } else {
-            value.visit(params);
-        }
-        
-        return true;
-    }*/
-    
-    private boolean checkBoundaries(int... position) {
+   private boolean checkBoundaries(int... position) {
         for (int i=0; i < position.length; ++i) {
             int declaredDim = this.m_dimensions.get(i);
             if (position[i] >= declaredDim) {
@@ -151,7 +137,6 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
            index = index + coord * multiplyDimensions(dimIndex);
            dimIndex++;
         }
-        //System.out.println("LinearIndex:  " + index);
         return index;
     }
     
@@ -162,13 +147,5 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         }
         return ret;
     }
-    
-    /*@Override
-    public void registerVisitor(Visitor visitor) {
-        super.registerVisitor(visitor);
-        for (int i=0; i < this.m_members.size(); ++i) {
-            ((DynamicDataImpl) this.m_members.get(i)).registerVisitor(this);
-        }
-    }*/
-
+   
 }

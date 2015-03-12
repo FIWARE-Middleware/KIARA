@@ -1,21 +1,34 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.dynamic.impl.data;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeSupport;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.exceptions.DynamicTypeException;
-import org.fiware.kiara.typecode.TypeDescriptor;
-import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 
-import com.google.common.base.Objects;
-
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrimitive {
     
-    //private String name;
     private Object m_value;
     private int m_maxLength;
     
@@ -29,12 +42,8 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         Class<?> c = value.getClass();
         if (isPrimitive(c)) {
             if(this.typeFits(value)) {
-                /*if (this.m_visitor != null) {
-                    (this.m_visitor).notify(this, value);
-                } else {*/
-                    checkStringSize(value);
-                    this.m_value = value; // TODO Check if value is primitive or not
-                //}
+                checkStringSize(value);
+                this.m_value = value; // TODO Check if value is primitive or not
                 return true;
             } else {
                 throw new DynamicTypeException(this.m_className + " - A value of type " + value.getClass() + " cannot be assigned to a " + this.m_typeDescriptor.getKind() + " dynamic type.");
@@ -43,12 +52,6 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         
         return false;
     }
-    
-    /*@Override
-    public void visit(Object... params) {
-        checkStringSize(params[0]);
-        this.m_value = params[0]; // TODO Check if value is primitive or not
-    }*/
     
     @Override
     public boolean set(DynamicData value) {
@@ -74,25 +77,13 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
     public boolean equals(Object anotherObject) {
         if (anotherObject instanceof DynamicPrimitive) {
             if (((DynamicPrimitive) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
-               // if (this.m_typeDescriptor.getKind() == TypeKind.STRING_TYPE) {
-                    if (((DynamicPrimitive) anotherObject).get().equals(this.m_value)) {
-                        return true;
-                    }
-                /*} else {
-                    if (((DynamicPrimitive) anotherObject).get() == this.m_value) {
-                        return true;
-                    }
-                }*/
+                if (((DynamicPrimitive) anotherObject).get().equals(this.m_value)) {
+                    return true;
+                }
             }
         }
         return false;
     }
-    
-   /* @Override
-    public int hashCode() {
-        System.out.println("Se ejecuta hash");
-        return Objects.hashCode(this.m_typeDescriptor.getKind()) + Objects.hashCode(this.m_value);
-    }*/
     
     private void checkStringSize(Object value) {
         if (value.getClass().equals(String.class)) {
@@ -100,7 +91,6 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
             if (stringValue.length() > this.m_maxLength) {
                 throw new DynamicTypeException(this.m_className + " - The length of the String value cannot greater than the one specified in the type descriptor.");
             }
-            //this.m_maxLength = stringValue.length();
         }
     }
     
@@ -162,7 +152,7 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
     
     private boolean typeFits(Object value) {
         Class<?> c = value.getClass();
-        switch (this.m_typeDescriptor.getKind()) { // TODO se esta insertando un dynamic, deberia ser un int
+        switch (this.m_typeDescriptor.getKind()) { 
         case BOOLEAN_TYPE:
             if(!c.equals(Boolean.class)) {
                 return false;

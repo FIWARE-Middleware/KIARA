@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.typecode.impl.data;
 
 import java.util.ArrayList;
@@ -7,6 +24,11 @@ import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl implements ArrayTypeDescriptor {
     
     private ArrayList<Integer> m_dimensions;
@@ -62,10 +84,6 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
         return true;
     }
     
-    /*public int getLinearSize() {
-        return this.m_linearSize;
-    }*/
-    
     @Override
     public ArrayList<Integer> getDimensions() {
         return this.m_dimensions;
@@ -85,26 +103,5 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
         return true;
     }
     
-    /*public ArrayTypeDescriptorImpl(int... dimensions) {
-    super(TypeKind.ARRAY_TYPE, "array");
-    if (dimensions.length == 0) {
-        throw new TypeDescriptorException("ArrayTypeDescriptor - No dimensions have been specified for this array.");
-    } else if (!checkDimensions(dimensions)) {
-        throw new TypeDescriptorException("ArrayTypeDescriptor - Dimensions cannot be neither negative nor zero.");
-    }
-    this.m_dimensions = new ArrayList<Integer>();
-    this.insertDimensions(dimensions);
-    }*/
-
-    /*public ArrayTypeDescriptorImpl(DataTypeDescriptorImpl contentType, int... dimensions) {
-    super(TypeKind.ARRAY_TYPE, "array", contentType);
-    if (dimensions.length == 0) {
-        throw new TypeDescriptorException("ArrayTypeDescriptor - No dimensions have been specified for this array.");
-    }
-    this.m_dimensions = new ArrayList<Integer>();
-    this.insertDimensions(dimensions);
-    }*/
-
-
-
+    
 }

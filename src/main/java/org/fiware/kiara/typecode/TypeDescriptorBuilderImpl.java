@@ -3,6 +3,7 @@ package org.fiware.kiara.typecode;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
+import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
@@ -11,6 +12,7 @@ import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.EnumTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.ListTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
@@ -20,6 +22,11 @@ import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     
     private static TypeDescriptorBuilderImpl m_instance = null;
@@ -99,53 +106,14 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
         UnionTypeDescriptorImpl ret = new UnionTypeDescriptorImpl(name, discriminatorDescriptor);
         return ret;
     }
-    
-    
-    /*@Override
-    public TypeDescriptor createTypeDescriptor(TypeKind kind, String name) {
-        switch(kind) {
-        case BOOLEAN_TYPE:
-        case BYTE_TYPE:
-        case INT_16_TYPE:
-        case UINT_16_TYPE:
-        case INT_32_TYPE:
-        case UINT_32_TYPE:
-        case INT_64_TYPE:
-        case UINT_64_TYPE:
-        case FLOAT_32_TYPE:
-        case FLOAT_64_TYPE:
-        case CHAR_8_TYPE:
-        case STRING_TYPE:
-            return new PrimitiveTypeDescriptorImpl(kind);
-        case ARRAY_TYPE:
-            return new ArrayTypeDescriptorImpl();
-        case LIST_TYPE:
-            return new ListTypeDescriptorImpl();
-        case MAP_TYPE:
-            return new MapTypeDescriptorImpl();
-        case SET_TYPE:
-            return new SetTypeDescriptorImpl();
-        case ENUM_TYPE:
-            System.out.println("NOT SUPPORTED YET");
-            break;
-        case UNION_TYPE:
-            System.out.println("NOT SUPPORTED YET");
-            break;
-        case STRUCT_TYPE:
-            return new StructTypeDescriptorImpl(name);
-        case EXCEPTION_TYPE:
-            System.out.println("NOT SUPPORTED YET");
-            break;
-        case SERVICE_TYPE:
-            System.out.println("NOT SUPPORTED YET");
-            break;
-        case FUNCTION_TYPE:
-            return new FunctionTypeDescriptorImpl(name);
-        default:
-            break;
-        }
-        return null;
+
+    @Override
+    public ExceptionTypeDescriptor createExceptionType(String name) {
+        ExceptionTypeDescriptor ret = new ExceptionTypeDescriptorImpl(name);
+        return ret;
     }
-     */
+    
+    
+    
 
 }

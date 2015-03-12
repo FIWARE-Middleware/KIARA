@@ -3,6 +3,7 @@ package org.fiware.kiara.typecode;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
+import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
@@ -11,6 +12,11 @@ import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public interface TypeDescriptorBuilder {
     
     public PrimitiveTypeDescriptor createPrimitiveType(TypeKind kind);
@@ -32,5 +38,7 @@ public interface TypeDescriptorBuilder {
     
     
     public FunctionTypeDescriptor createFunctionType(String name);
+
+    public ExceptionTypeDescriptor createExceptionType(String string);
 
 }

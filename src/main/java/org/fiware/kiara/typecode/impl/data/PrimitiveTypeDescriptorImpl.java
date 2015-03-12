@@ -1,20 +1,39 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.typecode.impl.data;
 
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implements PrimitiveTypeDescriptor {
 
     private boolean m_primitive = false;
     private int m_maxFixedLength = 0;
     
     public PrimitiveTypeDescriptorImpl(TypeKind kind) {
-        super(kind/*, name*/);
+        super(kind);
         this.initialize();
-        /*if (name != null && name.length() != 0) {
-            this.m_name = name;
-        }*/
     }
     
     @Override
@@ -57,45 +76,34 @@ public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implemen
     private void initialize() {
         switch (this.m_kind) {
             case BOOLEAN_TYPE:
-                //this.m_name = "boolean";
                 this.m_primitive = true;
                 break;
             case BYTE_TYPE:
-                //this.m_name = "byte";
                 this.m_primitive = true;
                 break;
             case INT_16_TYPE:
-                //this.m_name = "short";
                 this.m_primitive = true;
                 break;
             case INT_32_TYPE:
-                //this.m_name = "int";
                 this.m_primitive = true;
                 break;
             case INT_64_TYPE:
-                //this.m_name = "long";
                 this.m_primitive = true;
                 break;
             case FLOAT_32_TYPE:
-                //this.m_name = "float";
                 this.m_primitive = true;
                 break;
             case FLOAT_64_TYPE:
-                //this.m_name = "double";
                 this.m_primitive = true;
                 break;
             case CHAR_8_TYPE:
-                //this.m_name = "char";
                 this.m_primitive = true;
                 break;
             case STRING_TYPE:
-                //this.m_name = "string";
                 this.m_primitive = true;
                 this.m_maxFixedLength = 255;
                 break;
-            
             default:
-                //this.m_name = "null";
                 break;
         }
     }

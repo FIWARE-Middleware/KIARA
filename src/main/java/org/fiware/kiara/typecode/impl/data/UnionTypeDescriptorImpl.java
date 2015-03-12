@@ -1,21 +1,41 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.typecode.impl.data;
 
 import java.util.ArrayList;
 
-import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.data.EnumMember;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
-import org.fiware.kiara.typecode.data.UnionMember;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements UnionTypeDescriptor {
     
     private DataTypeDescriptor m_discriminator;
     
+    @SuppressWarnings("unused")
     private String m_name;
     
     private int m_defaultIndex = -1;
@@ -41,6 +61,7 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> boolean addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, T... labels) {
         if (!isDefault && labels.length == 0) {
@@ -61,8 +82,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                     throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
                 }
             }
-            /*UnionMemberImpl<Character> member = new UnionMemberImpl<Character>(typeDescriptor, name, innerLabels);
-            this.m_members.add(member);*/
             addMember(name, typeDescriptor, isDefault, innerLabels);
             break;
         }
@@ -79,8 +98,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                     throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
                 }
             }
-            /*UnionMemberImpl<Boolean> member = new UnionMemberImpl<Boolean>(typeDescriptor, name, innerLabels);
-            this.m_members.add(member);*/
             addMember(name, typeDescriptor, isDefault, innerLabels);
             break;
         }
@@ -97,8 +114,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                     throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
                 }
             }
-            /*UnionMemberImpl<Integer> member = new UnionMemberImpl<Integer>(typeDescriptor, name, innerLabels);
-            this.m_members.add(member);*/
             addMember(name, typeDescriptor, isDefault, innerLabels);
             break;
         }
@@ -115,8 +130,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                     throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
                 }
             }
-            /*UnionMemberImpl<Integer> member = new UnionMemberImpl<Integer>(typeDescriptor, name, innerLabels);
-            this.m_members.add(member);*/
             addMember(name, typeDescriptor, isDefault, innerLabels);
             break;
         }
@@ -138,7 +151,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                     if (!found) {
                         throw new TypeDescriptorException("UnionTypeDescriptorImpl - Label " + label + " is not amongst the possible enum values."); 
                     }
-                    //innerLabels.add((String) label);
                 }
                 else
                 {
@@ -146,10 +158,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
                 }
             }
             addMember(name, typeDescriptor, isDefault, innerLabels);
-            /*if (!exists(name)) {
-                UnionMemberImpl<Integer> member = new UnionMemberImpl<Integer>(typeDescriptor, name, innerLabels);
-                this.m_members.add(member);
-            }*/
             break;
         }
         

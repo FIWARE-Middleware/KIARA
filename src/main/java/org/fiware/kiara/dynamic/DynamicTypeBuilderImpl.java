@@ -1,6 +1,21 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.dynamic;
-
-import java.util.ArrayList;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicEnum;
@@ -8,7 +23,6 @@ import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.data.DynamicStruct;
 import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
-import org.fiware.kiara.dynamic.impl.data.DynamicDataImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicEnumImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicMapImpl;
@@ -16,31 +30,30 @@ import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicSetImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicStructImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicUnionImpl;
-import org.fiware.kiara.dynamic.impl.services.DynamicFunction;
+import org.fiware.kiara.dynamic.impl.services.DynamicFunctionImpl;
+import org.fiware.kiara.dynamic.services.DynamicFunction;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
+import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
-import org.fiware.kiara.typecode.data.UnionMember;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.EnumMemberImpl;
-import org.fiware.kiara.typecode.impl.data.MapTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.ListTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.UnionMemberImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
 public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
     
     private static DynamicTypeBuilderImpl instance = null;
@@ -59,7 +72,19 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
     
     @Override
     public DynamicFunction createFunction(FunctionTypeDescriptor functionDescriptor) {
-        return new DynamicFunction((FunctionTypeDescriptorImpl) functionDescriptor);
+        DynamicFunctionImpl ret = new DynamicFunctionImpl((FunctionTypeDescriptorImpl) functionDescriptor);
+        
+        if (functionDescriptor.getReturnType() != null) {
+            ret.setReturnType(this.createData(functionDescriptor.getReturnType()));
+        }
+        for (DataTypeDescriptor param : functionDescriptor.getParameters()) {
+            ret.addParameter(this.createData(param));
+        }
+        for (ExceptionTypeDescriptor exception : functionDescriptor.getExceptions()) {
+            ret.addParameter(this.createData(exception));
+        }
+        
+        return ret;
     }
 
     @Override
@@ -183,12 +208,4 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         return ret;
     }
     
-    /*private ArrayList<DynamicData> createDynamicLabels(UnionMemberImpl unionMember) {
-        ArrayList<DynamicData> labels = new ArrayList<DynamicData>();
-        for (Object label : unionMember.getLabels()) {
-           this.createData(dataDescriptor)
-        }
-        return labels;
-    }*/
-
 }
