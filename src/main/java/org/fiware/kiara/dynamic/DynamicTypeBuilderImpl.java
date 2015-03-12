@@ -19,11 +19,13 @@ package org.fiware.kiara.dynamic;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicEnum;
+import org.fiware.kiara.dynamic.data.DynamicException;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.data.DynamicStruct;
 import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.dynamic.impl.data.DynamicArrayImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicEnumImpl;
+import org.fiware.kiara.dynamic.impl.data.DynamicExceptionImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicListImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicMapImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
@@ -118,6 +120,7 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         case STRUCT_TYPE:
             return this.createStructType((StructTypeDescriptor) dataDescriptor);
         case EXCEPTION_TYPE:
+            return this.createExceptionType((ExceptionTypeDescriptor) dataDescriptor);
         default:
             break;
         }
@@ -205,6 +208,15 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             ret.addMember(dynData, unionMember.getName(), unionMember.getLabels(), unionMember.isDefault());
         }
         ret.setDefaultDiscriminatorValue();
+        return ret;
+    }
+    
+    private DynamicException createExceptionType(ExceptionTypeDescriptor dataDescriptor) {
+        DynamicExceptionImpl ret = new DynamicExceptionImpl(dataDescriptor);
+        for (Member member : dataDescriptor.getMembers()) {
+            DynamicData dynData = this.createData(member.getTypeDescriptor());
+            ret.addMember(dynData, member.getName());
+        }
         return ret;
     }
     

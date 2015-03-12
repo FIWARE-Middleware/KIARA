@@ -15,19 +15,15 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.typecode.data;
-
-import org.fiware.kiara.typecode.TypeDescriptor;
+package org.fiware.kiara.dynamic.data;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface ExceptionTypeDescriptor extends MemberedTypeDescriptor {
+public interface DynamicException extends DynamicMembered {
     
-    public void addMember(TypeDescriptor member, String name);
-    
-    public DataTypeDescriptor getMember(String name);
+    public DynamicData getMember(String name);
 
 }
