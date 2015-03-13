@@ -1,0 +1,67 @@
+struct MarketDataEntry {
+    ui32 mdUpdateAction;
+    ui32 mdPriceLevel;
+    double        mdEntryType;
+    ui32 openCloseSettleFlag;
+    ui32 securityIDSource;
+    ui32 securityID;
+    ui32 rptSeq;
+    double        mdEntryPx;
+    ui32 mdEntryTime;
+    ui32          mdEntrySize;  // in original i32
+    ui32 numberOfOrders;
+    double        tradingSessionID;
+    double        netChgPrevDay;
+    ui32 tradeVolume;
+    double        tradeCondition;
+    double        tickDirection;
+    double        quoteCondition;
+    ui32 aggressorSide;
+    double        matchEventIndicator;
+
+    double dummy1;
+    i32 dummy2;
+};
+
+struct MarketData {
+    boolean    isEcho;
+    ui32        counter;
+    ui32        securityID;
+    double    applVersionID;
+    double    messageType;
+    double    senderCompID;
+    ui32       msgSeqNum;
+    ui32       sendingTime;
+    ui32       tradeDate;
+    sequence<MarketDataEntry>  mdEntries;
+};
+
+struct RelatedSym {
+    double    symbol;
+    ui64       orderQuantity;
+    ui32    side;
+    ui64    transactTime;
+    ui32    quoteType;
+    ui32      securityID;
+    ui32      securityIDSource;
+    double dummy1;
+    i32 dummy2;
+};
+
+struct QuoteRequest {
+    boolean            isEcho;
+    ui32      counter;
+    ui32      securityID;
+    double             applVersionID;
+    double             messageType;
+    double             senderCompID;
+    ui32      msgSeqNum;
+    ui32      sendingTime;
+    double             quoteReqID;
+    sequence<RelatedSym>        related;
+};
+
+service benchmark {
+    MarketData sendMarketData(MarketData marketData);
+    QuoteRequest sendQuoteRequest(QuoteRequest quoteRequest);
+};
