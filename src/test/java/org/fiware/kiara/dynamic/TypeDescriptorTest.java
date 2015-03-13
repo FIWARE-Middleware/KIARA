@@ -377,7 +377,7 @@ public class TypeDescriptorTest {
     public void wrongMaxSizeListTest() {
         try {
             PrimitiveTypeDescriptor primitiveDesc = (PrimitiveTypeDescriptor) builder.createPrimitiveType(TypeKind.INT_32_TYPE);
-            ListTypeDescriptor listDesc = builder.createListType(primitiveDesc, -1);
+            ListTypeDescriptor listDesc = builder.createListType(primitiveDesc, -2);
         } catch (TypeDescriptorException e) {
             assertTrue(true);
             return;
