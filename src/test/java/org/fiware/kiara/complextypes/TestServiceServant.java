@@ -49,65 +49,6 @@ public abstract class TestServiceServant implements Servant, TestService {
         return "TestService";
     }
 
-    private int return_param_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += MyStruct.getMaxCdrSerializedSize(op_size); // Return type
-
-        return op_size;
-    }
-
-    private int only_param_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        // Return type
-
-        return op_size;
-    }
-
-    private int only_return_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += MyStruct.getMaxCdrSerializedSize(op_size); // Return type
-
-        return op_size;
-    }
-
-    private int oneway_return_param_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        // Return type
-
-        return op_size;
-    }
-
-    private int oneway_only_param_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        // Return type
-
-        return op_size;
-    }
-
-    private int oneway_only_return_func_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        // Return type
-
-        return op_size;
-    }
 
     @Override
     public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
@@ -138,7 +79,7 @@ public abstract class TestServiceServant implements Servant, TestService {
                 }
                 int param2 = serImpl.deserializeI32(bis, "");
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(return_param_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
@@ -165,7 +106,7 @@ public abstract class TestServiceServant implements Servant, TestService {
                     e.printStackTrace();
                 }
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(only_param_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
@@ -180,7 +121,7 @@ public abstract class TestServiceServant implements Servant, TestService {
 
             if (operation.equals("only_return_func")) {
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(only_return_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
@@ -208,7 +149,7 @@ public abstract class TestServiceServant implements Servant, TestService {
                 }
                 int param2 = serImpl.deserializeI32(bis, "");
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(oneway_return_param_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
@@ -233,7 +174,7 @@ public abstract class TestServiceServant implements Servant, TestService {
                     e.printStackTrace();
                 }
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(oneway_only_param_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
@@ -248,7 +189,7 @@ public abstract class TestServiceServant implements Servant, TestService {
 
             if (operation.equals("oneway_only_return_func")) {
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(oneway_only_return_func_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
 
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 

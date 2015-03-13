@@ -144,35 +144,6 @@ public class MyStruct implements Serializable {
 	}
 	
 	/*
-	 *This method calculates the maximum size in CDR for this class.
-	 * 
-	 * @param current_alignment Integer containing the current position in the buffer.
-	 */
-	public static int getMaxCdrSerializedSize(int current_alignment)
-	{
-	    int current_align = current_alignment;
-	            
-	    current_align += 4 + CDRSerializer.alignment(current_align, 4);
-
-	    current_align += 4 + CDRSerializer.alignment(current_align, 4) + 255 + 1;
-
-	    for(int a = 0; a < (10 * 5); ++a) {
-	        current_align += 4 + CDRSerializer.alignment(current_align, 4);
-	    }
-
-	    for(int a = 0; a < (10); ++a) {
-	        current_align += 4 + CDRSerializer.alignment(current_align, 4) + 10 + 1;
-	    }
-
-	    current_align += 4 + CDRSerializer.alignment(current_align, 4); // Sequence size
-	    for(int a = 0; a < 8; ++a) {
-	        current_align += 4 + CDRSerializer.alignment(current_align, 4);
-	    }
-	 
-	    return current_align;
-	}
-	
-	/*
 	 * Method to get the attribute myInt.
 	 */
 	public int getMyInt() {

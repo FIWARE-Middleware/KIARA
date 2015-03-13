@@ -50,34 +50,11 @@ class CalculatorProxy implements CalculatorClient {
         m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;
     }
 
-    private int add_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "Calculator".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "add".length() + 1; // Operation name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-
-        return op_size;
-    }
-
-    private int subtract_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "Calculator".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "subtract".length() + 1; // Operation name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-
-        return op_size;
-    }
 
     @Override
     public int add(/*in*/int n1, /*in*/ int n2) {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(add_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -125,7 +102,7 @@ class CalculatorProxy implements CalculatorClient {
     @Override
     public int subtract(/*in*/int n1, /*in*/ int n2) {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(subtract_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -173,7 +150,7 @@ class CalculatorProxy implements CalculatorClient {
     public void add(/*in*/int n1, /*in*/ int n2, final add_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(add_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -215,7 +192,7 @@ class CalculatorProxy implements CalculatorClient {
     public void subtract(/*in*/int n1, /*in*/ int n2, final subtract_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(subtract_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();

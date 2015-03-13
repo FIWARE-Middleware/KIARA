@@ -50,32 +50,11 @@ class ExceptionsProxy implements ExceptionsClient {
         m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;
     }
 
-    private int divide_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "Exceptions".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "divide".length() + 1; // Operation name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-        op_size += 4 + CDRSerializer.alignment(op_size, 4);
-
-        return op_size;
-    }
-
-    private int function_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "Exceptions".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "function".length() + 1; // Operation name
-
-        return op_size;
-    }
 
     @Override
     public float divide(/*in*/float n1, /*in*/ float n2) throws DividedByZeroException {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(divide_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -135,7 +114,7 @@ class ExceptionsProxy implements ExceptionsClient {
     @Override
     public int function() throws FirstException, SecondException {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(function_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -203,7 +182,7 @@ class ExceptionsProxy implements ExceptionsClient {
     public void divide(/*in*/float n1, /*in*/ float n2, final divide_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(divide_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -245,7 +224,7 @@ class ExceptionsProxy implements ExceptionsClient {
     public void function(final function_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(function_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();

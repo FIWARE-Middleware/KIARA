@@ -50,32 +50,11 @@ class StructServiceProxy implements StructServiceClient {
         m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;
     }
 
-    private int sendReceivePrimitives_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "StructService".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "sendReceivePrimitives".length() + 1; // Operation name
-        op_size += PrimitiveTypesStruct.getMaxCdrSerializedSize(op_size);
-
-        return op_size;
-    }
-
-    private int sendReceiveStruct_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "StructService".length() + 1; // Interface name
-        op_size += 4 + CDRSerializer.alignment(op_size, 4) + "sendReceiveStruct".length() + 1; // Operation name
-        op_size += OuterStruct.getMaxCdrSerializedSize(op_size);
-
-        return op_size;
-    }
 
     @Override
     public PrimitiveTypesStruct sendReceivePrimitives(/*in*/PrimitiveTypesStruct value) {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(sendReceivePrimitives_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -121,7 +100,7 @@ class StructServiceProxy implements StructServiceClient {
     @Override
     public OuterStruct sendReceiveStruct(/*in*/OuterStruct value) {
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(sendReceiveStruct_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -168,7 +147,7 @@ class StructServiceProxy implements StructServiceClient {
     public void sendReceivePrimitives(/*in*/PrimitiveTypesStruct value, final sendReceivePrimitives_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(sendReceivePrimitives_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();
@@ -209,7 +188,7 @@ class StructServiceProxy implements StructServiceClient {
     public void sendReceiveStruct(/*in*/OuterStruct value, final sendReceiveStruct_AsyncCallback callback) {
 
         if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(sendReceiveStruct_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
             final Object messageId = m_ser.getNewMessageId();

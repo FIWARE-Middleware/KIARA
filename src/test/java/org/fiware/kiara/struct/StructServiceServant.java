@@ -49,25 +49,6 @@ public abstract class StructServiceServant implements Servant, StructService {
         return "StructService";
     }
 
-    private int sendReceivePrimitives_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += PrimitiveTypesStruct.getMaxCdrSerializedSize(op_size); // Return type
-
-        return op_size;
-    }
-
-    private int sendReceiveStruct_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += OuterStruct.getMaxCdrSerializedSize(op_size); // Return type
-
-        return op_size;
-    }
 
     @Override
     public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
@@ -98,7 +79,7 @@ public abstract class StructServiceServant implements Servant, StructService {
                     e.printStackTrace();
                 }
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(sendReceivePrimitives_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
@@ -126,7 +107,7 @@ public abstract class StructServiceServant implements Servant, StructService {
                     e.printStackTrace();
                 }
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(sendReceiveStruct_required_size());
+                BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);

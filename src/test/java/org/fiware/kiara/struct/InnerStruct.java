@@ -116,22 +116,6 @@ public class InnerStruct implements Serializable {
     }
 
     /*
-     *This method calculates the maximum size in CDR for this class.
-     * 
-     * @param current_alignment Integer containing the current position in the buffer.
-     */
-	public static int getMaxCdrSerializedSize(int current_alignment)
-	{
-        int current_align = current_alignment;
-
-        current_align += 4 + CDRSerializer.alignment(current_align, 4);
-
-        current_align += 4 + CDRSerializer.alignment(current_align, 4) + 255 + 1;
-
-        return current_align;
-    }
-
-    /*
      * Method to get the attribute innerLongAtt.
      */
     public int getInnerLongAtt() {

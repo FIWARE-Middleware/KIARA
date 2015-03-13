@@ -53,76 +53,11 @@ class TestServiceProxy implements TestServiceClient {
 	}
 	
 
-	private int return_param_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "return_param_func".length() + 1; // Operation name
-		op_size += MyStruct.getMaxCdrSerializedSize(op_size);
-		op_size += 4 + CDRSerializer.alignment(op_size, 4);
-		
-		return op_size;
-	}
-
-	private int only_param_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "only_param_func".length() + 1; // Operation name
-		op_size += MyStruct.getMaxCdrSerializedSize(op_size);
-		
-		return op_size;
-	}
-
-	private int only_return_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "only_return_func".length() + 1; // Operation name
-		
-		return op_size;
-	}
-
-	private int oneway_return_param_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "oneway_return_param_func".length() + 1; // Operation name
-		op_size += MyStruct.getMaxCdrSerializedSize(op_size);
-		op_size += 4 + CDRSerializer.alignment(op_size, 4);
-		
-		return op_size;
-	}
-
-	private int oneway_only_param_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "oneway_only_param_func".length() + 1; // Operation name
-		op_size += MyStruct.getMaxCdrSerializedSize(op_size);
-		
-		return op_size;
-	}
-
-	private int oneway_only_return_func_required_size() {
-		int op_size = 0;
-		
-		op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "TestService".length() + 1; // Interface name
-		op_size += 4 + CDRSerializer.alignment(op_size, 4) + "oneway_only_return_func".length() + 1; // Operation name
-		
-		return op_size;
-	}
 	
     @Override
 	public MyStruct return_param_func(/*in*/ MyStruct param1, /*in*/ int param2) {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(return_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId();
@@ -169,7 +104,7 @@ class TestServiceProxy implements TestServiceClient {
     @Override
 	public void only_param_func(/*in*/ MyStruct param1) {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(only_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId();
@@ -215,7 +150,7 @@ class TestServiceProxy implements TestServiceClient {
     @Override
 	public MyStruct only_return_func() {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(only_return_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
@@ -260,7 +195,7 @@ class TestServiceProxy implements TestServiceClient {
     @Override
 	public void oneway_return_param_func(/*in*/ MyStruct param1, /*in*/ int param2) {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(oneway_return_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = m_transport.createTransportMessage(null);
 
 	        final Object messageId = m_ser.getNewMessageId();
@@ -306,7 +241,7 @@ class TestServiceProxy implements TestServiceClient {
     @Override
 	public void oneway_only_param_func(/*in*/ MyStruct param1) {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(oneway_only_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
@@ -351,7 +286,7 @@ class TestServiceProxy implements TestServiceClient {
     @Override
 	public void oneway_only_return_func() {	
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(oneway_only_return_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
@@ -397,7 +332,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, final return_param_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(return_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId(); 
@@ -439,7 +374,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void only_param_func(/*in*/ MyStruct param1, final only_param_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(only_param_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId();
@@ -481,7 +416,7 @@ class TestServiceProxy implements TestServiceClient {
 	public void only_return_func(final only_return_func_AsyncCallback callback) {
 		
 		if (m_ser != null && m_transport != null) {
-            final BinaryOutputStream bos = new BinaryOutputStream(only_return_func_required_size());
+			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
 	        
 	        final Object messageId = m_ser.getNewMessageId();

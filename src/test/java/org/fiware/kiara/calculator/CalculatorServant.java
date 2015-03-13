@@ -49,25 +49,6 @@ public abstract class CalculatorServant implements Servant, Calculator {
         return "Calculator";
     }
 
-    private int add_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += 4 + CDRSerializer.alignment(op_size, 4); // Return type
-
-        return op_size;
-    }
-
-    private int subtract_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += 4 + CDRSerializer.alignment(op_size, 4); // Return type
-
-        return op_size;
-    }
 
     @Override
     public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
@@ -89,7 +70,7 @@ public abstract class CalculatorServant implements Servant, Calculator {
                 int n1 = serImpl.deserializeI32(bis, "");
                 int n2 = serImpl.deserializeI32(bis, "");
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(add_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
@@ -107,7 +88,7 @@ public abstract class CalculatorServant implements Servant, Calculator {
                 int n1 = serImpl.deserializeI32(bis, "");
                 int n2 = serImpl.deserializeI32(bis, "");
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(subtract_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
 
                 serImpl.serializeMessageId(retBuffer, messageId);

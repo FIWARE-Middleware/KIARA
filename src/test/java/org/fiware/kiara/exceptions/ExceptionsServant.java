@@ -49,47 +49,6 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
         return "Exceptions";
     }
 
-    private int divide_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += 4 + CDRSerializer.alignment(op_size, 4); // Return type
-
-        int currentSize = 0, maxSize = 0;
-
-        currentSize += DividedByZeroException.getMaxCdrSerializedSize(currentSize);
-        if (currentSize > maxSize) {
-            maxSize = currentSize;
-        }
-        currentSize = 0;
-
-        return op_size + maxSize;
-    }
-
-    private int function_required_size() {
-        int op_size = 0;
-
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // MessageID
-        op_size += 4 + CDRSerializer.alignment(op_size, Integer.SIZE); // Error indicator code
-        op_size += 4 + CDRSerializer.alignment(op_size, 4); // Return type
-
-        int currentSize = 0, maxSize = 0;
-
-        currentSize += FirstException.getMaxCdrSerializedSize(currentSize);
-        if (currentSize > maxSize) {
-            maxSize = currentSize;
-        }
-        currentSize = 0;
-
-        currentSize += SecondException.getMaxCdrSerializedSize(currentSize);
-        if (currentSize > maxSize) {
-            maxSize = currentSize;
-        }
-        currentSize = 0;
-
-        return op_size + maxSize;
-    }
 
     @Override
     public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
@@ -111,7 +70,7 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
                 float n1 = serImpl.deserializeFloat32(bis, "");
                 float n2 = serImpl.deserializeFloat32(bis, "");
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(divide_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
@@ -137,7 +96,7 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
 
             if (operation.equals("function")) {
 
-                BinaryOutputStream retBuffer = new BinaryOutputStream(function_required_size());
+			BinaryOutputStream retBuffer = new BinaryOutputStream();
                 TransportMessage retMsg = transportImpl.createTransportMessage(null);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
