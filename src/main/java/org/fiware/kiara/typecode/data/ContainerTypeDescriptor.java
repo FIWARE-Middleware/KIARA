@@ -24,6 +24,8 @@ package org.fiware.kiara.typecode.data;
 */
 public interface ContainerTypeDescriptor extends DataTypeDescriptor {
     
+    public static final int UNBOUNDED = -1;
+    
     public void setMaxSize(int length);
     
     public int getMaxSize();

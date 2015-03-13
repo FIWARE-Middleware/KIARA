@@ -58,18 +58,14 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 */
 public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
     
-    private static DynamicTypeBuilderImpl instance = null;
+    private DynamicTypeBuilderImpl() {}
     
-    protected DynamicTypeBuilderImpl() { 
-        // Makes constructor not accessible.
+    private static class LazyDynamicBuilderHolder {
+        private static DynamicTypeBuilderImpl instance = new DynamicTypeBuilderImpl();
     }
     
     public static DynamicTypeBuilder getInstance() {
-        if (instance == null) {
-            instance = new DynamicTypeBuilderImpl();
-        }
-        
-        return instance;
+        return LazyDynamicBuilderHolder.instance;
     }
     
     @Override

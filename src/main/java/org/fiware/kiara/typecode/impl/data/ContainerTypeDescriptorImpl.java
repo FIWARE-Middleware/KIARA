@@ -34,7 +34,7 @@ public class ContainerTypeDescriptorImpl extends DataTypeDescriptorImpl implemen
     
     public ContainerTypeDescriptorImpl(TypeKind kind) {
         super(kind);
-        this.m_maximumSize = 100;
+        this.m_maximumSize = ContainerTypeDescriptor.UNBOUNDED;
     }
     
     @Override

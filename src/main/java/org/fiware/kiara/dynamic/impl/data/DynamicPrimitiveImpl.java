@@ -86,7 +86,7 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
     }
     
     private void checkStringSize(Object value) {
-        if (value.getClass().equals(String.class)) {
+        if (String.class.equals(value.getClass())) {
             String stringValue = (String) value;
             if (stringValue.length() > this.m_maxLength) {
                 throw new DynamicTypeException(this.m_className + " - The length of the String value cannot greater than the one specified in the type descriptor.");

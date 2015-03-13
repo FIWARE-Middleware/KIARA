@@ -19,6 +19,7 @@ package org.fiware.kiara.typecode.impl.data;
 
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 
@@ -40,7 +41,7 @@ public class ListTypeDescriptorImpl extends ContainerTypeDescriptorImpl implemen
     
     @Override
     public void setMaxSize(int size) {
-        if (size <= 0) {
+        if (size < ContainerTypeDescriptor.UNBOUNDED) {
             throw new TypeDescriptorException("ListTypeDescriptor - Maximum list size must be greater than zero.");
         }
         super.setMaxSize(size);

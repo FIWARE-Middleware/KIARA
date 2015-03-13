@@ -23,6 +23,7 @@ import java.util.List;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 
 /**
@@ -44,7 +45,7 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
     
     @Override
     public boolean add(DynamicData element) {
-        if (element.getClass() == this.m_contentType.getClass()) {
+        if (element.getClass().equals(this.m_contentType.getClass())) {
             if (this.m_members.size() != this.m_maxSize) {
                 if (!existsInSet(element)) {
                     this.m_members.add(element);
@@ -62,11 +63,11 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
 
     @Override
     public void add(int index, DynamicData element) {
-        if (index >= this.m_maxSize) {
+        if (index >= this.m_maxSize && this.m_maxSize != ContainerTypeDescriptor.UNBOUNDED) {
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the set boundaries (" + this.m_maxSize + ")."); 
         }
         
-        if (element.getClass() == this.m_contentType.getClass()) {
+        if (element.getClass().equals(this.m_contentType.getClass())) {
             if (this.m_members.size() != this.m_maxSize) {
                 if (!existsInSet(element)) {
                     this.m_members.add(index, element);
@@ -79,7 +80,7 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
 
     @Override
     public DynamicData get(int index) {
-        if (index >= this.m_maxSize) {
+        if (index >= this.m_maxSize && this.m_maxSize != ContainerTypeDescriptor.UNBOUNDED) {
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is greater than the maximum size of this set (" + this.m_maxSize + ")."); 
         } else if (index >= this.m_members.size()){
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the set boundaries (" + this.m_maxSize + ").");

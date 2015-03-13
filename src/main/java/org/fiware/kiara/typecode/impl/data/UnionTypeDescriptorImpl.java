@@ -18,6 +18,7 @@
 package org.fiware.kiara.typecode.impl.data;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
@@ -140,7 +141,7 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
             {
                 if(label instanceof String)
                 {
-                    ArrayList<Member> members = ((EnumTypeDescriptor) this.m_discriminator).getMembers();
+                    List<Member> members = ((EnumTypeDescriptor) this.m_discriminator).getMembers();
                     boolean found = false;
                     for (Member m : members) {
                         if (m.getName().equals(label)) {

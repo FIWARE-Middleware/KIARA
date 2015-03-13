@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.typecode.services;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
@@ -34,11 +34,11 @@ public interface FunctionTypeDescriptor extends TypeDescriptor {
     
     public void setReturnType(DataTypeDescriptor returnType);
     
-    public ArrayList<DataTypeDescriptor> getParameters();
+    public List<DataTypeDescriptor> getParameters();
     
     public void addParameter(DataTypeDescriptor parameter, String name);
     
-    public ArrayList<ExceptionTypeDescriptor> getExceptions();
+    public List<ExceptionTypeDescriptor> getExceptions();
     
     public void addException(ExceptionTypeDescriptor exception);
 

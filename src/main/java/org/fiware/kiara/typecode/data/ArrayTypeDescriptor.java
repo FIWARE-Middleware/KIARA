@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.typecode.data;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
 *
@@ -32,6 +32,6 @@ public interface ArrayTypeDescriptor extends ContainerTypeDescriptor {
     
     public void setDimensionsLength(int... dimensions);
     
-    public ArrayList<Integer> getDimensions();
+    public List<Integer> getDimensions();
 
 }

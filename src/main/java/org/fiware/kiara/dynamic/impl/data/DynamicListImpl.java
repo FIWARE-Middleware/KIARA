@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 
 /**
@@ -36,12 +37,16 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
     public DynamicListImpl(ListTypeDescriptor dataDescriptor) {
         super(dataDescriptor, "DynamicListImpl");
         this.m_maxSize = dataDescriptor.getMaxSize();
-        this.m_members = new ArrayList<DynamicData>(this.m_maxSize);
+        if (this.m_maxSize == ContainerTypeDescriptor.UNBOUNDED) {
+            this.m_members = new ArrayList<DynamicData>();
+        } else {
+            this.m_members = new ArrayList<DynamicData>(this.m_maxSize);
+        }
     }
     
     @Override
     public boolean add(DynamicData element) {
-        if (element.getClass() == this.m_contentType.getClass()) {
+        if (element.getClass().equals(this.m_contentType.getClass())) {
             if (this.m_members.size() != this.m_maxSize) {
                 this.m_members.add(element);
                 return true;
@@ -55,11 +60,11 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
 
     @Override
     public void add(int index, DynamicData element) {
-        if (index >= this.m_maxSize) {
+        if (index >= this.m_maxSize && this.m_maxSize != ContainerTypeDescriptor.UNBOUNDED) {
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the list boundaries (" + this.m_maxSize + ")."); 
         }
         
-        if (element.getClass() == this.m_contentType.getClass()) {
+        if (element.getClass().equals(this.m_contentType.getClass())) {
             if (this.m_members.size() != this.m_maxSize) {
                 this.m_members.add(index, element);
             } else {
@@ -71,7 +76,7 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
 
     @Override
     public DynamicData get(int index) {
-        if (index >= this.m_maxSize) {
+        if (index >= this.m_maxSize && this.m_maxSize != ContainerTypeDescriptor.UNBOUNDED) {
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is greater than the maximum size of this list (" + this.m_maxSize + ")."); 
         } else if (index >= this.m_members.size()){
             throw new DynamicTypeException(this.m_className + " The index specified (" + index + ") is out of the list boundaries (" + this.m_maxSize + ").");

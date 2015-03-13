@@ -39,10 +39,10 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
         this.m_members = new ArrayList<DynamicData>();
         this.m_maxSize = arrayDescriptor.getMaxSize();
         this.m_dimensions = new ArrayList<Integer>(arrayDescriptor.getDimensions());
-        this.initializeAray();
+        this.initializeArray();
     }
     
-    private void initializeAray() {
+    private void initializeArray() {
         int totalSize = 1;
         for(int dim : this.m_dimensions) {
             totalSize  = totalSize * dim;
@@ -58,6 +58,9 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
                 boolean isEquals = true;
                 for (int i=0; i < ((ArrayTypeDescriptor) ((DynamicArrayImpl) anotherObject).getTypeDescriptor()).getMaxSize(); ++i) {
                     isEquals = isEquals & ((DynamicArrayImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                    if (!isEquals) {
+                        return isEquals;
+                    }
                 }
                 return isEquals;
             }
@@ -103,7 +106,7 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
             throw new DynamicTypeException(this.m_className + " - The specified location of the data is not inside the boundaries of the array definition.");
         }
         
-        if (value.getClass() == this.m_contentType.getClass()) {
+        if (value.getClass().equals(this.m_contentType.getClass())) {
             int accessIndex = calculateAccessIndex(position);
             if (this.m_members.size() != this.m_maxSize) {
                 this.m_members.add(accessIndex, value);

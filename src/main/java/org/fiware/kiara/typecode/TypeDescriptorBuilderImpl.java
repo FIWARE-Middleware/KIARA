@@ -46,17 +46,14 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 */
 public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     
-    private static TypeDescriptorBuilderImpl m_instance = null;
+    private TypeDescriptorBuilderImpl() {}
     
-    private TypeDescriptorBuilderImpl() {
-        
+    private static class LazyDescriptorBuilderHolder {
+        private static TypeDescriptorBuilderImpl m_instance = new TypeDescriptorBuilderImpl();
     }
 
     public static TypeDescriptorBuilder getInstance() {
-        if (m_instance == null) {
-            m_instance = new TypeDescriptorBuilderImpl();
-        }
-        return m_instance;
+        return LazyDescriptorBuilderHolder.m_instance;
     }
 
     @Override
