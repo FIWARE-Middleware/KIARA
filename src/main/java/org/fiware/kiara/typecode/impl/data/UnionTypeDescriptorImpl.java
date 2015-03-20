@@ -28,153 +28,130 @@ import org.fiware.kiara.typecode.data.Member;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
 */
 public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements UnionTypeDescriptor {
-    
+
     private DataTypeDescriptor m_discriminator;
-    
+
     @SuppressWarnings("unused")
     private String m_name;
-    
+
     private int m_defaultIndex = -1;
-    
+
     public UnionTypeDescriptorImpl(String name, DataTypeDescriptor discriminatorDescriptor) {
         super(TypeKind.UNION_TYPE);
-        switch(discriminatorDescriptor.getKind()) {
-        case CHAR_8_TYPE:
-        case BOOLEAN_TYPE:
-        case INT_32_TYPE:
-        case UINT_32_TYPE:
-        case ENUM_TYPE:
-            this.m_discriminator = discriminatorDescriptor;
-            break;
-        default:
-            throw new TypeDescriptorException("UnionTypeDescriptorImpl - Another member with the name " + name + " has already been added to this union.");
+        switch (discriminatorDescriptor.getKind()) {
+            case CHAR_8_TYPE:
+            case BOOLEAN_TYPE:
+            case INT_32_TYPE:
+            case UINT_32_TYPE:
+            case ENUM_TYPE:
+                this.m_discriminator = discriminatorDescriptor;
+                break;
+            default:
+                throw new TypeDescriptorException("UnionTypeDescriptorImpl - Another member with the name " + name + " has already been added to this union.");
         }
         this.m_name = name;
     }
-    
+
     @Override
     public boolean isUnion() {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> boolean addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, T... labels) {
+    public UnionTypeDescriptor addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, Object... labels) {
         if (!isDefault && labels.length == 0) {
             throw new TypeDescriptorException("UnionTypeDescriptorImpl - Only a default union member can have no labels assigned to it.");
         }
-        switch(m_discriminator.getKind())
-        {
-        case CHAR_8_TYPE: {
-            ArrayList<Character> innerLabels = new ArrayList<Character>();
-            for(T label : labels)
-            {
-                if(label instanceof Character)
-                {
-                    innerLabels.add((Character) label);
+        switch (m_discriminator.getKind()) {
+            case CHAR_8_TYPE: {
+                ArrayList<Character> innerLabels = new ArrayList<Character>();
+                for (Object label : labels) {
+                    if (label instanceof Character) {
+                        innerLabels.add((Character) label);
+                    } else {
+                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
+                    }
                 }
-                else
-                {
-                    throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
-                }
+                addMember(name, typeDescriptor, isDefault, innerLabels);
+                break;
             }
-            addMember(name, typeDescriptor, isDefault, innerLabels);
-            break;
-        }
-        case BOOLEAN_TYPE: {
-            ArrayList<Boolean> innerLabels = new ArrayList<Boolean>();
-            for(T label : labels)
-            {
-                if(label instanceof Boolean)
-                {
-                    innerLabels.add((Boolean) label);
+            case BOOLEAN_TYPE: {
+                ArrayList<Boolean> innerLabels = new ArrayList<Boolean>();
+                for (Object label : labels) {
+                    if (label instanceof Boolean) {
+                        innerLabels.add((Boolean) label);
+                    } else {
+                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
+                    }
                 }
-                else
-                {
-                    throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
-                }
+                addMember(name, typeDescriptor, isDefault, innerLabels);
+                break;
             }
-            addMember(name, typeDescriptor, isDefault, innerLabels);
-            break;
-        }
-        case INT_32_TYPE: {
-            ArrayList<Integer> innerLabels = new ArrayList<Integer>();
-            for(T label : labels)
-            {
-                if(label instanceof Integer)
-                {
-                    innerLabels.add((Integer) label);
+            case INT_32_TYPE: {
+                ArrayList<Integer> innerLabels = new ArrayList<Integer>();
+                for (Object label : labels) {
+                    if (label instanceof Integer) {
+                        innerLabels.add((Integer) label);
+                    } else {
+                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
+                    }
                 }
-                else
-                {
-                    throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
-                }
+                addMember(name, typeDescriptor, isDefault, innerLabels);
+                break;
             }
-            addMember(name, typeDescriptor, isDefault, innerLabels);
-            break;
-        }
-        case UINT_32_TYPE: {
-            ArrayList<Integer> innerLabels = new ArrayList<Integer>();
-            for(T label : labels)
-            {
-                if(label instanceof Integer)
-                {
-                    innerLabels.add((Integer) label);
+            case UINT_32_TYPE: {
+                ArrayList<Integer> innerLabels = new ArrayList<Integer>();
+                for (Object label : labels) {
+                    if (label instanceof Integer) {
+                        innerLabels.add((Integer) label);
+                    } else {
+                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
+                    }
                 }
-                else
-                {
-                    throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
-                }
+                addMember(name, typeDescriptor, isDefault, innerLabels);
+                break;
             }
-            addMember(name, typeDescriptor, isDefault, innerLabels);
-            break;
-        }
-        
-        case ENUM_TYPE: {
-            ArrayList<Integer> innerLabels = new ArrayList<Integer>();
-            for(T label : labels)
-            {
-                if(label instanceof String)
-                {
-                    List<Member> members = ((EnumTypeDescriptor) this.m_discriminator).getMembers();
-                    boolean found = false;
-                    for (Member m : members) {
-                        if (m.getName().equals(label)) {
-                            innerLabels.add(members.indexOf(m));
-                            found = true;
+
+            case ENUM_TYPE: {
+                ArrayList<Integer> innerLabels = new ArrayList<Integer>();
+                for (Object label : labels) {
+                    if (label instanceof String) {
+                        List<Member> members = ((EnumTypeDescriptor) this.m_discriminator).getMembers();
+                        boolean found = false;
+                        for (Member m : members) {
+                            if (m.getName().equals(label)) {
+                                innerLabels.add(members.indexOf(m));
+                                found = true;
+                            }
                         }
-                    }
-                    if (!found) {
-                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Label " + label + " is not amongst the possible enum values."); 
+                        if (!found) {
+                            throw new TypeDescriptorException("UnionTypeDescriptorImpl - Label " + label + " is not amongst the possible enum values.");
+                        }
+                    } else {
+                        throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
                     }
                 }
-                else
-                {
-                    throw new TypeDescriptorException("UnionTypeDescriptorImpl - Type " + label.getClass() + " does not match discriminator kind (" + this.m_discriminator.getKind() + ").");
-                }
+                addMember(name, typeDescriptor, isDefault, innerLabels);
+                break;
             }
-            addMember(name, typeDescriptor, isDefault, innerLabels);
-            break;
+
+            default:
+                throw new TypeDescriptorException("UnionTypeDescriptorImpl - A union member cannot be of type " + typeDescriptor.getKind() + ".");
         }
-        
-        default:
-            throw new TypeDescriptorException("UnionTypeDescriptorImpl - A union member cannot be of type " + typeDescriptor.getKind() + ".");
-        }
-        
+
         if (isDefault) {
             if (this.m_defaultIndex == -1) {
-                this.m_defaultIndex = this.m_members.size()-1;
+                this.m_defaultIndex = this.m_members.size() - 1;
             }
         }
 
-        return true;
+        return this;
     }
-    
+
     private <T> void addMember(String name, DataTypeDescriptor typeDescriptor, boolean isDefault, ArrayList<T> innerLabels) {
         if (!exists(name)) {
             UnionMemberImpl<T> member = new UnionMemberImpl<T>(typeDescriptor, name, innerLabels, isDefault);
@@ -183,11 +160,11 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
             throw new TypeDescriptorException("UnionTypeDescriptorImpl - There is another existing member in this union with the name " + name + ".");
         }
     }
-    
+
     public DataTypeDescriptor getDiscriminator() {
         return this.m_discriminator;
     }
-    
+
     private boolean exists(String name) {
         for (Member member : this.m_members) {
             if (member.getName().equals(name)) {
@@ -196,11 +173,11 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
         }
         return false;
     }
-    
+
     public boolean hasDefaultValue() {
         return this.m_defaultIndex != -1;
     }
-    
+
     public int getDefaultIndex() {
         return this.m_defaultIndex;
     }

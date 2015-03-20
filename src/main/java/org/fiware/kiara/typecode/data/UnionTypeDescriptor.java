@@ -23,8 +23,7 @@ package org.fiware.kiara.typecode.data;
 *
 */
 public interface UnionTypeDescriptor extends MemberedTypeDescriptor {
-    
-    @SuppressWarnings("unchecked")
-    public <T> boolean addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, T... labels);
+
+    public UnionTypeDescriptor addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, Object... labels);
 
 }
