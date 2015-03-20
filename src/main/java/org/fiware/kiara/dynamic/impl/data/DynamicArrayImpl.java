@@ -17,12 +17,18 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 
 /**
 *
@@ -69,13 +75,13 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
     }
     
     @Override
-    public DynamicData getContentType() {
+    public DataTypeDescriptor getContentType() {
         return this.m_contentType;
     }
     
     @Override
-    public void setContentType(DynamicData dynamicData) {
-        if (dynamicData instanceof DynamicArrayImpl) {
+    public void setContentType(DataTypeDescriptor dynamicData) {
+        if (dynamicData instanceof ArrayTypeDescriptor) {
             throw new DynamicTypeException(this.m_className + " - A DynamicArrayDataType object cannot be assigned as content to another DynamicArrayDataType.");
         }
         this.m_contentType = dynamicData;
@@ -106,7 +112,7 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
             throw new DynamicTypeException(this.m_className + " - The specified location of the data is not inside the boundaries of the array definition.");
         }
         
-        if (value.getClass().equals(this.m_contentType.getClass())) {
+        if (value.getTypeDescriptor().getKind() == this.m_contentType.getKind()) {
             int accessIndex = calculateAccessIndex(position);
             if (this.m_members.size() != this.m_maxSize) {
                 this.m_members.add(accessIndex, value);
@@ -149,6 +155,20 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
             ret = ret * this.m_dimensions.get(i);
         }
         return ret;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        for (DynamicData member : this.m_members) {
+            member.serialize(impl, message, "");
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        for (DynamicData member : this.m_members) {
+            member.deserialize(impl, message, "");
+        }
     }
    
 }

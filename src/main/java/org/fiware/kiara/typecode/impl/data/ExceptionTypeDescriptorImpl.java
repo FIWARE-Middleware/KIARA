@@ -31,11 +31,11 @@ import org.fiware.kiara.typecode.data.Member;
 */
 public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements ExceptionTypeDescriptor {
     
-    private String m_message;
+    //private String m_message;
 
-    public ExceptionTypeDescriptorImpl(String name, String message) {
+    public ExceptionTypeDescriptorImpl(String name) {
         super(TypeKind.EXCEPTION_TYPE);
-        this.m_message = message;
+       // this.m_message = message;
     }
     
     @Override
@@ -43,9 +43,9 @@ public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl impl
         return true;
     }
     
-    public String getMessage() {
+    /*public String getMessage() {
         return this.m_message;
-    }
+    }*/
 
     @Override
     public void addMember(TypeDescriptor member, String name) {

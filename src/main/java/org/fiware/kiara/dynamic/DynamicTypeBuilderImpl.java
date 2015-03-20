@@ -133,7 +133,7 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         if (arrayDescriptor.getContentType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this array descriptor has not been defined.");
         }
-        ret.setContentType(this.createData(arrayDescriptor.getContentType()));
+        ret.setContentType(arrayDescriptor.getContentType());
         for (int i=0; i < arrayDescriptor.getMaxSize(); ++i) {
             ret.addElement(this.createData(arrayDescriptor.getContentType()));
         }
@@ -145,7 +145,7 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         if (listDescriptor.getContentType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this list descriptor has not been defined.");
         }
-        ret.setContentType(this.createData(listDescriptor.getContentType()));
+        ret.setContentType(listDescriptor.getContentType());
         return ret;
     }
     
@@ -155,7 +155,7 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this set descriptor has not been defined.");
         }
         
-        ret.setContentType(this.createData(setDescriptor.getContentType()));
+        ret.setContentType(setDescriptor.getContentType());
         return ret;
     }
     
@@ -170,8 +170,8 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         
         DynamicMapImpl ret = new DynamicMapImpl(mapDescriptor);
         
-        ret.setKeyContentType(this.createData((DataTypeDescriptor) mapDescriptor.getKeyTypeDescriptor()));
-        ret.setValueContentType(this.createData((DataTypeDescriptor) mapDescriptor.getValueTypeDescriptor()));
+        ret.setKeyContentType((DataTypeDescriptor) mapDescriptor.getKeyTypeDescriptor());
+        ret.setValueContentType((DataTypeDescriptor) mapDescriptor.getValueTypeDescriptor());
         return ret;
     }
     

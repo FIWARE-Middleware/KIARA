@@ -17,10 +17,19 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
+
+import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicMap;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.typecode.data.DataTypeDescriptor;
+import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.MapTypeDescriptor;
 
 /**
@@ -32,7 +41,7 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
     
     private int m_maxSize;
     private ArrayList<DynamicData> m_keyMembers;
-    private DynamicData m_keyContentType;
+    private DataTypeDescriptor m_keyContentType;
     
     public DynamicMapImpl(MapTypeDescriptor mapDescriptor) {
         super(mapDescriptor, "DynamicMapImpl");
@@ -43,8 +52,8 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
     
     @Override
     public boolean put(DynamicData key, DynamicData value) {
-        if (key.getTypeDescriptor().getKind() == this.m_keyContentType.getTypeDescriptor().getKind()) {
-            if (value.getTypeDescriptor().getKind() == this.m_contentType.getTypeDescriptor().getKind()) {
+        if (key.getTypeDescriptor().getKind() == this.m_keyContentType.getKind()) {
+            if (value.getTypeDescriptor().getKind() == this.m_contentType.getKind()) {
                 if (this.m_members.size() != this.m_maxSize) {
                     if (!this.existsInMap(key)) {
                         this.m_keyMembers.add(key);
@@ -81,7 +90,7 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
 
     @Override
     public DynamicData get(DynamicData key) {
-        if (key.getTypeDescriptor().getKind() != this.m_keyContentType.getTypeDescriptor().getKind()) {
+        if (key.getTypeDescriptor().getKind() != this.m_keyContentType.getKind()) {
             throw new DynamicTypeException(this.m_className + " The key type specified (" + key.getTypeDescriptor().getKind() + ") is not the same as the one defined in the map descriptor.");
         }
         
@@ -93,8 +102,50 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
         
         return null;
     }
+    
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicMap) {
+            if (((DynamicMap) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
+                boolean isEquals = true;
+                for (int i=0; i < ((MapTypeDescriptor) ((DynamicMapImpl) anotherObject).getTypeDescriptor()).getMaxSize(); ++i) {
+                    isEquals = isEquals & ((DynamicMapImpl) anotherObject).m_keyMembers.get(i).equals(this.m_keyMembers.get(i));
+                    isEquals = isEquals & ((DynamicMapImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                    if (!isEquals) {
+                        return isEquals;
+                    }
+                }
+                return isEquals;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeUI32(message, "", this.m_members.size());
+        
+        for (int i=0; i < this.m_members.size(); ++i) {
+            this.m_keyMembers.get(i).serialize(impl, message, "");
+            this.m_members.get(i).serialize(impl, message, "");
+        }
+    }
 
-   private boolean existsInMap(DynamicData value) {
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        int size = impl.deserializeUI32(message, "");
+        
+        for (int i=0; i < size; ++i) {
+            DynamicData key = DynamicTypeBuilderImpl.getInstance().createData(this.m_keyContentType);
+            DynamicData value = DynamicTypeBuilderImpl.getInstance().createData(this.m_contentType);
+            key.deserialize(impl, message, "");
+            value.deserialize(impl, message, "");
+            this.m_keyMembers.add(key);
+            this.m_members.add(value);
+        }
+    }
+
+    private boolean existsInMap(DynamicData value) {
         for (int i=0; i < this.m_keyMembers.size(); ++i) {
             if (this.m_keyMembers.get(i).equals(value)) {
                 return true;
@@ -103,19 +154,19 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
         return false;
     }
     
-    public DynamicData getKeyContentType() {
+    public DataTypeDescriptor getKeyContentType() {
         return m_keyContentType;
     }
 
-    public void setKeyContentType(DynamicData keyContentType) {
+    public void setKeyContentType(DataTypeDescriptor keyContentType) {
         this.m_keyContentType = keyContentType;
     }
 
-    public DynamicData getValueContentType() {
+    public DataTypeDescriptor getValueContentType() {
         return m_contentType;
     }
 
-    public void setValueContentType(DynamicData valueContentType) {
+    public void setValueContentType(DataTypeDescriptor valueContentType) {
         this.m_contentType = valueContentType;
     }
 

@@ -17,9 +17,14 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
+
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 
 /**
@@ -206,6 +211,94 @@ public class DynamicPrimitiveImpl extends DynamicDataImpl implements DynamicPrim
         }
         
         return true;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        switch (this.m_typeDescriptor.getKind()) { 
+        case BOOLEAN_TYPE:
+            impl.serializeBoolean(message, name, (boolean) this.m_value); 
+            break;
+        case BYTE_TYPE:
+            impl.serializeByte(message, name, (byte) this.m_value);
+            break;
+        case INT_16_TYPE:
+            impl.serializeI16(message, name, (short) this.m_value);
+            break;
+        case UINT_16_TYPE:
+            impl.serializeUI16(message, name, (short) this.m_value);
+            break;
+        case INT_32_TYPE:
+            impl.serializeI32(message, name, (int) this.m_value);
+            break;
+        case UINT_32_TYPE:
+            impl.serializeUI32(message, name, (int) this.m_value);
+            break;
+        case INT_64_TYPE:
+            impl.serializeI64(message, name, (long) this.m_value);
+            break;
+        case UINT_64_TYPE:
+            impl.serializeUI64(message, name, (long) this.m_value);
+            break;
+        case FLOAT_32_TYPE:
+            impl.serializeFloat32(message, name, (float) this.m_value);
+            break;
+        case FLOAT_64_TYPE:
+            impl.serializeFloat64(message, name, (double) this.m_value);
+            break;
+        case CHAR_8_TYPE:
+            impl.serializeChar(message, name, (char) this.m_value); 
+            break;
+        case STRING_TYPE:
+            impl.serializeString(message, name, (String) this.m_value);
+            break;
+        default:
+            break;
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        switch (this.m_typeDescriptor.getKind()) { 
+        case BOOLEAN_TYPE:
+            this.m_value = (boolean) impl.deserializeBoolean(message, name); 
+            break;
+        case BYTE_TYPE:
+            this.m_value = (byte) impl.deserializeByte(message, name);
+            break;
+        case INT_16_TYPE:
+            this.m_value = (short) impl.deserializeI16(message, name);
+            break;
+        case UINT_16_TYPE:
+            this.m_value = (short) impl.deserializeUI16(message, name);
+            break;
+        case INT_32_TYPE:
+            this.m_value = (int) impl.deserializeI32(message, name);
+            break;
+        case UINT_32_TYPE:
+            this.m_value = (int) impl.deserializeUI32(message, name);
+            break;
+        case INT_64_TYPE:
+            this.m_value = (long) impl.deserializeI64(message, name);
+            break;
+        case UINT_64_TYPE:
+            this.m_value = (long) impl.deserializeUI64(message, name);
+            break;
+        case FLOAT_32_TYPE:
+            this.m_value = (float) impl.deserializeFloat32(message, name);
+            break;
+        case FLOAT_64_TYPE:
+            this.m_value = (double) impl.deserializeFloat64(message, name);
+            break;
+        case CHAR_8_TYPE:
+            this.m_value = (char) impl.deserializeChar(message, name); 
+            break;
+        case STRING_TYPE:
+            this.m_value = (String) impl.deserializeString(message, name);
+            break;
+        default:
+            break;
+        }
     }
 
     

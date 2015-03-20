@@ -17,12 +17,16 @@
  */
 package org.fiware.kiara.dynamic.impl.services;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.fiware.kiara.dynamic.services.DynamicFunction;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicException;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.TypeDescriptor;
 
 /**
@@ -66,4 +70,17 @@ public class DynamicFunctionImpl extends DynamicTypeImpl implements DynamicFunct
         return this.m_exceptions;
     }
 
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message,
+            String name) throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        // TODO Auto-generated method stub
+        
+    }
+    
 }

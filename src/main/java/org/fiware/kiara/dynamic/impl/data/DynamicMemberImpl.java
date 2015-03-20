@@ -19,6 +19,7 @@ package org.fiware.kiara.dynamic.impl.data;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMember;
+import org.fiware.kiara.dynamic.data.DynamicStruct;
 
 /**
 *
@@ -45,6 +46,20 @@ public class DynamicMemberImpl implements DynamicMember {
         return m_dynamicData;
     }
     
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicMemberImpl) {
+            if (((DynamicMemberImpl) anotherObject).m_name.equals(this.m_name)) {
+                if (((DynamicMemberImpl) anotherObject).m_dynamicData.equals(this.m_dynamicData)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     
+    public void setDynamicData(DynamicData data) {
+        this.m_dynamicData = data;
+    }
 
 }

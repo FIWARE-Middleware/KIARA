@@ -17,13 +17,20 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
+import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 
 /**
@@ -34,18 +41,16 @@ import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
 
     private int m_maxSize;
-    private List<Boolean> m_validData;
     
     public DynamicSetImpl(SetTypeDescriptor dataDescriptor) {
         super(dataDescriptor, "DynamicSetImpl");
         this.m_maxSize = dataDescriptor.getMaxSize();
         this.m_members = new ArrayList<DynamicData>(this.m_maxSize); 
-        this.m_validData = new ArrayList<Boolean>(this.m_maxSize);
     }
     
     @Override
     public boolean add(DynamicData element) {
-        if (element.getClass().equals(this.m_contentType.getClass())) {
+        if (element.getTypeDescriptor().getKind() == this.m_contentType.getKind()) {
             if (this.m_members.size() != this.m_maxSize) {
                 if (!existsInSet(element)) {
                     this.m_members.add(element);
@@ -94,15 +99,52 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
         return this.m_members.isEmpty();
     }
     
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicSet) {
+            if (((DynamicSet) anotherObject).getTypeDescriptor().getKind() == this.m_typeDescriptor.getKind()) {
+                boolean isEquals = true;
+                for (int i=0; i < ((SetTypeDescriptor) ((DynamicSetImpl) anotherObject).getTypeDescriptor()).getMaxSize(); ++i) {
+                    isEquals = isEquals & ((DynamicSetImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                    if (!isEquals) {
+                        return isEquals;
+                    }
+                }
+                return isEquals;
+            }
+        }
+        return false;
+    }
+    
     
     
     private boolean existsInSet(DynamicData value) {
         for (int i=0; i < this.m_members.size(); ++i) {
-            if (this.m_validData.get(i) && this.m_members.get(i).equals(value)) {
+            if (this.m_members.get(i).equals(value)) {
                 return true;
             }
         }
         return false;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeUI32(message, "", this.m_members.size());
+        
+        for (DynamicData member : this.m_members) {
+            member.serialize(impl, message, "");
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        int size = impl.deserializeUI32(message, "");
+        
+        for (int i=0; i < size; ++i) {
+            DynamicData member = DynamicTypeBuilderImpl.getInstance().createData(this.m_contentType);
+            member.deserialize(impl, message, "");
+            this.m_members.add(member);
+        }
     }
     
     

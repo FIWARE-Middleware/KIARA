@@ -17,9 +17,14 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
+
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMember;
 import org.fiware.kiara.dynamic.data.DynamicStruct;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 
 /**
@@ -41,6 +46,35 @@ public class DynamicStructImpl extends DynamicMemberedImpl implements DynamicStr
             }
         }
         return null;
+    }
+    
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicStruct) {
+            boolean isEquals = true;
+            for (int i=0; i < m_members.size(); ++i) {
+                isEquals = isEquals & ((DynamicStructImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                if (!isEquals) {
+                    return isEquals;
+                }
+            }
+            return isEquals;
+        }
+        return false;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        for (DynamicMember m : this.m_members) {
+            m.getDynamicData().serialize(impl, message, name);
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        for (DynamicMember m : this.m_members) {
+            m.getDynamicData().deserialize(impl, message, name);
+        }
     }
     
     

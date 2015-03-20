@@ -39,6 +39,6 @@ public interface TypeDescriptorBuilder {
     
     public FunctionTypeDescriptor createFunctionType(String name);
 
-    public ExceptionTypeDescriptor createExceptionType(String string, String message);
+    public ExceptionTypeDescriptor createExceptionType(String string);
 
 }

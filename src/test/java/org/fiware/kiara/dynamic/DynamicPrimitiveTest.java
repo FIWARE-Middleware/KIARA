@@ -3,19 +3,15 @@ package org.fiware.kiara.dynamic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
+import java.io.IOException;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
-import org.fiware.kiara.serialization.MockTransportMessage;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.impl.data.DataTypeDescriptorImpl;
-import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,28 +19,28 @@ import org.junit.Test;
 public class DynamicPrimitiveTest {
     
     private CDRSerializer ser;
-    private ByteBuffer buffer;
-    private TransportMessage message;
+    //private ByteBuffer buffer;
+    BinaryOutputStream bos;
+    BinaryInputStream bis;
+    //private TransportMessage message;
     DynamicTypeBuilder builder;
     TypeDescriptorBuilder tdbuilder;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
-        this.buffer = ByteBuffer.allocate(500);
-        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer);
+        this.bos = new BinaryOutputStream();
         builder = DynamicTypeBuilderImpl.getInstance();
         tdbuilder = TypeDescriptorBuilderImpl.getInstance();
     }
 
     @After
     public void detach() {
-        this.message.getPayload().clear();
+        //this.message.getPayload().clear();
     }
 
     public void reset() {
-        this.message.getPayload().clear();
+        this.bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
     }
 
     /*
@@ -58,7 +54,6 @@ public class DynamicPrimitiveTest {
         dyn.set(false);
         assertEquals(dyn.get(), false);
         
-        reset();
     }
     
     /*
@@ -74,7 +69,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (byte) 4);
         
-        reset();
     }
     
     /*
@@ -90,7 +84,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (short) 4);
         
-        reset();
     }
     
     /*
@@ -106,7 +99,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (short) 4);
         
-        reset();
     }
     
     /*
@@ -122,7 +114,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (int) 4);
         
-        reset();
     }
     
     /*
@@ -138,7 +129,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (int) 4);
         
-        reset();
     }
     
     /*
@@ -154,7 +144,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (long) 4);
         
-        reset();
     }
     
     /*
@@ -170,7 +159,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (long) 4);
         
-        reset();
     }
     
     /*
@@ -186,7 +174,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (float) 4);
         
-        reset();
     }
     
     /*
@@ -202,7 +189,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (double) 4);
         
-        reset();
     }
     
     /*
@@ -218,7 +204,6 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (char) 'S');
         
-        reset();
     }
     
     /*
@@ -235,9 +220,298 @@ public class DynamicPrimitiveTest {
         }
         assertEquals(dyn.get(), (String) "Test");
         
-        reset();
+    }
+    
+    // ---------------- Serialization tests ---------------------------------
+    
+    /*
+     * booleanPrimitiveSerializationTest
+     */
+    @Test
+    public void booleanPrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.BOOLEAN_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        boolean value = true;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (boolean) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * bytePrimitiveSerializationTest
+     */
+    @Test
+    public void bytePrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.BYTE_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        byte value = (byte) 33;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (byte) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
     }
 
+    /*
+     * int16PrimitiveSerializationTest
+     */
+    @Test
+    public void int16PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.INT_16_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        short value = (short) 26;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (short) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * uint16PrimitiveSerializationTest
+     */
+    @Test
+    public void uint16PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.UINT_16_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        short value = (short) 44;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (short) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * int32PrimitiveSerializationTest
+     */
+    @Test
+    public void int32PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        int value = (int) 15;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (int) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * uint32PrimitiveSerializationTest
+     */
+    @Test
+    public void uint32PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.UINT_32_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        int value = (int) 9;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (int) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * int32PrimitiveSerializationTest
+     */
+    @Test
+    public void int64PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.INT_64_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        long value = (long) 5;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (long) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * uint64PrimitiveSerializationTest
+     */
+    @Test
+    public void uint64PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.UINT_64_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        long value = (long) 2589;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertEquals(value, (long) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * float32PrimitiveSerializationTest
+     */
+    @Test
+    public void float32PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.FLOAT_32_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        float value = (float) 5.45;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertTrue(value == (float) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * float64PrimitiveSerializationTest
+     */
+    @Test
+    public void float64PrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.FLOAT_64_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        double value = (double) 57.86;
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertTrue(value == (double) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * charPrimitiveSerializationTest
+     */
+    @Test
+    public void charPrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.CHAR_8_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        char value = (char) 'm';
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertTrue(value == (char) dyn.get());
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
+    /*
+     * stringPrimitiveSerializationTest
+     */
+    @Test
+    public void stringPrimitiveSerializationTest() {
+        
+        PrimitiveTypeDescriptor desc = (PrimitiveTypeDescriptor) tdbuilder.createPrimitiveType(TypeKind.STRING_TYPE);
+        DynamicPrimitive dyn = (DynamicPrimitive) builder.createData(desc);
+        String value = (String) "Hello World!";
+        
+        dyn.set(value);
+        
+        try {
+            dyn.serialize(ser, bos, "");
+            reset();
+            dyn.deserialize(ser, bis, "");
+            assertTrue(value.equals((String) dyn.get()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+        
+    }
+    
         
 
 }

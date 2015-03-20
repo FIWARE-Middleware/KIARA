@@ -17,11 +17,16 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
+import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
 import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 
@@ -46,7 +51,7 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
     
     @Override
     public boolean add(DynamicData element) {
-        if (element.getClass().equals(this.m_contentType.getClass())) {
+        if (element.getTypeDescriptor().getKind() == this.m_contentType.getKind()) {
             if (this.m_members.size() != this.m_maxSize) {
                 this.m_members.add(element);
                 return true;
@@ -97,6 +102,9 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
                 boolean isEquals = true;
                 for (int i=0; i < ((ListTypeDescriptor) ((DynamicListImpl) anotherObject).getTypeDescriptor()).getMaxSize(); ++i) {
                     isEquals = isEquals & ((DynamicListImpl) anotherObject).m_members.get(i).equals(this.m_members.get(i));
+                    if (!isEquals) {
+                        return isEquals;
+                    }
                 }
                 return isEquals;
             }
@@ -104,6 +112,24 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
         return false;
     }
 
-    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeUI32(message, "", this.m_members.size());
+        
+        for (DynamicData member : this.m_members) {
+            member.serialize(impl, message, "");
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        int size = impl.deserializeUI32(message, "");
+        
+        for (int i=0; i < size; ++i) {
+            DynamicData member = DynamicTypeBuilderImpl.getInstance().createData(this.m_contentType);
+            member.deserialize(impl, message, "");
+            this.m_members.add(member);
+        }
+    }
     
 }

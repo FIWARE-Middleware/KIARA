@@ -29,18 +29,18 @@ import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 */
 public class DynamicContainerImpl extends DynamicDataImpl {
     
-    protected DynamicData m_contentType;
+    protected DataTypeDescriptor m_contentType;
     protected ArrayList<DynamicData> m_members;
     
     public DynamicContainerImpl(DataTypeDescriptor dataDescriptor, String className) {
         super(dataDescriptor, className);
     }
     
-    public DynamicData getContentType() {
+    public DataTypeDescriptor getContentType() {
         return this.m_contentType;
     }
     
-    public void setContentType(DynamicData contentType) {
+    public void setContentType(DataTypeDescriptor contentType) {
         this.m_contentType = contentType;
     }
     

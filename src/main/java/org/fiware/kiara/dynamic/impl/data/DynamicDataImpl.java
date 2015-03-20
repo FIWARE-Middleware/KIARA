@@ -17,8 +17,13 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
+
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 
 /**
@@ -30,6 +35,16 @@ public class DynamicDataImpl extends DynamicTypeImpl implements DynamicData {
     
     public DynamicDataImpl(DataTypeDescriptor dataDescriptor, String className) {
         super(dataDescriptor, className);
+    }
+
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        
     }
     
 }

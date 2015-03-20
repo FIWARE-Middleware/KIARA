@@ -122,8 +122,8 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     }
 
     @Override
-    public ExceptionTypeDescriptor createExceptionType(String name, String message) {
-        ExceptionTypeDescriptor ret = new ExceptionTypeDescriptorImpl(name, message);
+    public ExceptionTypeDescriptor createExceptionType(String name) {
+        ExceptionTypeDescriptor ret = new ExceptionTypeDescriptorImpl(name);
         return ret;
     }
     

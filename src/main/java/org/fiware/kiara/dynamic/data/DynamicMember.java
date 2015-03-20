@@ -27,6 +27,8 @@ public interface DynamicMember {
     public String getName();
 
     public DynamicData getDynamicData();
+    
+    public boolean equals(Object anotherObject);
 
     
 }

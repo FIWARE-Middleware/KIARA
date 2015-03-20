@@ -17,11 +17,19 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
+
 import org.fiware.kiara.dynamic.data.DynamicEnum;
+import org.fiware.kiara.dynamic.data.DynamicMember;
+import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
+import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 
 /**
 *
@@ -55,6 +63,27 @@ public class DynamicEnumImpl extends DynamicMemberedImpl implements DynamicEnum 
             return this.m_members.get(this.m_chosenValue).getName();
         }
         return null;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        if (this.m_chosenValue == -1) {
+            throw new DynamicTypeException(this.m_className + " - Error serializing. No value has been set for this enumeration.");
+        }
+        impl.serializeUI32(message, name, this.m_chosenValue);
+    }
+ 
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_chosenValue = impl.deserializeUI32(message, name);
+    }
+    
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicEnumImpl) {
+            return this.m_chosenValue == ((DynamicEnumImpl) anotherObject).m_chosenValue;
+        }
+        return false;
     }
     
     public String getValueAt(int index) {

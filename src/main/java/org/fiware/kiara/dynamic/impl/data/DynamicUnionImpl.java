@@ -17,14 +17,19 @@
  */
 package org.fiware.kiara.dynamic.impl.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicEnum;
 import org.fiware.kiara.dynamic.data.DynamicMember;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
+import org.fiware.kiara.dynamic.data.DynamicStruct;
 import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
@@ -91,7 +96,88 @@ public class DynamicUnionImpl extends DynamicMemberedImpl implements DynamicUnio
     
     @Override
     public void setMember(String name, DynamicData data) {
-        
+        if (this.exists(name)) {
+            int index = -1;
+            for (DynamicMember member : this.m_members) {
+                ++index;
+                if (member.getName().equals(name)) {
+                    if (member.getDynamicData().getTypeDescriptor().getKind() == data.getTypeDescriptor().getKind()) {
+                        ((DynamicUnionMemberImpl<?>) this.m_members.get(index)).setDynamicData(data);
+                        break;
+                    }
+                }
+            }
+            
+            if (index != -1) {
+                this.setActiveMember(index);
+            } else {
+                throw new DynamicTypeException(this.m_className + " - There is no active member selected in this union.");
+            }
+        } else {
+            throw new DynamicTypeException(this.m_className + " - Another member with the name " + name + " has already been added to this union.");
+        }
+    }
+    
+    @Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof DynamicUnionImpl) {
+            boolean isEquals = true;
+            isEquals = this.m_discriminator.equals(((DynamicUnionImpl) anotherObject).m_discriminator);
+            if (isEquals) {
+                int index = getActiveIndex();
+                if (index != -1) {
+                    return this.m_members.get(index).equals(((DynamicUnionImpl) anotherObject).m_members.get(index));
+                } else {
+                    throw new DynamicTypeException(this.m_className + " - No active member is selected in this enumeration.");
+                }
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        this.m_discriminator.serialize(impl, message, name);
+        int index = this.getActiveIndex();
+        if (index != -1) {
+            this.m_members.get(index).getDynamicData().serialize(impl, message, name);
+        } else {
+            throw new DynamicTypeException(this.m_className + " - Error serializing. No active member is selected for this enumeration.");
+        }
+    }
+ 
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_discriminator.deserialize(impl, message, name);
+        int index = 0;
+        for (DynamicMember member : this.m_members) {
+            DynamicUnionMemberImpl<?> unionMember = (DynamicUnionMemberImpl<?>) member;
+            for (Object label : unionMember.getLabels()) {
+                if (this.m_discriminator.getTypeDescriptor().isEnum()) {
+                    if ((int) label == ((DynamicEnumImpl) this.m_discriminator).getChosenValueIndex()) {
+                        this.setActiveMember(index);
+                        this.m_members.get(index).getDynamicData().deserialize(impl, message, name);
+                        return;
+                    }
+                } else {
+                    if (label == ((DynamicPrimitive) this.m_discriminator).get()) {
+                        this.setActiveMember(index);
+                        this.m_members.get(index).getDynamicData().deserialize(impl, message, name);
+                        return;
+                    }
+                }
+            }
+            index++;
+        }
+    }
+    
+    private int getActiveIndex() {
+        for (int i=0; i < this.m_activeMember.size(); ++i) {
+            if (this.m_activeMember.get(i)) {
+                return i;
+            }
+        }
+        return -1;
     }
     
     public void setDefaultDiscriminatorValue() {
@@ -183,6 +269,27 @@ public class DynamicUnionImpl extends DynamicMemberedImpl implements DynamicUnio
         throw new DynamicTypeException(this.m_className + " - Discriminator value " + value.getClass() + " is not amongst the valid values specified when creating the type descriptor.");
         
     }
+    
+    /*private void updateActiveMember(Object value) {
+        int index = 0;
+        for (DynamicMember member : this.m_members) {
+            DynamicUnionMemberImpl<?> unionMember = (DynamicUnionMemberImpl<?>) member;
+            for (Object label : unionMember.getLabels()) {
+                if (this.m_discriminator.getTypeDescriptor().isEnum()) {
+                    if (((DynamicEnumImpl) this.m_discriminator).getValueAt((int) label).equals(value)) {
+                        this.setActiveMember(index);
+                        return;
+                    }
+                } else {
+                    if (value == label) {
+                        this.setActiveMember(index);
+                        return;
+                    }
+                }
+            }
+            index++;
+        }
+    }*/
     
     @Override
     public Object _d() {
