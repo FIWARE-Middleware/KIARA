@@ -50,16 +50,17 @@ public class PrimitiveTypeDescriptorImpl extends DataTypeDescriptorImpl implemen
     public boolean isString() {
         return this.m_kind == TypeKind.STRING_TYPE;
     }
-    
+
     @Override
-    public void setMaxFixedLength(int length) {
+    public PrimitiveTypeDescriptor setMaxFixedLength(int length) {
         if (this.m_kind == TypeKind.STRING_TYPE) {
             this.m_maxFixedLength = length;
         } else {
             throw new TypeDescriptorException("PrimitiveTypeDescriptor - Only PrimitiveTypeDescriptor objects whose kind is STRING_TYPE are allowed to have maximum fixed length.");
         }
+        return this;
     }
-    
+
     @Override
     public int getMaxFixedLength() {
         if (this.m_kind == TypeKind.STRING_TYPE) {
