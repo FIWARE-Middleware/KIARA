@@ -20,6 +20,8 @@ import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.EnumSwitchUnion;
+import org.fiware.kiara.serialization.types.EnumSwitcher;
 import org.fiware.kiara.struct.PrimitiveTypesStruct;
 import org.fiware.kiara.struct.StructServiceTest;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
@@ -1120,6 +1122,37 @@ public class DynamicMemberedTest {
         outSt.deserialize(ser, bis, "");
 
         assertEquals(inSt, outSt);
+    }
+
+    @Test
+    public void staticDynamicUnionSerializationTest() throws Exception {
+
+        EnumTypeDescriptor enumDesc = tdbuilder.createEnumType("EnumSwitcher", "option_1", "option_2", "option_3");
+
+        UnionTypeDescriptor unionDesc = tdbuilder.createUnionType("EnumSwitchUnion", enumDesc);
+        unionDesc.addMember(tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE), "intVal", false, "option_1", "option_2");
+        unionDesc.addMember(tdbuilder.createPrimitiveType(TypeKind.STRING_TYPE), "stringVal", false, "option_3");
+        unionDesc.addMember(tdbuilder.createPrimitiveType(TypeKind.FLOAT_32_TYPE), "floatVal", true);
+
+
+
+        EnumSwitchUnion inUn = new EnumSwitchUnion();
+        inUn._d(EnumSwitcher.option_3);
+        inUn.setStringVal("Test Option 3");
+        EnumSwitchUnion outUn = new EnumSwitchUnion();
+
+        DynamicData dynOutSt = builder.createData(unionDesc);
+        bos.reset();
+        inUn.serialize(ser, bos, "");
+        reset();
+        dynOutSt.deserialize(ser, bis, "");
+        reset();
+        bos.reset();
+        dynOutSt.serialize(ser, bos, "");
+        reset();
+        outUn.deserialize(ser, bis, "");
+
+        assertEquals(inUn, outUn);
     }
 
 }
