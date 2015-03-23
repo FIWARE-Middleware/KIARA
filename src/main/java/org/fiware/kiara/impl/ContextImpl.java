@@ -6,7 +6,6 @@ import org.fiware.kiara.server.Server;
 import org.fiware.kiara.server.Service;
 import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.transport.ServerTransport;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportFactory;
@@ -20,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.fiware.kiara.transport.http.HttpTransportFactory;
 
 public class ContextImpl implements Context {
 
@@ -28,6 +28,7 @@ public class ContextImpl implements Context {
     // FIXME this initialization is hardcoded
     static {
         registerTransportFactory(new TcpBlockTransportFactory(/*secure = */false));
+        registerTransportFactory(new HttpTransportFactory(/*secure = */false));
     }
 
     private static TransportFactory getTransportFactoryByName(String transportName) {

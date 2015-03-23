@@ -94,6 +94,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
                 if (executor == null) {
                     TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
                     if (tpmreply != null) {
+                        tpmreply.setContentType(serializer.getContentType());
                         //TransportMessage tresponse = transport.createTransportMessage(message);
                         //tresponse.setPayload(reply);
                         transport.send(tpmreply);
@@ -107,6 +108,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
                         public void run() {
                             TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
                             if (tpmreply != null) {
+                                tpmreply.setContentType(serializer.getContentType());
                                 //TransportMessage tresponse = transport.createTransportMessage(message);
                                 //tresponse.setPayload(reply);
                                 transport.send(tpmreply);

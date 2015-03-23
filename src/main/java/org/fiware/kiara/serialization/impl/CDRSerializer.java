@@ -122,6 +122,11 @@ public class CDRSerializer implements SerializerImpl {
     }
 
     @Override
+    public String getContentType() {
+        return "application/octet-stream";
+    }
+
+    @Override
     public void serializeMessageId(BinaryOutputStream message, Object messageId) throws IOException {
         serializeI32(message, "",  (Integer) messageId);
     }
