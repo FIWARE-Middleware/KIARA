@@ -18,12 +18,21 @@
 package org.fiware.kiara.dynamic.services;
 
 import org.fiware.kiara.dynamic.DynamicType;
+import org.fiware.kiara.dynamic.data.DynamicData;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface DynamicFunction extends DynamicType {
+public interface DynamicFunctionResponse extends DynamicType {
+    
+    public boolean getIsException();
+    
+    public void setIsException(boolean isException);
+    
+    public void setReturnType (DynamicData returnType);
+    
+    public DynamicData getReturnType();
 
 }

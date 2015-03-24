@@ -17,6 +17,8 @@
  */
 package org.fiware.kiara.typecode.impl.data;
 
+import java.security.MessageDigest;
+
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.TypeKind;
@@ -31,11 +33,8 @@ import org.fiware.kiara.typecode.data.Member;
 */
 public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements ExceptionTypeDescriptor {
     
-    //private String m_message;
-
     public ExceptionTypeDescriptorImpl(String name) {
-        super(TypeKind.EXCEPTION_TYPE);
-       // this.m_message = message;
+        super(TypeKind.EXCEPTION_TYPE, name);
     }
     
     @Override
@@ -43,10 +42,6 @@ public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl impl
         return true;
     }
     
-    /*public String getMessage() {
-        return this.m_message;
-    }*/
-
     @Override
     public void addMember(TypeDescriptor member, String name) {
         if (member instanceof DataTypeDescriptor) {
@@ -67,6 +62,33 @@ public class ExceptionTypeDescriptorImpl extends MemberedTypeDescriptorImpl impl
                 return member.getTypeDescriptor();
             }
         }
+        return null;
+    }
+    
+    /*@Override
+    public boolean equals(Object anotherObject) {
+        if (anotherObject instanceof ExceptionTypeDescriptorImpl) {
+            ExceptionTypeDescriptorImpl aux = (ExceptionTypeDescriptorImpl) anotherObject;
+            if (aux.getName().equals(this.m_name)) {
+                return aux.getMembers().equals(this.m_members);
+            }
+        }
+        return false;
+    }*/
+    
+    public String getMd5() {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            if(md != null) {
+                byte[] md5 = md.digest(this.m_name.getBytes());
+                int length = md5.length;
+                return String.format("0x%02X%02X%02X%02X", md5[length - 4], md5[length - 3], md5[length - 2], md5[length - 1]);
+            }
+        } catch(java.lang.Exception ex) {
+            System.out.println("ERROR<Operation::getMd5>: " + ex.getMessage());
+        }
+        
         return null;
     }
     

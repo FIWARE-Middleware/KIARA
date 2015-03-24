@@ -22,6 +22,7 @@ import java.util.List;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
+import org.fiware.kiara.typecode.data.Member;
 
 /**
 *
@@ -34,12 +35,18 @@ public interface FunctionTypeDescriptor extends TypeDescriptor {
     
     public void setReturnType(DataTypeDescriptor returnType);
     
-    public List<DataTypeDescriptor> getParameters();
+    public DataTypeDescriptor getParameter(String name);
+    
+    //public List<DataTypeDescriptor> getParameters();
     
     public void addParameter(DataTypeDescriptor parameter, String name);
     
-    public List<ExceptionTypeDescriptor> getExceptions();
+    public ExceptionTypeDescriptor getException(String name);
     
     public void addException(ExceptionTypeDescriptor exception);
+    
+    public String getName();
+    
+    
 
 }

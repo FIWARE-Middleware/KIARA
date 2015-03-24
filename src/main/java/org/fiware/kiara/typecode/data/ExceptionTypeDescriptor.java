@@ -17,6 +17,8 @@
  */
 package org.fiware.kiara.typecode.data;
 
+import java.security.MessageDigest;
+
 import org.fiware.kiara.typecode.TypeDescriptor;
 
 /**
@@ -29,5 +31,7 @@ public interface ExceptionTypeDescriptor extends MemberedTypeDescriptor {
     public void addMember(TypeDescriptor member, String name);
     
     public DataTypeDescriptor getMember(String name);
+    
+    public String getMd5();
 
 }

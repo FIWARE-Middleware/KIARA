@@ -32,8 +32,10 @@ import org.fiware.kiara.dynamic.impl.data.DynamicPrimitiveImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicSetImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicStructImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicUnionImpl;
-import org.fiware.kiara.dynamic.impl.services.DynamicFunctionImpl;
-import org.fiware.kiara.dynamic.services.DynamicFunction;
+import org.fiware.kiara.dynamic.impl.services.DynamicFunctionRequestImpl;
+import org.fiware.kiara.dynamic.impl.services.DynamicFunctionResponseImpl;
+import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
+import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
@@ -69,19 +71,20 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
     }
     
     @Override
-    public DynamicFunction createFunction(FunctionTypeDescriptor functionDescriptor) {
-        DynamicFunctionImpl ret = new DynamicFunctionImpl((FunctionTypeDescriptorImpl) functionDescriptor);
+    public DynamicFunctionRequest createFunctionRequest(FunctionTypeDescriptor functionDescriptor) {
+        DynamicFunctionRequestImpl ret = new DynamicFunctionRequestImpl((FunctionTypeDescriptorImpl) functionDescriptor);
         
-        if (functionDescriptor.getReturnType() != null) {
-            ret.setReturnType(this.createData(functionDescriptor.getReturnType()));
-        }
-        for (DataTypeDescriptor param : functionDescriptor.getParameters()) {
-            ret.addParameter(this.createData(param));
-        }
-        for (ExceptionTypeDescriptor exception : functionDescriptor.getExceptions()) {
-            ret.addParameter(this.createData(exception));
+        for (Member param : ((FunctionTypeDescriptorImpl) functionDescriptor).getParameters()) {
+            DynamicData data = this.createData(param.getTypeDescriptor());
+            ret.addParameter(data, param.getName());
         }
         
+        return ret;
+    }
+    
+    @Override
+    public DynamicFunctionResponse createFunctionResponse(FunctionTypeDescriptor functionDescriptor) {
+        DynamicFunctionResponseImpl ret = new DynamicFunctionResponseImpl((FunctionTypeDescriptorImpl) functionDescriptor);
         return ret;
     }
 
@@ -215,5 +218,5 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
         }
         return ret;
     }
-    
+
 }

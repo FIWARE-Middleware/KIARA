@@ -28,11 +28,11 @@ import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 public class EnumTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements EnumTypeDescriptor {
     
     @SuppressWarnings("unused")
-    private String m_name;
+    //private String m_name;
 
     public EnumTypeDescriptorImpl(String name) {
-        super(TypeKind.ENUM_TYPE);
-        this.m_name = name;
+        super(TypeKind.ENUM_TYPE, name);
+     //   this.m_name = name;
     }
     
     @Override

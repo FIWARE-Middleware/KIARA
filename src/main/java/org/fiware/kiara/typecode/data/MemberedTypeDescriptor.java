@@ -28,4 +28,6 @@ public interface MemberedTypeDescriptor extends DataTypeDescriptor {
 
     public List<Member> getMembers();
     
+    public String getName();
+    
 }

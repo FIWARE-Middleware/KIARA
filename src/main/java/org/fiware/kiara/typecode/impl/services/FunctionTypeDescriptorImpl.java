@@ -18,12 +18,15 @@
 package org.fiware.kiara.typecode.impl.services;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
+import org.fiware.kiara.typecode.data.Member;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.MemberImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
@@ -35,7 +38,8 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements FunctionTypeDescriptor {
     
     private DataTypeDescriptor m_returnDescriptor;
-    private ArrayList<DataTypeDescriptor> m_parametersDescriptors;
+    private ArrayList<Member> m_parametersDescriptors;
+    //private ArrayList<String> m_parametersNames;
     private ArrayList<ExceptionTypeDescriptor> m_exceptionsDescriptors;
     @SuppressWarnings("unused")
     private String m_name;
@@ -48,14 +52,15 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
             throw new TypeDescriptorException("FunctionTypeDescriptorImpl - Trying to specify an empty value as function name.");
         }
         this.m_name = name;
-        this.m_parametersDescriptors = new ArrayList<DataTypeDescriptor>();
+        this.m_parametersDescriptors = new ArrayList<Member>();
+        //this.m_parametersNames = new ArrayList<String>();
         this.m_exceptionsDescriptors = new ArrayList<ExceptionTypeDescriptor>();
     }
     
     public FunctionTypeDescriptorImpl(
             String name,
             DataTypeDescriptor returnDescriptor, 
-            ArrayList<DataTypeDescriptor> parametersDescriptors, 
+            ArrayList<Member> parametersDescriptors, 
             ArrayList<ExceptionTypeDescriptor> exceptionsDescriptors) {
         super(TypeKind.FUNCTION_TYPE);
         if (name == null) {
@@ -80,15 +85,25 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
     }
     
     @Override
-    public ArrayList<DataTypeDescriptor> getParameters() {
-        return this.m_parametersDescriptors;
-    }
-    
-    @Override
-    public ArrayList<ExceptionTypeDescriptor> getExceptions() {
-        return this.m_exceptionsDescriptors;
+    public DataTypeDescriptor getParameter(String name) {
+        for (Member m : this.m_parametersDescriptors) {
+            if (m.getName().equals(name)) {
+                return m.getTypeDescriptor();
+            }
+        }
+        return null;
     }
 
+    @Override
+    public ExceptionTypeDescriptor getException(String name) {
+        for (ExceptionTypeDescriptor ex : this.m_exceptionsDescriptors) {
+            if (ex.getName().equals(name)) {
+                return ex;
+            }
+        }
+        return null;
+    }
+    
     @Override
     public void setReturnType(DataTypeDescriptor returnType) {
         if (this.m_returnDescriptor == null) {
@@ -107,7 +122,20 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         } else if (name.length() == 0) {
             throw new TypeDescriptorException("FunctionTypeDescriptorImpl - Trying to specify an empty value as function name.");
         }
-        this.m_parametersDescriptors.add(parameter);
+        if (exists(name)) {
+            throw new TypeDescriptorException("FunctionTypeDescriptorImpl - Trying to add a duplicated parameter name.");
+        } 
+        this.m_parametersDescriptors.add(new MemberImpl(parameter, name));
+        //this.m_parametersNames.add(name);
+    }
+    
+    private boolean exists(String parameterName) {
+        for (Member m : this.m_parametersDescriptors) {
+            if (parameterName.equals(m.getName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -117,5 +145,24 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         }
         this.m_exceptionsDescriptors.add(exception);
     }
+    
+    @Override
+    public String getName() {
+        return this.m_name;
+    }
+    
+    public ArrayList<ExceptionTypeDescriptor> getExceptions() {
+        return this.m_exceptionsDescriptors;
+    }
+
+    public List<Member> getParameters() {
+        /*ArrayList<DataTypeDescriptor> parameters = new ArrayList<DataTypeDescriptor>();
+        for(Member m : this.m_parametersDescriptors) {
+            parameters.add(m.getTypeDescriptor());
+        }*/
+        return this.m_parametersDescriptors;
+    }
+
+    
 
 }

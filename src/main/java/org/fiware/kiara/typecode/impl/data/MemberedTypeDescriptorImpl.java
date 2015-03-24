@@ -31,9 +31,11 @@ import org.fiware.kiara.typecode.data.MemberedTypeDescriptor;
 public class MemberedTypeDescriptorImpl extends DataTypeDescriptorImpl implements MemberedTypeDescriptor {
     
     protected ArrayList<Member> m_members;
+    protected String m_name;
     
-    public MemberedTypeDescriptorImpl(TypeKind kind/*, String name*/) {
+    public MemberedTypeDescriptorImpl(TypeKind kind, String name) {
         super(kind);
+        this.m_name = name;
         this.m_members = new ArrayList<Member>();
     }
     
@@ -45,6 +47,11 @@ public class MemberedTypeDescriptorImpl extends DataTypeDescriptorImpl implement
     @Override
     public ArrayList<Member> getMembers() {
         return this.m_members;
+    }
+
+    @Override
+    public String getName() {
+        return this.m_name;
     }
 
     

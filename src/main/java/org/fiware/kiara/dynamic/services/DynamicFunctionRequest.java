@@ -15,25 +15,18 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.dynamic;
+package org.fiware.kiara.dynamic.services;
 
+import org.fiware.kiara.dynamic.DynamicType;
 import org.fiware.kiara.dynamic.data.DynamicData;
-import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
-import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
-import org.fiware.kiara.typecode.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface DynamicTypeBuilder {
+public interface DynamicFunctionRequest extends DynamicType {
     
-    public DynamicData createData(DataTypeDescriptor dataDescriptor);
-    
-    public DynamicFunctionRequest createFunctionRequest(FunctionTypeDescriptor functionDescriptor);
-    
-    public DynamicFunctionResponse createFunctionResponse(FunctionTypeDescriptor functionDescriptor);
+    public DynamicData getParameter(String name);
 
 }

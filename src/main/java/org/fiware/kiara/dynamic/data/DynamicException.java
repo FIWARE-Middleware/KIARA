@@ -25,5 +25,5 @@ package org.fiware.kiara.dynamic.data;
 public interface DynamicException extends DynamicMembered {
     
     public DynamicData getMember(String name);
-
+    
 }

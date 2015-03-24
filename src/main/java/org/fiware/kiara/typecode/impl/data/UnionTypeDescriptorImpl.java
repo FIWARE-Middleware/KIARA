@@ -36,13 +36,10 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
 
     private DataTypeDescriptor m_discriminator;
 
-    @SuppressWarnings("unused")
-    private String m_name;
-
     private int m_defaultIndex = -1;
 
     public UnionTypeDescriptorImpl(String name, DataTypeDescriptor discriminatorDescriptor) {
-        super(TypeKind.UNION_TYPE);
+        super(TypeKind.UNION_TYPE, name);
         switch (discriminatorDescriptor.getKind()) {
             case CHAR_8_TYPE:
             case BOOLEAN_TYPE:
@@ -54,7 +51,6 @@ public class UnionTypeDescriptorImpl extends MemberedTypeDescriptorImpl implemen
             default:
                 throw new TypeDescriptorException("UnionTypeDescriptorImpl - Another member with the name " + name + " has already been added to this union.");
         }
-        this.m_name = name;
     }
 
     @Override

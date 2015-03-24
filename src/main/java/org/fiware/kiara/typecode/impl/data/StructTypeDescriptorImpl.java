@@ -32,11 +32,11 @@ import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 public class StructTypeDescriptorImpl extends MemberedTypeDescriptorImpl implements StructTypeDescriptor {
 
     @SuppressWarnings("unused")
-    private String m_name;
+    //private String m_name;
     
     public StructTypeDescriptorImpl(String name) {
-        super(TypeKind.STRUCT_TYPE);
-        this.m_name = name;
+        super(TypeKind.STRUCT_TYPE, name);
+        //this.m_name = name;
     }
     
     @Override
