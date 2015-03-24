@@ -40,6 +40,22 @@ public abstract class HttpMessage extends TransportMessage {
         super(connection, null);
     }
 
+    public final String getRequestUri() {
+        return (String)get(Names.REQUEST_URI);
+    }
+
+    public final TransportMessage setRequestUri(String uri) {
+        return set(Names.REQUEST_URI, uri);
+    }
+
+    public final String getHttpMethod() {
+        return (String)get(Names.HTTP_METHOD);
+    }
+
+    public final TransportMessage setHttpMethod(String method) {
+        return set(Names.HTTP_METHOD, method);
+    }
+
     @Override
     public TransportMessage setPayload(ByteBuffer payload) {
         if (getPayload() != null)

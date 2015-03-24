@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.net.ssl.SSLException;
+import org.fiware.kiara.transport.impl.TransportFactory;
 
 public class ServerImpl implements Server {
 
@@ -35,6 +36,7 @@ public class ServerImpl implements Server {
     private int configPort;
     private String configPath;
     private URI configUri;
+    private NegotiationHandler negotiationHandler;
 
     private static class IDLInfo {
 
@@ -89,6 +91,7 @@ public class ServerImpl implements Server {
         }
     }
 
+    @Override
     public void addService(Service service, ServerTransport serverTransport, Serializer serializer) throws IOException {
         services.add(service);
 
@@ -103,30 +106,43 @@ public class ServerImpl implements Server {
         transportServer.listen(serverTransport, srv);
     }
 
+    @Override
     public void addService(Service service, String path, String protocol) throws IOException {
         addService(service, context.createServerTransport(path), context.createSerializer(protocol));
     }
 
+    @Override
     public boolean removeService(Service service) {
         return services.remove(service);
     }
 
     @Override
-    public void enableConfigurationService(String host, int port, String configPath) throws URISyntaxException {
+    public void enableNegotiationService(String host, int port, String configPath) throws URISyntaxException {
         this.configHost = host;
         this.configPort = port;
         this.configPath = configPath;
         this.configUri = new URI("http://" + configHost + ":" + Integer.toString(configPort) + "/" + configPath).normalize();
+        this.negotiationHandler = new NegotiationHandler();
+
+        final TransportFactory transportFactory = ContextImpl.getTransportFactoryByURI(this.configUri);
+        final ServerTransport serverTransport;
+        try {
+            serverTransport = transportFactory.createServerTransport(this.configUri.toString());
+            transportServer.listen(serverTransport, negotiationHandler);
+        } catch (IOException ex) {
+            //???TODO
+        }
     }
 
     @Override
-    public void disableConfigurationService() {
+    public void disableNegotiationService() {
         this.configHost = null;
         this.configPort = -1;
         this.configPath = null;
         this.configUri = null;
     }
 
+    @Override
     public void run() {
         try {
             transportServer.run();
@@ -135,6 +151,7 @@ public class ServerImpl implements Server {
         }
     }
 
+    @Override
     public void close() throws IOException {
         transportServer.close();
         for (ServantDispatcher servantDispatcher : servantDispatchers) {

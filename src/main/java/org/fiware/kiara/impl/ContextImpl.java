@@ -23,7 +23,7 @@ import org.fiware.kiara.transport.http.HttpTransportFactory;
 
 public class ContextImpl implements Context {
 
-    private static final Map<String, TransportFactory> transportFactories = new HashMap<String, TransportFactory>();
+    private static final Map<String, TransportFactory> transportFactories = new HashMap<>();
 
     // FIXME this initialization is hardcoded
     static {
@@ -41,7 +41,7 @@ public class ContextImpl implements Context {
         return getTransportFactoryByURI(new URI(uri));
     }
 
-    private static TransportFactory getTransportFactoryByURI(URI uri) {
+    public static TransportFactory getTransportFactoryByURI(URI uri) {
         final String scheme = uri.getScheme();
         if (scheme == null) {
             return null;
@@ -61,7 +61,7 @@ public class ContextImpl implements Context {
         }
     }
 
-    private static synchronized void registerTransportFactory(TransportFactory transportFactory) {
+    private static void registerTransportFactory(TransportFactory transportFactory) {
         if (transportFactory == null) {
             throw new NullPointerException("transportFactory");
         }
@@ -100,19 +100,23 @@ public class ContextImpl implements Context {
         }
     }
 
+    @Override
     public Connection connect(Transport transport, Serializer serializer, boolean dummy) throws IOException {
         return new ConnectionImpl(transport, serializer, dummy);
     }
 
+    @Override
     public Service createService() {
         return new ServiceImpl();
     }
 
     // Create server without negotiation
+    @Override
     public Server createServer() {
         return new ServerImpl(this);
     }
 
+    @Override
     public Transport createTransport(String url) throws IOException {
         if (url == null) {
             throw new NullPointerException("url");
@@ -131,6 +135,7 @@ public class ContextImpl implements Context {
         }
     }
 
+    @Override
     public ServerTransport createServerTransport(String url) throws IOException {
         try {
             URI uri = new URI(url);
@@ -146,6 +151,7 @@ public class ContextImpl implements Context {
         }
     }
 
+    @Override
     public Serializer createSerializer(String name) throws IOException {
         if (!"cdr".equals(name)) {
             throw new IOException("Unsupported serializer: " + name);
