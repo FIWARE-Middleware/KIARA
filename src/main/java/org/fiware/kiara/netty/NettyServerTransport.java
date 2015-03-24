@@ -48,10 +48,12 @@ public class NettyServerTransport implements ServerTransportImpl {
         return path;
     }
 
+    @Override
     public SocketAddress getLocalSocketAddress() {
         return localSocketAddress;
     }
 
+    @Override
     public TransportFactory getTransportFactory() {
         return transportFactory;
     }
@@ -72,6 +74,7 @@ public class NettyServerTransport implements ServerTransportImpl {
         return listener;
     }
 
+    @Override
     public void close() throws IOException {
         if (channel != null && channel.isOpen()) {
             try {
@@ -82,11 +85,18 @@ public class NettyServerTransport implements ServerTransportImpl {
         }
     }
 
+    @Override
     public void setDispatchingExecutor(ExecutorService executor) {
         this.dispatchingExecutor = executor;
     }
 
+    @Override
     public ExecutorService getDispatchingExecutor() {
         return dispatchingExecutor;
+    }
+
+    @Override
+    public void startServer(TransportConnectionListener listener) throws InterruptedException {
+        transportFactory.startServer(this, listener);
     }
 }

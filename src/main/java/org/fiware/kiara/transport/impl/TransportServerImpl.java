@@ -46,20 +46,21 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
 
         public void startServer() throws InterruptedException {
-            serverTransport.getTransportFactory().startServer(serverTransport, listener);
+            serverTransport.startServer(listener);
         }
 
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TransportServerImpl.class);
 
-    private final List<ServerEntry> serverEntries = new ArrayList<ServerEntry>();
+    private final List<ServerEntry> serverEntries = new ArrayList<>();
 
     public TransportServerImpl() throws CertificateException, SSLException {
         // bossGroup and workerGroup need to be always shutdown, so we are always running service
         // Kiara.addRunningService(this);
     }
 
+    @Override
     public void listen(ServerTransport serverTransport, TransportConnectionListener listener) {
         if (!(serverTransport instanceof ServerTransportImpl))
             throw new IllegalArgumentException("transport factory is not an instance of " + ServerTransportImpl.class.getName() + " class");
@@ -72,6 +73,7 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
+    @Override
     public void run() throws IOException {
         int numServers = 0;
         try {
@@ -86,6 +88,7 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
+    @Override
     public void close() throws IOException {
         ServerEntry[] tmp;
         synchronized (serverEntries) {
@@ -97,6 +100,7 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
+    @Override
     public void shutdownService() {
         try {
             close();
