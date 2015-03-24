@@ -51,7 +51,7 @@ public abstract class CalculatorServant implements Servant, Calculator {
 
 
     @Override
-    public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
+    public TransportMessage process(Serializer ser, TransportMessage message, Transport transport, Object messageId, BinaryInputStream bis) {
 
         SerializerImpl serImpl;
         TransportImpl transportImpl;
@@ -71,7 +71,7 @@ public abstract class CalculatorServant implements Servant, Calculator {
                 int n2 = serImpl.deserializeI32(bis, "");
 
 			BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
                 int ret = add(n1, n2);
@@ -89,7 +89,7 @@ public abstract class CalculatorServant implements Servant, Calculator {
                 int n2 = serImpl.deserializeI32(bis, "");
 
 			BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
 

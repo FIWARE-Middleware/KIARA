@@ -26,7 +26,6 @@ package org.fiware.kiara.struct;
 
 import java.io.IOException;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.server.Servant;
 import org.fiware.kiara.transport.Transport;
@@ -51,7 +50,7 @@ public abstract class StructServiceServant implements Servant, StructService {
 
 
     @Override
-    public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
+    public TransportMessage process(Serializer ser, TransportMessage message, Transport transport, Object messageId, BinaryInputStream bis) {
 
         SerializerImpl serImpl;
         TransportImpl transportImpl;
@@ -80,7 +79,7 @@ public abstract class StructServiceServant implements Servant, StructService {
                 }
 
 			BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
 
@@ -108,7 +107,7 @@ public abstract class StructServiceServant implements Servant, StructService {
                 }
 
                 BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
 
                 serImpl.serializeMessageId(retBuffer, messageId);
 
