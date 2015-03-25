@@ -3,7 +3,6 @@ package org.fiware.kiara.serialization;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -13,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.fiware.kiara.serialization.types.GenericEnumeration;
 import org.fiware.kiara.serialization.types.GenericType;
-import sun.net.www.content.text.Generic;
 
 public class CDRSetTest {
 
