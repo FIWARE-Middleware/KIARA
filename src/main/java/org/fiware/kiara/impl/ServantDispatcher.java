@@ -66,7 +66,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         servants = new HashMap<>();
     }
 
-    public void addService(Servant servant) {
+    public void addServant(Servant servant) {
         servants.put(servant.getServiceName(), servant);
     }
 

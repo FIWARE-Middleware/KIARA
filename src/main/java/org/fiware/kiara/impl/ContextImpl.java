@@ -8,7 +8,7 @@ import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.ServerTransport;
 import org.fiware.kiara.transport.Transport;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 import org.fiware.kiara.transport.tcp.TcpBlockTransportFactory;
 
 import io.netty.handler.codec.http.QueryStringDecoder;

@@ -15,31 +15,17 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.transport.impl;
 
-import com.google.common.util.concurrent.ListenableFuture;
-
-import org.fiware.kiara.exceptions.impl.InvalidAddressException;
-import org.fiware.kiara.transport.ServerTransport;
-import org.fiware.kiara.transport.Transport;
-
-import java.io.IOException;
-import java.util.Map;
+package org.fiware.kiara.config;
 
 /**
  *
- * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
+ * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
  */
-public interface TransportFactory {
+public class ProtocolInfo {
+    public String name = null;
 
-    public String getName();
-
-    public int getPriority();
-
-    public boolean isSecureTransport();
-
-    public ListenableFuture<Transport> createTransport(String uri, Map<String, Object> settings) throws InvalidAddressException, IOException;
-
-    public ServerTransport createServerTransport(String url) throws IOException;
-
+    public void clear() {
+        name = null;
+    }
 }

@@ -18,7 +18,7 @@
 package org.fiware.kiara.netty;
 
 import org.fiware.kiara.transport.impl.TransportImpl;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 import org.fiware.kiara.transport.impl.TransportMessageListener;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
@@ -47,7 +47,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
     private final T transportFactory;
     protected volatile Channel channel = null;
     private TransportConnectionListener connectionListener;
-    private final List<TransportMessageListener> listeners = new ArrayList<TransportMessageListener>();
+    private final List<TransportMessageListener> listeners = new ArrayList<>();
 
     public static enum Mode {
 
@@ -73,6 +73,7 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
         this.transportFactory = transportFactory;
     }
 
+    @Override
     public T getTransportFactory() {
         return transportFactory;
     }

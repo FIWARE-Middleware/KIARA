@@ -18,11 +18,6 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -36,6 +31,11 @@ public class CDRSerializer implements SerializerImpl {
 
     public CDRSerializer() {
         nextId = new AtomicInteger(1);
+    }
+
+    @Override
+    public String getName() {
+        return "cdr";
     }
 
     public static int alignment(int current_alignment, int dataSize) {

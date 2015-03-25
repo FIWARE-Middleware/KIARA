@@ -22,7 +22,7 @@ import org.fiware.kiara.RunningService;
 import org.fiware.kiara.transport.ServerTransport;
 import org.fiware.kiara.transport.impl.Global;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;

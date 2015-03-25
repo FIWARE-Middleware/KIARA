@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TransportServerImpl implements TransportServer, RunningService {
 
+
     private static class ServerEntry {
 
         public final ServerTransportImpl serverTransport;
@@ -62,6 +63,7 @@ public class TransportServerImpl implements TransportServer, RunningService {
     private static final Logger logger = LoggerFactory.getLogger(TransportServerImpl.class);
 
     private final List<ServerEntry> serverEntries = new ArrayList<>();
+    private int numRunning = 0;
 
     public TransportServerImpl() throws CertificateException, SSLException {
         // bossGroup and workerGroup need to be always shutdown, so we are always running service
@@ -89,6 +91,7 @@ public class TransportServerImpl implements TransportServer, RunningService {
                 for (ServerEntry serverEntry : serverEntries) {
                     if (!serverEntry.isServerRunning()) {
                         serverEntry.startServer();
+                        ++numRunning;
                     }
                 }
             } catch (InterruptedException ex) {
@@ -103,10 +106,18 @@ public class TransportServerImpl implements TransportServer, RunningService {
             try {
                 for (ServerEntry serverEntry : serverEntries) {
                     serverEntry.stopServer();
+                    --numRunning;
                 }
             } catch (InterruptedException ex) {
                 throw new IOException(ex);
             }
+        }
+    }
+
+    @Override
+    public boolean isRunning() {
+        synchronized (serverEntries) {
+            return numRunning > 0;
         }
     }
 

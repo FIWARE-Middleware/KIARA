@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaders;
 import static io.netty.handler.codec.http.HttpHeaders.Names.CONTENT_LENGTH;
 import io.netty.handler.codec.http.HttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  *
@@ -101,6 +102,8 @@ public class HttpResponseMessage extends HttpMessage {
             headers.set(HttpHeaders.Names.CONTENT_TYPE, value);
         } else if (TransportMessage.Names.SESSION_ID.equals(name)) {
             headers.set("x-kiara-session", value);
+        } else if (Names.STATUS_CODE.equals(name)) {
+            getResponse().setStatus(HttpResponseStatus.valueOf((Integer)value));
         }
         return this;
     }
@@ -111,6 +114,8 @@ public class HttpResponseMessage extends HttpMessage {
             return headers.get(HttpHeaders.Names.CONTENT_TYPE);
         } else if (TransportMessage.Names.SESSION_ID.equals(name)) {
             return headers.get("x-kiara-session");
+        } else if (Names.STATUS_CODE.equals(name)) {
+            return getResponse().getStatus().code();
         }
         return null;
     }

@@ -15,17 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.transport.impl;
 
-import org.fiware.kiara.transport.ServerTransport;
-import java.net.SocketAddress;
+package org.fiware.kiara.config;
 
 /**
  *
- * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
+ * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
  */
-public interface ServerTransportImpl extends ServerTransport {
+public class TransportInfo {
+    public String name = null;
+    public String url = null;
 
-    public SocketAddress getLocalSocketAddress();
-
+    public void clear() {
+        name = null;
+        url = null;
+    }
 }

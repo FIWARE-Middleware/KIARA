@@ -20,9 +20,11 @@ package org.fiware.kiara.impl;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import org.fiware.kiara.config.ServerConfiguration;
 import org.fiware.kiara.transport.http.HttpMessage;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
 import org.fiware.kiara.transport.impl.TransportImpl;
@@ -39,7 +41,10 @@ public class NegotiationHandler implements TransportConnectionListener, Transpor
 
     private static final Logger logger = LoggerFactory.getLogger(NegotiationHandler.class);
 
-    public NegotiationHandler() {
+    private final ServerImpl server;
+
+    public NegotiationHandler(ServerImpl server) {
+        this.server = server;
     }
 
     @Override
@@ -60,20 +65,33 @@ public class NegotiationHandler implements TransportConnectionListener, Transpor
         String responseText = null;
         String contentType = null;
         boolean requestProcessed = false;
+        int statusCode = 200; // OK
 
         if (message instanceof HttpMessage) {
             try {
                 final HttpMessage request = (HttpMessage) message;
                 URI requestUri = new URI(request.getRequestUri()).normalize();
 
-                responseText = "TEST 123 : " + requestUri;
-                contentType = "text/plain; charset=UTF-8";
+                if (server.getConfigUri().getPath().equals(requestUri.getPath())) {
+                    ServerConfiguration config = server.generateServerConfiguration(
+                            ((InetSocketAddress) transport.getLocalAddress()).getHostName(),
+                            ((InetSocketAddress) transport.getRemoteAddress()).getHostName());
 
-            } catch (URISyntaxException ex) {
+                    responseText = config.toJson();
+                    contentType = "application/json";
+                    requestProcessed = true;
+                } else {
+                    responseText = "Error: '"+requestUri.getPath()+"' - File not found";
+                    contentType = "text/plain; charset=UTF-8";
+                    requestProcessed = true;
+                    statusCode = 404;
+                }
+            } catch (URISyntaxException | IOException ex) {
                 logger.error("Error", ex);
                 responseText = ex.toString();
                 contentType = "text/plain; charset=UTF-8";
                 requestProcessed = true;
+                statusCode = 500;
             }
         }
 
@@ -81,6 +99,7 @@ public class NegotiationHandler implements TransportConnectionListener, Transpor
             if (responseText != null && contentType != null) {
                 response.setPayload(ByteBuffer.wrap(responseText.getBytes("UTF-8")));
                 response.setContentType(contentType);
+                response.set(HttpMessage.Names.STATUS_CODE, statusCode);
                 transport.send(response);
             }
         } catch (UnsupportedEncodingException ex) {

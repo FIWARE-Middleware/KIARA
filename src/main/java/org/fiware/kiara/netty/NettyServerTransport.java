@@ -19,9 +19,10 @@ package org.fiware.kiara.netty;
 
 import org.fiware.kiara.transport.impl.ServerTransportImpl;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 import io.netty.channel.Channel;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 
@@ -125,5 +126,21 @@ public class NettyServerTransport implements ServerTransportImpl {
             setChannel(null);
             setListener(null);
         }
+    }
+
+    @Override
+    public String getLocalTransportAddress() {
+        String addr = transportFactory.getName() + "://";
+
+        if (localSocketAddress instanceof InetSocketAddress) {
+            InetSocketAddress sa = (InetSocketAddress) localSocketAddress;
+            addr += sa.getHostString()+ ":" + sa.getPort();
+        } else {
+            addr += localSocketAddress.toString();
+        }
+        if (path != null && !"".equals(path)) {
+            addr = addr + "/" + path;
+        }
+        return addr;
     }
 }
