@@ -29,9 +29,13 @@ import java.util.concurrent.ExecutorService;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class NettyServerTransport implements ServerTransportImpl {
+
     private final String path;
     private final SocketAddress localSocketAddress;
     private final NettyTransportFactory transportFactory;
+
+    private final Object serverLock = new Object();
+
     private Channel channel;
     private TransportConnectionListener listener;
     private ExecutorService dispatchingExecutor;
@@ -97,6 +101,29 @@ public class NettyServerTransport implements ServerTransportImpl {
 
     @Override
     public void startServer(TransportConnectionListener listener) throws InterruptedException {
-        transportFactory.startServer(this, listener);
+        synchronized (serverLock) {
+            if (channel != null) {
+                throw new IllegalStateException("Server is already running");
+            }
+            transportFactory.startServer(this, listener);
+        }
+    }
+
+    @Override
+    public boolean isRunning() {
+        synchronized (serverLock) {
+            return channel != null && channel.isOpen();
+        }
+    }
+
+    @Override
+    public void stopServer() throws InterruptedException {
+        synchronized (serverLock) {
+            if (channel != null && channel.isOpen()) {
+                channel.close().sync();
+            }
+            setChannel(null);
+            setListener(null);
+        }
     }
 }

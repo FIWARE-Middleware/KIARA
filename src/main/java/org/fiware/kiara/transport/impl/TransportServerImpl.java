@@ -45,8 +45,16 @@ public class TransportServerImpl implements TransportServer, RunningService {
             this.listener = listener;
         }
 
+        public boolean isServerRunning() {
+            return serverTransport.isRunning();
+        }
+
         public void startServer() throws InterruptedException {
             serverTransport.startServer(listener);
+        }
+
+        public void stopServer() throws InterruptedException {
+            serverTransport.stopServer();
         }
 
     }
@@ -62,9 +70,10 @@ public class TransportServerImpl implements TransportServer, RunningService {
 
     @Override
     public void listen(ServerTransport serverTransport, TransportConnectionListener listener) {
-        if (!(serverTransport instanceof ServerTransportImpl))
+        if (!(serverTransport instanceof ServerTransportImpl)) {
             throw new IllegalArgumentException("transport factory is not an instance of " + ServerTransportImpl.class.getName() + " class");
-        final ServerTransportImpl st = (ServerTransportImpl)serverTransport;
+        }
+        final ServerTransportImpl st = (ServerTransportImpl) serverTransport;
         if (!(st.getTransportFactory() instanceof NettyTransportFactory)) {
             throw new IllegalArgumentException("transport factory is not an instance of " + NettyTransportFactory.class.getName() + " class");
         }
@@ -75,28 +84,37 @@ public class TransportServerImpl implements TransportServer, RunningService {
 
     @Override
     public void run() throws IOException {
-        int numServers = 0;
-        try {
-            synchronized (serverEntries) {
+        synchronized (serverEntries) {
+            try {
                 for (ServerEntry serverEntry : serverEntries) {
-                    serverEntry.startServer();
-                    ++numServers;
+                    if (!serverEntry.isServerRunning()) {
+                        serverEntry.startServer();
+                    }
                 }
+            } catch (InterruptedException ex) {
+                throw new IOException(ex);
             }
-        } catch (InterruptedException ex) {
-            throw new IOException(ex);
+        }
+    }
+
+    @Override
+    public void stop() throws IOException {
+        synchronized (serverEntries) {
+            try {
+                for (ServerEntry serverEntry : serverEntries) {
+                    serverEntry.stopServer();
+                }
+            } catch (InterruptedException ex) {
+                throw new IOException(ex);
+            }
         }
     }
 
     @Override
     public void close() throws IOException {
-        ServerEntry[] tmp;
         synchronized (serverEntries) {
-            tmp = serverEntries.toArray(new ServerEntry[serverEntries.size()]);
+            stop();
             serverEntries.clear();
-        }
-        for (final ServerEntry serverEntry : tmp) {
-            serverEntry.serverTransport.close();
         }
     }
 

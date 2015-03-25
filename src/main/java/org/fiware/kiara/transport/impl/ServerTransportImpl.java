@@ -18,14 +18,13 @@
 package org.fiware.kiara.transport.impl;
 
 import org.fiware.kiara.transport.ServerTransport;
-import java.io.Closeable;
 import java.net.SocketAddress;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public interface ServerTransportImpl extends ServerTransport, Closeable {
+public interface ServerTransportImpl extends ServerTransport {
 
     public SocketAddress getLocalSocketAddress();
 
