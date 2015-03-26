@@ -73,6 +73,13 @@
         	<artifactId>antlr4-maven-plugin</artifactId>
         	<version>4.2.2</version>
         </dependency>
+        <dependency>
+            <groupId>kiaraparser</groupId>
+            <artifactId>kiaraparser</artifactId>
+            <version>0.1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/kiaraparser-0.1.0.jar</systemPath>
+        </dependency>
     </dependencies>
     
     <profiles>
