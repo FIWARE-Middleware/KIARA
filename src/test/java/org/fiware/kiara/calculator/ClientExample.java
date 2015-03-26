@@ -48,7 +48,10 @@ public class ClientExample {
 
         Context context = Kiara.createContext();
 
-        Connection connection = context.connect("tcp://127.0.0.1:9090?serialization=cdr");
+        //Connection connection = context.connect("tcp://127.0.0.1:9090?serialization=cdr");
+
+        Connection connection = context.connect("kiara://127.0.0.1:8080/service");
+
         Calculator client = connection.getServiceProxy(CalculatorClient.class);
 
         try {

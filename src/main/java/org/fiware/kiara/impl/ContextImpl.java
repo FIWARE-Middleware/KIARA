@@ -1,5 +1,9 @@
 package org.fiware.kiara.impl;
 
+import com.eprosima.idl.parser.grammar.KIARAIDLLexer;
+import com.eprosima.idl.parser.grammar.KIARAIDLParser;
+import com.eprosima.idl.parser.tree.Specification;
+import com.eprosima.idl.util.Util;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.server.Server;
@@ -14,12 +18,17 @@ import org.fiware.kiara.transport.tcp.TcpBlockTransportFactory;
 import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
 import org.fiware.kiara.config.ServerConfiguration;
+import org.fiware.kiara.config.ServerInfo;
 import org.fiware.kiara.exceptions.ConnectException;
 import org.fiware.kiara.netty.URILoader;
 import org.fiware.kiara.transport.http.HttpTransportFactory;
@@ -81,13 +90,37 @@ public class ContextImpl implements Context {
         }
     }
 
-    private final void loadIDL(String idlContents, String fileName) throws IOException {
-
+    private ParserContextImpl loadIDL(InputStream stream, String fileName) throws IOException {
+        return loadIDL(new ANTLRInputStream(stream), fileName);
     }
 
-    public Connection connect(String url, boolean dummy) throws IOException { // TODO delete
+    private ParserContextImpl loadIDL(String idlContents, String fileName) {
+        return loadIDL(new ANTLRInputStream(idlContents), fileName);
+    }
+
+    private ParserContextImpl loadIDL(ANTLRInputStream input, String fileName) {
+        ParserContextImpl ctx = new ParserContextImpl(Util.getIDLFileNameOnly(fileName), fileName, new ArrayList<String>());
+
+        KIARAIDLLexer lexer = new KIARAIDLLexer(input);
+        lexer.setContext(ctx);
+        CommonTokenStream tokens = new CommonTokenStream(lexer);
+        KIARAIDLParser parser = new KIARAIDLParser(tokens);
+        // Select handling strategy for errors
+        parser.setErrorHandler(new ParserExceptionErrorStrategyImpl());
+        // Pass the finelame without the extension
+        Specification specification = parser.specification(ctx, null, null).spec;
+
+        return ctx;
+    }
+
+    @Override
+    public Connection connect(String url) throws IOException {
         try {
-            URI uri = new URI(url);
+            Transport transport = null;
+            Serializer serializer = null;
+            ParserContextImpl ctx = null;
+
+            final URI uri = new URI(url);
 
             if (uri.getScheme().equals("kiara")) {
                 final URI configUri = new URI("http",
@@ -125,21 +158,64 @@ public class ContextImpl implements Context {
 
                 // load IDL
                 if (serverConfig.idlContents != null && !serverConfig.idlContents.isEmpty()) {
-                    loadIDL(serverConfig.idlContents, configUri.toString());
+                    ctx = loadIDL(serverConfig.idlContents, configUri.toString());
                 } else if (serverConfig.idlURL != null && !serverConfig.idlURL.isEmpty()) {
                     URI idlUri = configUri.resolve(serverConfig.idlURL);
                     String idlContents = URILoader.load(idlUri, "UTF-8");
 
                     logger.debug("IDL CONTENTS: {}", idlContents); //???DEBUG
 
-                    loadIDL(idlContents, idlUri.toString());
+                    ctx = loadIDL(idlContents, idlUri.toString());
                 } else {
                     throw new ConnectException("No IDL specified in server configuration");
                 }
 
-                throw new UnsupportedOperationException("IDL parsing is not supported yet");
-            } else {
+                // 2. perform negotation
+                // find matching endpoint
+                ServerInfo serverInfo = null;
+                TransportFactory selectedTransportFactory = null;
 
+                for (ServerInfo si : serverConfig.servers) {
+                    TransportFactory t = ContextImpl.getTransportFactoryByName(si.transport.name);
+                    if (t != null) {
+                        // we change selected endpoint only if priority is higher
+                        // i.e. when priority value is less than current one
+                        if (selectedTransportFactory != null && selectedTransportFactory.getPriority() < t.getPriority()) {
+                            continue;
+                        }
+
+                        serverInfo = si;
+                        selectedTransportFactory = t;
+                    }
+                }
+
+                if (serverInfo == null) {
+                    throw new ConnectException("No matching endpoint found");
+                }
+
+                //selectedTransportFactory.createTransport(url, null).get()
+                logger.debug("Selected transport: {}", serverInfo.transport.name);
+                logger.debug("Selected protocol: {}", serverInfo.protocol.name);
+
+                // FIXME load plugin classes ?
+                // load required protocol
+                final String protocolName = serverInfo.protocol.name;
+                //String protocolName = "javaobjectstream";
+
+                serializer = createSerializer(protocolName);
+
+                if (serializer == null) {
+                    throw new ConnectException("Unsupported protocol '" + protocolName + "'");
+                }
+
+                URI transportUri = configUri.resolve(serverInfo.transport.url);
+
+                logger.debug("Open transport connection to: {}", transportUri);
+
+                transport = createTransport(transportUri);
+            }
+
+            if (transport == null || serializer == null) {
                 QueryStringDecoder decoder = new QueryStringDecoder(uri);
 
                 String serializerName = null;
@@ -154,19 +230,19 @@ public class ContextImpl implements Context {
                 }
 
                 // We should perform here negotation, but for now only a fixed transport/protocol combination
-                final Transport transport = createTransport(url);
-                final Serializer serializer = createSerializer(serializerName);
-
-                return new ConnectionImpl(transport, serializer, dummy);
+                transport = createTransport(url);
+                serializer = createSerializer(serializerName);
             }
+
+            return new ConnectionImpl(transport, serializer, ctx);
         } catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
     }
 
     @Override
-    public Connection connect(Transport transport, Serializer serializer, boolean dummy) throws IOException {
-        return new ConnectionImpl(transport, serializer, dummy);
+    public Connection connect(Transport transport, Serializer serializer) throws IOException {
+        return new ConnectionImpl(transport, serializer, null);
     }
 
     @Override
@@ -194,6 +270,22 @@ public class ContextImpl implements Context {
                 throw new IOException("Unsupported transport URI " + url);
             }
             return factory.createTransport(url, null).get();
+        } catch (Exception ex) {
+            throw new IOException(ex);
+        }
+    }
+
+    public Transport createTransport(URI uri) throws IOException {
+        if (uri == null) {
+            throw new NullPointerException("uri");
+        }
+
+        try {
+            final TransportFactory factory = getTransportFactoryByURI(uri);
+            if (factory == null) {
+                throw new IOException("Unsupported transport URI " + uri);
+            }
+            return factory.createTransport(uri.toString(), null).get();
         } catch (Exception ex) {
             throw new IOException(ex);
         }
