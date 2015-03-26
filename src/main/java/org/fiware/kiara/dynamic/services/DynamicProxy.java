@@ -17,13 +17,23 @@
  */
 package org.fiware.kiara.dynamic.services;
 
-import org.fiware.kiara.dynamic.DynamicType;
+import org.fiware.kiara.dynamic.DynamicValue;
+import org.fiware.kiara.serialization.Serializer;
+import org.fiware.kiara.transport.Transport;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface DynamicService extends DynamicType {
+public interface DynamicProxy extends DynamicValue {
+    
+    public String getServiceName();
+    
+    public DynamicFunctionRequest createFunctionRequest(String name);
+    
+    public DynamicFunctionResponse createFunctionResponse(String name);
+    
+    
 
 }

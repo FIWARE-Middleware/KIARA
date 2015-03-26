@@ -34,9 +34,14 @@ import org.fiware.kiara.dynamic.impl.data.DynamicStructImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicUnionImpl;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunctionRequestImpl;
 import org.fiware.kiara.dynamic.impl.services.DynamicFunctionResponseImpl;
+import org.fiware.kiara.dynamic.impl.services.DynamicProxyImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
+import org.fiware.kiara.dynamic.services.DynamicProxy;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.Serializer;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
@@ -52,22 +57,47 @@ import org.fiware.kiara.typecode.impl.data.UnionMemberImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
+public class DynamicValueBuilderImpl implements DynamicValueBuilder {
     
-    private DynamicTypeBuilderImpl() {}
+    private DynamicValueBuilderImpl() {}
     
     private static class LazyDynamicBuilderHolder {
-        private static DynamicTypeBuilderImpl instance = new DynamicTypeBuilderImpl();
+        private static DynamicValueBuilderImpl instance = new DynamicValueBuilderImpl();
     }
     
-    public static DynamicTypeBuilder getInstance() {
+    public static DynamicValueBuilder getInstance() {
         return LazyDynamicBuilderHolder.instance;
+    }
+    
+    public DynamicProxy createService(ServiceTypeDescriptor serviceDescriptor, Serializer serializer, Transport transport) {
+        DynamicProxyImpl ret = new DynamicProxyImpl(serviceDescriptor, serializer, transport);
+        
+        /*for (FunctionTypeDescriptor fd : serviceDescriptor.getFunctions()) {
+            DynamicFunctionRequest funcRequest = this.createFunctionRequest(fd);
+            DynamicFunctionResponse funcResponse = this.createFunctionResponse(fd);
+            
+        }*/
+        
+        return ret;
+    }
+    
+    @Override
+    public DynamicFunctionRequest createFunctionRequest(FunctionTypeDescriptor functionDescriptor, Serializer serializer, Transport transport) {
+        DynamicFunctionRequestImpl ret = new DynamicFunctionRequestImpl((FunctionTypeDescriptorImpl) functionDescriptor, serializer, transport);
+        
+        for (Member param : ((FunctionTypeDescriptorImpl) functionDescriptor).getParameters()) {
+            DynamicData data = this.createData(param.getTypeDescriptor());
+            ret.addParameter(data, param.getName());
+        }
+        
+        return ret;
     }
     
     @Override
@@ -79,6 +109,12 @@ public class DynamicTypeBuilderImpl implements DynamicTypeBuilder {
             ret.addParameter(data, param.getName());
         }
         
+        return ret;
+    }
+    
+    @Override
+    public DynamicFunctionResponse createFunctionResponse(FunctionTypeDescriptor functionDescriptor, Serializer serializer, Transport transport) {
+        DynamicFunctionResponseImpl ret = new DynamicFunctionResponseImpl((FunctionTypeDescriptorImpl) functionDescriptor, serializer, transport);
         return ret;
     }
     

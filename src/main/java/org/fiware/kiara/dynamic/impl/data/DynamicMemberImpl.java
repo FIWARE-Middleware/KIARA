@@ -19,7 +19,6 @@ package org.fiware.kiara.dynamic.impl.data;
 
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMember;
-import org.fiware.kiara.dynamic.data.DynamicStruct;
 
 /**
 *

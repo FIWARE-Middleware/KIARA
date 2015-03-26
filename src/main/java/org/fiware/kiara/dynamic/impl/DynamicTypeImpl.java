@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.dynamic.impl;
 
-import org.fiware.kiara.dynamic.DynamicType;
+import org.fiware.kiara.dynamic.DynamicValue;
 import org.fiware.kiara.typecode.TypeDescriptor;
 
 /**
@@ -25,7 +25,7 @@ import org.fiware.kiara.typecode.TypeDescriptor;
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public abstract class DynamicTypeImpl implements DynamicType {
+public abstract class DynamicTypeImpl implements DynamicValue {
     
     protected TypeDescriptor m_typeDescriptor;
     protected String m_className;

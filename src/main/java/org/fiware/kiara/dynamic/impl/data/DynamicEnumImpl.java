@@ -20,8 +20,6 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.io.IOException;
 
 import org.fiware.kiara.dynamic.data.DynamicEnum;
-import org.fiware.kiara.dynamic.data.DynamicMember;
-import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -29,7 +27,6 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
-import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 
 /**
 *

@@ -46,6 +46,10 @@ public interface FunctionTypeDescriptor extends TypeDescriptor {
     public void addException(ExceptionTypeDescriptor exception);
     
     public String getName();
+
+    public String getServiceName();
+
+    public FunctionTypeDescriptor setServiceName(String serviceName);
     
     
 

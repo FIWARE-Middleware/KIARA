@@ -17,14 +17,14 @@
  */
 package org.fiware.kiara.dynamic.data;
 
-import org.fiware.kiara.dynamic.DynamicType;
+import org.fiware.kiara.dynamic.DynamicValue;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface DynamicData extends DynamicType {
+public interface DynamicData extends DynamicValue {
     
     
 

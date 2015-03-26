@@ -23,14 +23,14 @@ public class DynamicPrimitiveTest {
     BinaryOutputStream bos;
     BinaryInputStream bis;
     //private TransportMessage message;
-    DynamicTypeBuilder builder;
+    DynamicValueBuilder builder;
     TypeDescriptorBuilder tdbuilder;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicTypeBuilderImpl.getInstance();
+        builder = DynamicValueBuilderImpl.getInstance();
         tdbuilder = TypeDescriptorBuilderImpl.getInstance();
     }
 

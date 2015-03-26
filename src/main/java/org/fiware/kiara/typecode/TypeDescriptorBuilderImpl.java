@@ -37,7 +37,9 @@ import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.StructTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.services.ServiceTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
 *
@@ -101,12 +103,6 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     }
 
     @Override
-    public FunctionTypeDescriptor createFunctionType(String name) {
-        FunctionTypeDescriptor ret = new FunctionTypeDescriptorImpl(name);
-        return ret;
-    }
-
-    @Override
     public EnumTypeDescriptor createEnumType(String name, String... values) {
         EnumTypeDescriptorImpl ret = new EnumTypeDescriptorImpl(name);
         for (String value : values) {
@@ -127,7 +123,21 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
         return ret;
     }
     
+    @Override
+    public FunctionTypeDescriptor createFunctionType(String name) {
+        FunctionTypeDescriptor ret = new FunctionTypeDescriptorImpl(name);
+        return ret;
+    }
+
+    @Override
+    public ServiceTypeDescriptor createServiceType(String name) {
+        ServiceTypeDescriptor ret = new ServiceTypeDescriptorImpl(name);
+        return ret;
+    }
     
+    
+
+
     
 
 }

@@ -41,8 +41,8 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
     private ArrayList<Member> m_parametersDescriptors;
     //private ArrayList<String> m_parametersNames;
     private ArrayList<ExceptionTypeDescriptor> m_exceptionsDescriptors;
-    @SuppressWarnings("unused")
     private String m_name;
+    private String m_ServiceName;
 
     public FunctionTypeDescriptorImpl(String name) {
         super(TypeKind.FUNCTION_TYPE);
@@ -57,7 +57,21 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         this.m_exceptionsDescriptors = new ArrayList<ExceptionTypeDescriptor>();
     }
     
-    public FunctionTypeDescriptorImpl(
+    /*public FunctionTypeDescriptorImpl(String name, String serviceName) {
+        super(TypeKind.FUNCTION_TYPE);
+        if (name == null) {
+            throw new TypeDescriptorException("FunctionTypeDescriptorImpl - Trying to specify a null value as function name.");
+        } else if (name.length() == 0) {
+            throw new TypeDescriptorException("FunctionTypeDescriptorImpl - Trying to specify an empty value as function name.");
+        }
+        this.m_name = name;
+        this.m_ServiceName = serviceName;
+        this.m_parametersDescriptors = new ArrayList<Member>();
+        //this.m_parametersNames = new ArrayList<String>();
+        this.m_exceptionsDescriptors = new ArrayList<ExceptionTypeDescriptor>();
+    }*/
+    
+    /*public FunctionTypeDescriptorImpl(
             String name,
             DataTypeDescriptor returnDescriptor, 
             ArrayList<Member> parametersDescriptors, 
@@ -72,7 +86,7 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         this.m_returnDescriptor = returnDescriptor;
         this.m_parametersDescriptors = parametersDescriptors;
         this.m_exceptionsDescriptors = exceptionsDescriptors;
-    }
+    }*/
     
     @Override
     public boolean isFunction() {
@@ -151,6 +165,17 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         return this.m_name;
     }
     
+    @Override
+    public String getServiceName() {
+       return this.m_ServiceName;
+    }
+
+    @Override
+    public FunctionTypeDescriptor setServiceName(String serviceName) {
+        this.m_ServiceName = serviceName;
+        return this;
+    }
+    
     public ArrayList<ExceptionTypeDescriptor> getExceptions() {
         return this.m_exceptionsDescriptors;
     }
@@ -162,6 +187,7 @@ public class FunctionTypeDescriptorImpl extends TypeDescriptorImpl implements Fu
         }*/
         return this.m_parametersDescriptors;
     }
+
 
     
 

@@ -18,17 +18,17 @@
 package org.fiware.kiara.dynamic.impl.services;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
+import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicException;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
@@ -44,9 +44,17 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
     
     private DynamicData m_returnType;
     private boolean m_isException;
+    private SerializerImpl m_serializer;
+    private Transport m_transport;
     
     public DynamicFunctionResponseImpl(TypeDescriptor typeDescriptor) {
         super(typeDescriptor, "DynamicFunctionImpl");
+    }
+    
+    public DynamicFunctionResponseImpl(TypeDescriptor typeDescriptor, Serializer serializer, Transport transport) {
+        super(typeDescriptor, "DynamicFunctionImpl");
+        this.m_serializer = (SerializerImpl) serializer;
+        this.m_transport = transport;
     }
     
     @Override
@@ -77,21 +85,6 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
                         ((FunctionTypeDescriptor) this.m_typeDescriptor).getReturnType().getKind());
             }
         }
-        
-        /*if (!this.m_isException && returnType.getTypeDescriptor().getKind() == ((FunctionTypeDescriptor) this.m_typeDescriptor).getReturnType().getKind()) {
-            this.m_returnType = returnType;
-        } else if (this.m_isException && returnType instanceof DynamicException) {
-            for (ExceptionTypeDescriptor ex : ((FunctionTypeDescriptorImpl) this.m_typeDescriptor).getExceptions()) {
-                if (ex.getName().equals(((ExceptionTypeDescriptor) returnType.getTypeDescriptor()).getName())) {
-                    this.m_returnType = returnType;
-                }
-            }
-        } else {
-            throw new DynamicTypeException(this.m_className + 
-                    " - A dynamic data whose type is " + returnType.getTypeDescriptor().getKind() + 
-                    " cannot be added to a function whose specified return type is " + 
-                    this.m_typeDescriptor);
-        }*/
     }
     
     @Override
@@ -130,7 +123,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
             DataTypeDescriptor td = null;
             for (ExceptionTypeDescriptor ex : ((FunctionTypeDescriptorImpl) this.m_typeDescriptor).getExceptions()) {
                 if (ex.getName().equals(exceptionName)) {
-                    DynamicException dynEx = (DynamicException) DynamicTypeBuilderImpl.getInstance().createData(ex);
+                    DynamicException dynEx = (DynamicException) DynamicValueBuilderImpl.getInstance().createData(ex);
                     dynEx.deserialize(impl, message, exceptionName);
                     this.m_returnType = dynEx;
                 }
@@ -142,7 +135,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
         } else {
             this.m_isException = false;
             DataTypeDescriptor td = ((FunctionTypeDescriptor) this.m_typeDescriptor).getReturnType();
-            DynamicData dynData = DynamicTypeBuilderImpl.getInstance().createData(td);
+            DynamicData dynData = DynamicValueBuilderImpl.getInstance().createData(td);
             dynData.deserialize(impl, message, name);
             this.m_returnType = dynData;
         }

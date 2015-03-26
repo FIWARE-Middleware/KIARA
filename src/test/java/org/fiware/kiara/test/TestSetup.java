@@ -63,7 +63,7 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
         clientCtx = Kiara.createContext();
 
         System.out.printf("Opening connection to %s with protocol %s...%n", transport, protocol);
-        Connection connection = clientCtx.connect(makeClientTransportUri(transport, port, protocol));
+        Connection connection = clientCtx.connect(makeClientTransportUri(transport, port, protocol), false); // TODO delete
 
         return createClient(connection);
     }

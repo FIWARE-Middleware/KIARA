@@ -20,7 +20,6 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.exceptions.DynamicTypeException;

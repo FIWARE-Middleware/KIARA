@@ -20,7 +20,7 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
+import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.exceptions.DynamicTypeException;
@@ -126,7 +126,7 @@ public class DynamicListImpl extends DynamicContainerImpl implements DynamicList
         int size = impl.deserializeUI32(message, "");
         
         for (int i=0; i < size; ++i) {
-            DynamicData member = DynamicTypeBuilderImpl.getInstance().createData(this.m_contentType);
+            DynamicData member = DynamicValueBuilderImpl.getInstance().createData(this.m_contentType);
             member.deserialize(impl, message, "");
             this.m_members.add(member);
         }

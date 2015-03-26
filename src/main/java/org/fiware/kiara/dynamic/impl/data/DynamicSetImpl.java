@@ -19,18 +19,14 @@ package org.fiware.kiara.dynamic.impl.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-
-import org.fiware.kiara.dynamic.DynamicTypeBuilderImpl;
+import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicData;
-import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicSet;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.typecode.data.ContainerTypeDescriptor;
-import org.fiware.kiara.typecode.data.ListTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 
 /**
@@ -141,7 +137,7 @@ public class DynamicSetImpl extends DynamicContainerImpl implements DynamicSet {
         int size = impl.deserializeUI32(message, "");
         
         for (int i=0; i < size; ++i) {
-            DynamicData member = DynamicTypeBuilderImpl.getInstance().createData(this.m_contentType);
+            DynamicData member = DynamicValueBuilderImpl.getInstance().createData(this.m_contentType);
             member.deserialize(impl, message, "");
             this.m_members.add(member);
         }

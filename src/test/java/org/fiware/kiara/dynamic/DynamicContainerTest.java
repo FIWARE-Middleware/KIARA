@@ -30,14 +30,14 @@ public class DynamicContainerTest {
     private CDRSerializer ser;
     BinaryOutputStream bos;
     BinaryInputStream bis;
-    DynamicTypeBuilder builder;
+    DynamicValueBuilder builder;
     TypeDescriptorBuilder tdbuilder;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicTypeBuilderImpl.getInstance();
+        builder = DynamicValueBuilderImpl.getInstance();
         tdbuilder = TypeDescriptorBuilderImpl.getInstance();
     }
 

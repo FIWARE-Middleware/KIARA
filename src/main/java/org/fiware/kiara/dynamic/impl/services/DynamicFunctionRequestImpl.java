@@ -19,18 +19,24 @@ package org.fiware.kiara.dynamic.impl.services;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
+import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
+import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
-import org.fiware.kiara.dynamic.data.DynamicException;
 import org.fiware.kiara.dynamic.data.DynamicMember;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
 import org.fiware.kiara.dynamic.impl.data.DynamicMemberImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
+import org.fiware.kiara.netty.TransportMessageDispatcher;
+import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.typecode.TypeDescriptor;
+import org.fiware.kiara.transport.Transport;
+import org.fiware.kiara.transport.impl.TransportImpl;
+import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
@@ -41,10 +47,19 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements DynamicFunctionRequest {
     
     private ArrayList<DynamicMember> m_parameters;
+    private SerializerImpl m_serializer;
+    private TransportImpl m_transport;
     
     public DynamicFunctionRequestImpl(FunctionTypeDescriptor typeDescriptor) {
         super(typeDescriptor, "DynamicFunctionImpl");
         this.m_parameters = new ArrayList<DynamicMember>();
+    }
+    
+    public DynamicFunctionRequestImpl(FunctionTypeDescriptor typeDescriptor, Serializer serializer, Transport transport) {
+        super(typeDescriptor, "DynamicFunctionImpl");
+        this.m_parameters = new ArrayList<DynamicMember>();
+        this.m_serializer = (SerializerImpl) serializer;
+        this.m_transport = (TransportImpl) transport;
     }
     
     public void addParameter(DynamicData parameter, String name) {
@@ -55,8 +70,64 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
         return this.m_parameters;
     }*/
     
+    public DynamicFunctionResponse execute() {
+        if (this.m_serializer != null && this.m_transport != null) {
+            final BinaryOutputStream bos = new BinaryOutputStream();
+            final TransportMessage trequest = this.m_transport.createTransportMessage(null);
+            final Object messageId = this.m_serializer.getNewMessageId();
+            
+            
+            try {
+                this.m_serializer.serializeMessageId(bos, messageId);
+                this.serialize(this.m_serializer, bos, "");
+          
+                /*this.m_serializer.serializeService(bos, "Calculator");
+                this.m_serializer.serializeOperation(bos, "add");
+                this.m_serializer.serializeFloat32(bos, "", n1);
+                this.m_serializer.serializeFloat32(bos, "", n2);*/
+            } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+            }
+                
+            trequest.setPayload(bos.getByteBuffer());
+                
+            final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, this.m_serializer, this.m_transport);
+            
+            this.m_transport.send(trequest);
+        
+            try {
+                TransportMessage tresponse;
+                tresponse = dispatcher.get();
+                if (tresponse != null && tresponse.getPayload() != null) {
+                    final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
+                        
+                    DynamicFunctionResponse ret = DynamicValueBuilderImpl.getInstance().createFunctionResponse((FunctionTypeDescriptor) this.m_typeDescriptor);
+                    
+                    // Deserialize response message ID
+                    final Object responseMessageId = this.m_serializer.deserializeMessageId(bis);
+                    
+                    ret.deserialize(this.m_serializer, bis, "");
+                    
+                    return ret;
+                } 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+                 
+        }
+        
+        return null;
+    }
+    
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        if (((FunctionTypeDescriptor) this.m_typeDescriptor).getServiceName() != null) {
+            impl.serializeService(message, ((FunctionTypeDescriptor) this.m_typeDescriptor).getServiceName());
+        }
         impl.serializeOperation(message, ((FunctionTypeDescriptor) this.m_typeDescriptor).getName());
         
         for (DynamicMember parameter : this.m_parameters) {

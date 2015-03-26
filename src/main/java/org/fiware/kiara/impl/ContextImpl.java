@@ -73,7 +73,7 @@ public class ContextImpl implements Context {
         }
     }
 
-    public Connection connect(String url) throws IOException {
+    public Connection connect(String url, boolean dummy) throws IOException { // TODO delete
         try {
             URI uri = new URI(url);
             QueryStringDecoder decoder = new QueryStringDecoder(uri);
@@ -93,14 +93,14 @@ public class ContextImpl implements Context {
             final Transport transport = createTransport(url);
             final Serializer serializer = createSerializer(serializerName);
 
-            return new ConnectionImpl(transport, serializer);
+            return new ConnectionImpl(transport, serializer, dummy);
         } catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
     }
 
-    public Connection connect(Transport transport, Serializer serializer) throws IOException {
-        return new ConnectionImpl(transport, serializer);
+    public Connection connect(Transport transport, Serializer serializer, boolean dummy) throws IOException {
+        return new ConnectionImpl(transport, serializer, dummy);
     }
 
     public Service createService() {

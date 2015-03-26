@@ -32,19 +32,18 @@ import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 public class ServiceTypeDescriptorImpl extends TypeDescriptorImpl implements ServiceTypeDescriptor {
     
     private ArrayList<FunctionTypeDescriptor> m_functionsDescriptors;
-    
-    @SuppressWarnings("unused")
     private String m_name;
-
-    protected ServiceTypeDescriptorImpl(String name) {
+    
+    public ServiceTypeDescriptorImpl(String name) {
         super(TypeKind.SERVICE_TYPE);
         this.m_name = name;
+        this.m_functionsDescriptors = new ArrayList<FunctionTypeDescriptor>();
     }
     
-    protected ServiceTypeDescriptorImpl(ArrayList<FunctionTypeDescriptor> functionsDescriptors) {
+    /*public ServiceTypeDescriptorImpl(ArrayList<FunctionTypeDescriptor> functionsDescriptors) {
         super(TypeKind.SERVICE_TYPE);
         this.m_functionsDescriptors = functionsDescriptors;
-    }
+    }*/
     
     @Override
     public boolean isService() {
@@ -57,8 +56,13 @@ public class ServiceTypeDescriptorImpl extends TypeDescriptorImpl implements Ser
     }
 
     @Override
-    public void addFunction(FunctionTypeDescriptor funcionTypeDescriptor) {
-        this.m_functionsDescriptors.add(funcionTypeDescriptor);
+    public void addFunction(FunctionTypeDescriptor functionTypeDescriptor) {
+        this.m_functionsDescriptors.add(functionTypeDescriptor.setServiceName(this.m_name));
+    }
+
+    @Override
+    public String getName() {
+        return this.m_name;
     }
 
 }

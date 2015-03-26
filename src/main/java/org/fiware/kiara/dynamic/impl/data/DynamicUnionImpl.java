@@ -24,7 +24,6 @@ import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicEnum;
 import org.fiware.kiara.dynamic.data.DynamicMember;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
-import org.fiware.kiara.dynamic.data.DynamicStruct;
 import org.fiware.kiara.dynamic.data.DynamicUnion;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;

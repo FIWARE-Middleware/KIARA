@@ -11,6 +11,7 @@ import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
 *
@@ -37,8 +38,10 @@ public interface TypeDescriptorBuilder {
     
     
     
-    public FunctionTypeDescriptor createFunctionType(String name);
-
     public ExceptionTypeDescriptor createExceptionType(String string);
+
+    public FunctionTypeDescriptor createFunctionType(String name);
+    
+    public ServiceTypeDescriptor createServiceType(String name);
 
 }

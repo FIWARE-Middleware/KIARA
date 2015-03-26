@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.dynamic.services;
 
-import org.fiware.kiara.dynamic.DynamicType;
+import org.fiware.kiara.dynamic.DynamicValue;
 import org.fiware.kiara.dynamic.data.DynamicData;
 
 /**
@@ -25,8 +25,10 @@ import org.fiware.kiara.dynamic.data.DynamicData;
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 *
 */
-public interface DynamicFunctionRequest extends DynamicType {
+public interface DynamicFunctionRequest extends DynamicValue {
     
     public DynamicData getParameter(String name);
+    
+    public DynamicFunctionResponse execute(/*Object... parameters*/);
 
 }
