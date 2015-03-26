@@ -19,9 +19,16 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.fiware.kiara.config.ServerConfiguration;
+import org.fiware.kiara.exceptions.ConnectException;
+import org.fiware.kiara.netty.URILoader;
 import org.fiware.kiara.transport.http.HttpTransportFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContextImpl implements Context {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContextImpl.class);
 
     private static final Map<String, TransportFactory> transportFactories = new HashMap<>();
 
@@ -74,27 +81,84 @@ public class ContextImpl implements Context {
         }
     }
 
+    private final void loadIDL(String idlContents, String fileName) throws IOException {
+
+    }
+
     public Connection connect(String url, boolean dummy) throws IOException { // TODO delete
         try {
             URI uri = new URI(url);
-            QueryStringDecoder decoder = new QueryStringDecoder(uri);
 
-            String serializerName = null;
+            if (uri.getScheme().equals("kiara")) {
+                final URI configUri = new URI("http",
+                        uri.getUserInfo(), uri.getHost(), uri.getPort(),
+                        uri.getPath(), uri.getQuery(),
+                        uri.getFragment());
 
-            List<String> parameters = decoder.parameters().get("serialization");
-            if (parameters != null && !parameters.isEmpty()) {
-                serializerName = parameters.get(0);
+                // 1. load server configuration
+                String configText;
+                try {
+                    configText = URILoader.load(configUri, "UTF-8");
+                } catch (IOException ex) {
+                    throw new ConnectException("Could not load server configuration", ex);
+                }
+
+                logger.debug("Config text: {}", configText);
+
+                ServerConfiguration serverConfig;
+                try {
+                    serverConfig = ServerConfiguration.fromJson(configText);
+                } catch (IOException ex) {
+                    throw new ConnectException("Could not parse server configuration", ex);
+                }
+
+                //???DEBUG BEGIN
+                if (logger.isDebugEnabled()) {
+                    try {
+                        logger.debug(serverConfig.toJson());
+                        //System.err.println(serverConfig.toJson());
+                    } catch (IOException ex) {
+                        throw new ConnectException("Could not convert to JSON", ex);
+                    }
+                }
+                //???DEBUG END
+
+                // load IDL
+                if (serverConfig.idlContents != null && !serverConfig.idlContents.isEmpty()) {
+                    loadIDL(serverConfig.idlContents, configUri.toString());
+                } else if (serverConfig.idlURL != null && !serverConfig.idlURL.isEmpty()) {
+                    URI idlUri = configUri.resolve(serverConfig.idlURL);
+                    String idlContents = URILoader.load(idlUri, "UTF-8");
+
+                    logger.debug("IDL CONTENTS: {}", idlContents); //???DEBUG
+
+                    loadIDL(idlContents, idlUri.toString());
+                } else {
+                    throw new ConnectException("No IDL specified in server configuration");
+                }
+
+                throw new UnsupportedOperationException("IDL parsing is not supported yet");
+            } else {
+
+                QueryStringDecoder decoder = new QueryStringDecoder(uri);
+
+                String serializerName = null;
+
+                List<String> parameters = decoder.parameters().get("serialization");
+                if (parameters != null && !parameters.isEmpty()) {
+                    serializerName = parameters.get(0);
+                }
+
+                if (serializerName == null) {
+                    throw new IllegalArgumentException("No serializer is specified as a part of the URI");
+                }
+
+                // We should perform here negotation, but for now only a fixed transport/protocol combination
+                final Transport transport = createTransport(url);
+                final Serializer serializer = createSerializer(serializerName);
+
+                return new ConnectionImpl(transport, serializer, dummy);
             }
-
-            if (serializerName == null) {
-                throw new IllegalArgumentException("No serializer is specified as a part of the URI");
-            }
-
-            // We should perform here negotation, but for now only a fixed transport/protocol combination
-            final Transport transport = createTransport(url);
-            final Serializer serializer = createSerializer(serializerName);
-
-            return new ConnectionImpl(transport, serializer, dummy);
         } catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
