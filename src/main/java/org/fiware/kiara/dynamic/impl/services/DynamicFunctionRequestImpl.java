@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.dynamic.services.DynamicAsyncCallback;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
@@ -38,6 +39,9 @@ import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportImpl;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
 
 /**
 *
@@ -124,6 +128,49 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
     }
     
     @Override
+    public void execute_async(final DynamicAsyncCallback callback) {
+        if (this.m_serializer != null && this.m_transport != null) {
+            final BinaryOutputStream bos = new BinaryOutputStream();
+            final TransportMessage trequest = this.m_transport.createTransportMessage(null);
+            final Object messageId = this.m_serializer.getNewMessageId();
+            
+            
+            try {
+                this.m_serializer.serializeMessageId(bos, messageId);
+                this.serialize(this.m_serializer, bos, "");
+          
+            } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+            }
+                
+            trequest.setPayload(bos.getByteBuffer());
+                
+            final TransportMessageDispatcher dispatcher = new TransportMessageDispatcher(messageId, this.m_serializer, this.m_transport);
+            
+            Futures.addCallback(dispatcher, new FutureCallback<TransportMessage> () {
+
+                @Override
+                public void onSuccess(TransportMessage result) {
+                        callback.process(result, m_serializer, (FunctionTypeDescriptor) m_typeDescriptor);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                        callback.onFailure(t);
+                }
+                
+            });
+            
+            this.m_transport.send(trequest);
+        
+        }
+        
+        return;
+        
+        
+    }
+    
+    @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         if (((FunctionTypeDescriptor) this.m_typeDescriptor).getServiceName() != null) {
             impl.serializeService(message, ((FunctionTypeDescriptor) this.m_typeDescriptor).getServiceName());
@@ -166,5 +213,7 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
         } 
         return false;
     }
+
+    
     
 }

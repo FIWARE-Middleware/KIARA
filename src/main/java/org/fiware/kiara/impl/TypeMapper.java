@@ -167,7 +167,7 @@ public class TypeMapper {
                 UnionMember unionMember = (UnionMember) member;
                 addMember(td, ut, unionMember);
             }
-            addMember(td, ut, ut.getDefaultMember());
+            //addMember(td, ut, ut.getDefaultMember());
             return td;
         }
         return null;
@@ -182,7 +182,7 @@ public class TypeMapper {
                 for (String label : unionMember.getLabels()) {
                     byteLabels.add(Byte.parseByte(label));
                 }
-                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), false, byteLabels.toArray());
+                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), unionMember.isDefault(), byteLabels.toArray());
                 break;
             
             case com.eprosima.idl.parser.typecode.TypeCode.KIND_BOOLEAN:
@@ -190,7 +190,7 @@ public class TypeMapper {
                 for (String label : unionMember.getLabels()) {
                     booleanLabels.add(Boolean.parseBoolean(label));
                 }
-                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), false, booleanLabels.toArray());
+                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), unionMember.isDefault(), booleanLabels.toArray());
                 break;
             
             case com.eprosima.idl.parser.typecode.TypeCode.KIND_LONG:
@@ -199,7 +199,7 @@ public class TypeMapper {
                 for (String label : unionMember.getLabels()) {
                     intLabels.add(Integer.parseInt(label));
                 }
-                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), false, intLabels.toArray());
+                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), unionMember.isDefault(), intLabels.toArray());
                 break;
             
             case com.eprosima.idl.parser.typecode.TypeCode.KIND_ENUM:
@@ -207,7 +207,7 @@ public class TypeMapper {
                 for (String label : unionMember.getLabels()) {
                     stringLabels.add(label);
                 }
-                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), false, stringLabels.toArray());
+                td.addMember(mapType(unionMember.getTypecode()), unionMember.getName(), unionMember.isDefault(), stringLabels.toArray());
                 break;
             }
         }

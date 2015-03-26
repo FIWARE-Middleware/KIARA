@@ -17,20 +17,20 @@
  */
 package org.fiware.kiara.dynamic.services;
 
-import org.fiware.kiara.dynamic.DynamicValue;
-import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.transport.impl.TransportMessage;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
 */
-public interface DynamicFunctionRequest extends DynamicValue {
+public interface DynamicAsyncCallback {
     
-    public DynamicData getParameter(String name);
+    void process(TransportMessage message, SerializerImpl ser, FunctionTypeDescriptor typeDescriptor);
     
-    public DynamicFunctionResponse execute();
+    public void onSuccess(DynamicFunctionResponse response);
     
-    public void execute_async(DynamicAsyncCallback callback);
+    public void onFailure(java.lang.Throwable caught);
 
 }

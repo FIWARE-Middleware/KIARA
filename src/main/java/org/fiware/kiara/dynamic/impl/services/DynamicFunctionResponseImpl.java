@@ -120,7 +120,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
             this.m_isException = true;
             String exceptionName = impl.deserializeString(message, name);
 
-            DataTypeDescriptor td = null;
+            //DataTypeDescriptor td = null;
             for (ExceptionTypeDescriptor ex : ((FunctionTypeDescriptorImpl) this.m_typeDescriptor).getExceptions()) {
                 if (ex.getName().equals(exceptionName)) {
                     DynamicException dynEx = (DynamicException) DynamicValueBuilderImpl.getInstance().createData(ex);
@@ -129,7 +129,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
                 }
             }
             
-            if (td == null) {
+            if (this.m_returnType == null) {
                 throw new DynamicTypeException(this.m_className + " - The exception '" + exceptionName + "' sent by server cannot be found in the function specification.");
             }
         } else {
