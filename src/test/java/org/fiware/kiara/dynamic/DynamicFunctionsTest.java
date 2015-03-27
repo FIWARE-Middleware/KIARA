@@ -3,19 +3,15 @@ package org.fiware.kiara.dynamic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.exceptions.TypeDescriptorException;
-import org.fiware.kiara.serialization.MockTransportMessage;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
@@ -285,20 +281,20 @@ public class DynamicFunctionsTest {
             
             DynamicFunctionResponse dynFunctionReq = builder.createFunctionResponse(functionDesc);
             DynamicFunctionResponse outputDynFunctionReq = builder.createFunctionResponse(functionDesc);
-            dynFunctionReq.setReturnType(builder.createData(intDesc));
-            
-            dynFunctionReq.setIsException(false);
-            ((DynamicPrimitive) dynFunctionReq.getReturnType()).set(5);
+            dynFunctionReq.setReturnValue(builder.createData(intDesc));
+
+            dynFunctionReq.setException(false);
+            ((DynamicPrimitive) dynFunctionReq.getReturnValue()).set(5);
             dynFunctionReq.serialize(ser, bos, "");
             reset();
             outputDynFunctionReq.deserialize(ser, bis, "");
-            
+
             assertTrue(dynFunctionReq.equals(outputDynFunctionReq));
-            
-            ((DynamicPrimitive) dynFunctionReq.getReturnType()).set(3);
+
+            ((DynamicPrimitive) dynFunctionReq.getReturnValue()).set(3);
             assertTrue(!dynFunctionReq.equals(outputDynFunctionReq));
-            
-            
+
+
         } catch (DynamicTypeException dte) {
             dte.printStackTrace();
             assertTrue(false);

@@ -17,20 +17,14 @@
  */
 package org.fiware.kiara.dynamic.services;
 
-import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.transport.impl.TransportMessage;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
-
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public interface DynamicAsyncCallback {
-    
-    void process(TransportMessage message, SerializerImpl ser, FunctionTypeDescriptor typeDescriptor);
-    
+
     public void onSuccess(DynamicFunctionResponse response);
-    
+
     public void onFailure(java.lang.Throwable caught);
 
 }

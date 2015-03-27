@@ -28,9 +28,11 @@ import org.fiware.kiara.dynamic.data.DynamicData;
 public interface DynamicFunctionRequest extends DynamicValue {
     
     public DynamicData getParameter(String name);
-    
+
+    public DynamicData getParameterAt(int index);
+
     public DynamicFunctionResponse execute();
-    
-    public void execute_async(DynamicAsyncCallback callback);
+
+    public void executeAsync(DynamicAsyncCallback callback);
 
 }

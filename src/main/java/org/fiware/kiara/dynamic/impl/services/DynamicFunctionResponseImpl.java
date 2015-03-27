@@ -56,10 +56,10 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
         this.m_serializer = (SerializerImpl) serializer;
         this.m_transport = transport;
     }
-    
+
     @Override
-    public void setReturnType(DynamicData returnType) {
-        
+    public void setReturnValue(DynamicData returnType) {
+
         if (returnType instanceof DynamicException) {
             // Exception return type
             boolean success = false;
@@ -86,22 +86,22 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
             }
         }
     }
-    
+
     @Override
-    public DynamicData getReturnType() {
+    public DynamicData getReturnValue() {
         return this.m_returnType;
     }
-    
+
     @Override
-    public boolean getIsException() {
+    public boolean isException() {
         return this.m_isException;
     }
 
     @Override
-    public void setIsException(boolean isException) {
+    public void setException(boolean isException) {
         this.m_isException = isException;
     }
-    
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         if (this.m_isException) {

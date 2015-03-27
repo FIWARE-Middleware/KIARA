@@ -21,18 +21,18 @@ import org.fiware.kiara.dynamic.DynamicValue;
 import org.fiware.kiara.dynamic.data.DynamicData;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
 */
 public interface DynamicFunctionResponse extends DynamicValue {
-    
-    public boolean getIsException();
-    
-    public void setIsException(boolean isException);
-    
-    public void setReturnType (DynamicData returnType);
-    
-    public DynamicData getReturnType();
+
+    public boolean isException();
+
+    public void setException(boolean isException);
+
+    public void setReturnValue(DynamicData returnType);
+
+    public DynamicData getReturnValue();
 
 }

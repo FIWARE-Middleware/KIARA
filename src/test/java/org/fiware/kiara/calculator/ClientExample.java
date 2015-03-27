@@ -27,6 +27,12 @@ package org.fiware.kiara.calculator;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.Kiara;
+import org.fiware.kiara.dynamic.data.DynamicData;
+import org.fiware.kiara.dynamic.data.DynamicPrimitive;
+import org.fiware.kiara.dynamic.services.DynamicAsyncCallback;
+import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
+import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
+import org.fiware.kiara.dynamic.services.DynamicProxy;
 
 /**
  * Class that acts as the main client entry point.
@@ -49,18 +55,60 @@ public class ClientExample {
         Context context = Kiara.createContext();
 
         //Connection connection = context.connect("tcp://127.0.0.1:9090?serialization=cdr");
-
         Connection connection = context.connect("kiara://127.0.0.1:8080/service");
 
         Calculator client = connection.getServiceProxy(CalculatorClient.class);
 
         try {
             ret = client.add(n1, n2);
-            System.out.println(n1+" + "+n2+" = "+ret);
+            System.out.println(n1 + " + " + n2 + " = " + ret);
         } catch (Exception ex) {
             System.out.println("Exception: " + ex.getMessage());
             return;
         }
+
+        DynamicProxy dclient = connection.getDynamicProxy("Calculator");
+
+        // synchronous
+
+        DynamicFunctionRequest drequest = dclient.createFunctionRequest("add");
+        ((DynamicPrimitive) drequest.getParameterAt(0)).set(n1);
+        ((DynamicPrimitive) drequest.getParameterAt(1)).set(n2);
+
+        DynamicFunctionResponse dresponse = drequest.execute();
+        if (dresponse.isException()) {
+            DynamicData result = dresponse.getReturnValue();
+            System.out.println("Exception = " + (DynamicPrimitive) result);
+        } else {
+            DynamicData result = dresponse.getReturnValue();
+            System.out.println("Result = " + ((DynamicPrimitive) result).get());
+        }
+
+        // asynchronous
+
+        drequest = dclient.createFunctionRequest("add");
+        ((DynamicPrimitive) drequest.getParameterAt(0)).set(n1);
+        ((DynamicPrimitive) drequest.getParameterAt(1)).set(n2);
+
+        drequest.executeAsync(new DynamicAsyncCallback() {
+
+            @Override
+            public void onSuccess(DynamicFunctionResponse response) {
+                if (response.isException()) {
+                    DynamicData result = response.getReturnValue();
+                    System.out.println("Async Exception = " + (DynamicPrimitive) result);
+                } else {
+                    DynamicData result = response.getReturnValue();
+                    System.out.println("Async Result = " + ((DynamicPrimitive) result).get());
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable caught) {
+                System.err.println("Error: "+caught);
+            }
+        });
+
 
         Kiara.shutdown();
 
