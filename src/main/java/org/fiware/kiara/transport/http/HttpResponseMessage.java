@@ -30,7 +30,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class HttpResponseMessage extends HttpMessage {
 

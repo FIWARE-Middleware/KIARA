@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class HttpHandler extends BaseHandler<Object, HttpTransportFactory> {
 

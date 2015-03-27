@@ -20,7 +20,7 @@ package org.fiware.kiara.config;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class TransportInfo {
     public String name = null;

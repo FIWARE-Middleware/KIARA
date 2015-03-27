@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class HttpRequestMessage extends HttpMessage {
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(HttpRequestMessage.class);

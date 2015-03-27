@@ -29,7 +29,7 @@ import io.netty.handler.ssl.SslContext;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 class HttpClientInitializer extends ChannelInitializer<SocketChannel> {
     private final SslContext sslCtx;
