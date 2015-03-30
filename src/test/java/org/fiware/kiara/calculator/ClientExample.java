@@ -27,9 +27,9 @@ package org.fiware.kiara.calculator;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.Kiara;
+import org.fiware.kiara.client.AsyncCallback;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
-import org.fiware.kiara.dynamic.services.DynamicAsyncCallback;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.services.DynamicProxy;
@@ -90,7 +90,7 @@ public class ClientExample {
         ((DynamicPrimitive) drequest.getParameterAt(0)).set(n1);
         ((DynamicPrimitive) drequest.getParameterAt(1)).set(n2);
 
-        drequest.executeAsync(new DynamicAsyncCallback() {
+        drequest.executeAsync(new AsyncCallback<DynamicFunctionResponse>() {
 
             @Override
             public void onSuccess(DynamicFunctionResponse response) {

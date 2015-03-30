@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
-import org.fiware.kiara.dynamic.services.DynamicAsyncCallback;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
@@ -42,8 +41,7 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.fiware.kiara.client.AsyncCallback;
 
 /**
  *
@@ -128,7 +126,7 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
     }
 
     @Override
-    public void executeAsync(final DynamicAsyncCallback callback) {
+    public void executeAsync(final AsyncCallback<DynamicFunctionResponse> callback) {
         if (this.m_serializer != null && this.m_transport != null) {
             final BinaryOutputStream bos = new BinaryOutputStream();
             final TransportMessage trequest = this.m_transport.createTransportMessage(null);
@@ -179,8 +177,6 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
             this.m_transport.send(trequest);
 
         }
-
-        return;
 
     }
 

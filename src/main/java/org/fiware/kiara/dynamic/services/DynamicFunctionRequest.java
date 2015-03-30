@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.dynamic.services;
 
+import org.fiware.kiara.client.AsyncCallback;
 import org.fiware.kiara.dynamic.DynamicValue;
 import org.fiware.kiara.dynamic.data.DynamicData;
 
@@ -33,6 +34,6 @@ public interface DynamicFunctionRequest extends DynamicValue {
 
     public DynamicFunctionResponse execute();
 
-    public void executeAsync(DynamicAsyncCallback callback);
+    public void executeAsync(AsyncCallback<DynamicFunctionResponse> callback);
 
 }
