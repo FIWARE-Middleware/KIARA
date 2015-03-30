@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -263,7 +264,7 @@ public class ExceptionsTest {
             final SettableFuture<Float> resultValue = SettableFuture.create();
             final int arg = i;
             //expectedException.expect(DividedByZeroException.class);
-            exceptions.divide((float) i, (float) 0, new ExceptionsAsync.divide_AsyncCallback() {
+            exceptions.divide((float) i, (float) 0, new AsyncCallback<Float>() {
 
                 @Override
                 public void onSuccess(Float result) {
@@ -301,7 +302,7 @@ public class ExceptionsTest {
             final SettableFuture<Integer> resultValue = SettableFuture.create();
             final int arg = i;
             
-            exceptions.function(new ExceptionsAsync.function_AsyncCallback() {
+            exceptions.function(new AsyncCallback<Integer>() {
                 
                 @Override
                 public void onSuccess(Integer result) {

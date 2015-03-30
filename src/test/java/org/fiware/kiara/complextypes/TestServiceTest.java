@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -298,7 +299,7 @@ public class TestServiceTest {
     @Test
     public void testComplexTypesAsync() throws Exception {
         final SettableFuture<MyStruct> value = SettableFuture.create();
-        testService.only_return_func(new TestServiceAsync.only_return_func_AsyncCallback() {
+        testService.only_return_func(new AsyncCallback<MyStruct>() {
 
             @Override
             public void onSuccess(MyStruct result) {
@@ -320,7 +321,7 @@ public class TestServiceTest {
         for (int i = 0; i < result.length; i++) {
             final SettableFuture<MyStruct> resultValue = SettableFuture.create();
             final int arg = i;
-            testService.return_param_func(value.get(), arg, new TestServiceAsync.return_param_func_AsyncCallback() {
+            testService.return_param_func(value.get(), arg, new AsyncCallback<MyStruct>() {
 
                 @Override
                 public void onSuccess(MyStruct result) {

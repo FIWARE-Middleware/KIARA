@@ -26,7 +26,6 @@ package org.fiware.kiara.calculator;
 
 import java.io.IOException;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.server.Servant;
 import org.fiware.kiara.transport.Transport;

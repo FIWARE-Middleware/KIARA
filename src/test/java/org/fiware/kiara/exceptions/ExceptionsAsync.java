@@ -39,70 +39,8 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public interface ExceptionsAsync {
 
-	public void divide(/*in*/ float n1, /*in*/ float n2, divide_AsyncCallback callback);
+	public void divide(/*in*/ float n1, /*in*/ float n2, AsyncCallback<Float> callback);
+	public void function(AsyncCallback<Integer> callback);
 
-	public static abstract class divide_AsyncCallback implements AsyncCallback<Float> {
-                @Override
-		public void process(TransportMessage message, SerializerImpl ser) {
-			try {
-                                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
 
-				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(bis);
-				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(bis, "");
-	    		if (retCode == 0) { // Function execution was OK.
-					float result = ser.deserializeFloat32(bis, "");
-					onSuccess(result);
-				}
-				else {
-					String name = ser.deserializeString(bis, "");
-					if (name.equals("DividedByZeroException")) {
-						DividedByZeroException exception = new DividedByZeroException();
-						exception.deserialize(ser, bis, "");
-						throw exception;
-					}
-				}
-			} catch (Exception ex) {
-				onFailure(ex);
-			}
-		}
-	}
-
-	public void function(function_AsyncCallback callback);
-
-	public static abstract class function_AsyncCallback implements AsyncCallback<Integer> {
-		@Override
-		public void process(TransportMessage message, SerializerImpl ser) {
-			try {
-                                                            final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-
-				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(bis);
-				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(bis, "");
-	    		if (retCode == 0) { // Function execution was OK.
-					int result = ser.deserializeI32(bis, "");
-					onSuccess(result);
-				}
-				else {
-					String name = ser.deserializeString(bis, "");
-					if (name.equals("FirstException")) {
-						FirstException exception = new FirstException();
-						exception.deserialize(ser, bis, "");
-						throw exception;
-					}
-					if (name.equals("SecondException")) {
-						SecondException exception = new SecondException();
-						exception.deserialize(ser, bis, "");
-						throw exception;
-					}
-				}
-			} catch (Exception ex) {
-				onFailure(ex);
-			}
-		}
-	}
-
-	
 }

@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -226,7 +227,7 @@ public class StructServiceTest {
             final int arg = i;
             PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
             value.setMyInt(arg);
-            structService.sendReceivePrimitives(value, new StructServiceAsync.sendReceivePrimitives_AsyncCallback() {
+            structService.sendReceivePrimitives(value, new AsyncCallback<PrimitiveTypesStruct>() {
 
                 @Override
                 public void onSuccess(PrimitiveTypesStruct result) {

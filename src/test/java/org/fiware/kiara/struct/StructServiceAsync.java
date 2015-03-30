@@ -37,50 +37,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public interface StructServiceAsync {
 
-    public void sendReceivePrimitives(/*in*/PrimitiveTypesStruct value, sendReceivePrimitives_AsyncCallback callback);
-
-    public static abstract class sendReceivePrimitives_AsyncCallback implements AsyncCallback<PrimitiveTypesStruct> {
-
-        @Override
-        public void process(TransportMessage message, SerializerImpl ser) {
-            try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-
-                // Deserialize message ID
-                final Object messageId = ser.deserializeMessageId(bis);
-                // Deserialize return code (0 = OK, anything else = WRONG)
-                int retCode = ser.deserializeUI32(bis, "");
-                if (retCode == 0) { // Function execution was OK.
-                    PrimitiveTypesStruct result = ser.deserialize(bis, "", PrimitiveTypesStruct.class);
-                    onSuccess(result);
-                }
-            } catch (Exception ex) {
-                onFailure(ex);
-            }
-        }
-    }
-
-    public void sendReceiveStruct(/*in*/OuterStruct value, sendReceiveStruct_AsyncCallback callback);
-
-    public static abstract class sendReceiveStruct_AsyncCallback implements AsyncCallback<OuterStruct> {
-
-        @Override
-        public void process(TransportMessage message, SerializerImpl ser) {
-            try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-
-                // Deserialize message ID
-                final Object messageId = ser.deserializeMessageId(bis);
-                // Deserialize return code (0 = OK, anything else = WRONG)
-                int retCode = ser.deserializeUI32(bis, "");
-                if (retCode == 0) { // Function execution was OK.
-                    OuterStruct result = ser.deserialize(bis, "", OuterStruct.class);
-                    onSuccess(result);
-                }
-            } catch (Exception ex) {
-                onFailure(ex);
-            }
-        }
-    }
+	public void sendReceivePrimitives(/*in*/ PrimitiveTypesStruct value, AsyncCallback<PrimitiveTypesStruct> callback);
+	public void sendReceiveStruct(/*in*/ OuterStruct value, AsyncCallback<OuterStruct> callback);
 
 }
