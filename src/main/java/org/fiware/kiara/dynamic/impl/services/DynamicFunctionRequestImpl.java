@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
@@ -41,6 +40,7 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.client.AsyncCallback;
 
 /**
@@ -103,7 +103,7 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
                 if (tresponse != null && tresponse.getPayload() != null) {
                     final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(tresponse.getPayload());
 
-                    DynamicFunctionResponse ret = DynamicValueBuilderImpl.getInstance().createFunctionResponse((FunctionTypeDescriptor) this.m_typeDescriptor);
+                    DynamicFunctionResponse ret = Kiara.getDynamicValueBuilder().createFunctionResponse((FunctionTypeDescriptor) this.m_typeDescriptor);
 
                     // Deserialize response message ID
                     final Object responseMessageId = this.m_serializer.deserializeMessageId(bis);
@@ -152,7 +152,7 @@ public class DynamicFunctionRequestImpl extends DynamicTypeImpl implements Dynam
                         try {
                             final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(result.getPayload());
 
-                            DynamicFunctionResponse ret = DynamicValueBuilderImpl.getInstance().createFunctionResponse((FunctionTypeDescriptor) m_typeDescriptor);
+                            DynamicFunctionResponse ret = Kiara.getDynamicValueBuilder().createFunctionResponse((FunctionTypeDescriptor) m_typeDescriptor);
 
                             // Deserialize response message ID
                             final Object responseMessageId = m_serializer.deserializeMessageId(bis);

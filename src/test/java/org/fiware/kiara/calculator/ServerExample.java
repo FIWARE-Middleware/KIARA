@@ -28,7 +28,6 @@ import org.fiware.kiara.Context;
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.DynamicValueBuilder;
 import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
-import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
@@ -83,8 +82,8 @@ public class ServerExample {
                 int a = (Integer)((DynamicPrimitive)request.getParameterAt(0)).get();
                 int b = (Integer)((DynamicPrimitive)request.getParameterAt(1)).get();
 
-                final TypeDescriptorBuilder tdbuilder = TypeDescriptorBuilderImpl.getInstance();
-                final DynamicValueBuilder builder = DynamicValueBuilderImpl.getInstance();
+                final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
+                final DynamicValueBuilder builder = Kiara.getDynamicValueBuilder();
 
                 final PrimitiveTypeDescriptor intTy = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
                 final DynamicPrimitive intVal = (DynamicPrimitive)builder.createData(intTy);

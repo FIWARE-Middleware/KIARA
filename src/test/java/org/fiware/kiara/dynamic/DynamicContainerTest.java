@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.data.DynamicArray;
 import org.fiware.kiara.dynamic.data.DynamicList;
 import org.fiware.kiara.dynamic.data.DynamicMap;
@@ -37,8 +38,8 @@ public class DynamicContainerTest {
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicValueBuilderImpl.getInstance();
-        tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        builder = Kiara.getDynamicValueBuilder();
+        tdbuilder = Kiara.getTypeDescriptorBuilder();
     }
 
     @After

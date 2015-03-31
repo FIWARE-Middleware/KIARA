@@ -3,13 +3,25 @@ package org.fiware.kiara;
 import org.fiware.kiara.impl.ContextImpl;
 import java.util.ArrayList;
 import java.util.List;
+import org.fiware.kiara.dynamic.DynamicValueBuilder;
+import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.typecode.TypeDescriptorBuilder;
+import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Kiara {
 
     private static final Logger logger = LoggerFactory.getLogger(Kiara.class);
-    private static final List<RunningService> runningServices = new ArrayList<RunningService>();
+    private static final List<RunningService> runningServices = new ArrayList<>();
+
+    public static TypeDescriptorBuilder getTypeDescriptorBuilder() {
+        return TypeDescriptorBuilderImpl.getInstance();
+    }
+
+    public static DynamicValueBuilder getDynamicValueBuilder() {
+        return DynamicValueBuilderImpl.getInstance();
+    }
 
     public static Context createContext() {
         return new ContextImpl();

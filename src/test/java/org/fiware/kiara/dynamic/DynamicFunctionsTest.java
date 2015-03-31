@@ -3,6 +3,7 @@ package org.fiware.kiara.dynamic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import org.fiware.kiara.Kiara;
 
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
@@ -34,8 +35,8 @@ public class DynamicFunctionsTest {
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicValueBuilderImpl.getInstance();
-        tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        builder = Kiara.getDynamicValueBuilder();
+        tdbuilder = Kiara.getTypeDescriptorBuilder();
     }
 
     @After

@@ -20,8 +20,8 @@ package org.fiware.kiara.dynamic.impl.services;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.DynamicValueBuilder;
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
@@ -91,7 +91,7 @@ public class DynamicServant implements Servant {
 
             final FunctionTypeAndHandler typeAndHandler = handlers.get(operation);
             if (typeAndHandler != null) {
-                final DynamicValueBuilder valueBuilder = DynamicValueBuilderImpl.getInstance();
+                final DynamicValueBuilder valueBuilder = Kiara.getDynamicValueBuilder();
                 final DynamicFunctionRequest req = valueBuilder.createFunctionRequest(typeAndHandler.typeDesc, serImpl, transportImpl);
                 final DynamicFunctionResponse res = valueBuilder.createFunctionResponse(typeAndHandler.typeDesc, serImpl, transportImpl);
 

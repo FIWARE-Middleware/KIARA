@@ -18,7 +18,7 @@
 package org.fiware.kiara.dynamic.impl.services;
 
 import java.io.IOException;
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicException;
@@ -123,7 +123,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
             //DataTypeDescriptor td = null;
             for (ExceptionTypeDescriptor ex : ((FunctionTypeDescriptorImpl) this.m_typeDescriptor).getExceptions()) {
                 if (ex.getName().equals(exceptionName)) {
-                    DynamicException dynEx = (DynamicException) DynamicValueBuilderImpl.getInstance().createData(ex);
+                    DynamicException dynEx = (DynamicException) Kiara.getDynamicValueBuilder().createData(ex);
                     dynEx.deserialize(impl, message, exceptionName);
                     this.m_returnType = dynEx;
                 }
@@ -135,7 +135,7 @@ public class DynamicFunctionResponseImpl extends DynamicTypeImpl implements Dyna
         } else {
             this.m_isException = false;
             DataTypeDescriptor td = ((FunctionTypeDescriptor) this.m_typeDescriptor).getReturnType();
-            DynamicData dynData = DynamicValueBuilderImpl.getInstance().createData(td);
+            DynamicData dynData = Kiara.getDynamicValueBuilder().createData(td);
             dynData.deserialize(impl, message, name);
             this.m_returnType = dynData;
         }

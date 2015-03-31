@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import org.fiware.kiara.Kiara;
 
 import org.fiware.kiara.exceptions.TypeDescriptorException;
 import org.fiware.kiara.serialization.MockTransportMessage;
@@ -37,7 +38,7 @@ public class TypeDescriptorTest {
         this.buffer = ByteBuffer.allocate(500);
         this.buffer.order(ByteOrder.LITTLE_ENDIAN);
         this.message = new MockTransportMessage(buffer);
-        builder = TypeDescriptorBuilderImpl.getInstance();
+        builder = Kiara.getTypeDescriptorBuilder();
     }
 
     @After

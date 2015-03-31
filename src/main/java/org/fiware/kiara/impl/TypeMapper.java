@@ -2,13 +2,11 @@ package org.fiware.kiara.impl;
 
 import java.util.ArrayList;
 
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicProxy;
 import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.transport.Transport;
 //import org.fiware.kiara.generator.util.Utils;
-import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.EnumTypeDescriptor;
@@ -37,6 +35,7 @@ import com.eprosima.idl.parser.typecode.TypeCode;
 import com.eprosima.idl.parser.typecode.UnionMember;
 import com.eprosima.idl.parser.typecode.UnionTypeCode;
 import java.util.List;
+import org.fiware.kiara.Kiara;
 
 public class TypeMapper {
 
@@ -49,7 +48,7 @@ public class TypeMapper {
 
         // For now, we only need serviceTypes, but the rest of the type definitions will be needed for publish-subscribe
         for (ServiceTypeDescriptor serviceType : serviceTypes) {
-                final DynamicProxy proxy = DynamicValueBuilderImpl.getInstance().createService(serviceType, (SerializerImpl) serializer, transport);
+                final DynamicProxy proxy = Kiara.getDynamicValueBuilder().createService(serviceType, (SerializerImpl) serializer, transport);
                 proxies.add(proxy);
         }
 
@@ -76,12 +75,12 @@ public class TypeMapper {
     }
 
     private static ServiceTypeDescriptor mapService(Interface ifz) {
-        ServiceTypeDescriptor service = TypeDescriptorBuilderImpl.getInstance().createServiceType(ifz.getName());
+        ServiceTypeDescriptor service = Kiara.getTypeDescriptorBuilder().createServiceType(ifz.getName());
         return service;
     }
 
     private static FunctionTypeDescriptor mapFunction(Operation operation) {
-        FunctionTypeDescriptor functionDesc = TypeDescriptorBuilderImpl.getInstance().createFunctionType(operation.getName());
+        FunctionTypeDescriptor functionDesc = Kiara.getTypeDescriptorBuilder().createFunctionType(operation.getName());
         functionDesc.setReturnType(mapType(operation.getRettype()));
         for (Param parameter : operation.getParameters()) {
             functionDesc.addParameter(mapType(parameter.getTypecode()), parameter.getName());
@@ -93,7 +92,7 @@ public class TypeMapper {
     }
 
     private static ExceptionTypeDescriptor mapException(com.eprosima.idl.parser.tree.Exception exception) {
-        ExceptionTypeDescriptor excDesc = TypeDescriptorBuilderImpl.getInstance().createExceptionType(exception.getName());
+        ExceptionTypeDescriptor excDesc = Kiara.getTypeDescriptorBuilder().createExceptionType(exception.getName());
         for (Member member : exception.getMembers()) {
             excDesc.addMember(mapType(member.getTypecode()), member.getName());
         }
@@ -102,14 +101,14 @@ public class TypeMapper {
 
     private static DataTypeDescriptor mapType(TypeCode tc) {
         if (tc == null) { // FIXME: THIS IS A HACK SINCE TypeCode DOES NOT CONTAIN VOID TYPE REPRESENTATION
-            return TypeDescriptorBuilderImpl.getInstance().createVoidType();
+            return Kiara.getTypeDescriptorBuilder().createVoidType();
         }
         // Primitive Types
         if (tc.isPrimitive() || tc.isString()) {
             //System.out.println("Mapping primitive type " + tc.getStType() +"... ");
             org.fiware.kiara.typecode.TypeKind kind = convertKind(tc);
             if (kind != null) {
-                PrimitiveTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createPrimitiveType(kind);
+                PrimitiveTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createPrimitiveType(kind);
                 if (tc.isString()) {
                     td.setMaxFixedLength(Integer.parseInt(tc.getMaxsize()));
                 }
@@ -126,26 +125,26 @@ public class TypeMapper {
             for (int i = 0; i < size; ++i) {
                 array[i] = Integer.parseInt(at.getDimensions().get(i));
             }
-            ArrayTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createArrayType(mapType(at.getContentTypeCode()), array);
+            ArrayTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createArrayType(mapType(at.getContentTypeCode()), array);
             return td;
             //td.setMaxSize(Integer.parseInt(at.getMaxsize()));
         }
         if (tc.isIsType_e()) { // Lists
             SequenceTypeCode st = (SequenceTypeCode) tc;
             //System.out.println("Mapping list");
-            ListTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createListType(mapType(st.getContentTypeCode()), Integer.parseInt(st.getMaxsize()));
+            ListTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createListType(mapType(st.getContentTypeCode()), Integer.parseInt(st.getMaxsize()));
             return td;
         }
         if (tc.isType_set()) { // Sets
             SetTypeCode st = (SetTypeCode) tc;
             //System.out.println("Mapping set");
-            SetTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createSetType(mapType(st.getContentTypeCode()), Integer.parseInt(st.getMaxsize()));
+            SetTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createSetType(mapType(st.getContentTypeCode()), Integer.parseInt(st.getMaxsize()));
             return td;
         }
         if (tc.isType_map()) { // Maps
             MapTypeCode mt = (MapTypeCode) tc;
             //System.out.println("Mapping map");
-            MapTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createMapType(mapType(mt.getKeyTypeCode()), mapType(mt.getValueTypeCode()), Integer.parseInt(mt.getMaxsize()));
+            MapTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createMapType(mapType(mt.getKeyTypeCode()), mapType(mt.getValueTypeCode()), Integer.parseInt(mt.getMaxsize()));
             return td;
         }
 
@@ -153,7 +152,7 @@ public class TypeMapper {
         if (tc.getKind() == 0x0000000a) { // Struct typecode
             StructTypeCode st = (StructTypeCode) tc;
             //System.out.println("Mapping structure " + st.getName() +"... ");
-            StructTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createStructType(st.getName());
+            StructTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createStructType(st.getName());
             for (com.eprosima.idl.parser.typecode.Member member : st.getMembers()) {
                 td.addMember(mapType(member.getTypecode()), member.getName());
             }
@@ -166,12 +165,12 @@ public class TypeMapper {
             for (Member member : et.getMembers()) {
                 values.add(member.getName());
             }
-            EnumTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createEnumType(et.getName(), (String[]) values.toArray());
+            EnumTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createEnumType(et.getName(), (String[]) values.toArray());
             return td;
         }
         if (tc.isIsType_b()) { // Unions
             UnionTypeCode ut = (UnionTypeCode) tc;
-            UnionTypeDescriptor td = TypeDescriptorBuilderImpl.getInstance().createUnionType(ut.getName(), mapType(ut.getDiscriminator()));
+            UnionTypeDescriptor td = Kiara.getTypeDescriptorBuilder().createUnionType(ut.getName(), mapType(ut.getDiscriminator()));
             for (Member member : ut.getMembers()) {
                 UnionMember unionMember = (UnionMember) member;
                 addMember(td, ut, unionMember);

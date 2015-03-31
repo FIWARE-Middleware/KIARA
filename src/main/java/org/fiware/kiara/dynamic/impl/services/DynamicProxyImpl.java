@@ -18,6 +18,7 @@
 package org.fiware.kiara.dynamic.impl.services;
 
 import java.io.IOException;
+import org.fiware.kiara.Kiara;
 
 import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
@@ -58,7 +59,7 @@ public class DynamicProxyImpl extends DynamicTypeImpl implements DynamicProxy {
 
         for (FunctionTypeDescriptor func : ((ServiceTypeDescriptor) this.m_typeDescriptor).getFunctions()) {
             if (func.getName().equals(name)) {
-                return DynamicValueBuilderImpl.getInstance().createFunctionRequest(func, this.m_serializer, this.m_transport);
+                return Kiara.getDynamicValueBuilder().createFunctionRequest(func, this.m_serializer, this.m_transport);
             }
         }
         
@@ -69,7 +70,7 @@ public class DynamicProxyImpl extends DynamicTypeImpl implements DynamicProxy {
     public DynamicFunctionResponse createFunctionResponse(String name) {
         for (FunctionTypeDescriptor func : ((ServiceTypeDescriptor) this.m_typeDescriptor).getFunctions()) {
             if (func.getName().equals(name)) {
-                return DynamicValueBuilderImpl.getInstance().createFunctionResponse(func);
+                return Kiara.getDynamicValueBuilder().createFunctionResponse(func);
             }
         }
         
