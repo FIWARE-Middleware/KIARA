@@ -86,7 +86,7 @@ public class ClientExample {
 
         // asynchronous
 
-        drequest = dclient.createFunctionRequest("add");
+        drequest = dclient.createFunctionRequest("subtract");
         ((DynamicPrimitive) drequest.getParameterAt(0)).set(n1);
         ((DynamicPrimitive) drequest.getParameterAt(1)).set(n2);
 

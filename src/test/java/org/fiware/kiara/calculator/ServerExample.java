@@ -27,7 +27,6 @@ package org.fiware.kiara.calculator;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.DynamicValueBuilder;
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
@@ -35,9 +34,9 @@ import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.server.Server;
 import org.fiware.kiara.server.Service;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
-import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
  * Class that acts as the main server entry point.
@@ -75,22 +74,34 @@ public class ServerExample {
 
         service.loadServiceIDLFromString(IDLText.contents);
 
-        service.register("Calculator.add", new DynamicFunctionHandler() {
+        final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
+        final DynamicValueBuilder builder = Kiara.getDynamicValueBuilder();
+        final PrimitiveTypeDescriptor intTy = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+
+        DynamicFunctionHandler handler = new DynamicFunctionHandler() {
 
             @Override
             public void process(DynamicFunctionRequest request, DynamicFunctionResponse response) {
                 int a = (Integer)((DynamicPrimitive)request.getParameterAt(0)).get();
                 int b = (Integer)((DynamicPrimitive)request.getParameterAt(1)).get();
 
-                final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
-                final DynamicValueBuilder builder = Kiara.getDynamicValueBuilder();
-
-                final PrimitiveTypeDescriptor intTy = tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
                 final DynamicPrimitive intVal = (DynamicPrimitive)builder.createData(intTy);
-                intVal.set(a+b);
+
+                if ("add".equals(((FunctionTypeDescriptor)request.getTypeDescriptor()).getName())) {
+                    System.out.println("add result = " + (a+b));
+
+                    intVal.set(a+b);
+                } else if ("subtract".equals(((FunctionTypeDescriptor)request.getTypeDescriptor()).getName())) {
+                    System.out.println("subtract result = " + (a-b));
+
+                    intVal.set(a-b);
+                }
                 response.setReturnValue(intVal);
             }
-        });
+        };
+
+        service.register("Calculator.add", handler);
+        service.register("Calculator.subtract", handler);
 
         //Add service waiting on TCP with CDR serialization
         server.addService(service, "tcp://0.0.0.0:9090", protocol);
