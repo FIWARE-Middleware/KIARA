@@ -1,6 +1,5 @@
 package org.fiware.kiara.impl;
 
-import com.google.common.collect.Sets;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.server.Server;
 import org.fiware.kiara.server.Service;
@@ -11,7 +10,6 @@ import org.fiware.kiara.transport.impl.TransportServer;
 import org.fiware.kiara.transport.impl.TransportServerImpl;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
@@ -20,13 +18,16 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.net.ssl.SSLException;
 import org.fiware.kiara.config.ProtocolInfo;
 import org.fiware.kiara.config.ServerConfiguration;
 import org.fiware.kiara.config.ServerInfo;
+import org.fiware.kiara.dynamic.impl.services.DynamicServant;
+import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.transport.TransportFactory;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 public class ServerImpl implements Server {
 
@@ -35,7 +36,8 @@ public class ServerImpl implements Server {
     private final List<Service> services;
     private final List<ServiceInstanceInfo> serviceInstanceInfos;
     private final List<ServantDispatcher> servantDispatchers;
-    private final Map<Class<?>, IDLInfo> idlInfoMap;
+    private final Map<String, DynamicServant> dynamicServants;
+    private final IDLInfoDatabase idlInfoDatabase;
     private NegotiationHandler negotiationHandler;
 
     private String configHost;
@@ -59,17 +61,6 @@ public class ServerImpl implements Server {
         }
     }
 
-    private static class IDLInfo {
-
-        public final String idlContents;
-        public final Set<Servant> servants;
-
-        public IDLInfo(String idlContents) {
-            this.idlContents = idlContents;
-            this.servants = Sets.newIdentityHashSet();
-        }
-    }
-
     public ServerImpl(Context context) {
         this.context = context;
         try {
@@ -77,32 +68,11 @@ public class ServerImpl implements Server {
             services = new ArrayList<>();
             serviceInstanceInfos = new ArrayList<>();
             servantDispatchers = new ArrayList<>();
-            idlInfoMap = new HashMap<>();
+            dynamicServants = new HashMap<>();
+            idlInfoDatabase = new IDLInfoDatabase();
             negotiationHandler = null;
         } catch (CertificateException | SSLException ex) {
             throw new RuntimeException(ex);
-        }
-    }
-
-    private void addServantToIDLInfo(Servant servant) {
-        try {
-            final Class<?> servantCls = servant.getClass();
-            final Class<?> idlInfoClass = Class.forName(servantCls.getPackage().getName() + ".IDLText");
-
-            IDLInfo idlInfo = idlInfoMap.get(idlInfoClass);
-            if (idlInfo == null) {
-
-                final Field field = idlInfoClass.getField("contents");
-                final String idlContents = (String) field.get(null);
-
-                idlInfo = new IDLInfo(idlContents);
-
-                idlInfoMap.put(idlInfoClass, idlInfo);
-            }
-
-            idlInfo.servants.add(servant);
-        } catch (Exception ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -113,8 +83,10 @@ public class ServerImpl implements Server {
                 ServerInfo serverInfo = new ServerInfo();
                 serverInfo.protocol = element.protocolInfo;
 
-                for (Servant servant : element.service.getGeneratedServants()) {
-                    serverInfo.services.add(servant.getServiceName());
+                for (IDLInfo idlInfo : ((ServiceImpl) element.service).getIDLInfoDatabase().getIDLInfos()) {
+                    for (Servant servant : idlInfo.servants) {
+                        serverInfo.services.add(servant.getServiceName());
+                    }
                 }
 
                 serverInfo.transport.name = element.serverTransport.getTransportFactory().getName();
@@ -134,7 +106,7 @@ public class ServerImpl implements Server {
         }
 
         StringBuilder builder = new StringBuilder();
-        for (IDLInfo idlInfo : idlInfoMap.values()) {
+        for (IDLInfo idlInfo : idlInfoDatabase.getIDLInfos()) {
             builder.append(idlInfo.idlContents);
         }
         serverConfiguration.idlContents = builder.toString();
@@ -152,8 +124,35 @@ public class ServerImpl implements Server {
             serviceInstanceInfos.add(serviceInstanceInfo);
         }
 
-        for (Servant servant : service.getGeneratedServants()) {
-            addServantToIDLInfo(servant);
+        ServiceImpl serviceImpl = (ServiceImpl)service;
+
+        for (IDLInfo idlInfo : serviceImpl.getIDLInfoDatabase().getIDLInfos()) {
+
+            for (Servant servant : idlInfo.servants) {
+                idlInfoDatabase.addServant(servant);
+                dispatcher.addServant(servant);
+            }
+
+            for (ServiceTypeDescriptor serviceType : idlInfo.serviceTypes) {
+                IDLInfo destIDLInfo = idlInfoDatabase.getIDLInfoByServiceName(serviceType.getName());
+                if (destIDLInfo == null) {
+                    destIDLInfo = new IDLInfo(idlInfo.idlContents);
+                    idlInfoDatabase.addIDLInfo(destIDLInfo);
+                }
+            }
+        }
+
+        Map<FunctionTypeDescriptor, DynamicFunctionHandler> dynamicHandlers = serviceImpl.getDynamicHandlers();
+
+        for (Map.Entry<FunctionTypeDescriptor, DynamicFunctionHandler> entry : dynamicHandlers.entrySet()) {
+            final String serviceName = entry.getKey().getServiceName();
+            DynamicServant servant = dynamicServants.get(serviceName);
+            if (servant == null) {
+                servant = new DynamicServant(serviceName);
+                idlInfoDatabase.addServant(servant);
+                dynamicServants.put(serviceName, servant);
+            }
+            servant.addFunctionHandler(entry.getKey(), entry.getValue());
             dispatcher.addServant(servant);
         }
 

@@ -1,9 +1,5 @@
 package org.fiware.kiara.impl;
 
-import com.eprosima.idl.parser.grammar.KIARAIDLLexer;
-import com.eprosima.idl.parser.grammar.KIARAIDLParser;
-import com.eprosima.idl.parser.tree.Specification;
-import com.eprosima.idl.util.Util;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.server.Server;
@@ -18,15 +14,11 @@ import org.fiware.kiara.transport.tcp.TcpBlockTransportFactory;
 import io.netty.handler.codec.http.QueryStringDecoder;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.CommonTokenStream;
 import org.fiware.kiara.config.ServerConfiguration;
 import org.fiware.kiara.config.ServerInfo;
 import org.fiware.kiara.exceptions.ConnectException;
@@ -90,29 +82,6 @@ public class ContextImpl implements Context {
         }
     }
 
-    private ParserContextImpl loadIDL(InputStream stream, String fileName) throws IOException {
-        return loadIDL(new ANTLRInputStream(stream), fileName);
-    }
-
-    private ParserContextImpl loadIDL(String idlContents, String fileName) {
-        return loadIDL(new ANTLRInputStream(idlContents), fileName);
-    }
-
-    private ParserContextImpl loadIDL(ANTLRInputStream input, String fileName) {
-        ParserContextImpl ctx = new ParserContextImpl(Util.getIDLFileNameOnly(fileName), fileName, new ArrayList<String>());
-
-        KIARAIDLLexer lexer = new KIARAIDLLexer(input);
-        lexer.setContext(ctx);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        KIARAIDLParser parser = new KIARAIDLParser(tokens);
-        // Select handling strategy for errors
-        parser.setErrorHandler(new ParserExceptionErrorStrategyImpl());
-        // Pass the finelame without the extension
-        Specification specification = parser.specification(ctx, null, null).spec;
-
-        return ctx;
-    }
-
     @Override
     public Connection connect(String url) throws IOException {
         try {
@@ -158,14 +127,14 @@ public class ContextImpl implements Context {
 
                 // load IDL
                 if (serverConfig.idlContents != null && !serverConfig.idlContents.isEmpty()) {
-                    ctx = loadIDL(serverConfig.idlContents, configUri.toString());
+                    ctx = IDLUtils.loadIDL(serverConfig.idlContents, configUri.toString());
                 } else if (serverConfig.idlURL != null && !serverConfig.idlURL.isEmpty()) {
                     URI idlUri = configUri.resolve(serverConfig.idlURL);
                     String idlContents = URILoader.load(idlUri, "UTF-8");
 
                     logger.debug("IDL CONTENTS: {}", idlContents); //???DEBUG
 
-                    ctx = loadIDL(idlContents, idlUri.toString());
+                    ctx = IDLUtils.loadIDL(idlContents, idlUri.toString());
                 } else {
                     throw new ConnectException("No IDL specified in server configuration");
                 }
