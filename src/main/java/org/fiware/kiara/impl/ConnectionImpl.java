@@ -9,13 +9,14 @@ import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ConnectionImpl implements Connection {
     private static final Logger logger = LoggerFactory.getLogger(ConnectionImpl.class);
     private final Serializer serializer;
     private final Transport transport;
 
-    private final ArrayList<DynamicProxy> m_dynamicServices;
+    private final List<DynamicProxy> m_dynamicServices;
 
     public ConnectionImpl(Transport transport, Serializer serializer, ParserContextImpl ctx) {
         super();

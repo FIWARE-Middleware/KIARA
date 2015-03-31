@@ -17,12 +17,9 @@
  */
 package org.fiware.kiara.typecode.services;
 
-import java.util.List;
-
 import org.fiware.kiara.typecode.TypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
-import org.fiware.kiara.typecode.data.Member;
 
 /**
 *
