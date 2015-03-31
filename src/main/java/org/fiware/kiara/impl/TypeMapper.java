@@ -95,6 +95,9 @@ public class TypeMapper {
     }
     
     private static DataTypeDescriptor mapType(TypeCode tc) {
+        if (tc == null) { // FIXME: THIS IS A HACK SINCE TypeCode DOES NOT CONTAIN VOID TYPE REPRESENTATION
+            return TypeDescriptorBuilderImpl.getInstance().createVoidType();
+        }
         // Primitive Types
         if (tc.isPrimitive() || tc.isString()) {
             //System.out.println("Mapping primitive type " + tc.getStType() +"... ");

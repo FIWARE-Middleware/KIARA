@@ -19,11 +19,13 @@ import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 *
 */
 public interface TypeDescriptorBuilder {
-    
+
+    public DataTypeDescriptor createVoidType();
+
     public PrimitiveTypeDescriptor createPrimitiveType(TypeKind kind);
-    
+
     public ArrayTypeDescriptor createArrayType(DataTypeDescriptor contentDescriptor, int... dimensionsLength);
-    
+
     public ListTypeDescriptor createListType(DataTypeDescriptor contentDescriptor, int maxSize);
     
     public SetTypeDescriptor createSetType(DataTypeDescriptor contentDescriptor, int maxSize);

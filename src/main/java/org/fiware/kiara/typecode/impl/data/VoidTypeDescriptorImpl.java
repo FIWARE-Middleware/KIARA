@@ -1,6 +1,6 @@
 /* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
  *
- * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ * Copyright (C) 2015 German Research Center for Artificial Intelligence (DFKI)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,40 +15,23 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.typecode;
+package org.fiware.kiara.typecode.impl.data;
+
+import org.fiware.kiara.typecode.TypeKind;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
-public enum TypeKind {
-    BOOLEAN_TYPE,
-    BYTE_TYPE,
-    INT_16_TYPE,
-    UINT_16_TYPE,
-    INT_32_TYPE,
-    UINT_32_TYPE,
-    INT_64_TYPE,
-    UINT_64_TYPE,
-    FLOAT_32_TYPE,
-    FLOAT_64_TYPE,
-    CHAR_8_TYPE,
-    STRING_TYPE,
-    
-    ARRAY_TYPE,
-    LIST_TYPE,
-    MAP_TYPE,
-    SET_TYPE,
-    
-    ENUM_TYPE,
-    UNION_TYPE,
-    STRUCT_TYPE,
-    EXCEPTION_TYPE,
-    
-    NULL_TYPE,
-    
-    SERVICE_TYPE,
-    FUNCTION_TYPE,
-    VOID_TYPE
+ *
+ * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ */
+public class VoidTypeDescriptorImpl extends DataTypeDescriptorImpl {
+
+    public VoidTypeDescriptorImpl() {
+        super(TypeKind.VOID_TYPE);
+    }
+
+    @Override
+    public boolean isVoid() {
+        return true;
+    }
+
 }

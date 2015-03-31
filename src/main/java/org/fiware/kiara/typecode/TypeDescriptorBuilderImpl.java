@@ -36,6 +36,7 @@ import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.StructTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.VoidTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.ServiceTypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
@@ -56,6 +57,11 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
 
     public static TypeDescriptorBuilder getInstance() {
         return LazyDescriptorBuilderHolder.m_instance;
+    }
+
+    @Override
+    public DataTypeDescriptor createVoidType() {
+        return new VoidTypeDescriptorImpl();
     }
 
     @Override

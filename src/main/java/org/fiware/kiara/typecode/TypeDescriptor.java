@@ -16,7 +16,9 @@ public interface TypeDescriptor {
     public boolean isData();
     
     public boolean isPrimitive();
-    
+
+    public boolean isVoid();
+
     // ---------------------- Container -----------------------
     
     public boolean isContainer();
