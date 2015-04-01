@@ -19,7 +19,6 @@ package org.fiware.kiara.transport.http;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.fiware.kiara.netty.BaseHandler;
-import org.fiware.kiara.netty.ListenableConstantFutureAdapter;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
 import org.fiware.kiara.transport.impl.TransportMessage;
 import org.fiware.kiara.util.HexDump;
@@ -47,6 +46,10 @@ import java.io.ByteArrayOutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.fiware.kiara.transport.impl.Global;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +62,15 @@ public class HttpHandler extends BaseHandler<Object, HttpTransportFactory> {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
 
+    private static final boolean SYNC_REQUEST_RESPONSE = true;
+
     private HttpHeaders headers = null;
     private final ByteArrayOutputStream bout;
 
     private final URI uri;
     private final HttpMethod method;
+    private final Semaphore semaphore;
+    private final AtomicBoolean canSend;
 
     public HttpHandler(HttpTransportFactory transportFactory, URI uri, HttpMethod method, TransportConnectionListener connectionListener) {
         super(Mode.CLIENT, State.UNINITIALIZED, transportFactory, connectionListener);
@@ -79,6 +86,8 @@ public class HttpHandler extends BaseHandler<Object, HttpTransportFactory> {
         this.uri = uri;
         this.method = method;
         this.bout = new ByteArrayOutputStream(1024);
+        this.semaphore = SYNC_REQUEST_RESPONSE ? new Semaphore(1, true) : null;
+        this.canSend = SYNC_REQUEST_RESPONSE ? new AtomicBoolean(true) : null;
     }
 
     public HttpHandler(HttpTransportFactory transportFactory, String path, TransportConnectionListener connectionListener) {
@@ -97,10 +106,17 @@ public class HttpHandler extends BaseHandler<Object, HttpTransportFactory> {
         this.uri = tmp;
         this.method = null;
         this.bout = null;
+        this.semaphore = SYNC_REQUEST_RESPONSE ? new Semaphore(1, true) : null;
+        this.canSend = SYNC_REQUEST_RESPONSE ? new AtomicBoolean(false) : null;
+        if (SYNC_REQUEST_RESPONSE)
+            this.semaphore.acquireUninterruptibly();
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
+        if (SYNC_REQUEST_RESPONSE && canSend.compareAndSet(false, true)) {
+            semaphore.release();
+        }
         ctx.flush();
     }
 
@@ -256,15 +272,27 @@ public class HttpHandler extends BaseHandler<Object, HttpTransportFactory> {
             throw new IllegalArgumentException("msg is neither of type HttpRequestMessage nor HttpResponseMessage");
         }
 
-        ChannelFuture result = channel.writeAndFlush(httpMsg);
+        final HttpMessage httpMsgArg = httpMsg;
+        final boolean keepAliveArg = keepAlive;
 
-        if (!keepAlive) {
-            // If keep-alive is off, close the connection once the content is fully written.
-            channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
-        }
+        ListenableFuture<Void> f = Global.executor.submit(new Callable<Void>() {
 
-        return new ListenableConstantFutureAdapter<Void>(result, null);
+            @Override
+            public Void call() throws Exception {
+                if (SYNC_REQUEST_RESPONSE) {
+                    semaphore.acquireUninterruptibly();
+                    canSend.set(false);
+                }
+                final ChannelFuture result = channel.writeAndFlush(httpMsgArg);
+                if (!keepAliveArg) {
+                    // If keep-alive is off, close the connection once the content is fully written.
+                    channel.writeAndFlush(Unpooled.EMPTY_BUFFER).addListener(ChannelFutureListener.CLOSE);
+                }
+                result.syncUninterruptibly();
+                return null;
+            }
+        });
+        return f;
     }
-
 
 }

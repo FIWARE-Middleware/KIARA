@@ -131,7 +131,7 @@ public class TcpHandler extends BaseHandler<Object, TcpBlockTransportFactory> {
         }
 
         ChannelFuture result = channel.writeAndFlush(message.getPayload());
-        return new ListenableConstantFutureAdapter<Void>(result, null);
+        return new ListenableConstantFutureAdapter<>(result, null);
     }
 
 }
