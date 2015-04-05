@@ -183,7 +183,7 @@ public class ContextImpl implements Context {
                 // build service map
                 Map<String, ServiceTypeDescriptor> serviceNameMap = new HashMap<>();
                 for (ServiceTypeDescriptor serviceType : allServiceTypes) {
-                    serviceNameMap.put(serviceType.getName(), serviceType);
+                    serviceNameMap.put(serviceType.getScopedName(), serviceType);
                 }
 
                 // 2. perform negotation
@@ -212,7 +212,7 @@ public class ContextImpl implements Context {
 
                             // 2. pass: register endpoint for each service name
                             for (ServiceTypeDescriptor serviceType : esi.serviceTypes) {
-                                serviceProviders.put(serviceType.getName(), esi);
+                                serviceProviders.put(serviceType.getScopedName(), esi);
                             }
 
                             // we change selected endpoint only if priority is higher

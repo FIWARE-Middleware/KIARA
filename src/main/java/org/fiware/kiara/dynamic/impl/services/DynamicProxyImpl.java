@@ -51,9 +51,9 @@ public class DynamicProxyImpl extends DynamicTypeImpl implements DynamicProxy {
     
     @Override
     public String getServiceName() {
-        return ((ServiceTypeDescriptor) this.m_typeDescriptor).getName();
+        return ((ServiceTypeDescriptor) this.m_typeDescriptor).getScopedName();
     }
-    
+
     @Override
     public DynamicFunctionRequest createFunctionRequest(String name) {
 

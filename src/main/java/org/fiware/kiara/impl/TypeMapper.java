@@ -21,6 +21,8 @@ import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 import com.eprosima.idl.parser.tree.Definition;
+import com.eprosima.idl.parser.tree.DefinitionContainer;
+import com.eprosima.idl.parser.tree.Module;
 import com.eprosima.idl.parser.tree.Interface;
 import com.eprosima.idl.parser.tree.Operation;
 import com.eprosima.idl.parser.tree.Param;
@@ -62,24 +64,32 @@ public class TypeMapper {
     public static List<ServiceTypeDescriptor> getServiceTypes(ParserContextImpl ctx) {
         final List<ServiceTypeDescriptor> serviceTypes = new ArrayList<>();
         for (Definition definition : ctx.getDefinitions()) {
-            if (definition.isIsInterface()) {
-                Interface ifz = (Interface) definition;
-                ServiceTypeDescriptor serviceDesc = mapService(ifz);
-                for (Operation operation : ifz.getAll_operations()) {
-                    FunctionTypeDescriptor functionDesc = mapFunction(operation);
-                    if (functionDesc != null) {
-                        serviceDesc.addFunction(functionDesc);
-                    }
-                }
-
-                serviceTypes.add(serviceDesc);
-            }
+            addServiceTypes(definition, serviceTypes);
         }
         return serviceTypes;
     }
 
+    private static void addServiceTypes(Definition definition, List<ServiceTypeDescriptor> serviceTypes) {
+        if (definition.isIsInterface()) {
+            Interface ifz = (Interface) definition;
+            ServiceTypeDescriptor serviceDesc = mapService(ifz);
+            for (Operation operation : ifz.getAll_operations()) {
+                FunctionTypeDescriptor functionDesc = mapFunction(operation);
+                if (functionDesc != null) {
+                    serviceDesc.addFunction(functionDesc);
+                }
+            }
+
+            serviceTypes.add(serviceDesc);
+        } else if (definition.isIsModule()) {
+            for (Definition moduleDefinition : ((Module) definition).getDefinitions()) {
+                addServiceTypes(moduleDefinition, serviceTypes);
+            }
+        }
+    }
+
     private static ServiceTypeDescriptor mapService(Interface ifz) {
-        ServiceTypeDescriptor service = Kiara.getTypeDescriptorBuilder().createServiceType(ifz.getName());
+        ServiceTypeDescriptor service = Kiara.getTypeDescriptorBuilder().createServiceType(ifz.getName(), ifz.getScopedname());
         return service;
     }
 

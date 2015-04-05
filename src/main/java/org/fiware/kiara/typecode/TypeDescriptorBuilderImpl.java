@@ -136,14 +136,9 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     }
 
     @Override
-    public ServiceTypeDescriptor createServiceType(String name) {
-        ServiceTypeDescriptor ret = new ServiceTypeDescriptorImpl(name);
+    public ServiceTypeDescriptor createServiceType(String name, String scopedName) {
+        ServiceTypeDescriptor ret = new ServiceTypeDescriptorImpl(name, scopedName);
         return ret;
     }
-    
-    
-
-
-    
 
 }

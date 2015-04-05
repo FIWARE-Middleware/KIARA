@@ -43,7 +43,7 @@ public interface TypeDescriptorBuilder {
     public ExceptionTypeDescriptor createExceptionType(String string);
 
     public FunctionTypeDescriptor createFunctionType(String name);
-    
-    public ServiceTypeDescriptor createServiceType(String name);
+
+    public ServiceTypeDescriptor createServiceType(String name, String scopedName);
 
 }

@@ -141,7 +141,7 @@ public class ConnectionImpl implements Connection {
         if (esi != null) {
             try {
                 for (ServiceTypeDescriptor serviceType : esi.serviceTypes) {
-                    if (serviceType.getName().equals(name)) {
+                    if (serviceType.getScopedName().equals(name)) {
                         URI transportUri = configUri == null ? new URI(esi.serverInfo.transport.url) : configUri.resolve(esi.serverInfo.transport.url);
 
                         final Serializer serializer = esi.serializerFactory.createSerializer();

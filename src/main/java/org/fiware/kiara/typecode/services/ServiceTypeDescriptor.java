@@ -27,11 +27,13 @@ import org.fiware.kiara.typecode.TypeDescriptor;
 *
 */
 public interface ServiceTypeDescriptor extends TypeDescriptor {
-    
+
     public String getName();
 
+    public String getScopedName();
+
     public List<FunctionTypeDescriptor> getFunctions();
-    
+
     public void addFunction(FunctionTypeDescriptor functionTypeDescriptor);
     
 }

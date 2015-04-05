@@ -61,7 +61,7 @@ public class ServiceImpl implements Service {
 
         for (IDLInfo idlInfo : idlInfoDatabase.getIDLInfos()) {
             for (ServiceTypeDescriptor serviceType : idlInfo.serviceTypes) {
-                if (serviceName.equals(serviceType.getName())) {
+                if (serviceName.equals(serviceType.getScopedName())) {
                     for (FunctionTypeDescriptor functionType : serviceType.getFunctions()) {
                         if (operationName.equals(functionType.getName())) {
                             type = functionType;

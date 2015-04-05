@@ -134,7 +134,7 @@ public class ServerImpl implements Server {
             }
 
             for (ServiceTypeDescriptor serviceType : idlInfo.serviceTypes) {
-                IDLInfo destIDLInfo = idlInfoDatabase.getIDLInfoByServiceName(serviceType.getName());
+                IDLInfo destIDLInfo = idlInfoDatabase.getIDLInfoByServiceName(serviceType.getScopedName());
                 if (destIDLInfo == null) {
                     destIDLInfo = new IDLInfo(idlInfo.idlContents);
                     idlInfoDatabase.addIDLInfo(destIDLInfo);

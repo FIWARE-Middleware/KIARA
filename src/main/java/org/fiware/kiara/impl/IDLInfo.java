@@ -58,7 +58,7 @@ public class IDLInfo {
     public ServiceTypeDescriptor getServiceType(String serviceName) {
         if (serviceName != null) {
             for (ServiceTypeDescriptor serviceType : serviceTypes) {
-                if (serviceName.equals(serviceType.getName())) {
+                if (serviceName.equals(serviceType.getScopedName())) {
                     return serviceType;
                 }
             }
