@@ -15,35 +15,32 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.config;
+package org.fiware.kiara.serialization.impl;
+
+import java.io.IOException;
+import org.fiware.kiara.exceptions.impl.InvalidAddressException;
+import org.fiware.kiara.serialization.Serializer;
+import org.fiware.kiara.serialization.SerializerFactory;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class ProtocolInfo {
+public class CDRSerializerFactory implements SerializerFactory {
 
-    public String name;
-
-    public ProtocolInfo() {
-        this.name = null;
+    @Override
+    public String getName() {
+        return "cdr";
     }
 
-    public ProtocolInfo(ProtocolInfo other) {
-        if (other == null) {
-            throw new NullPointerException("other");
-        }
-        this.name = other.name;
+    @Override
+    public int getPriority() {
+        return 10;
     }
 
-    public void set(ProtocolInfo other) {
-        if (other == null) {
-            throw new NullPointerException("other");
-        }
-        this.name = other.name;
+    @Override
+    public Serializer createSerializer() throws InvalidAddressException, IOException {
+        return new CDRSerializer();
     }
 
-    public void clear() {
-        name = null;
-    }
 }

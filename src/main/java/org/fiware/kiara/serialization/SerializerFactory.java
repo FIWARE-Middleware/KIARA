@@ -15,35 +15,21 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.config;
+package org.fiware.kiara.serialization;
+
+import java.io.IOException;
+import org.fiware.kiara.exceptions.impl.InvalidAddressException;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class ProtocolInfo {
+public interface SerializerFactory {
 
-    public String name;
+    public String getName();
 
-    public ProtocolInfo() {
-        this.name = null;
-    }
+    public int getPriority();
 
-    public ProtocolInfo(ProtocolInfo other) {
-        if (other == null) {
-            throw new NullPointerException("other");
-        }
-        this.name = other.name;
-    }
+    public Serializer createSerializer() throws InvalidAddressException, IOException;
 
-    public void set(ProtocolInfo other) {
-        if (other == null) {
-            throw new NullPointerException("other");
-        }
-        this.name = other.name;
-    }
-
-    public void clear() {
-        name = null;
-    }
 }

@@ -19,36 +19,33 @@ package org.fiware.kiara.config;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.fiware.kiara.serialization.SerializerFactory;
+import org.fiware.kiara.transport.TransportFactory;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class ServerInfo {
+public class EndpointInfo {
 
-    public final List<String> services;
-    public final ProtocolInfo protocol;
-    public final TransportInfo transport;
+    public final ServerInfo serverInfo;
+    public TransportFactory transportFactory;
+    public SerializerFactory serializerFactory;
+    public final List<ServiceTypeDescriptor> serviceTypes;
 
-    public ServerInfo() {
-        this.services = new ArrayList<>();
-        this.protocol = new ProtocolInfo();
-        this.transport = new TransportInfo();
+    public EndpointInfo(ServerInfo serverInfo, TransportFactory transportFactory, SerializerFactory serializerFactory) {
+        this.serverInfo = serverInfo;
+        this.transportFactory = transportFactory;
+        this.serializerFactory = serializerFactory;
+        this.serviceTypes = new ArrayList<>();
     }
 
-    public ServerInfo(ServerInfo other) {
-        if (other == null) {
-            throw new NullPointerException("other");
-        }
-        this.services = new ArrayList<>(other.services);
-        this.protocol = new ProtocolInfo(other.protocol);
-        this.transport = new TransportInfo(other.transport);
+    public EndpointInfo(EndpointInfo other) {
+        this.serverInfo = other.serverInfo;
+        this.transportFactory = other.transportFactory;
+        this.serializerFactory = other.serializerFactory;
+        this.serviceTypes = new ArrayList<>();
     }
 
-    public void clear() {
-        services.clear();
-        if (protocol != null) {
-            protocol.clear();
-        }
-    }
 }

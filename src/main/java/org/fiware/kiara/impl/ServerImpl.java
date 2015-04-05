@@ -81,7 +81,7 @@ public class ServerImpl implements Server {
         synchronized (serviceInstanceInfos) {
             for (ServiceInstanceInfo element : serviceInstanceInfos) {
                 ServerInfo serverInfo = new ServerInfo();
-                serverInfo.protocol = element.protocolInfo;
+                serverInfo.protocol.set(element.protocolInfo);
 
                 for (IDLInfo idlInfo : ((ServiceImpl) element.service).getIDLInfoDatabase().getIDLInfos()) {
                     for (Servant servant : idlInfo.servants) {

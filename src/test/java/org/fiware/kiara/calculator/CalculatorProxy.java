@@ -45,6 +45,8 @@ import org.fiware.kiara.client.AsyncCallback;
  */
 class CalculatorProxy implements CalculatorClient {
 
+    public static final String serviceName = "Calculator";
+
     public CalculatorProxy(Serializer ser, Transport transport) {
         m_ser = (org.fiware.kiara.serialization.impl.SerializerImpl) ser;
         m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;

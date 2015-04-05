@@ -48,11 +48,15 @@ public class TypeMapper {
 
         // For now, we only need serviceTypes, but the rest of the type definitions will be needed for publish-subscribe
         for (ServiceTypeDescriptor serviceType : serviceTypes) {
-                final DynamicProxy proxy = Kiara.getDynamicValueBuilder().createService(serviceType, (SerializerImpl) serializer, transport);
-                proxies.add(proxy);
+            final DynamicProxy proxy = Kiara.getDynamicValueBuilder().createService(serviceType, (SerializerImpl) serializer, transport);
+            proxies.add(proxy);
         }
 
         return proxies;
+    }
+
+    public static DynamicProxy createDynamicProxy(ServiceTypeDescriptor serviceType, Serializer serializer, Transport transport) {
+        return Kiara.getDynamicValueBuilder().createService(serviceType, (SerializerImpl) serializer, transport);
     }
 
     public static List<ServiceTypeDescriptor> getServiceTypes(ParserContextImpl ctx) {

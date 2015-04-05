@@ -45,6 +45,8 @@ import org.fiware.kiara.client.AsyncCallback;
  */
 class ExceptionsProxy implements ExceptionsClient {
 
+    public static final String serviceName = "Exceptions";
+
     public ExceptionsProxy(Serializer ser, Transport transport) {
         m_ser = (org.fiware.kiara.serialization.impl.SerializerImpl) ser;
         m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;

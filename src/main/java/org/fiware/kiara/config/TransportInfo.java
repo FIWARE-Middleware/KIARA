@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.fiware.kiara.config;
 
 /**
@@ -23,8 +22,22 @@ package org.fiware.kiara.config;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class TransportInfo {
+
     public String name = null;
     public String url = null;
+
+    public TransportInfo() {
+        this.name = null;
+        this.url = null;
+    }
+
+    public TransportInfo(TransportInfo other) {
+        if (other == null) {
+            throw new NullPointerException("other");
+        }
+        this.name = other.name;
+        this.url = other.url;
+    }
 
     public void clear() {
         name = null;

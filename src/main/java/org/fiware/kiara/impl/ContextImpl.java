@@ -1,11 +1,12 @@
 package org.fiware.kiara.impl;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.server.Server;
 import org.fiware.kiara.server.Service;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.ServerTransport;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.TransportFactory;
@@ -19,11 +20,15 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.fiware.kiara.config.EndpointInfo;
 import org.fiware.kiara.config.ServerConfiguration;
 import org.fiware.kiara.config.ServerInfo;
 import org.fiware.kiara.exceptions.ConnectException;
 import org.fiware.kiara.netty.URILoader;
+import org.fiware.kiara.serialization.SerializerFactory;
+import org.fiware.kiara.serialization.impl.CDRSerializerFactory;
 import org.fiware.kiara.transport.http.HttpTransportFactory;
+import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +37,19 @@ public class ContextImpl implements Context {
     private static final Logger logger = LoggerFactory.getLogger(ContextImpl.class);
 
     private static final Map<String, TransportFactory> transportFactories = new HashMap<>();
+    private static final Map<String, SerializerFactory> serializerFactories = new HashMap<>();
 
     // FIXME this initialization is hardcoded
     static {
         registerTransportFactory(new TcpBlockTransportFactory(/*secure = */false));
         registerTransportFactory(new HttpTransportFactory(/*secure = */false));
+        registerSerializerFactory(new CDRSerializerFactory());
+    }
+
+    private static SerializerFactory getSerializerFactoryByName(String serializerName) {
+        synchronized (serializerFactories) {
+            return serializerFactories.get(serializerName);
+        }
     }
 
     private static TransportFactory getTransportFactoryByName(String transportName) {
@@ -82,6 +95,31 @@ public class ContextImpl implements Context {
         }
     }
 
+    public static void registerSerializerFactory(String serializerName, SerializerFactory serializerFactory) {
+        if (serializerName == null) {
+            throw new NullPointerException("serializerName");
+        }
+        if (serializerFactory == null) {
+            throw new NullPointerException("serializerFactory");
+        }
+        synchronized (serializerFactories) {
+            serializerFactories.put(serializerName, serializerFactory);
+        }
+    }
+
+    private static void registerSerializerFactory(SerializerFactory serializerFactory) {
+        if (serializerFactory == null) {
+            throw new NullPointerException("serializerFactory");
+        }
+        final String serializerName = serializerFactory.getName();
+        if (serializerName == null) {
+            throw new NullPointerException("serializerName");
+        }
+        synchronized (serializerFactories) {
+            serializerFactories.put(serializerName, serializerFactory);
+        }
+    }
+
     @Override
     public Connection connect(String url) throws IOException {
         try {
@@ -90,6 +128,8 @@ public class ContextImpl implements Context {
             ParserContextImpl ctx = null;
 
             final URI uri = new URI(url);
+
+            ListMultimap<String, EndpointInfo> serviceProviders = ArrayListMultimap.create();
 
             if (uri.getScheme().equals("kiara")) {
                 final URI configUri = new URI("http",
@@ -139,52 +179,60 @@ public class ContextImpl implements Context {
                     throw new ConnectException("No IDL specified in server configuration");
                 }
 
+                List<ServiceTypeDescriptor> allServiceTypes = TypeMapper.getServiceTypes(ctx);
+                // build service map
+                Map<String, ServiceTypeDescriptor> serviceNameMap = new HashMap<>();
+                for (ServiceTypeDescriptor serviceType : allServiceTypes) {
+                    serviceNameMap.put(serviceType.getName(), serviceType);
+                }
+
                 // 2. perform negotation
                 // find matching endpoint
                 ServerInfo serverInfo = null;
                 TransportFactory selectedTransportFactory = null;
 
                 for (ServerInfo si : serverConfig.servers) {
-                    TransportFactory t = ContextImpl.getTransportFactoryByName(si.transport.name);
+                    final TransportFactory t = ContextImpl.getTransportFactoryByName(si.transport.name);
                     if (t != null) {
-                        // we change selected endpoint only if priority is higher
-                        // i.e. when priority value is less than current one
-                        if (selectedTransportFactory != null && selectedTransportFactory.getPriority() < t.getPriority()) {
-                            continue;
-                        }
+                        final SerializerFactory s = ContextImpl.getSerializerFactoryByName(si.protocol.name);
+                        if (s != null) {
+                            final EndpointInfo esi = new EndpointInfo(si, t, s);
 
-                        serverInfo = si;
-                        selectedTransportFactory = t;
+                            // 1. pass: determine supported services
+                            for (String serviceName : si.services) {
+                                if (serviceName.isEmpty() || "*".equals(serviceName)) {
+                                    esi.serviceTypes.addAll(allServiceTypes);
+                                } else {
+                                    final ServiceTypeDescriptor serviceType = serviceNameMap.get(serviceName);
+                                    if (serviceType != null) {
+                                        esi.serviceTypes.add(serviceType);
+                                    }
+                                }
+                            }
+
+                            // 2. pass: register endpoint for each service name
+                            for (ServiceTypeDescriptor serviceType : esi.serviceTypes) {
+                                serviceProviders.put(serviceType.getName(), esi);
+                            }
+
+                            // we change selected endpoint only if priority is higher
+                            // i.e. when priority value is less than current one
+                            if (selectedTransportFactory != null && selectedTransportFactory.getPriority() < t.getPriority()) {
+                                continue;
+                            }
+
+                            serverInfo = si;
+                            selectedTransportFactory = t;
+                        }
                     }
                 }
 
-                if (serverInfo == null) {
+                if (serviceProviders.isEmpty()) {
                     throw new ConnectException("No matching endpoint found");
                 }
 
-                //selectedTransportFactory.createTransport(url, null).get()
-                logger.debug("Selected transport: {}", serverInfo.transport.name);
-                logger.debug("Selected protocol: {}", serverInfo.protocol.name);
-
-                // FIXME load plugin classes ?
-                // load required protocol
-                final String protocolName = serverInfo.protocol.name;
-                //String protocolName = "javaobjectstream";
-
-                serializer = createSerializer(protocolName);
-
-                if (serializer == null) {
-                    throw new ConnectException("Unsupported protocol '" + protocolName + "'");
-                }
-
-                URI transportUri = configUri.resolve(serverInfo.transport.url);
-
-                logger.debug("Open transport connection to: {}", transportUri);
-
-                transport = createTransport(transportUri);
-            }
-
-            if (transport == null || serializer == null) {
+                return new ConnectionImpl(configUri, serviceProviders);
+            } else {
                 QueryStringDecoder decoder = new QueryStringDecoder(uri);
 
                 String serializerName = null;
@@ -198,12 +246,20 @@ public class ContextImpl implements Context {
                     throw new IllegalArgumentException("No serializer is specified as a part of the URI");
                 }
 
-                // We should perform here negotation, but for now only a fixed transport/protocol combination
-                transport = createTransport(url);
-                serializer = createSerializer(serializerName);
-            }
+                final TransportFactory transportFactory = getTransportFactoryByURI(uri);
+                final SerializerFactory serializerFactory = getSerializerFactoryByName(serializerName);
 
-            return new ConnectionImpl(transport, serializer, ctx);
+                // create pseudo endpoint
+                final ServerInfo si = new ServerInfo();
+                si.protocol.name = serializerName;
+                si.transport.name = transportFactory.getName();
+                si.transport.url = uri.toString();
+                final EndpointInfo esi = new EndpointInfo(si, transportFactory, serializerFactory);
+
+                // register endpoint for all services
+                serviceProviders.put("*", esi);
+                return new ConnectionImpl(null, serviceProviders);
+            }
         } catch (URISyntaxException ex) {
             throw new IOException(ex);
         }
@@ -211,7 +267,7 @@ public class ContextImpl implements Context {
 
     @Override
     public Connection connect(Transport transport, Serializer serializer) throws IOException {
-        return new ConnectionImpl(transport, serializer, null);
+        return new ConnectionImpl(transport, serializer);
     }
 
     @Override
@@ -278,10 +334,15 @@ public class ContextImpl implements Context {
 
     @Override
     public Serializer createSerializer(String name) throws IOException {
-        if (!"cdr".equals(name)) {
-            throw new IOException("Unsupported serializer: " + name);
+        try {
+            final SerializerFactory factory = getSerializerFactoryByName(name);
+            if (factory == null) {
+                throw new IOException("Unsupported serializer: " + name);
+            }
+            return factory.createSerializer();
+        } catch (Exception ex) {
+            throw new IOException(ex);
         }
-        return new CDRSerializer();
     }
 
     @Override
