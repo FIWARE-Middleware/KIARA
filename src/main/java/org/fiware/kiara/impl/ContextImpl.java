@@ -188,8 +188,6 @@ public class ContextImpl implements Context {
 
                 // 2. perform negotation
                 // find matching endpoint
-                ServerInfo serverInfo = null;
-                TransportFactory selectedTransportFactory = null;
 
                 for (ServerInfo si : serverConfig.servers) {
                     final TransportFactory t = ContextImpl.getTransportFactoryByName(si.transport.name);
@@ -214,15 +212,6 @@ public class ContextImpl implements Context {
                             for (ServiceTypeDescriptor serviceType : esi.serviceTypes) {
                                 serviceProviders.put(serviceType.getScopedName(), esi);
                             }
-
-                            // we change selected endpoint only if priority is higher
-                            // i.e. when priority value is less than current one
-                            if (selectedTransportFactory != null && selectedTransportFactory.getPriority() < t.getPriority()) {
-                                continue;
-                            }
-
-                            serverInfo = si;
-                            selectedTransportFactory = t;
                         }
                     }
                 }

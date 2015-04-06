@@ -83,12 +83,23 @@ public class ServerImpl implements Server {
                 ServerInfo serverInfo = new ServerInfo();
                 serverInfo.protocol.set(element.protocolInfo);
 
-                for (IDLInfo idlInfo : ((ServiceImpl) element.service).getIDLInfoDatabase().getIDLInfos()) {
+                // create a list of all available services
+                final ServiceImpl serviceImpl = (ServiceImpl) element.service;
+
+                for (IDLInfo idlInfo : serviceImpl.getIDLInfoDatabase().getIDLInfos()) {
                     for (Servant servant : idlInfo.servants) {
                         serverInfo.services.add(servant.getServiceName());
                     }
                 }
 
+                Map<FunctionTypeDescriptor, DynamicFunctionHandler> dynamicHandlers = serviceImpl.getDynamicHandlers();
+
+                for (Map.Entry<FunctionTypeDescriptor, DynamicFunctionHandler> entry : dynamicHandlers.entrySet()) {
+                    final String serviceName = entry.getKey().getServiceName();
+                    serverInfo.services.add(serviceName);
+                }
+
+                // get transport parameters
                 serverInfo.transport.name = element.serverTransport.getTransportFactory().getName();
                 try {
                     URI uri = new URI(element.serverTransport.getLocalTransportAddress());
@@ -124,7 +135,7 @@ public class ServerImpl implements Server {
             serviceInstanceInfos.add(serviceInstanceInfo);
         }
 
-        ServiceImpl serviceImpl = (ServiceImpl)service;
+        ServiceImpl serviceImpl = (ServiceImpl) service;
 
         for (IDLInfo idlInfo : serviceImpl.getIDLInfoDatabase().getIDLInfos()) {
 
