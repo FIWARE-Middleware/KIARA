@@ -21,7 +21,7 @@ import org.fiware.kiara.typecode.TypeKind;
 
 /**
  *
- * @author Dmitri Rubinstein <dmitri.rubinstein@dfki.de>
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class VoidTypeDescriptorImpl extends DataTypeDescriptorImpl {
 
