@@ -91,27 +91,6 @@ public class CalculatorTest {
         }
 
         @Override
-        protected String makeServerTransportUri(String transport, int port) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port;
-            } else if ("http".equals(transport)) {
-                return "http://0.0.0.0:" + port;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        protected String makeClientTransportUri(String transport, int port, String protocol) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
-            } else if ("http".equals(transport)) {
-                return "http://0.0.0.0:" + port + "/?serialization=" + protocol;
-            }
-
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
         public void shutdown() throws Exception {
             super.shutdown();
             if (serverDispatchingExecutor != null) {
