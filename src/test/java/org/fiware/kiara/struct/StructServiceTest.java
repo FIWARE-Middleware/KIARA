@@ -69,16 +69,8 @@ public class StructServiceTest {
 
     public static class StructServiceSetup extends TestSetup<StructServiceClient> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public StructServiceSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
-        }
-
-        public ExecutorService getServerDispatchingExecutor() {
-            return serverDispatchingExecutor;
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -98,7 +90,7 @@ public class StructServiceTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -108,15 +100,6 @@ public class StructServiceTest {
         @Override
         protected StructServiceClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(StructServiceClient.class);
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }

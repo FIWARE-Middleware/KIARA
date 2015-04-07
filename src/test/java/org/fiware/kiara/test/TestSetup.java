@@ -7,9 +7,12 @@ import org.fiware.kiara.server.Server;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public abstract class TestSetup<CLIENT_INTERFACE> {
 
+    private final ExecutorService serverDispatchingExecutor;
     private final int port;
     private final String transport;
     private final String protocol;
@@ -18,7 +21,7 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
     private Context clientCtx;
     private Context serverCtx;
 
-    public TestSetup(int port, String transport, String protocol, String configPath) {
+    public TestSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
         this.port = port;
         this.transport = transport;
         this.protocol = protocol;
@@ -26,6 +29,12 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
         this.server = null;
         this.clientCtx = null;
         this.serverCtx = null;
+        this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
+        System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
+    }
+
+    public ExecutorService getServerDispatchingExecutor() {
+        return serverDispatchingExecutor;
     }
 
     protected String makeClientTransportUri(String transport, int port, String protocol) {
@@ -93,6 +102,10 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
         }
         if (serverCtx != null) {
             serverCtx.close();
+        }
+        if (serverDispatchingExecutor != null) {
+            serverDispatchingExecutor.shutdown();
+            serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
         }
     }
 

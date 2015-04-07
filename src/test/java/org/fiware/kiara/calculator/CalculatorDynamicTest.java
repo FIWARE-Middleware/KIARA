@@ -66,12 +66,8 @@ public class CalculatorDynamicTest {
 
     public static class CalculatorSetup extends TestSetup<DynamicProxy> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public CalculatorSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -122,7 +118,7 @@ public class CalculatorDynamicTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port + 1));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -137,15 +133,6 @@ public class CalculatorDynamicTest {
         @Override
         protected String makeClientTransportUri(String transport, int port, String protocol) {
             return "kiara://127.0.0.1:" + port + "/service";
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }

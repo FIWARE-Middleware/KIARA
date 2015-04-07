@@ -106,12 +106,8 @@ public class TestServiceTest {
 
     public static class TestServiceSetup extends TestSetup<TestServiceClient> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public TestServiceSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -131,7 +127,7 @@ public class TestServiceTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -141,15 +137,6 @@ public class TestServiceTest {
         @Override
         protected TestServiceClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(TestServiceClient.class);
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }
