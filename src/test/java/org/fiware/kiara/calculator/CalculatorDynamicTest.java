@@ -301,13 +301,15 @@ public class CalculatorDynamicTest {
      * @throws java.lang.Exception
      */
     @Test
-    public void testCalcSync() throws Exception {
-        assertEquals(21 + 32, call_add(21, 32));
-        assertEquals(32 - 21, call_subtract(32, 21));
+    public void testDCalcSync() throws Exception {
+        for (int i = 0; i < 100; ++i) {
+            assertEquals(21 + (32 + i), call_add(21, 32 + i));
+            assertEquals(32 - (21 + i), call_subtract(32, 21 + i));
+        }
     }
 
     @Test
-    public void testCalcSyncParallel() throws Exception {
+    public void testDCalcSyncParallel() throws Exception {
         // Synchronous parallel test
         Future<Integer>[] result = new Future[100];
 
@@ -352,7 +354,7 @@ public class CalculatorDynamicTest {
     }
 
     @Test
-    public void testCalcAsync() throws Exception {
+    public void testDCalcAsync() throws Exception {
         // Synchronous parallel test
         Future<Integer>[] result = new Future[100];
 
