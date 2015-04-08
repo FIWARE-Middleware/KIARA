@@ -64,7 +64,7 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
     }
     
     @Override
-    public void setDimensionsLength(int... dimensions) {
+    public void setDimensions(int... dimensions) {
         this.checkDimensions(dimensions);
         if(this.m_dimensions.size() != 0) {
             this.m_dimensions.clear();

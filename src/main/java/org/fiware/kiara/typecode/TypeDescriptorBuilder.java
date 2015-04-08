@@ -24,7 +24,7 @@ public interface TypeDescriptorBuilder {
 
     public PrimitiveTypeDescriptor createPrimitiveType(TypeKind kind);
 
-    public ArrayTypeDescriptor createArrayType(DataTypeDescriptor contentDescriptor, int... dimensionsLength);
+    public ArrayTypeDescriptor createArrayType(DataTypeDescriptor contentDescriptor, int... dimensions);
 
     public ListTypeDescriptor createListType(DataTypeDescriptor contentDescriptor, int maxSize);
     
@@ -40,7 +40,7 @@ public interface TypeDescriptorBuilder {
     
     
     
-    public ExceptionTypeDescriptor createExceptionType(String string);
+    public ExceptionTypeDescriptor createExceptionType(String name);
 
     public FunctionTypeDescriptor createFunctionType(String name);
 

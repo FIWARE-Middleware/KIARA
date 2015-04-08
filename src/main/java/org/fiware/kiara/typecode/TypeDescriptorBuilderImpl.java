@@ -73,7 +73,7 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     public ArrayTypeDescriptor createArrayType(DataTypeDescriptor contentDescriptor, int... dimensionsLength) {
         ArrayTypeDescriptor ret = new ArrayTypeDescriptorImpl();
         ret.setContentType(contentDescriptor);
-        ret.setDimensionsLength(dimensionsLength);
+        ret.setDimensions(dimensionsLength);
         return ret;
     }
 

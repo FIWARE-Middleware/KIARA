@@ -30,7 +30,7 @@ public interface ArrayTypeDescriptor extends ContainerTypeDescriptor {
 
     public boolean setContentType(DataTypeDescriptor contentType);
     
-    public void setDimensionsLength(int... dimensions);
+    public void setDimensions(int... dimensions);
     
     public List<Integer> getDimensions();
 
