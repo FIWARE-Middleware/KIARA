@@ -18,7 +18,6 @@
 package org.fiware.kiara.serialization.impl;
 
 import java.io.IOException;
-import org.fiware.kiara.exceptions.impl.InvalidAddressException;
 import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.SerializerFactory;
 
@@ -39,7 +38,7 @@ public class CDRSerializerFactory implements SerializerFactory {
     }
 
     @Override
-    public Serializer createSerializer() throws InvalidAddressException, IOException {
+    public Serializer createSerializer() {
         return new CDRSerializer();
     }
 

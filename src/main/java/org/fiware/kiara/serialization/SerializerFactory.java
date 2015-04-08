@@ -18,7 +18,6 @@
 package org.fiware.kiara.serialization;
 
 import java.io.IOException;
-import org.fiware.kiara.exceptions.impl.InvalidAddressException;
 
 /**
  *
@@ -30,6 +29,6 @@ public interface SerializerFactory {
 
     public int getPriority();
 
-    public Serializer createSerializer() throws InvalidAddressException, IOException;
+    public Serializer createSerializer();
 
 }
