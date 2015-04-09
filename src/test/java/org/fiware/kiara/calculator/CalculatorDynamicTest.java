@@ -1,7 +1,9 @@
 package org.fiware.kiara.calculator;
 
 import org.fiware.kiara.test.TestSetup;
+
 import com.google.common.util.concurrent.SettableFuture;
+
 import org.fiware.kiara.Context;
 import org.fiware.kiara.client.Connection;
 import org.fiware.kiara.serialization.Serializer;
@@ -10,12 +12,14 @@ import org.fiware.kiara.server.Service;
 import org.fiware.kiara.test.TestUtils;
 import org.fiware.kiara.test.TypeFactory;
 import org.fiware.kiara.transport.ServerTransport;
+
 import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.client.AsyncCallback;
 import org.fiware.kiara.dynamic.DynamicValueBuilder;
@@ -28,12 +32,14 @@ import org.fiware.kiara.dynamic.services.DynamicProxy;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;

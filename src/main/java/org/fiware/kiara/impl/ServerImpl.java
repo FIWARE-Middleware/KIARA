@@ -20,13 +20,14 @@ import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.SSLException;
+
 import org.fiware.kiara.config.ProtocolInfo;
 import org.fiware.kiara.config.ServerConfiguration;
 import org.fiware.kiara.config.ServerInfo;
 import org.fiware.kiara.dynamic.impl.services.DynamicServant;
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.transport.TransportFactory;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 public class ServerImpl implements Server {

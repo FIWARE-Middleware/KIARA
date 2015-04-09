@@ -19,11 +19,11 @@ package org.fiware.kiara.dynamic.impl.data;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import org.fiware.kiara.Kiara;
 
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMap;
+import org.fiware.kiara.dynamic.impl.DynamicValueBuilderImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;

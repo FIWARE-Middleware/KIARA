@@ -2,11 +2,13 @@ package org.fiware.kiara.impl;
 
 import org.fiware.kiara.server.Service;
 import org.fiware.kiara.server.Servant;
+
 import java.util.HashMap;
 import java.util.Map;
+
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
 import org.fiware.kiara.exceptions.IDLParseException;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 public class ServiceImpl implements Service {

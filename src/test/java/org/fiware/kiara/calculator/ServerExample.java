@@ -36,7 +36,7 @@ import org.fiware.kiara.server.Service;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 
 /**
  * Class that acts as the main server entry point.

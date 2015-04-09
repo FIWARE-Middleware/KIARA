@@ -3,8 +3,8 @@ package org.fiware.kiara.dynamic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
-import org.fiware.kiara.Kiara;
 
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
@@ -18,7 +18,7 @@ import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

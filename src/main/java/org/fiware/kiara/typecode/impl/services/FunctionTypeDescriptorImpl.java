@@ -25,9 +25,9 @@ import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
 import org.fiware.kiara.typecode.data.ExceptionTypeDescriptor;
 import org.fiware.kiara.typecode.data.Member;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.MemberImpl;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
 *

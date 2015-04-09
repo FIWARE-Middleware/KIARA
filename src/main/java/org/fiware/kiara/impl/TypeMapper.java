@@ -17,7 +17,7 @@ import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 import com.eprosima.idl.parser.tree.Definition;
@@ -36,7 +36,9 @@ import com.eprosima.idl.parser.typecode.StructTypeCode;
 import com.eprosima.idl.parser.typecode.TypeCode;
 import com.eprosima.idl.parser.typecode.UnionMember;
 import com.eprosima.idl.parser.typecode.UnionTypeCode;
+
 import java.util.List;
+
 import org.fiware.kiara.Kiara;
 
 public class TypeMapper {

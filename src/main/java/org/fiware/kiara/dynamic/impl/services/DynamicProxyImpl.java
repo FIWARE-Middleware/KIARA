@@ -18,10 +18,10 @@
 package org.fiware.kiara.dynamic.impl.services;
 
 import java.io.IOException;
-import org.fiware.kiara.Kiara;
 
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.impl.DynamicTypeImpl;
+import org.fiware.kiara.dynamic.impl.DynamicValueBuilderImpl;
 import org.fiware.kiara.dynamic.services.DynamicFunctionRequest;
 import org.fiware.kiara.dynamic.services.DynamicFunctionResponse;
 import org.fiware.kiara.dynamic.services.DynamicProxy;
@@ -30,7 +30,7 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.transport.Transport;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**

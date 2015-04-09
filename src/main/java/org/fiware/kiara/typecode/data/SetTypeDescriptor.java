@@ -24,8 +24,8 @@ package org.fiware.kiara.typecode.data;
 */
 public interface SetTypeDescriptor extends ContainerTypeDescriptor {
     
-    public DataTypeDescriptor getContentType();
+    public DataTypeDescriptor getElementType();
 
-    public boolean setContentType(DataTypeDescriptor contentType);
+    public boolean setElementType(DataTypeDescriptor contentType);
 
 }

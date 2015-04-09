@@ -20,6 +20,7 @@ package org.fiware.kiara.dynamic.impl.services;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.DynamicValueBuilder;
 import org.fiware.kiara.dynamic.services.DynamicFunctionHandler;
@@ -33,7 +34,7 @@ import org.fiware.kiara.server.Servant;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportImpl;
 import org.fiware.kiara.transport.impl.TransportMessage;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 
 /**
  *
