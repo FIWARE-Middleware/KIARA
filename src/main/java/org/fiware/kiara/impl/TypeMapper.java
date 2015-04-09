@@ -116,7 +116,7 @@ public class TypeMapper {
     }
 
     private static DataTypeDescriptor mapType(TypeCode tc) {
-        if (tc == null) { // FIXME: THIS IS A HACK SINCE TypeCode DOES NOT CONTAIN VOID TYPE REPRESENTATION
+        if (tc == null) { // when tc is null, type is void
             return Kiara.getTypeDescriptorBuilder().createVoidType();
         }
         // Primitive Types
