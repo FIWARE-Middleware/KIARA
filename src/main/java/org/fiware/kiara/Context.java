@@ -12,9 +12,9 @@ import org.fiware.kiara.transport.Transport;
 import java.io.Closeable;
 
 public interface Context extends Closeable {
-    public Connection connect(String url, boolean dummy) throws IOException; // TODO delete
- 
-    public Connection connect(Transport transport, Serializer serializer, boolean dummy) throws IOException; // TODO delete
+    public Connection connect(String url) throws IOException;
+
+    public Connection connect(Transport transport, Serializer serializer) throws IOException;
 
     public Service createService();
 

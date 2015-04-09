@@ -66,7 +66,7 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
         servants = new HashMap<>();
     }
 
-    public void addService(Servant servant) {
+    public void addServant(Servant servant) {
         servants.put(servant.getServiceName(), servant);
     }
 
@@ -92,8 +92,9 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
 
             if (servant != null) {
                 if (executor == null) {
-                    TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
+                    TransportMessage tpmreply = servant.process(serializer, message, transport, messageId, bis);
                     if (tpmreply != null) {
+                        tpmreply.setContentType(serializer.getContentType());
                         //TransportMessage tresponse = transport.createTransportMessage(message);
                         //tresponse.setPayload(reply);
                         transport.send(tpmreply);
@@ -105,8 +106,9 @@ public class ServantDispatcher implements TransportConnectionListener, Transport
 
                         @Override
                         public void run() {
-                            TransportMessage tpmreply = servant.process(serializer, transport, messageId, bis);
+                            TransportMessage tpmreply = servant.process(serializer, message, transport, messageId, bis);
                             if (tpmreply != null) {
+                                tpmreply.setContentType(serializer.getContentType());
                                 //TransportMessage tresponse = transport.createTransportMessage(message);
                                 //tresponse.setPayload(reply);
                                 transport.send(tpmreply);

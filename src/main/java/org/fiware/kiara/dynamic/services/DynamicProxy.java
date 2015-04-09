@@ -18,8 +18,6 @@
 package org.fiware.kiara.dynamic.services;
 
 import org.fiware.kiara.dynamic.DynamicValue;
-import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.transport.Transport;
 
 /**
 *

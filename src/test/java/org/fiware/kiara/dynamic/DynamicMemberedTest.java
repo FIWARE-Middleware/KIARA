@@ -3,6 +3,7 @@ package org.fiware.kiara.dynamic;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.complextypes.MyStruct;
 import org.fiware.kiara.complextypes.TestServiceTest;
 import org.fiware.kiara.dynamic.data.DynamicArray;
@@ -25,7 +26,6 @@ import org.fiware.kiara.serialization.types.EnumSwitcher;
 import org.fiware.kiara.struct.PrimitiveTypesStruct;
 import org.fiware.kiara.struct.StructServiceTest;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
-import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.ArrayTypeDescriptor;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
@@ -53,8 +53,8 @@ public class DynamicMemberedTest {
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicValueBuilderImpl.getInstance();
-        tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        builder = Kiara.getDynamicValueBuilder();
+        tdbuilder = Kiara.getTypeDescriptorBuilder();
     }
 
     @After

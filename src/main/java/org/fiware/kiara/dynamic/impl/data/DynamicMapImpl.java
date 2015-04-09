@@ -20,9 +20,10 @@ package org.fiware.kiara.dynamic.impl.data;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.fiware.kiara.dynamic.DynamicValueBuilderImpl;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicMap;
+import org.fiware.kiara.dynamic.impl.DynamicValueBuilderImpl;
 import org.fiware.kiara.exceptions.DynamicTypeException;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -134,8 +135,8 @@ public class DynamicMapImpl extends DynamicContainerImpl implements DynamicMap {
         int size = impl.deserializeUI32(message, "");
         
         for (int i=0; i < size; ++i) {
-            DynamicData key = DynamicValueBuilderImpl.getInstance().createData(this.m_keyContentType);
-            DynamicData value = DynamicValueBuilderImpl.getInstance().createData(this.m_contentType);
+            DynamicData key = Kiara.getDynamicValueBuilder().createData(this.m_keyContentType);
+            DynamicData value = Kiara.getDynamicValueBuilder().createData(this.m_contentType);
             key.deserialize(impl, message, "");
             value.deserialize(impl, message, "");
             this.m_keyMembers.add(key);

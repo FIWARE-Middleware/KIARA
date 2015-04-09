@@ -19,9 +19,10 @@ package org.fiware.kiara.netty;
 
 import org.fiware.kiara.transport.impl.ServerTransportImpl;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 import io.netty.channel.Channel;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.concurrent.ExecutorService;
 
@@ -29,9 +30,13 @@ import java.util.concurrent.ExecutorService;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class NettyServerTransport implements ServerTransportImpl {
+
     private final String path;
     private final SocketAddress localSocketAddress;
     private final NettyTransportFactory transportFactory;
+
+    private final Object serverLock = new Object();
+
     private Channel channel;
     private TransportConnectionListener listener;
     private ExecutorService dispatchingExecutor;
@@ -48,10 +53,12 @@ public class NettyServerTransport implements ServerTransportImpl {
         return path;
     }
 
+    @Override
     public SocketAddress getLocalSocketAddress() {
         return localSocketAddress;
     }
 
+    @Override
     public TransportFactory getTransportFactory() {
         return transportFactory;
     }
@@ -72,6 +79,7 @@ public class NettyServerTransport implements ServerTransportImpl {
         return listener;
     }
 
+    @Override
     public void close() throws IOException {
         if (channel != null && channel.isOpen()) {
             try {
@@ -82,11 +90,57 @@ public class NettyServerTransport implements ServerTransportImpl {
         }
     }
 
+    @Override
     public void setDispatchingExecutor(ExecutorService executor) {
         this.dispatchingExecutor = executor;
     }
 
+    @Override
     public ExecutorService getDispatchingExecutor() {
         return dispatchingExecutor;
+    }
+
+    @Override
+    public void startServer(TransportConnectionListener listener) throws InterruptedException {
+        synchronized (serverLock) {
+            if (channel != null) {
+                throw new IllegalStateException("Server is already running");
+            }
+            transportFactory.startServer(this, listener);
+        }
+    }
+
+    @Override
+    public boolean isRunning() {
+        synchronized (serverLock) {
+            return channel != null && channel.isOpen();
+        }
+    }
+
+    @Override
+    public void stopServer() throws InterruptedException {
+        synchronized (serverLock) {
+            if (channel != null && channel.isOpen()) {
+                channel.close().sync();
+            }
+            setChannel(null);
+            setListener(null);
+        }
+    }
+
+    @Override
+    public String getLocalTransportAddress() {
+        String addr = transportFactory.getName() + "://";
+
+        if (localSocketAddress instanceof InetSocketAddress) {
+            InetSocketAddress sa = (InetSocketAddress) localSocketAddress;
+            addr += sa.getHostString()+ ":" + sa.getPort();
+        } else {
+            addr += localSocketAddress.toString();
+        }
+        if (path != null && !"".equals(path)) {
+            addr = addr + "/" + path;
+        }
+        return addr;
     }
 }

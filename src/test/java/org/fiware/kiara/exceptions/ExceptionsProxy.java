@@ -30,12 +30,12 @@ import java.io.IOException;
 
 import org.fiware.kiara.netty.TransportMessageDispatcher;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.client.AsyncCallback;
 
 /**
  * Class containing the proxy implementation for all the services.
@@ -44,6 +44,8 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
  *
  */
 class ExceptionsProxy implements ExceptionsClient {
+
+    public static final String serviceName = "Exceptions";
 
     public ExceptionsProxy(Serializer ser, Transport transport) {
         m_ser = (org.fiware.kiara.serialization.impl.SerializerImpl) ser;
@@ -179,7 +181,7 @@ class ExceptionsProxy implements ExceptionsClient {
     }
 
 	@Override
-    public void divide(/*in*/float n1, /*in*/ float n2, final divide_AsyncCallback callback) {
+	public void divide(/*in*/ float n1, /*in*/ float n2, final AsyncCallback<Float> callback) {
 
         if (m_ser != null && m_transport != null) {
 			final BinaryOutputStream bos = new BinaryOutputStream();
@@ -201,9 +203,9 @@ class ExceptionsProxy implements ExceptionsClient {
 
             Futures.addCallback(dispatcher, new FutureCallback<TransportMessage>() {
 
-				@Override
+                @Override
                 public void onSuccess(TransportMessage result) {
-                    callback.process(result, m_ser);
+					ExceptionsProcess.divide_processAsync(result, m_ser, callback);
                 }
 
 				@Override
@@ -221,7 +223,7 @@ class ExceptionsProxy implements ExceptionsClient {
     }
 
 	@Override
-    public void function(final function_AsyncCallback callback) {
+	public void function(final AsyncCallback<Integer> callback) {
 
         if (m_ser != null && m_transport != null) {
 			final BinaryOutputStream bos = new BinaryOutputStream();
@@ -244,7 +246,7 @@ class ExceptionsProxy implements ExceptionsClient {
 
 				@Override
                 public void onSuccess(TransportMessage result) {
-                    callback.process(result, m_ser);
+					ExceptionsProcess.function_processAsync(result, m_ser, callback);
                 }
 
 				@Override

@@ -9,5 +9,5 @@ public interface Servant
 {
     public String getServiceName();
 
-    public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis);
+    public TransportMessage process(Serializer ser, TransportMessage message, Transport transport, Object messageId, BinaryInputStream bis);
 }

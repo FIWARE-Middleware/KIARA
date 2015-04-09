@@ -50,4 +50,5 @@ public enum TypeKind {
     
     SERVICE_TYPE,
     FUNCTION_TYPE,
+    VOID_TYPE
 }

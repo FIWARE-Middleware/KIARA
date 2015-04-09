@@ -74,12 +74,12 @@ public class DynamicArrayImpl extends DynamicContainerImpl implements DynamicArr
     }
     
     @Override
-    public DataTypeDescriptor getContentType() {
+    public DataTypeDescriptor getElementType() {
         return this.m_contentType;
     }
     
     @Override
-    public void setContentType(DataTypeDescriptor dynamicData) {
+    public void setElementType(DataTypeDescriptor dynamicData) {
         if (dynamicData instanceof ArrayTypeDescriptor) {
             throw new DynamicTypeException(this.m_className + " - A DynamicArrayDataType object cannot be assigned as content to another DynamicArrayDataType.");
         }

@@ -50,7 +50,7 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
     }
     
     @Override
-    public boolean setContentType(DataTypeDescriptor contentType) {
+    public boolean setElementType(DataTypeDescriptor contentType) {
         if (contentType.getKind() == TypeKind.ARRAY_TYPE) {
             throw new TypeDescriptorException("ArrayTypeDescriptor - Array type descriptions do not support another array as its content type. Use dimensions instead.");
         }
@@ -59,12 +59,12 @@ public class ArrayTypeDescriptorImpl extends ContainerTypeDescriptorImpl impleme
     }
     
     @Override
-    public DataTypeDescriptor getContentType() {
+    public DataTypeDescriptor getElementType() {
         return this.m_contentType;
     }
     
     @Override
-    public void setDimensionsLength(int... dimensions) {
+    public void setDimensions(int... dimensions) {
         this.checkDimensions(dimensions);
         if(this.m_dimensions.size() != 0) {
             this.m_dimensions.clear();

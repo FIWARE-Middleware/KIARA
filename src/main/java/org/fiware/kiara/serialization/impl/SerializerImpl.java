@@ -30,6 +30,12 @@ import org.fiware.kiara.serialization.Serializer;
 */
 public interface SerializerImpl extends Serializer {
 
+    /**
+     *
+     * @return Content (MIME) Type of the serialization protocol
+     */
+    public String getContentType();
+
     public Object getNewMessageId();
 
     public void serializeMessageId(BinaryOutputStream message, Object messageId) throws IOException;

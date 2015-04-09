@@ -26,7 +26,6 @@ package org.fiware.kiara.exceptions;
 
 import java.io.IOException;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.server.Servant;
 import org.fiware.kiara.transport.Transport;
@@ -51,7 +50,7 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
 
 
     @Override
-    public TransportMessage process(Serializer ser, Transport transport, Object messageId, BinaryInputStream bis) {
+    public TransportMessage process(Serializer ser, TransportMessage message, Transport transport, Object messageId, BinaryInputStream bis) {
 
         SerializerImpl serImpl;
         TransportImpl transportImpl;
@@ -71,7 +70,7 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
                 float n2 = serImpl.deserializeFloat32(bis, "");
 
 			BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
                 try {
@@ -97,7 +96,7 @@ public abstract class ExceptionsServant implements Servant, Exceptions {
             if (operation.equals("function")) {
 
 			BinaryOutputStream retBuffer = new BinaryOutputStream();
-                TransportMessage retMsg = transportImpl.createTransportMessage(null);
+                TransportMessage retMsg = transportImpl.createTransportMessage(message);
                 serImpl.serializeMessageId(retBuffer, messageId);
 
                 try {

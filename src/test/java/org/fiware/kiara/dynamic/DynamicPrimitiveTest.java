@@ -4,12 +4,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.dynamic.data.DynamicPrimitive;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
-import org.fiware.kiara.typecode.TypeDescriptorBuilderImpl;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.junit.After;
@@ -30,8 +30,8 @@ public class DynamicPrimitiveTest {
     public void init() {
         this.ser = new CDRSerializer();
         this.bos = new BinaryOutputStream();
-        builder = DynamicValueBuilderImpl.getInstance();
-        tdbuilder = TypeDescriptorBuilderImpl.getInstance();
+        builder = Kiara.getDynamicValueBuilder();
+        tdbuilder = Kiara.getTypeDescriptorBuilder();
     }
 
     @After

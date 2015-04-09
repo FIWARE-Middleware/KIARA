@@ -36,11 +36,11 @@ public class DynamicContainerImpl extends DynamicDataImpl {
         super(dataDescriptor, className);
     }
     
-    public DataTypeDescriptor getContentType() {
+    public DataTypeDescriptor getElementType() {
         return this.m_contentType;
     }
     
-    public void setContentType(DataTypeDescriptor contentType) {
+    public void setElementType(DataTypeDescriptor contentType) {
         this.m_contentType = contentType;
     }
     

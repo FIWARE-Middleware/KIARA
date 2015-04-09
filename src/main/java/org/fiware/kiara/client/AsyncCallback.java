@@ -17,16 +17,11 @@
  */
 package org.fiware.kiara.client;
 
-import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.transport.impl.TransportMessage;
-
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public interface AsyncCallback<T> {
-
-	void process(TransportMessage message, SerializerImpl ser);
 
 	public void onSuccess(T result);
 

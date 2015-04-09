@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TransportServerImpl implements TransportServer, RunningService {
 
+
     private static class ServerEntry {
 
         public final ServerTransportImpl serverTransport;
@@ -45,25 +46,36 @@ public class TransportServerImpl implements TransportServer, RunningService {
             this.listener = listener;
         }
 
+        public boolean isServerRunning() {
+            return serverTransport.isRunning();
+        }
+
         public void startServer() throws InterruptedException {
-            serverTransport.getTransportFactory().startServer(serverTransport, listener);
+            serverTransport.startServer(listener);
+        }
+
+        public void stopServer() throws InterruptedException {
+            serverTransport.stopServer();
         }
 
     }
 
     private static final Logger logger = LoggerFactory.getLogger(TransportServerImpl.class);
 
-    private final List<ServerEntry> serverEntries = new ArrayList<ServerEntry>();
+    private final List<ServerEntry> serverEntries = new ArrayList<>();
+    private int numRunning = 0;
 
     public TransportServerImpl() throws CertificateException, SSLException {
         // bossGroup and workerGroup need to be always shutdown, so we are always running service
         // Kiara.addRunningService(this);
     }
 
+    @Override
     public void listen(ServerTransport serverTransport, TransportConnectionListener listener) {
-        if (!(serverTransport instanceof ServerTransportImpl))
+        if (!(serverTransport instanceof ServerTransportImpl)) {
             throw new IllegalArgumentException("transport factory is not an instance of " + ServerTransportImpl.class.getName() + " class");
-        final ServerTransportImpl st = (ServerTransportImpl)serverTransport;
+        }
+        final ServerTransportImpl st = (ServerTransportImpl) serverTransport;
         if (!(st.getTransportFactory() instanceof NettyTransportFactory)) {
             throw new IllegalArgumentException("transport factory is not an instance of " + NettyTransportFactory.class.getName() + " class");
         }
@@ -72,31 +84,52 @@ public class TransportServerImpl implements TransportServer, RunningService {
         }
     }
 
+    @Override
     public void run() throws IOException {
-        int numServers = 0;
-        try {
-            synchronized (serverEntries) {
+        synchronized (serverEntries) {
+            try {
                 for (ServerEntry serverEntry : serverEntries) {
-                    serverEntry.startServer();
-                    ++numServers;
+                    if (!serverEntry.isServerRunning()) {
+                        serverEntry.startServer();
+                        ++numRunning;
+                    }
                 }
+            } catch (InterruptedException ex) {
+                throw new IOException(ex);
             }
-        } catch (InterruptedException ex) {
-            throw new IOException(ex);
         }
     }
 
-    public void close() throws IOException {
-        ServerEntry[] tmp;
+    @Override
+    public void stop() throws IOException {
         synchronized (serverEntries) {
-            tmp = serverEntries.toArray(new ServerEntry[serverEntries.size()]);
+            try {
+                for (ServerEntry serverEntry : serverEntries) {
+                    serverEntry.stopServer();
+                    --numRunning;
+                }
+            } catch (InterruptedException ex) {
+                throw new IOException(ex);
+            }
+        }
+    }
+
+    @Override
+    public boolean isRunning() {
+        synchronized (serverEntries) {
+            return numRunning > 0;
+        }
+    }
+
+    @Override
+    public void close() throws IOException {
+        synchronized (serverEntries) {
+            stop();
             serverEntries.clear();
         }
-        for (final ServerEntry serverEntry : tmp) {
-            serverEntry.serverTransport.close();
-        }
     }
 
+    @Override
     public void shutdownService() {
         try {
             close();

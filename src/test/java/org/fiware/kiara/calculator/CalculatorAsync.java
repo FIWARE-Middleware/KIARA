@@ -37,49 +37,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public interface CalculatorAsync {
 
-    public void add(/*in*/int n1, /*in*/ int n2, add_AsyncCallback callback);
+	public void add(/*in*/ int n1, /*in*/ int n2, AsyncCallback<Integer> callback);
+	public void subtract(/*in*/ int n1, /*in*/ int n2, AsyncCallback<Integer> callback);
 
-    public static abstract class add_AsyncCallback implements AsyncCallback<Integer> {
-
-        @Override
-        public void process(TransportMessage message, SerializerImpl ser) {
-            try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-                // Deserialize message ID
-                final Object messageId = ser.deserializeMessageId(bis);
-
-                // Deserialize return code (0 = OK, anything else = WRONG)
-                int retCode = ser.deserializeUI32(bis, "");
-                if (retCode == 0) { // Function execution was OK.
-                    int result = ser.deserializeI32(bis, "");
-                    onSuccess(result);
-                }
-            } catch (Exception ex) {
-                onFailure(ex);
-            }
-        }
-    }
-
-    public void subtract(/*in*/int n1, /*in*/ int n2, subtract_AsyncCallback callback);
-
-    public static abstract class subtract_AsyncCallback implements AsyncCallback<Integer> {
-
-        @Override
-        public void process(TransportMessage message, SerializerImpl ser) {
-            try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-                // Deserialize message ID
-                final Object messageId = ser.deserializeMessageId(bis);
-
-                // Deserialize return code (0 = OK, anything else = WRONG)
-                int retCode = ser.deserializeUI32(bis, "");
-                if (retCode == 0) { // Function execution was OK.
-                    int result = ser.deserializeI32(bis, "");
-                    onSuccess(result);
-                }
-            } catch (Exception ex) {
-                onFailure(ex);
-            }
-        }
-    }
 }

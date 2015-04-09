@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.dynamic;
+package org.fiware.kiara.dynamic.impl;
 
+import org.fiware.kiara.dynamic.DynamicValueBuilder;
 import org.fiware.kiara.dynamic.data.DynamicData;
 import org.fiware.kiara.dynamic.data.DynamicEnum;
 import org.fiware.kiara.dynamic.data.DynamicException;
@@ -53,10 +54,10 @@ import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.UnionMemberImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
@@ -169,32 +170,32 @@ public class DynamicValueBuilderImpl implements DynamicValueBuilder {
     
     private DynamicArrayImpl createArrayType(ArrayTypeDescriptor arrayDescriptor) {
         DynamicArrayImpl ret = new DynamicArrayImpl(arrayDescriptor);
-        if (arrayDescriptor.getContentType() == null) {
+        if (arrayDescriptor.getElementType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this array descriptor has not been defined.");
         }
-        ret.setContentType(arrayDescriptor.getContentType());
+        ret.setElementType(arrayDescriptor.getElementType());
         for (int i=0; i < arrayDescriptor.getMaxSize(); ++i) {
-            ret.addElement(this.createData(arrayDescriptor.getContentType()));
+            ret.addElement(this.createData(arrayDescriptor.getElementType()));
         }
         return ret;
     }
     
     private DynamicListImpl createListType(ListTypeDescriptor listDescriptor) {
         DynamicListImpl ret = new DynamicListImpl(listDescriptor);
-        if (listDescriptor.getContentType() == null) {
+        if (listDescriptor.getElementType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this list descriptor has not been defined.");
         }
-        ret.setContentType(listDescriptor.getContentType());
+        ret.setElementType(listDescriptor.getElementType());
         return ret;
     }
     
     private DynamicSetImpl createSetType(SetTypeDescriptor setDescriptor) {
         DynamicSetImpl ret = new DynamicSetImpl(setDescriptor);
-        if (setDescriptor.getContentType() == null) {
+        if (setDescriptor.getElementType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this set descriptor has not been defined.");
         }
         
-        ret.setContentType(setDescriptor.getContentType());
+        ret.setElementType(setDescriptor.getElementType());
         return ret;
     }
     

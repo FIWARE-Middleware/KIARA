@@ -25,7 +25,7 @@ import org.fiware.kiara.serialization.Serializer;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.typecode.data.DataTypeDescriptor;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**

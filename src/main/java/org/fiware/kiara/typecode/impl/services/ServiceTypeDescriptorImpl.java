@@ -20,8 +20,8 @@ package org.fiware.kiara.typecode.impl.services;
 import java.util.ArrayList;
 
 import org.fiware.kiara.typecode.TypeKind;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
@@ -30,16 +30,18 @@ import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 *
 */
 public class ServiceTypeDescriptorImpl extends TypeDescriptorImpl implements ServiceTypeDescriptor {
-    
-    private ArrayList<FunctionTypeDescriptor> m_functionsDescriptors;
-    private String m_name;
-    
-    public ServiceTypeDescriptorImpl(String name) {
+
+    private final ArrayList<FunctionTypeDescriptor> m_functionsDescriptors;
+    private final String m_name;
+    private final String m_scopedName;
+
+    public ServiceTypeDescriptorImpl(String name, String scopedName) {
         super(TypeKind.SERVICE_TYPE);
         this.m_name = name;
-        this.m_functionsDescriptors = new ArrayList<FunctionTypeDescriptor>();
+        this.m_scopedName = scopedName;
+        this.m_functionsDescriptors = new ArrayList<>();
     }
-    
+
     /*public ServiceTypeDescriptorImpl(ArrayList<FunctionTypeDescriptor> functionsDescriptors) {
         super(TypeKind.SERVICE_TYPE);
         this.m_functionsDescriptors = functionsDescriptors;
@@ -63,6 +65,11 @@ public class ServiceTypeDescriptorImpl extends TypeDescriptorImpl implements Ser
     @Override
     public String getName() {
         return this.m_name;
+    }
+
+    @Override
+    public String getScopedName() {
+        return this.m_scopedName;
     }
 
 }

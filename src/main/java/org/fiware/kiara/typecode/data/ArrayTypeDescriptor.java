@@ -26,11 +26,11 @@ import java.util.List;
 */
 public interface ArrayTypeDescriptor extends ContainerTypeDescriptor {
     
-    public DataTypeDescriptor getContentType();
+    public DataTypeDescriptor getElementType();
 
-    public boolean setContentType(DataTypeDescriptor contentType);
+    public boolean setElementType(DataTypeDescriptor contentType);
     
-    public void setDimensionsLength(int... dimensions);
+    public void setDimensions(int... dimensions);
     
     public List<Integer> getDimensions();
 

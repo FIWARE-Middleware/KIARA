@@ -51,7 +51,12 @@ public class TypeDescriptorImpl implements TypeDescriptor {
     public boolean isPrimitive() {
         return false;
     }
-    
+
+    @Override
+    public boolean isVoid() {
+        return false;
+    }
+
     @Override
     public boolean isContainer() {
         return false;

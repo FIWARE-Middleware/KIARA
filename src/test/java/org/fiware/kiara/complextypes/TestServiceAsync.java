@@ -39,67 +39,9 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public interface TestServiceAsync {
 
-	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, return_param_func_AsyncCallback callback);
-
-	public static abstract class return_param_func_AsyncCallback implements AsyncCallback<MyStruct> {
-        @Override
-		public void process(TransportMessage message, SerializerImpl ser) {
-			try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(bis);
-				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(bis, "");
-	    		if (retCode == 0) { // Function execution was OK.
-					MyStruct result = ser.deserialize(bis, ""	, MyStruct.class);
-					onSuccess(result);
-				} 
-			} catch (Exception ex) {
-				onFailure(ex);
-			}
-		}
-	}
-
-	public void only_param_func(/*in*/ MyStruct param1, only_param_func_AsyncCallback callback);
-
-	public static abstract class only_param_func_AsyncCallback implements AsyncCallback<Void> {
-        @Override
-		public void process(TransportMessage message, SerializerImpl ser) {
-			try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(bis);
-				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(bis, "");
-	    		if (retCode == 0) { // Function execution was OK.
-					onSuccess(null);
-				} 
-			} catch (Exception ex) {
-				onFailure(ex);
-			}
-		}
-	}
-
-	public void only_return_func(only_return_func_AsyncCallback callback);
-
-	public static abstract class only_return_func_AsyncCallback implements AsyncCallback<MyStruct> {
-        @Override
-		public void process(TransportMessage message, SerializerImpl ser) {
-			try {
-                final BinaryInputStream bis = BinaryInputStream.fromByteBuffer(message.getPayload());
-				// Deserialize message ID
-				final Object messageId = ser.deserializeMessageId(bis);
-				// Deserialize return code (0 = OK, anything else = WRONG)
-	    		int retCode = ser.deserializeUI32(bis, "");
-	    		if (retCode == 0) { // Function execution was OK.
-					MyStruct result = ser.deserialize(bis, ""	, MyStruct.class);
-					onSuccess(result);
-				} 
-			} catch (Exception ex) {
-				onFailure(ex);
-			}
-		}
-	}
+	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, AsyncCallback<MyStruct> callback);
+	public void only_param_func(/*in*/ MyStruct param1, AsyncCallback<Void> callback);
+	public void only_return_func(AsyncCallback<MyStruct> callback);
 
 
 

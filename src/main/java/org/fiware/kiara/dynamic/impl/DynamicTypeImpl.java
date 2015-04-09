@@ -34,9 +34,10 @@ public abstract class DynamicTypeImpl implements DynamicValue {
         this.m_typeDescriptor = typeDescriptor;
         this.m_className = className;
     }
-    
+
+    @Override
     public TypeDescriptor getTypeDescriptor() {
         return this.m_typeDescriptor;
     }
-    
+
 }

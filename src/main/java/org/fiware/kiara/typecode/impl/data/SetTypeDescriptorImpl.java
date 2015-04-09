@@ -47,13 +47,13 @@ public class SetTypeDescriptorImpl extends ContainerTypeDescriptorImpl implement
     }
     
     @Override
-    public boolean setContentType(DataTypeDescriptor contentType) {
+    public boolean setElementType(DataTypeDescriptor contentType) {
         this.m_contentType = contentType;
         return true;
     }
     
     @Override
-    public DataTypeDescriptor getContentType() {
+    public DataTypeDescriptor getElementType() {
         return this.m_contentType;
     }
 

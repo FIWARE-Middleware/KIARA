@@ -32,21 +32,23 @@ import java.io.IOException;
 
 import org.fiware.kiara.netty.TransportMessageDispatcher;
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportMessage;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.client.AsyncCallback;
 
 /**
- * Class containing the proxy implementation for all the services. 
+ * Class containing the proxy implementation for all the services.
  *
  * @author Kiaragen tool.
  *
  */
 class TestServiceProxy implements TestServiceClient {
 	
+    public static final String serviceName = "TestService";
+
 	public TestServiceProxy(Serializer ser, Transport transport) {
 		m_ser = (org.fiware.kiara.serialization.impl.SerializerImpl) ser;
 		m_transport = (org.fiware.kiara.transport.impl.TransportImpl) transport;
@@ -327,10 +329,10 @@ class TestServiceProxy implements TestServiceClient {
 		return;
 	}
 
-	
+
     @Override
-	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, final return_param_func_AsyncCallback callback) {
-		
+	public void return_param_func(/*in*/ MyStruct param1, /*in*/ int param2, final AsyncCallback<MyStruct> callback) {
+
 		if (m_ser != null && m_transport != null) {
 			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
@@ -353,7 +355,7 @@ class TestServiceProxy implements TestServiceClient {
 
                 @Override
 				public void onSuccess(TransportMessage result) {
-					callback.process(result, m_ser);
+					TestServiceProcess.return_param_func_processAsync(result, m_ser, callback);
 				}
 
                 @Override
@@ -371,8 +373,8 @@ class TestServiceProxy implements TestServiceClient {
 	}
 
     @Override
-	public void only_param_func(/*in*/ MyStruct param1, final only_param_func_AsyncCallback callback) {
-		
+	public void only_param_func(/*in*/ MyStruct param1, final AsyncCallback<Void> callback) {
+
 		if (m_ser != null && m_transport != null) {
 			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
@@ -394,8 +396,8 @@ class TestServiceProxy implements TestServiceClient {
 
                 @Override
 				public void onSuccess(TransportMessage result) {
-	        		
-					callback.process(result, m_ser);
+
+					TestServiceProcess.only_param_func_processAsync(result, m_ser, callback);
 				}
 
                 @Override
@@ -413,8 +415,8 @@ class TestServiceProxy implements TestServiceClient {
 	}
 
     @Override
-	public void only_return_func(final only_return_func_AsyncCallback callback) {
-		
+	public void only_return_func(final AsyncCallback<MyStruct> callback) {
+
 		if (m_ser != null && m_transport != null) {
 			final BinaryOutputStream bos = new BinaryOutputStream();
 			final TransportMessage trequest = m_transport.createTransportMessage(null);
@@ -435,7 +437,7 @@ class TestServiceProxy implements TestServiceClient {
 
                 @Override
 				public void onSuccess(TransportMessage result) {
-					callback.process(result, m_ser);
+					TestServiceProcess.only_return_func_processAsync(result, m_ser, callback);
 				}
 
                 @Override

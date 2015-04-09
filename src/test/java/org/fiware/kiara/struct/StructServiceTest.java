@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -68,16 +69,8 @@ public class StructServiceTest {
 
     public static class StructServiceSetup extends TestSetup<StructServiceClient> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public StructServiceSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
-        }
-
-        public ExecutorService getServerDispatchingExecutor() {
-            return serverDispatchingExecutor;
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -97,7 +90,7 @@ public class StructServiceTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -107,31 +100,6 @@ public class StructServiceTest {
         @Override
         protected StructServiceClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(StructServiceClient.class);
-        }
-
-        @Override
-        protected String makeServerTransportUri(String transport, int port) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        protected String makeClientTransportUri(String transport, int port, String protocol) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }
@@ -226,7 +194,7 @@ public class StructServiceTest {
             final int arg = i;
             PrimitiveTypesStruct value = StructServiceServantImpl.createPrimitiveTypesStruct();
             value.setMyInt(arg);
-            structService.sendReceivePrimitives(value, new StructServiceAsync.sendReceivePrimitives_AsyncCallback() {
+            structService.sendReceivePrimitives(value, new AsyncCallback<PrimitiveTypesStruct>() {
 
                 @Override
                 public void onSuccess(PrimitiveTypesStruct result) {

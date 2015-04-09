@@ -27,6 +27,7 @@ import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
+import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.data.ArrayTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.EnumTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.ExceptionTypeDescriptorImpl;
@@ -36,9 +37,9 @@ import org.fiware.kiara.typecode.impl.data.PrimitiveTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.SetTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.StructTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.data.UnionTypeDescriptorImpl;
+import org.fiware.kiara.typecode.impl.data.VoidTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.FunctionTypeDescriptorImpl;
 import org.fiware.kiara.typecode.impl.services.ServiceTypeDescriptorImpl;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 /**
@@ -59,6 +60,11 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     }
 
     @Override
+    public DataTypeDescriptor createVoidType() {
+        return new VoidTypeDescriptorImpl();
+    }
+
+    @Override
     public PrimitiveTypeDescriptor createPrimitiveType(TypeKind kind) {
         return new PrimitiveTypeDescriptorImpl(kind);
     }
@@ -66,15 +72,15 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     @Override
     public ArrayTypeDescriptor createArrayType(DataTypeDescriptor contentDescriptor, int... dimensionsLength) {
         ArrayTypeDescriptor ret = new ArrayTypeDescriptorImpl();
-        ret.setContentType(contentDescriptor);
-        ret.setDimensionsLength(dimensionsLength);
+        ret.setElementType(contentDescriptor);
+        ret.setDimensions(dimensionsLength);
         return ret;
     }
 
     @Override
     public ListTypeDescriptor createListType(DataTypeDescriptor contentDescriptor, int maxSize) {
         ListTypeDescriptor ret = new ListTypeDescriptorImpl();
-        ret.setContentType(contentDescriptor);
+        ret.setElementType(contentDescriptor);
         ret.setMaxSize(maxSize);
         return ret;
     }
@@ -82,7 +88,7 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     @Override
     public SetTypeDescriptor createSetType(DataTypeDescriptor contentDescriptor, int maxSize) {
         SetTypeDescriptor ret = new SetTypeDescriptorImpl();
-        ret.setContentType(contentDescriptor);
+        ret.setElementType(contentDescriptor);
         ret.setMaxSize(maxSize);
         return ret;
     }
@@ -130,14 +136,9 @@ public class TypeDescriptorBuilderImpl implements TypeDescriptorBuilder {
     }
 
     @Override
-    public ServiceTypeDescriptor createServiceType(String name) {
-        ServiceTypeDescriptor ret = new ServiceTypeDescriptorImpl(name);
+    public ServiceTypeDescriptor createServiceType(String name, String scopedName) {
+        ServiceTypeDescriptor ret = new ServiceTypeDescriptorImpl(name, scopedName);
         return ret;
     }
-    
-    
-
-
-    
 
 }

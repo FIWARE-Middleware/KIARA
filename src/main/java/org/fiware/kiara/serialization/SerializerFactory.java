@@ -1,6 +1,6 @@
 /* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
  *
- * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ * Copyright (C) 2014 German Research Center for Artificial Intelligence (DFKI)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,22 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.dynamic.services;
+package org.fiware.kiara.serialization;
 
-import org.fiware.kiara.serialization.impl.SerializerImpl;
-import org.fiware.kiara.transport.impl.TransportMessage;
-import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
+import java.io.IOException;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
-public interface DynamicAsyncCallback {
-    
-    void process(TransportMessage message, SerializerImpl ser, FunctionTypeDescriptor typeDescriptor);
-    
-    public void onSuccess(DynamicFunctionResponse response);
-    
-    public void onFailure(java.lang.Throwable caught);
+ *
+ * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
+ */
+public interface SerializerFactory {
+
+    public String getName();
+
+    public int getPriority();
+
+    public Serializer createSerializer();
 
 }
