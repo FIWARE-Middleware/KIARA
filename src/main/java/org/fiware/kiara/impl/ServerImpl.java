@@ -1,5 +1,6 @@
 package org.fiware.kiara.impl;
 
+import com.google.common.collect.Sets;
 import org.fiware.kiara.Context;
 import org.fiware.kiara.server.Server;
 import org.fiware.kiara.server.Service;
@@ -15,9 +16,11 @@ import java.net.URISyntaxException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.SSLException;
 
@@ -34,11 +37,9 @@ public class ServerImpl implements Server {
 
     private final Context context;
     private final TransportServer transportServer;
-    private final List<Service> services;
     private final List<ServiceInstanceInfo> serviceInstanceInfos;
     private final List<ServantDispatcher> servantDispatchers;
     private final Map<String, DynamicServant> dynamicServants;
-    private final IDLInfoDatabase idlInfoDatabase;
     private NegotiationHandler negotiationHandler;
 
     private String configHost;
@@ -66,11 +67,9 @@ public class ServerImpl implements Server {
         this.context = context;
         try {
             this.transportServer = new TransportServerImpl();
-            services = new ArrayList<>();
             serviceInstanceInfos = new ArrayList<>();
             servantDispatchers = new ArrayList<>();
             dynamicServants = new HashMap<>();
-            idlInfoDatabase = new IDLInfoDatabase();
             negotiationHandler = null;
         } catch (CertificateException | SSLException ex) {
             throw new RuntimeException(ex);
@@ -78,25 +77,38 @@ public class ServerImpl implements Server {
     }
 
     public final ServerConfiguration generateServerConfiguration(String localHostName, String remoteHostName) {
-        ServerConfiguration serverConfiguration = new ServerConfiguration();
+        final ServerConfiguration serverConfiguration = new ServerConfiguration();
+
+        final Set<String> allServiceNames = new HashSet<>();
+        final Set<IDLInfo> allIdlInfos = Sets.newIdentityHashSet();
+
         synchronized (serviceInstanceInfos) {
             for (ServiceInstanceInfo element : serviceInstanceInfos) {
-                ServerInfo serverInfo = new ServerInfo();
+                final ServerInfo serverInfo = new ServerInfo();
                 serverInfo.protocol.set(element.protocolInfo);
 
                 // create a list of all available services
                 final ServiceImpl serviceImpl = (ServiceImpl) element.service;
 
+                final Set<String> serviceNames = new HashSet<>();
+
                 for (IDLInfo idlInfo : serviceImpl.getIDLInfoDatabase().getIDLInfos()) {
+                    for (ServiceTypeDescriptor serviceTypeDescr : idlInfo.getServiceTypes()) {
+                        if (allServiceNames.add(serviceTypeDescr.getScopedName())) {
+                            allIdlInfos.add(idlInfo);
+                        }
+                    }
                     for (Servant servant : idlInfo.servants) {
-                        serverInfo.services.add(servant.getServiceName());
+                        serviceNames.add(servant.getServiceName());
                     }
                 }
 
-                Map<FunctionTypeDescriptor, DynamicFunctionHandler> dynamicHandlers = serviceImpl.getDynamicHandlers();
-
+                final Map<FunctionTypeDescriptor, DynamicFunctionHandler> dynamicHandlers = serviceImpl.getDynamicHandlers();
                 for (Map.Entry<FunctionTypeDescriptor, DynamicFunctionHandler> entry : dynamicHandlers.entrySet()) {
-                    final String serviceName = entry.getKey().getServiceName();
+                    serviceNames.add(entry.getKey().getServiceName());
+                }
+
+                for (String serviceName : serviceNames) {
                     serverInfo.services.add(serviceName);
                 }
 
@@ -117,8 +129,8 @@ public class ServerImpl implements Server {
             }
         }
 
-        StringBuilder builder = new StringBuilder();
-        for (IDLInfo idlInfo : idlInfoDatabase.getIDLInfos()) {
+        final StringBuilder builder = new StringBuilder();
+        for (IDLInfo idlInfo : allIdlInfos) {
             builder.append(idlInfo.idlContents);
         }
         serverConfiguration.idlContents = builder.toString();
@@ -127,8 +139,6 @@ public class ServerImpl implements Server {
 
     @Override
     public void addService(Service service, ServerTransport serverTransport, Serializer serializer) throws IOException {
-        services.add(service);
-
         ServantDispatcher dispatcher = new ServantDispatcher(serializer, serverTransport);
 
         ServiceInstanceInfo serviceInstanceInfo = new ServiceInstanceInfo(service, serverTransport, serializer);
@@ -141,16 +151,7 @@ public class ServerImpl implements Server {
         for (IDLInfo idlInfo : serviceImpl.getIDLInfoDatabase().getIDLInfos()) {
 
             for (Servant servant : idlInfo.servants) {
-                idlInfoDatabase.addServant(servant);
                 dispatcher.addServant(servant);
-            }
-
-            for (ServiceTypeDescriptor serviceType : idlInfo.serviceTypes) {
-                IDLInfo destIDLInfo = idlInfoDatabase.getIDLInfoByServiceName(serviceType.getScopedName());
-                if (destIDLInfo == null) {
-                    destIDLInfo = new IDLInfo(idlInfo.idlContents);
-                    idlInfoDatabase.addIDLInfo(destIDLInfo);
-                }
             }
         }
 
@@ -161,7 +162,6 @@ public class ServerImpl implements Server {
             DynamicServant servant = dynamicServants.get(serviceName);
             if (servant == null) {
                 servant = new DynamicServant(serviceName);
-                idlInfoDatabase.addServant(servant);
                 dynamicServants.put(serviceName, servant);
             }
             servant.addFunctionHandler(entry.getKey(), entry.getValue());
@@ -190,9 +190,6 @@ public class ServerImpl implements Server {
                     }
                 }
             }
-        }
-        synchronized (services) {
-            services.remove(service);
         }
         return removed;
     }

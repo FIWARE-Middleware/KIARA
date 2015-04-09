@@ -55,6 +55,10 @@ public class IDLInfo {
         return null;
     }
 
+    public List<ServiceTypeDescriptor> getServiceTypes() {
+        return serviceTypes;
+    }
+
     public ServiceTypeDescriptor getServiceType(String serviceName) {
         if (serviceName != null) {
             for (ServiceTypeDescriptor serviceType : serviceTypes) {
