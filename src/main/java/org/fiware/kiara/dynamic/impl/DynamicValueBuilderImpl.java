@@ -173,7 +173,7 @@ public class DynamicValueBuilderImpl implements DynamicValueBuilder {
         if (arrayDescriptor.getElementType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this array descriptor has not been defined.");
         }
-        ret.setContentType(arrayDescriptor.getElementType());
+        ret.setElementType(arrayDescriptor.getElementType());
         for (int i=0; i < arrayDescriptor.getMaxSize(); ++i) {
             ret.addElement(this.createData(arrayDescriptor.getElementType()));
         }
@@ -185,7 +185,7 @@ public class DynamicValueBuilderImpl implements DynamicValueBuilder {
         if (listDescriptor.getElementType() == null) {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this list descriptor has not been defined.");
         }
-        ret.setContentType(listDescriptor.getElementType());
+        ret.setElementType(listDescriptor.getElementType());
         return ret;
     }
     
@@ -195,7 +195,7 @@ public class DynamicValueBuilderImpl implements DynamicValueBuilder {
             throw new DynamicTypeException("DynamicTypeBuilder - The content type for this set descriptor has not been defined.");
         }
         
-        ret.setContentType(setDescriptor.getElementType());
+        ret.setElementType(setDescriptor.getElementType());
         return ret;
     }
     
