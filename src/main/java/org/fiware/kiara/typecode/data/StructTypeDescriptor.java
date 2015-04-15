@@ -1,6 +1,6 @@
 /* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
  *
- * Copyright (C) 2014 German Research Center for Artificial Intelligence (DFKI)
+ * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,26 +15,19 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.transport.impl;
+package org.fiware.kiara.typecode.data;
+
+import org.fiware.kiara.typecode.TypeDescriptor;
 
 /**
- *
- * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
- */
-public class InvalidAddressException extends Exception {
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*
+*/
+public interface StructTypeDescriptor extends MemberedTypeDescriptor {
 
-    public InvalidAddressException() {
-    }
-
-    public InvalidAddressException(String message) {
-        super(message);
-    }
-
-    public InvalidAddressException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidAddressException(Throwable cause) {
-        super(cause);
-    }
+    public void addMember(TypeDescriptor member, String name);
+    
+    public DataTypeDescriptor getMember(String name);
+    
 }

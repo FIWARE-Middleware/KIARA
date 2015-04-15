@@ -2,60 +2,48 @@ package org.fiware.kiara.serialization;
 
 import static org.junit.Assert.assertTrue;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
+import org.fiware.kiara.serialization.impl.*;
+
+import org.fiware.kiara.serialization.impl.Serializer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.transport.impl.TransportMessage;
+import org.fiware.kiara.serialization.types.GenericType;
 
 public class CDRAlignmentTest {
 
-    private CDRSerializer ser;
-    private ByteBuffer buffer;
-    private TransportMessage message;
+    private SerializerImpl ser;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
-        this.buffer = ByteBuffer.allocate(500);
-        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer);
     }
 
     @After
     public void detach() {
-        this.message.getPayload().clear();
-    }
-
-    public void reset() {
-        this.message.getPayload().clear();
     }
 
     /*
      * CharAlignTest
      */
-
     @Test
     public void CharAlignSerializeTest() {
         char in = 'w';
         char i = 'f';
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeChar(message, "MyShort", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeChar(bos, "MyShort", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
-
-        reset();
     }
 
     @Test
@@ -64,11 +52,12 @@ public class CDRAlignmentTest {
         char iin = 'f', iout = '0';
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeChar(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeChar(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeChar(bos, "", cin);
+            ser.serializeChar(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeChar(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -76,28 +65,28 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * ByteAlignTest
      */
-
     @Test
     public void ByteAlignSerializeTest() {
         char in = 'w';
         byte i = 5;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeByte(message, "MyShort", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeByte(bos, "MyShort", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -106,11 +95,13 @@ public class CDRAlignmentTest {
         byte iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeByte(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeByte(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeByte(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeByte(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -118,28 +109,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * I16AlignTest
      */
-
     @Test
     public void I16AlignSerializeTest() {
         char in = 'w';
         short i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeI16(message, "MyShort", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeI16(bos, "MyShort", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -148,11 +140,13 @@ public class CDRAlignmentTest {
         short iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeI16(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeI16(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeI16(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeI16(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -160,28 +154,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * UI16AlignTest
      */
-
     @Test
     public void UI16AlignSerializeTest() {
         char in = 'w';
         short i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeUI32(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeUI16(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -190,11 +185,13 @@ public class CDRAlignmentTest {
         short iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeUI16(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeUI16(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeUI16(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeUI16(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -202,28 +199,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * I32AlignTest
      */
-
     @Test
     public void I32AlignSerializeTest() {
         char in = 'w';
         int i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeI32(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeI32(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -232,11 +230,13 @@ public class CDRAlignmentTest {
         int iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeI32(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeI32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeI32(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeI32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -244,28 +244,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * UI32AlignTest
      */
-
     @Test
     public void UI32AlignSerializeTest() {
         char in = 'w';
         int i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeUI32(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeUI32(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -274,11 +275,13 @@ public class CDRAlignmentTest {
         int iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeUI32(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeUI32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeUI32(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeUI32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -286,28 +289,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * I64AlignTest
      */
-
     @Test
     public void I64AlignSerializeTest() {
         char in = 'w';
         long i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeI64(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeI64(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -316,11 +320,13 @@ public class CDRAlignmentTest {
         long iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeI64(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeI64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeI64(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeI64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -328,28 +334,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * UI64AlignTest
      */
-
     @Test
     public void UI64AlignSerializeTest() {
         char in = 'w';
         long i = 55;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeUI64(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeUI64(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -358,11 +365,13 @@ public class CDRAlignmentTest {
         long iin = 5, iout = 0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeUI64(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeUI64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeUI64(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeUI64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -370,28 +379,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * Float32AlignTest
      */
-
     @Test
     public void Float32AlignSerializeTest() {
         char in = 'w';
         float i = (float) 55.5;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeFloat32(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeFloat32(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -400,11 +410,13 @@ public class CDRAlignmentTest {
         float iin = (float) 5.5, iout = (float) 0.0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeFloat32(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeFloat32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeFloat32(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeFloat32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -412,28 +424,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * Float64AlignTest
      */
-
     @Test
     public void Float64AlignSerializeTest() {
         char in = 'w';
         double i = 55.5;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeFloat64(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeFloat64(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -442,11 +455,13 @@ public class CDRAlignmentTest {
         double iin = 5.5, iout = 0.0;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeFloat64(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeFloat64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeFloat64(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeFloat64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -454,28 +469,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * BooleanAlignTest
      */
-
     @Test
     public void BooleanAlignSerializeTest() {
         char in = 'w';
         boolean i = true;
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeBoolean(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeBoolean(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -484,11 +500,13 @@ public class CDRAlignmentTest {
         boolean iin = true, iout = false;
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeBoolean(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeBoolean(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeBoolean(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeBoolean(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -496,28 +514,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin == iout));
 
-        reset();
+
     }
 
     /*
      * StringAlignTest
      */
-
     @Test
     public void StringAlignSerializeTest() {
         char in = 'w';
         String i = "Hello World!";
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            ser.serializeString(message, "MyInt", i);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "MyChar", in);
+            ser.serializeString(bos, "MyInt", i);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -526,11 +545,13 @@ public class CDRAlignmentTest {
         String iin = "Hello World!", iout = "";
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeString(message, "", iin);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            iout = ser.deserializeString(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serializeString(bos, "", iin);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            iout = ser.deserializeString(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -538,28 +559,29 @@ public class CDRAlignmentTest {
 
         assertTrue((cin == cout) && (iin.compareTo(iout) == 0));
 
-        reset();
+
     }
 
     /*
      * Generic types
      */
-
     @Test
     public void serializeAlignTest() {
         char a = 'w';
         GenericType in = new GenericType(1, "one");
 
         try {
-            ser.serializeChar(message, "", a);
-            ser.serialize(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", a);
+            ser.serialize(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
@@ -569,11 +591,13 @@ public class CDRAlignmentTest {
         GenericType out = new GenericType();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserialize(message, "", GenericType.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = ser.deserialize(bis, "", GenericType.class);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -581,54 +605,59 @@ public class CDRAlignmentTest {
 
         assertTrue(cin == cout && in.equals(out));
 
-        reset();
+
     }
 
     /*
      * SerializeArrayChar
      */
-
     @Test
     public void serializeAlignArrayCharTest() {
         char c = 'w';
-        List<Character> in = new ArrayList<Character>();
+        List<Character> in = new ArrayList<>();
         in.add('a');
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayChar(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", c);
+            new ListAsArraySerializer<>(1, new BasicSerializers.CharSerializer()).write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayCharTest() {
         char cin = 'w', cout = '0';
-        ArrayList<Character> in = new ArrayList<Character>();
+        ArrayList<Character> in = new ArrayList<>();
         in.add('a');
         in.add('e');
         in.add('i');
         in.add('o');
         in.add('u');
-        List<Character> out = new ArrayList<Character>();;
+        List<Character> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayChar(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayChar(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Character>> s = new ListAsArraySerializer<>(5, new BasicSerializers.CharSerializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (in.get(i) != out.get(i)) {
                 error = true;
             }
@@ -636,439 +665,496 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayByte
      */
-
     @Test
     public void serializeAlignArrayByteTest() {
         char c = 'w';
-        List<Byte> in = new ArrayList<Byte>();
+        List<Byte> in = new ArrayList<>();
         in.add((byte) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayByte(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Byte>> s = new ListAsArraySerializer<>(1, new BasicSerializers.ByteSerializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayByteTest() {
         char cin = 'w', cout = '0';
-        List<Byte> in = new ArrayList<Byte>();
+        List<Byte> in = new ArrayList<>();
         in.add((byte) 5);
         in.add((byte) 6);
         in.add((byte) 7);
         in.add((byte) 8);
         in.add((byte) 9);
-        List<Byte> out = new ArrayList<Byte>();;
+        List<Byte> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayByte(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayByte(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Byte>> s = new ListAsArraySerializer<>(5, new BasicSerializers.ByteSerializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayI16
      */
-
     @Test
     public void serializeAlignArrayI16Test() {
         char c = 'w';
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayI16(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Short>> s = new ListAsArraySerializer<>(1, new BasicSerializers.I16Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayI16Test() {
         char cin = 'w', cout = '0';
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
         in.add((short) 6);
         in.add((short) 7);
         in.add((short) 8);
         in.add((short) 9);
-        List<Short> out = new ArrayList<Short>();;
+        List<Short> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayI16(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI16(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Short>> s = new ListAsArraySerializer<>(5, new BasicSerializers.I16Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayUI16
      */
-
     @Test
     public void serializeAlignArrayUI16Test() {
         char c = 'w';
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayUI16(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Short>> s = new ListAsArraySerializer<>(1, new BasicSerializers.UI16Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayUI16Test() {
         char cin = 'w', cout = '0';
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
         in.add((short) 6);
         in.add((short) 7);
         in.add((short) 8);
         in.add((short) 9);
-        List<Short> out = new ArrayList<Short>();;
+        List<Short> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI16(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI16(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Short>> s = new ListAsArraySerializer<>(5, new BasicSerializers.UI16Serializer());
+
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayI32
      */
-
     @Test
     public void serializeAlignArrayI32Test() {
         char c = 'w';
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayI32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Integer>> s = new ListAsArraySerializer<>(1, new BasicSerializers.I32Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayI32Test() {
         char cin = 'w', cout = '0';
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
         in.add((int) 6);
         in.add((int) 7);
         in.add((int) 8);
         in.add((int) 9);
-        List<Integer> out = new ArrayList<Integer>();;
+        List<Integer> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayI32(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI32(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Integer>> s = new ListAsArraySerializer<>(5, new BasicSerializers.I32Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayUI32
      */
-
     @Test
     public void serializeAlignArrayUI32Test() {
         char c = 'w';
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayUI32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Integer>> s = new ListAsArraySerializer<>(1, new BasicSerializers.UI32Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayUI32Test() {
         char cin = 'w', cout = '0';
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
         in.add((int) 6);
         in.add((int) 7);
         in.add((int) 8);
         in.add((int) 9);
-        List<Integer> out = new ArrayList<Integer>();;
+        List<Integer> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI32(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI32(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Integer>> s = new ListAsArraySerializer<>(5, new BasicSerializers.UI32Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayI64
      */
-
     @Test
     public void serializeAlignArrayI64Test() {
         char c = 'w';
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayI64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Long>> s = new ListAsArraySerializer<>(1, new BasicSerializers.I64Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayI64Test() {
         char cin = 'w', cout = '0';
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
         in.add((long) 6);
         in.add((long) 7);
         in.add((long) 8);
         in.add((long) 9);
-        List<Long> out = new ArrayList<Long>();;
+        List<Long> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayI64(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayI64(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Long>> s = new ListAsArraySerializer<>(5, new BasicSerializers.I64Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayUI64
      */
-
     @Test
     public void serializeAlignArrayUI64Test() {
         char c = 'w';
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayUI64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Long>> s = new ListAsArraySerializer<>(1, new BasicSerializers.UI64Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayUI64Test() {
         char cin = 'w', cout = '0';
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
         in.add((long) 6);
         in.add((long) 7);
         in.add((long) 8);
         in.add((long) 9);
-        List<Long> out = new ArrayList<Long>();;
+        List<Long> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayUI64(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayUI64(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Long>> s = new ListAsArraySerializer<>(5, new BasicSerializers.UI64Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
-            if (in.get(i) != out.get(i)) {
+        for (int i = 0; i < in.size(); ++i) {
+            if (!Objects.equals(in.get(i), out.get(i))) {
                 error = true;
             }
         }
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayFloat32
      */
-
     @Test
     public void serializeAlignArrayFloat32Test() {
         char c = 'w';
-        List<Float> in = new ArrayList<Float>();
+        List<Float> in = new ArrayList<>();
         in.add((float) 5.0);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayFloat32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Float>> s = new ListAsArraySerializer<>(1, new BasicSerializers.Float32Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayFloat32Test() {
         char cin = 'w', cout = '0';
-        List<Float> in = new ArrayList<Float>();
+        List<Float> in = new ArrayList<>();
         in.add((float) 5.0);
         in.add((float) 6.1);
         in.add((float) 7.2);
         in.add((float) 8.3);
         in.add((float) 9.4);
-        List<Float> out = new ArrayList<Float>();;
+        List<Float> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayFloat32(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayFloat32(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Float>> s = new ListAsArraySerializer<>(5, new BasicSerializers.Float32Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (java.lang.Float.compare(in.get(i), out.get(i)) != 0) {
                 error = true;
             }
@@ -1076,54 +1162,61 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayFloat64
      */
-
     @Test
     public void serializeAlignArrayFloat64Test() {
         char c = 'w';
-        List<Double> in = new ArrayList<Double>();
+        List<Double> in = new ArrayList<>();
         in.add((double) 5.0);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayFloat64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Double>> s = new ListAsArraySerializer<>(1, new BasicSerializers.Float64Serializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayFloat64Test() {
         char cin = 'w', cout = '0';
-        List<Double> in = new ArrayList<Double>();
+        List<Double> in = new ArrayList<>();
         in.add((double) 5.0);
         in.add((double) 6.1);
         in.add((double) 7.2);
         in.add((double) 8.3);
         in.add((double) 9.4);
-        List<Double> out = new ArrayList<Double>();;
+        List<Double> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayFloat64(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayFloat64(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Double>> s = new ListAsArraySerializer<>(5, new BasicSerializers.Float64Serializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (java.lang.Double.compare(in.get(i), out.get(i)) != 0) {
                 error = true;
             }
@@ -1131,54 +1224,61 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayBoolean
      */
-
     @Test
     public void serializeAlignArrayBooleanTest() {
         char c = 'w';
-        List<Boolean> in = new ArrayList<Boolean>();
+        List<Boolean> in = new ArrayList<>();
         in.add(true);
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayBoolean(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Boolean>> s = new ListAsArraySerializer<>(1, new BasicSerializers.BooleanSerializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayBooleanTest() {
         char cin = 'w', cout = '0';
-        List<Boolean> in = new ArrayList<Boolean>();
+        List<Boolean> in = new ArrayList<>();
         in.add(false);
         in.add(true);
         in.add(true);
         in.add(false);
         in.add(true);
-        List<Boolean> out = new ArrayList<Boolean>();;
+        List<Boolean> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayBoolean(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayBoolean(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<Boolean>> s = new ListAsArraySerializer<>(5, new BasicSerializers.BooleanSerializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (in.get(i) != out.get(i)) {
                 error = true;
             }
@@ -1186,54 +1286,61 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * SerializeArrayString
      */
-
     @Test
     public void serializeAlignArrayStringTest() {
         char c = 'w';
-        List<String> in = new ArrayList<String>();
+        List<String> in = new ArrayList<>();
         in.add("one");
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArrayString(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<String>> s = new ListAsArraySerializer<>(1, new BasicSerializers.StringSerializer());
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayStringTest() {
         char cin = 'w', cout = '0';
-        List<String> in = new ArrayList<String>();
+        List<String> in = new ArrayList<>();
         in.add("one");
         in.add("two");
         in.add("three");
         in.add("four");
         in.add("five");
-        List<String> out = new ArrayList<String>();;
+        List<String> out = new ArrayList<>();
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArrayString(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArrayString(message, "", 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<String>> s = new ListAsArraySerializer<>(5, new BasicSerializers.StringSerializer());
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (in.get(i).compareTo(out.get(i)) != 0) {
                 error = true;
             }
@@ -1241,54 +1348,63 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
+
     }
 
     /*
      * Array of generic types
      */
-
     @Test
     public void serializeAlignArrayTest() {
         char c = 'w';
-        List<GenericType> in = new ArrayList<GenericType>();
+        List<GenericType> in = new ArrayList<>();
         in.add(new GenericType(1, "one"));
 
         try {
-            ser.serializeChar(message, "", c);
-            ser.serializeArray(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            Serializer<List<GenericType>> s
+                    = new ListAsArraySerializer<>(1, new ObjectSerializer<>(GenericType.class));
+
+            ser.serializeChar(bos, "", c);
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+
     }
 
     @Test
     public void deserializeAlignArrayTest() {
         char cin = 'w', cout = '0';
-        List<GenericType> in = new ArrayList<GenericType>();
+        List<GenericType> in = new ArrayList<>();
         in.add(new GenericType(1, "one"));
         in.add(new GenericType(2, "two"));
         in.add(new GenericType(3, "three"));
         in.add(new GenericType(4, "four"));
         in.add(new GenericType(5, "five"));
-        List<GenericType> out = new ArrayList<GenericType>();;
+        List<GenericType> out = new ArrayList<>();
+
+        Serializer<List<GenericType>> s
+            = new ListAsArraySerializer<>(5, new ObjectSerializer<>(GenericType.class));
 
         try {
-            ser.serializeChar(message, "", cin);
-            ser.serializeArray(message, "", in, 5);
-            message.getPayload().rewind();
-            cout = ser.deserializeChar(message, "");
-            out = ser.deserializeArray(message, "", GenericType.class, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            ser.serializeChar(bos, "", cin);
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            cout = ser.deserializeChar(bis, "");
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         boolean error = false;
-        for (int i=0; i < in.size(); ++i) {
+        for (int i = 0; i < in.size(); ++i) {
             if (!in.get(i).equals(out.get(i))) {
                 error = true;
             }
@@ -1296,8 +1412,7 @@ public class CDRAlignmentTest {
 
         assertTrue(!error && cin == cout);
 
-        reset();
-    }
 
+    }
 
 }

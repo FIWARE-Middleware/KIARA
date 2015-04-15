@@ -5,8 +5,13 @@ import org.fiware.kiara.transport.ServerTransport;
 import java.io.Closeable;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 public interface Server extends Closeable {
+
+    public void enableNegotiationService(String host, int port, String configPath) throws URISyntaxException;
+
+    public void disableNegotiationService();
 
     public void addService(Service service, String path, String protocol) throws IOException;
 

@@ -21,9 +21,9 @@ public interface Context extends Closeable {
     // Create server without negotiation
     public Server createServer();
 
-    public Transport createTransport(String url) throws IOException;
+    public Transport createTransport(String url) throws IOException; 
 
-    public ServerTransport createServerTransport(String url) throws IOException;
+    public ServerTransport createServerTransport(String url) throws IOException; 
 
     public Serializer createSerializer(String name) throws IOException;
 

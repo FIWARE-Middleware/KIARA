@@ -1,0 +1,42 @@
+union IntSwitchUnion switch (i32) {
+	case 0:
+	case 1:
+		i32 intVal;
+	case 2:
+		string stringVal;
+	default:
+		float32 floatVal;
+};
+
+union CharSwitchUnion switch (char) {
+	case '1':
+	case '2':
+		i32 intVal;
+	case '3':
+		string stringVal;
+	default:
+		float32 floatVal;
+};
+
+enum EnumSwitcher {
+	option_1,
+	option_2,
+	option_3
+};
+
+union EnumSwitchUnion switch (EnumSwitcher) {
+	case option_1:
+	case option_2:
+		i32 intVal;
+	case option_3:
+		string stringVal;
+	default:
+		float32 floatVal;
+};
+
+union BooleanSwitchUnion switch (boolean) {
+	case true:
+		i32 intVal;
+	case false:
+		string stringVal;
+};

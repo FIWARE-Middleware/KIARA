@@ -17,12 +17,9 @@
  */
 package org.fiware.kiara.serialization.impl;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.fiware.kiara.transport.impl.TransportMessage;
 
 /**
 *
@@ -36,51 +33,17 @@ public class CDRSerializer implements SerializerImpl {
         nextId = new AtomicInteger(1);
     }
 
+    @Override
+    public String getName() {
+        return "cdr";
+    }
+
     public static int alignment(int current_alignment, int dataSize) {
         return (dataSize - (current_alignment % dataSize)) & (dataSize-1);
     }
 
-    private <T> int calculatePadding(TransportMessage message, T type) {
-        int pos = message.getPayload().position();
-        int align = 0;
-
-        if (type instanceof Short) {
-            align = pos % (Short.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Short.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Integer) {
-            align = pos % (Integer.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Integer.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Long) {
-            align = pos % (Long.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Long.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Float) {
-            align = pos % (Float.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Float.SIZE / 8) - align;
-                return padding_len;
-            }
-        } else if (type instanceof Double) {
-            align = pos % (Double.SIZE / 8);
-            if (align != 0) {
-                int padding_len = (Double.SIZE / 8) - align;
-                return padding_len;
-            }
-        }
-
-        return 0;
-    }
-    
-    private <T> int calculatePadding(ByteBuffer buffer, T type) {
-        int pos = buffer.position();
+    private <T> int calculatePadding(int position, T type) {
+        int pos = position;
         int align = 0;
 
         if (type instanceof Short) {
@@ -118,25 +81,29 @@ public class CDRSerializer implements SerializerImpl {
         return 0;
     }
 
-    private void writePadding(TransportMessage message, int padding_len) {
-        byte[] padding = new byte[padding_len];
-        message.getPayload().put(padding);
-    }
-    
-    private void writePadding(ByteBuffer buffer, int padding_len) {
-        byte[] padding = new byte[padding_len];
-        buffer.put(padding);
+    private <T> int calculatePadding(BinaryInputStream message, T type) {
+        return calculatePadding(message.getPosition(), type);
     }
 
-    private void jumpPadding(TransportMessage message, int padding_len) {
-        int pos = message.getPayload().position();
-        message.getPayload().position(pos+padding_len);
+    private <T> int calculatePadding(BinaryOutputStream message, T type) {
+        return calculatePadding(message.getPosition(), type);
     }
-    
-    private void jumpPadding(ByteBuffer buffer, int padding_len) {
-        int pos = buffer.position();
-        buffer.position(pos+padding_len);
+
+    private void writePadding(BinaryOutputStream message, int padding_len) throws IOException {
+        byte[] padding = new byte[padding_len];
+        message.write(padding);
     }
+
+    private void jumpPadding(BinaryOutputStream message, int padding_len) {
+        int pos = message.getPosition();
+        message.setPosition(pos+padding_len);
+    }
+
+    private void jumpPadding(BinaryInputStream message, int padding_len) {
+        int pos = message.getPosition();
+        message.setPosition(pos+padding_len);
+    }
+
 
     @Override
     public Object getNewMessageId() {
@@ -153,298 +120,301 @@ public class CDRSerializer implements SerializerImpl {
         }
         return id1.equals(id2);
     }
-    
+
     @Override
-    public void serializeMessageId(TransportMessage message, Object messageId) {
+    public String getContentType() {
+        return "application/octet-stream";
+    }
+
+    @Override
+    public void serializeMessageId(BinaryOutputStream message, Object messageId) throws IOException {
         serializeI32(message, "",  (Integer) messageId);
     }
-    
+
     @Override
-    public Object deserializeMessageId(TransportMessage message) {
+    public Object deserializeMessageId(BinaryInputStream message) throws IOException {
         final int id = deserializeI32(message, "");
         return id;
     }
-    
+
     @Override
-    public void serializeMessageId(ByteBuffer buffer, Object messageId) {
-        int padding_len = calculatePadding(buffer, messageId);
-        if (padding_len != 0) {
-            writePadding(buffer, padding_len);
-        }
-        buffer.putInt((Integer) messageId);
-    }
-    
-    @Override
-    public Object deserializeMessageId(ByteBuffer buffer) {
-        int value = 0;
-        int padding_len = calculatePadding(buffer, value);
-        if (padding_len != 0) {
-            jumpPadding(buffer, padding_len);
-        }
-        return buffer.getInt();
-    }
-    
-    @Override
-    public void serializeService(TransportMessage message, String service) {
+    public void serializeService(BinaryOutputStream message, String service) throws IOException {
         this.serializeString(message, "", service);
     }
 
     @Override
-    public String deserializeService(TransportMessage message) {
+    public String deserializeService(BinaryInputStream message) throws IOException {
         return this.deserializeString(message, "");
     }
 
     @Override
-    public void serializeOperation(TransportMessage message, String operation) {
+    public void serializeOperation(BinaryOutputStream message, String operation) throws IOException {
         this.serializeString(message, "", operation);
     }
 
     @Override
-    public String deserializeOperation(TransportMessage message) {
+    public String deserializeOperation(BinaryInputStream message) throws IOException {
         return this.deserializeString(message, "");
     }
-    
+
     /*
      * Primitive types
      */
 
     @Override
-    public void serializeChar(TransportMessage message, String name, char value)
+    public void serializeChar(BinaryOutputStream message, String name, char value) throws IOException
     {
         String byteString = String.valueOf(value);
         byte [] bytes = byteString.getBytes();
-        message.getPayload().put(bytes);
+        message.write(bytes);
     }
-    
+
     @Override
-    public char deserializeChar(TransportMessage message, String name)
+    public char deserializeChar(BinaryInputStream message, String name) throws IOException
     {
-        byte b = message.getPayload().get();
+        byte b = message.readByte();
         return (char) (b & 0xFF);
     }
-    
+
     @Override
-    public void serializeByte(TransportMessage message, String name, byte value)
+    public void serializeByte(BinaryOutputStream message, String name, byte value) throws IOException
     {
-        message.getPayload().put(value);
+        message.writeByte(value);
     }
-    
+
     @Override
-    public byte deserializeByte(TransportMessage message, String name)
+    public byte deserializeByte(BinaryInputStream message, String name) throws IOException
     {
-        return message.getPayload().get();
+        return message.readByte();
     }
-    
+
     @Override
-    public void serializeI16(TransportMessage message, String name, short value)
+    public void serializeI16(BinaryOutputStream message, String name, short value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putShort(value);
+        message.writeShort(value);
     }
-    
+
     @Override
-    public short deserializeI16(TransportMessage message, String name)
+    public short deserializeI16(BinaryInputStream message, String name) throws IOException
     {
         short value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getShort();
+        return message.readShort();
     }
-    
+
     @Override
-    public void serializeUI16(TransportMessage message, String name, short value)
+    public void serializeUI16(BinaryOutputStream message, String name, short value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putShort(value);
+        message.writeShort(value);
     }
-    
+
     @Override
-    public short deserializeUI16(TransportMessage message, String name)
+    public short deserializeUI16(BinaryInputStream message, String name) throws IOException
     {
         short value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getShort();
+        return message.readShort();
     }
-    
+
     @Override
-    public void serializeI32(TransportMessage message, String name, int value)
+    public void serializeI32(BinaryOutputStream message, String name, int value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putInt(value);
+        message.writeInt(value);
     }
-    
+
     @Override
-    public int deserializeI32(TransportMessage message, String name)
+    public int deserializeI32(BinaryInputStream message, String name) throws IOException
     {
         int value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getInt();
+        return message.readInt();
     }
-    
+
     @Override
-    public void serializeUI32(TransportMessage message, String name, int value)
+    public void serializeUI32(BinaryOutputStream message, String name, int value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putInt(value);
+        message.writeInt(value);
     }
-    
+
     @Override
-    public int deserializeUI32(TransportMessage message, String name)
+    public int deserializeUI32(BinaryInputStream message, String name) throws IOException
     {
         int value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getInt();
+        return message.readInt();
     }
-    
+
     @Override
-    public void serializeI64(TransportMessage message, String name, long value)
+    public void serializeI64(BinaryOutputStream message, String name, long value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putLong(value);
+        message.writeLong(value);
     }
-    
+
     @Override
-    public long deserializeI64(TransportMessage message, String name)
+    public long deserializeI64(BinaryInputStream message, String name) throws IOException
     {
         long value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getLong();
+        return message.readLong();
     }
-    
+
     @Override
-    public void serializeUI64(TransportMessage message, String name, long value)
+    public void serializeUI64(BinaryOutputStream message, String name, long value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putLong(value);
+        message.writeLong(value);
     }
-    
+
     @Override
-    public long deserializeUI64(TransportMessage message, String name)
+    public long deserializeUI64(BinaryInputStream message, String name) throws IOException
     {
         long value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getLong();
+        return message.readLong();
     }
-    
+
     @Override
-    public void serializeFloat32(TransportMessage message, String name, float value)
+    public void serializeFloat32(BinaryOutputStream message, String name, float value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putFloat(value);
+        message.writeFloat(value);
     }
-    
+
     @Override
-    public float deserializeFloat32(TransportMessage message, String name)
+    public float deserializeFloat32(BinaryInputStream message, String name) throws IOException
     {
         float value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getFloat();
+        return message.readFloat();
     }
-    
+
     @Override
-    public void serializeFloat64(TransportMessage message, String name, double value)
+    public void serializeFloat64(BinaryOutputStream message, String name, double value) throws IOException
     {
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.getPayload().putDouble(value);
+        message.writeDouble(value);
     }
-    
+
     @Override
-    public double deserializeFloat64(TransportMessage message, String name)
+    public double deserializeFloat64(BinaryInputStream message, String name) throws IOException
     {
         double value = 0;
         int padding_len = calculatePadding(message, value);
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.getPayload().getDouble();
+        return message.readDouble();
     }
-    
+
     @Override
-    public void serializeBoolean(TransportMessage message, String name, boolean value)
+    public void serializeBoolean(BinaryOutputStream message, String name, boolean value) throws IOException
     {
-        message.getPayload().put((byte) (value ? 1 : 0));
+        message.write((byte) (value ? 1 : 0));
     }
-    
+
     @Override
-    public boolean deserializeBoolean(TransportMessage message, String name)
+    public boolean deserializeBoolean(BinaryInputStream message, String name) throws IOException
     {
-        return message.getPayload().get() != 0;
+        return message.readByte() != 0;
     }
-    
+
     @Override
-    public void serializeString(TransportMessage message, String name, String value)
+    public void serializeString(BinaryOutputStream message, String name, String value) throws IOException
     {
         byte[] bytes = value.getBytes();
         this.serializeI32(message, "", bytes.length);
-        message.getPayload().put(bytes);
+        message.write(bytes);
     }
-    
+
     @Override
-    public String deserializeString(TransportMessage message, String name)
+    public String deserializeString(BinaryInputStream message, String name) throws IOException
     {
         int length = 0;
         length = this.deserializeI32(message, "");
         byte[] bytes = new byte[length];
-        message.getPayload().get(bytes);
+        message.readFully(bytes);
         return new String(bytes);
+    }
+
+
+    @Override
+    public void serializeData(BinaryOutputStream message, String name, byte[] data, int offset, int length) throws IOException {
+        // serialize as sequence<octet>
+        this.serializeUI32(message, name, length);
+        message.write(data, offset, length);
+    }
+
+    @Override
+    public byte[] deserializeData(BinaryInputStream message, String name) throws IOException {
+        // deserialize as sequence<octet>
+        final int length = this.deserializeUI32(message, name);
+        byte[] bytes = new byte[length];
+        message.readFully(bytes);
+        return bytes;
     }
 
     /*
      * Generic types
      */
-    
+
     @Override
-    public <T extends Serializable> void serialize(TransportMessage message, String name, T value)
+    public <T extends Serializable> void serialize(BinaryOutputStream message, String name, T value) throws IOException
     {
         value.serialize(this, message, name);
     }
-    
+
     @Override
-    public <T extends Serializable> T deserialize(TransportMessage message, String name, Class<T> example) throws InstantiationException, IllegalAccessException {
+    public <T extends Serializable> T deserialize(BinaryInputStream message, String name, Class<T> example) throws InstantiationException, IllegalAccessException, IOException {
         T object = example.newInstance();
         object.deserialize(this, message, name);
         return object;
@@ -464,1074 +434,183 @@ public class CDRSerializer implements SerializerImpl {
         return ret;
     }
 
-   @Override
-    public <T> void serializeArrayChar(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayChar(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Character) {
-            for (int i=0; i < len; ++i) {
-                this.serializeChar(message, name, (Character) array.get(i));
-            }
-        }
-    }
-    
-   @SuppressWarnings("unchecked")
-   @Override
-    public <T, M> List<M> deserializeArrayChar(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayChar(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Character) this.deserializeChar(message, name));
-            }
-        }
-        
-        return array;
-    }
-    
-    @Override
-    public <T> void serializeArrayByte(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayByte(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Byte) {
-            for (int i=0; i < len; ++i) {
-                this.serializeByte(message, name, (Byte) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayByte(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayByte(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Byte) this.deserializeByte(message, name));
-            }
-        }
-        
-        return array;
-    }
 
-    @Override
-    public <T> void serializeArrayI16(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayI16(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Short) {
-            for (int i=0; i < len; ++i) {
-                this.serializeI16(message, name, (Short) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayI16(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayI16(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Short) this.deserializeI16(message, name));
-            }
-        }
-        
-        return array;
-    }
 
-    @Override
-    public <T> void serializeArrayUI16(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayUI16(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Short) {
-            for (int i=0; i < len; ++i) {
-                this.serializeUI16(message, name, (Short) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayUI16(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayUI16(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Short) this.deserializeUI16(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayI32(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayI32(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Integer) {
-            for (int i=0; i < len; ++i) {
-                this.serializeI32(message, name, (Integer) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayI32(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayI32(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Integer) this.deserializeI32(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayUI32(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayUI32(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Integer) {
-            for (int i=0; i < len; ++i) {
-                this.serializeUI32(message, name, (Integer) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayUI32(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayUI32(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Integer) this.deserializeUI32(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayI64(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayI64(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Long) {
-            for (int i=0; i < len; ++i) {
-                this.serializeI64(message, name, (Long) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayI64(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayI64(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Long) this.deserializeI64(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayUI64(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayUI64(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Long) {
-            for (int i=0; i < len; ++i) {
-                this.serializeUI64(message, name, (Long) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayUI64(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayUI64(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Long) this.deserializeUI64(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayFloat32(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayFloat32(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Float) {
-            for (int i=0; i < len; ++i) {
-                this.serializeFloat32(message, name, (Float) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayFloat32(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayFloat32(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Float) this.deserializeFloat32(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayFloat64(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayFloat64(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Double) {
-            for (int i=0; i < len; ++i) {
-                this.serializeFloat64(message, name, (Double) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayFloat64(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayFloat64(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Double) this.deserializeFloat64(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayBoolean(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayBoolean(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Boolean) {
-            for (int i=0; i < len; ++i) {
-                this.serializeBoolean(message, name, (Boolean) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayBoolean(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayBoolean(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (Boolean) this.deserializeBoolean(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    @Override
-    public <T> void serializeArrayString(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<?> inner_array = (List<?>) array.get(i);
-                this.serializeArrayString(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof String) {
-            for (int i=0; i < len; ++i) {
-                this.serializeString(message, name, (String) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArrayString(TransportMessage message, String name, int... dims) {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArrayString(message, name, trimDimensions(dims)));
-            }
-        } else {
-            for (int i=0; i < len; ++i) {
-                array.add((M) (String) this.deserializeString(message, name));
-            }
-        }
-        
-        return array;
-    }
-
-    /*
-     * Array of generic types
-     */
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T> void serializeArray(TransportMessage message, String name, List<T> array, int... dims) {
-        
-        int len = dims[0];
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                List<? extends Serializable> inner_array = (List<? extends Serializable>) array.get(i);
-                this.serializeArray(message, name, inner_array, trimDimensions(dims));
-            }
-        } else if (array.get(0) instanceof Serializable) {
-            for (int i=0; i < len; ++i) {
-                this.serialize(message, name, (Serializable) array.get(i));
-            }
-        }
-    }
-    
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException {
-        
-        int len = dims[0];
-        ArrayList<M> array = new ArrayList<M>(len);
-        
-        if (dims.length > 1) {
-            for (int i=0; i < len; ++i) {
-                array.add((M) this.deserializeArray(message, name, example, trimDimensions(dims)));
-            }
-        } else {
-            T object;
-            for (int i=0; i < len; ++i) {
-                object = example.newInstance();
-                ((Serializable) object).deserialize(this, message, name);
-                array.add((M) object);
-            }
-        }
-        
-        return array;
-    }
-    
-    /*
-     * Sequences of simple types
-     */
-    
-    @Override
-    public <T> void serializeSequenceChar(TransportMessage message, String name, List<T> sequence) {
-        if (sequence.size() > 0) {
-            this.serializeI32(message, "", ((List<?>) sequence).size());
-            if (sequence.get(0) instanceof List) {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeSequenceChar(message, name, (List<?>) sequence.get(i));
-                }
-            } else {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeChar(message, name, (Character) sequence.get(i));
-                }
-            }
-        }
-    }
-    
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T, M> List<M> deserializeSequenceChar(TransportMessage message, String name, int depth) {
-       
-       int length = this.deserializeI32(message, "");
-       
-       ArrayList<M> array = new ArrayList<M>(length);
-       
-       if (depth != 1) {
-           for (int i=0; i < length; ++i) {
-               array.add((M) this.deserializeSequenceChar(message, name, depth-1));
-           }
-       } else if (depth == 1) {
-           for (int i=0; i < length; ++i) {
-               array.add((M) (Character) this.deserializeChar(message, name));
-           }
-       }
-       
-       return array;
-    }
-   
-   @Override
-   public <T> void serializeSequenceByte(TransportMessage message, String name, List<T> sequence) {
-       if (sequence.size() > 0) {
-           this.serializeI32(message, "", ((List<?>) sequence).size());
-           if (sequence.get(0) instanceof List) {
-               for (int i=0; i < sequence.size(); ++i) {
-                   this.serializeSequenceByte(message, name, (List<?>) sequence.get(i));
-               }
-           } else {
-               for (int i=0; i < sequence.size(); ++i) {
-                   this.serializeByte(message, name, (Byte) sequence.get(i));
-               }
-           }
-       }
-   }
-   
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T, M> List<M> deserializeSequenceByte(TransportMessage message, String name, int depth) {
-      
-      int length = this.deserializeI32(message, "");
-      
-      ArrayList<M> array = new ArrayList<M>(length);
-      
-      if (depth != 1) {
-          for (int i=0; i < length; ++i) {
-              array.add((M) this.deserializeSequenceByte(message, name, depth-1));
-          }
-      } else if (depth == 1) {
-          for (int i=0; i < length; ++i) {
-              array.add((M) (Byte) this.deserializeByte(message, name));
-          }
-      }
-      
-      return array;
-   }
-  
-      @Override
-      public <T> void serializeSequenceI16(TransportMessage message, String name, List<T> sequence) {
-          if (sequence.size() > 0) {
-              this.serializeI32(message, "", ((List<?>) sequence).size());
-              if (sequence.get(0) instanceof List) {
-                  for (int i=0; i < sequence.size(); ++i) {
-                      this.serializeSequenceI16(message, name, (List<?>) sequence.get(i));
-                  }
-              } else {
-                  for (int i=0; i < sequence.size(); ++i) {
-                      this.serializeI16(message, name, (Short) sequence.get(i));
-                  }
-              }
-          }
-      }
-      
-     @SuppressWarnings("unchecked")
-     @Override
-     public <T, M> List<M> deserializeSequenceI16(TransportMessage message, String name, int depth) {
-         
-         int length = this.deserializeI32(message, "");
-         
-         ArrayList<M> array = new ArrayList<M>(length);
-         
-         if (depth != 1) {
-             for (int i=0; i < length; ++i) {
-                 array.add((M) this.deserializeSequenceI16(message, name, depth-1));
-             }
-         } else if (depth == 1) {
-             for (int i=0; i < length; ++i) {
-                 array.add((M) (Short) this.deserializeI16(message, name));
-             }
-         }
-         
-         return array;
-     }
-     
-     @Override
-     public <T> void serializeSequenceUI16(TransportMessage message, String name, List<T> sequence) {
-         if (sequence.size() > 0) {
-             this.serializeI32(message, "", ((List<?>) sequence).size());
-             if (sequence.get(0) instanceof List) {
-                 for (int i=0; i < sequence.size(); ++i) {
-                     this.serializeSequenceUI16(message, name, (List<?>) sequence.get(i));
-                 }
-             } else {
-                 for (int i=0; i < sequence.size(); ++i) {
-                     this.serializeUI16(message, name, (Short) sequence.get(i));
-                 }
-             }
-         }
-     }
-     
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeSequenceUI16(TransportMessage message, String name, int depth) {
-        
-        int length = this.deserializeI32(message, "");
-        
-        ArrayList<M> array = new ArrayList<M>(length);
-        
-        if (depth != 1) {
-            for (int i=0; i < length; ++i) {
-                array.add((M) this.deserializeSequenceUI16(message, name, depth-1));
-            }
-        } else if (depth == 1) {
-            for (int i=0; i < length; ++i) {
-                array.add((M) (Short) this.deserializeUI16(message, name));
-            }
-        }
-        
-        return array;
-    }
-    
-    @Override
-    public <T> void serializeSequenceI32(TransportMessage message, String name, List<T> sequence) {
-        if (sequence.size() > 0) {
-            this.serializeI32(message, "", ((List<?>) sequence).size());
-            if (sequence.get(0) instanceof List) {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeSequenceI32(message, name, (List<?>) sequence.get(i));
-                }
-            } else {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeI32(message, name, (Integer) sequence.get(i));
-                }
-            }
-        }
-    }
-    
-   @SuppressWarnings("unchecked")
-   @Override
-   public <T, M> List<M> deserializeSequenceI32(TransportMessage message, String name, int depth) {
-       
-       int length = this.deserializeI32(message, "");
-       
-       ArrayList<M> array = new ArrayList<M>(length);
-       
-       if (depth != 1) {
-           for (int i=0; i < length; ++i) {
-               array.add((M) this.deserializeSequenceI32(message, name, depth-1));
-           }
-       } else if (depth == 1) {
-           for (int i=0; i < length; ++i) {
-               array.add((M) (Integer) this.deserializeI32(message, name));
-           }
-       }
-       
-       return array;
-   }
-   
-   @Override
-   public <T> void serializeSequenceUI32(TransportMessage message, String name, List<T> sequence) {
-       if (sequence.size() > 0) {
-           this.serializeI32(message, "", ((List<?>) sequence).size());
-           if (sequence.get(0) instanceof List) {
-               for (int i=0; i < sequence.size(); ++i) {
-                   this.serializeSequenceUI32(message, name, (List<?>) sequence.get(i));
-               }
-           } else {
-               for (int i=0; i < sequence.size(); ++i) {
-                   this.serializeUI32(message, name, (Integer) sequence.get(i));
-               }
-           }
-       }
-   }
-   
-  @SuppressWarnings("unchecked")
-  @Override
-  public <T, M> List<M> deserializeSequenceUI32(TransportMessage message, String name, int depth) {
-      
-      int length = this.deserializeI32(message, "");
-      
-      ArrayList<M> array = new ArrayList<M>(length);
-      
-      if (depth != 1) {
-          for (int i=0; i < length; ++i) {
-              array.add((M) this.deserializeSequenceUI32(message, name, depth-1));
-          }
-      } else if (depth == 1) {
-          for (int i=0; i < length; ++i) {
-              array.add((M) (Integer) this.deserializeUI32(message, name));
-          }
-      }
-      
-      return array;
-  }
-  
-  @Override
-  public <T> void serializeSequenceI64(TransportMessage message, String name, List<T> sequence) {
-      if (sequence.size() > 0) {
-          this.serializeI32(message, "", ((List<?>) sequence).size());
-          if (sequence.get(0) instanceof List) {
-              for (int i=0; i < sequence.size(); ++i) {
-                  this.serializeSequenceI64(message, name, (List<?>) sequence.get(i));
-              }
-          } else {
-              for (int i=0; i < sequence.size(); ++i) {
-                  this.serializeI64(message, name, (Long) sequence.get(i));
-              }
-          }
-      }
-  }
-  
-     @SuppressWarnings("unchecked")
-     @Override
-     public <T, M> List<M> deserializeSequenceI64(TransportMessage message, String name, int depth) {
-         
-         int length = this.deserializeI32(message, "");
-         
-         ArrayList<M> array = new ArrayList<M>(length);
-         
-         if (depth != 1) {
-             for (int i=0; i < length; ++i) {
-                 array.add((M) this.deserializeSequenceI64(message, name, depth-1));
-             }
-         } else if (depth == 1) {
-             for (int i=0; i < length; ++i) {
-                 array.add((M) (Long) this.deserializeI64(message, name));
-             }
-         }
-         
-         return array;
-     }
-     
-     @Override
-     public <T> void serializeSequenceUI64(TransportMessage message, String name, List<T> sequence) {
-         if (sequence.size() > 0) {
-             this.serializeI32(message, "", ((List<?>) sequence).size());
-             if (sequence.get(0) instanceof List) {
-                 for (int i=0; i < sequence.size(); ++i) {
-                     this.serializeSequenceUI64(message, name, (List<?>) sequence.get(i));
-                 }
-             } else {
-                 for (int i=0; i < sequence.size(); ++i) {
-                     this.serializeUI64(message, name, (Long) sequence.get(i));
-                 }
-             }
-         }
-     }
-     
-    @SuppressWarnings("unchecked")
-    @Override
-    public <T, M> List<M> deserializeSequenceUI64(TransportMessage message, String name, int depth) {
-        
-        int length = this.deserializeI32(message, "");
-        
-        ArrayList<M> array = new ArrayList<M>(length);
-        
-        if (depth != 1) {
-            for (int i=0; i < length; ++i) {
-                array.add((M) this.deserializeSequenceUI64(message, name, depth-1));
-            }
-        } else if (depth == 1) {
-            for (int i=0; i < length; ++i) {
-                array.add((M) (Long) this.deserializeUI64(message, name));
-            }
-        }
-        
-        return array;
-    }
-    
-    @Override
-    public <T> void serializeSequenceFloat32(TransportMessage message, String name, List<T> sequence) {
-        if (sequence.size() > 0) {
-            this.serializeI32(message, "", ((List<?>) sequence).size());
-            if (sequence.get(0) instanceof List) {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeSequenceFloat32(message, name, (List<?>) sequence.get(i));
-                }
-            } else {
-                for (int i=0; i < sequence.size(); ++i) {
-                    this.serializeFloat32(message, name, (Float) sequence.get(i));
-                }
-            }
-        }
-    }
-    
-       @SuppressWarnings("unchecked")
-       @Override
-       public <T, M> List<M> deserializeSequenceFloat32(TransportMessage message, String name, int depth) {
-           
-           int length = this.deserializeI32(message, "");
-           
-           ArrayList<M> array = new ArrayList<M>(length);
-           
-           if (depth != 1) {
-               for (int i=0; i < length; ++i) {
-                   array.add((M) this.deserializeSequenceFloat32(message, name, depth-1));
-               }
-           } else if (depth == 1) {
-               for (int i=0; i < length; ++i) {
-                   array.add((M) (Float) this.deserializeFloat32(message, name));
-               }
-           }
-           
-           return array;
-       }
-       
-       @Override
-       public <T> void serializeSequenceFloat64(TransportMessage message, String name, List<T> sequence) {
-           if (sequence.size() > 0) {
-               this.serializeI32(message, "", ((List<?>) sequence).size());
-               if (sequence.get(0) instanceof List) {
-                   for (int i=0; i < sequence.size(); ++i) {
-                       this.serializeSequenceFloat64(message, name, (List<?>) sequence.get(i));
-                   }
-               } else {
-                   for (int i=0; i < sequence.size(); ++i) {
-                       this.serializeFloat64(message, name, (Double) sequence.get(i));
-                   }
-               }
-           }
-       }
-       
-      @SuppressWarnings("unchecked")
-      @Override
-      public <T, M> List<M> deserializeSequenceFloat64(TransportMessage message, String name, int depth) {
-          
-          int length = this.deserializeI32(message, "");
-          
-          ArrayList<M> array = new ArrayList<M>(length);
-          
-          if (depth != 1) {
-              for (int i=0; i < length; ++i) {
-                  array.add((M) this.deserializeSequenceFloat64(message, name, depth-1));
-              }
-          } else if (depth == 1) {
-              for (int i=0; i < length; ++i) {
-                  array.add((M) (Double) this.deserializeFloat64(message, name));
-              }
-          }
-          
-          return array;
-      }
-      
-      @Override
-      public <T> void serializeSequenceBoolean(TransportMessage message, String name, List<T> sequence) {
-          if (sequence.size() > 0) {
-              this.serializeI32(message, "", ((List<?>) sequence).size());
-              if (sequence.get(0) instanceof List) {
-                  for (int i=0; i < sequence.size(); ++i) {
-                      this.serializeSequenceBoolean(message, name, (List<?>) sequence.get(i));
-                  }
-              } else {
-                  for (int i=0; i < sequence.size(); ++i) {
-                      this.serializeBoolean(message, name, (Boolean) sequence.get(i));
-                  }
-              }
-          }
-      }
-      
-         @SuppressWarnings("unchecked")
-         @Override
-         public <T, M> List<M> deserializeSequenceBoolean(TransportMessage message, String name, int depth) {
-             
-             int length = this.deserializeI32(message, "");
-             
-             ArrayList<M> array = new ArrayList<M>(length);
-             
-             if (depth != 1) {
-                 for (int i=0; i < length; ++i) {
-                     array.add((M) this.deserializeSequenceBoolean(message, name, depth-1));
-                 }
-             } else if (depth == 1) {
-                 for (int i=0; i < length; ++i) {
-                     array.add((M) (Boolean) this.deserializeBoolean(message, name));
-                 }
-             }
-             
-             return array;
-         }
-         
-         @Override
-         public <T> void serializeSequenceString(TransportMessage message, String name, List<T> sequence) {
-             if (sequence.size() > 0) {
-                 this.serializeI32(message, "", ((List<?>) sequence).size());
-                 if (sequence.get(0) instanceof List) {
-                     for (int i=0; i < sequence.size(); ++i) {
-                         this.serializeSequenceString(message, name, (List<?>) sequence.get(i));
-                     }
-                 } else {
-                     for (int i=0; i < sequence.size(); ++i) {
-                         this.serializeString(message, name, (String) sequence.get(i));
-                     }
-                 }
-             }
-         }
-         
-        @SuppressWarnings("unchecked")
-        @Override
-        public <T, M> List<M> deserializeSequenceString(TransportMessage message, String name, int depth) {
-            
-            int length = this.deserializeI32(message, "");
-            
-            ArrayList<M> array = new ArrayList<M>(length);
-            
-            if (depth != 1) {
-                for (int i=0; i < length; ++i) {
-                    array.add((M) this.deserializeSequenceString(message, name, depth-1));
-                }
-            } else if (depth == 1) {
-                for (int i=0; i < length; ++i) {
-                    array.add((M) (String) this.deserializeString(message, name));
-                }
-            }
-            
-            return array;
-        }
-        
-        @Override
-        public <T> void serializeSequence(TransportMessage message, String name, List<T> sequence) {
-            if (sequence.size() > 0) {
-                this.serializeI32(message, "", ((List<?>) sequence).size());
-                if (sequence.get(0) instanceof List) {
-                    for (int i=0; i < sequence.size(); ++i) {
-                        this.serializeSequence(message, name, (List<?>) sequence.get(i));
-                    }
-                } else {
-                    for (int i=0; i < sequence.size(); ++i) {
-                        this.serialize(message, name, (Serializable) sequence.get(i));
-                    }
-                }
-            }
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public <T, M> List<M> deserializeSequence(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException {
-            int length = this.deserializeI32(message, "");
-            
-            ArrayList<M> array = new ArrayList<M>(length);
-            
-            if (depth != 1) {
-                for (int i=0; i < length; ++i) {
-                    array.add((M) this.deserializeSequence(message, name, example, depth-1));
-                }
-            } else if (depth == 1) {
-                T object;
-                for (int i=0; i < length; ++i) {
-                    object = example.newInstance();
-                    ((Serializable) object).deserialize(this, message, name);
-                    array.add((M) object);
-                }
-            }
-            
-            return array;
-        }
-     
-   
    /*
     * Auxiliary functions
     */
 
     @Override
-    public void serializeArrayBegin(TransportMessage message, String name,int length) {
+    public void serializeArrayBegin(BinaryOutputStream message, String name,int length) throws IOException {
         // Do nothing
     }
 
     @Override
-    public void serializeArrayEnd(TransportMessage message, String name) {
+    public void serializeArrayEnd(BinaryOutputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public int deserializeArrayBegin(TransportMessage message, String name) {
+    public int deserializeArrayBegin(BinaryInputStream message, String name) throws IOException {
         // Do nothing
         return 0;
     }
 
     @Override
-    public void deserializeArrayEnd(TransportMessage message, String name) {
+    public void deserializeArrayEnd(BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public void serializeStructBegin(TransportMessage message, String name) {
+    public void serializeStructBegin(BinaryOutputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public void serializeStructEnd(TransportMessage message, String name) {
+    public void serializeStructEnd(BinaryOutputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public int deserializeStructBegin(TransportMessage message, String name) {
+    public int deserializeStructBegin(BinaryInputStream message, String name) throws IOException {
         // Do nothing
         return 0;
     }
 
     @Override
-    public void deserializeStructEnd(TransportMessage message, String name) {
-        // Do nothing
-    }
-    
-    @Override
-    public void serializeSequenceBegin(TransportMessage message, String name) {
+    public void deserializeStructEnd(BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public void serializeSequenceEnd(TransportMessage message, String name) {
+    public void serializeSequenceBegin(BinaryOutputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public int deserializeSequenceBegin(TransportMessage message, String name) {
+    public void serializeSequenceEnd(BinaryOutputStream message, String name) throws IOException {
+        // Do nothing
+    }
+
+    @Override
+    public int deserializeSequenceBegin(BinaryInputStream message, String name) throws IOException {
         // Do nothing
         return 0;
     }
 
     @Override
-    public void deserializeSequenceEnd(TransportMessage message, String name) {
-        // Do nothing
-    }
-    
-    @Override
-    public void serializeUnionBegin(TransportMessage message, String name) {
+    public void deserializeSequenceEnd(BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public void serializeUnionEnd(TransportMessage message, String name) {
+    public void serializeUnionBegin(BinaryOutputStream message, String name) throws IOException {
         // Do nothing
     }
 
     @Override
-    public int deserializeUnionBegin(TransportMessage message, String name) {
+    public void serializeUnionEnd(BinaryOutputStream message, String name) throws IOException {
+        // Do nothing
+    }
+
+    @Override
+    public int deserializeUnionBegin(BinaryInputStream message, String name) throws IOException {
         // Do nothing
         return 0;
     }
 
     @Override
-    public void deserializeUnionEnd(TransportMessage message, String name) {
+    public void deserializeUnionEnd(BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 
-    
+    /*
+     * Enumerations types
+     */
+
+    @Override
+    public <E extends Enum> void serializeEnum(BinaryOutputStream message, String name, E value) throws IOException {
+        this.serializeUI32(message, name, value.ordinal());
+    }
+
+    @Override
+    public <E extends Enum> E deserializeEnum(BinaryInputStream message,String name, Class<E> example) throws IOException {
+        Enum ret = example.getEnumConstants()[this.deserializeUI32(message, name)];
+        return (E) ret;
+    }
 
 
+    /*@SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> void serializeArrayEnum(TransportMessage message, String name, List<E> array, int... dims) {
+        int len = dims[0];
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                List<E> inner_array = (List<E>) array.get(i);
+                this.serializeArrayEnum(message, name, inner_array, trimDimensions(dims));
+            }
+        } else if (array.get(0) instanceof Enum) {
+            for (int i=0; i < len; ++i) {
+                this.serializeEnum(message, name, (E) array.get(i));
+            }
+        }
+    }
 
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E, M> List<M> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims) {
+        int len = dims[0];
+        ArrayList<M> array = new ArrayList<M>(len);
+        
+        if (dims.length > 1) {
+            for (int i=0; i < len; ++i) {
+                array.add((M) this.deserializeArrayEnum(message, name, example, trimDimensions(dims)));
+            }
+        } else {
+            for (int i=0; i < len; ++i) {
+                array.add((Enum) this.deserializeEnum(message, name, example));
+            }
+        }
+        
+        return array;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E extends Enum> void serializeSequenceEnum(TransportMessage message, String name, List<E> sequence) {
+        if (sequence.size() > 0) {
+            this.serializeI32(message, "", ((List<?>) sequence).size());
+            if (sequence.get(0) instanceof List) {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeSequenceEnum(message, name, (List<E>) sequence.get(i));
+                }
+            } else {
+                for (int i=0; i < sequence.size(); ++i) {
+                    this.serializeEnum(message, name, (E) sequence.get(i));
+                }
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <E, M> List<M> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth) {
+        int length = this.deserializeI32(message, "");
+        
+        ArrayList<M> array = new ArrayList<M>(length);
+        
+        if (depth != 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeSequenceEnum(message, name, example, depth-1));
+            }
+        } else if (depth == 1) {
+            for (int i=0; i < length; ++i) {
+                array.add((M) this.deserializeEnum(message, name, example));
+            }
+        }
+        
+        return array;
+    }*/
 
 }

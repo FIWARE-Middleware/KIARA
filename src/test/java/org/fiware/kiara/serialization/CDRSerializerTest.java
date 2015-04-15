@@ -5,12 +5,17 @@ import static org.junit.Assert.*;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.types.GenericEnumeration;
+import org.fiware.kiara.serialization.types.GenericType;
 import org.fiware.kiara.transport.impl.TransportMessage;
-
 import org.junit.*;
 
 public class CDRSerializerTest {
@@ -24,7 +29,7 @@ public class CDRSerializerTest {
         this.ser = new CDRSerializer();
         this.buffer = ByteBuffer.allocate(500);
         this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer); 
+        this.message = new MockTransportMessage(buffer);
     }
 
     @After
@@ -45,7 +50,8 @@ public class CDRSerializerTest {
         char in = 'w';
 
         try {
-            ser.serializeChar(message, "MyChar", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeChar(bos, "MyChar", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -61,9 +67,10 @@ public class CDRSerializerTest {
         char out = 'a';
 
         try {
-            ser.serializeChar(message, "MyChar", in);
-            message.getPayload().rewind();
-            out = ser.deserializeChar(message, "MyChar");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeChar(bos, "MyChar", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeChar(bis, "MyChar");
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -76,13 +83,13 @@ public class CDRSerializerTest {
     /*
      * SerializeService
      */
-
     @Test
     public void serializeServiceTest() {
         String in = "ServiceName";
 
         try {
-            ser.serializeService(message, in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeService(bos, in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -97,9 +104,10 @@ public class CDRSerializerTest {
         String in = "ServiceName", out = "";
 
         try {
-            ser.serializeService(message, in);
-            message.getPayload().rewind();
-            out = ser.deserializeService(message);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeService(bos, in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeService(bis);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -113,13 +121,13 @@ public class CDRSerializerTest {
     /*
      * SerializeOperation
      */
-
     @Test
     public void serializeOperationTest() {
         String in = "OperationName";
 
         try {
-            ser.serializeService(message, in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeService(bos, in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -134,9 +142,10 @@ public class CDRSerializerTest {
         String in = "OperationName", out = "";
 
         try {
-            ser.serializeService(message, in);
-            message.getPayload().rewind();
-            out = ser.deserializeService(message);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeService(bos, in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeService(bis);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -150,13 +159,13 @@ public class CDRSerializerTest {
     /*
      * SerializeByte
      */
-
     @Test
     public void serializeByteTest() {
         byte in = 5;
 
         try {
-            ser.serializeByte(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeByte(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -171,9 +180,10 @@ public class CDRSerializerTest {
         byte in = 5, out = 0;
 
         try {
-            ser.serializeByte(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeByte(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeByte(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeByte(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -187,13 +197,13 @@ public class CDRSerializerTest {
     /*
      * SerializeI16
      */
-
     @Test
     public void serializeI16Test() {
         short in = 5;
 
         try {
-            ser.serializeI16(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI16(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -208,9 +218,10 @@ public class CDRSerializerTest {
         short in = 5, out = 0;
 
         try {
-            ser.serializeI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeI16(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeI16(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -224,13 +235,13 @@ public class CDRSerializerTest {
     /*
      * SerializeUI16
      */
-
     @Test
     public void serializeUI16Test() {
         short in = 5;
 
         try {
-            ser.serializeUI16(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeUI16(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -245,9 +256,10 @@ public class CDRSerializerTest {
         short in = 5, out = 0;
 
         try {
-            ser.serializeUI16(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeUI16(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeUI16(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeUI16(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -261,13 +273,13 @@ public class CDRSerializerTest {
     /*
      * SerializeI32
      */
-
     @Test
     public void serializeI32Test() {
         int in = 5;
 
         try {
-            ser.serializeI32(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI32(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -282,9 +294,10 @@ public class CDRSerializerTest {
         int in = 5, out = 0;
 
         try {
-            ser.serializeI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeI32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeI32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -298,13 +311,13 @@ public class CDRSerializerTest {
     /*
      * SerializeUI32
      */
-
     @Test
     public void serializeUI32Test() {
         int in = 5;
 
         try {
-            ser.serializeI32(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI32(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -319,9 +332,10 @@ public class CDRSerializerTest {
         int in = 5, out = 0;
 
         try {
-            ser.serializeUI32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeUI32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeUI32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeUI32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -335,13 +349,13 @@ public class CDRSerializerTest {
     /*
      * SerializeI64
      */
-
     @Test
     public void serializeI64Test() {
         long in = 5;
 
         try {
-            ser.serializeI64(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI64(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -356,9 +370,10 @@ public class CDRSerializerTest {
         long in = 5, out = 0;
 
         try {
-            ser.serializeI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeI64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeI64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -372,13 +387,13 @@ public class CDRSerializerTest {
     /*
      * SerializeUI64
      */
-
     @Test
     public void serializeUI64Test() {
         long in = 5;
 
         try {
-            ser.serializeUI64(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeUI64(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -393,9 +408,10 @@ public class CDRSerializerTest {
         long in = 5, out = 0;
 
         try {
-            ser.serializeUI64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeUI64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeUI64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeUI64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -409,13 +425,13 @@ public class CDRSerializerTest {
     /*
      * SerializeFloat32
      */
-
     @Test
     public void serializeFloat32Test() {
         float in = (float) 5.0;
 
         try {
-            ser.serializeFloat32(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeFloat32(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -430,9 +446,10 @@ public class CDRSerializerTest {
         float in = (float) 5.0, out = (float) 0.0;
 
         try {
-            ser.serializeFloat32(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeFloat32(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeFloat32(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeFloat32(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -446,13 +463,13 @@ public class CDRSerializerTest {
     /*
      * SerializeFloat64
      */
-
     @Test
     public void serializeFloat64Test() {
         double in = 5.0;
 
         try {
-            ser.serializeFloat64(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeFloat64(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -467,9 +484,10 @@ public class CDRSerializerTest {
         double in = 5.0, out = 0.0;
 
         try {
-            ser.serializeFloat64(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeFloat64(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeFloat64(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeFloat64(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -483,13 +501,13 @@ public class CDRSerializerTest {
     /*
      * SerializeBoolean
      */
-
     @Test
     public void serializeBooleanTest() {
         boolean in = true;
 
         try {
-            ser.serializeBoolean(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeBoolean(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -504,9 +522,10 @@ public class CDRSerializerTest {
         boolean in = false, out = true;
 
         try {
-            ser.serializeBoolean(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserializeBoolean(message, "");
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeBoolean(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeBoolean(bis, "");
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -518,6 +537,46 @@ public class CDRSerializerTest {
     }
 
     /*
+     * Enumeration types
+     */
+    
+    @Test
+    public void serializeEnumTest() {
+        GenericEnumeration in = GenericEnumeration.second_val;
+
+        try {
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeEnum(bos, "", in);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(true);
+
+        reset();
+    }
+
+    @Test
+    public void deserializeEnumTest() {
+        GenericEnumeration in= GenericEnumeration.second_val;
+        GenericEnumeration out = null;
+
+        try {
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serializeEnum(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserializeEnum(bis, "", GenericEnumeration.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+        assertTrue(in.equals(out));
+
+        reset();
+    }
+    
+    /*
      * Generic types
      */
 
@@ -526,7 +585,8 @@ public class CDRSerializerTest {
         GenericType in = new GenericType(1, "one");
 
         try {
-            ser.serialize(message, "", in);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
@@ -542,9 +602,10 @@ public class CDRSerializerTest {
         GenericType out = new GenericType();
 
         try {
-            ser.serialize(message, "", in);
-            message.getPayload().rewind();
-            out = ser.deserialize(message, "", GenericType.class);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            ser.serialize(bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = ser.deserialize(bis, "", GenericType.class);
         } catch (Exception e) {
             e.printStackTrace();
             assertTrue(false);
@@ -554,5 +615,7 @@ public class CDRSerializerTest {
 
         reset();
     }
-
+    
+   
+    
 }

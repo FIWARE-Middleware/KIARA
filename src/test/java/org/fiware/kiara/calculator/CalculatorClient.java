@@ -23,12 +23,12 @@
  *
  */
  
-
+ 
 
 package org.fiware.kiara.calculator;
 
 /**
- * Interface implementing the synchronous and asynchronous method definition.
+ * Interface implementing the synchronous and asynchronous method definition. 
  *
  * @author Kiaragen tool.
  *

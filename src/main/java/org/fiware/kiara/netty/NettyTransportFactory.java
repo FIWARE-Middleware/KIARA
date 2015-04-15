@@ -22,7 +22,7 @@ import org.fiware.kiara.RunningService;
 import org.fiware.kiara.transport.ServerTransport;
 import org.fiware.kiara.transport.impl.Global;
 import org.fiware.kiara.transport.impl.TransportConnectionListener;
-import org.fiware.kiara.transport.impl.TransportFactory;
+import org.fiware.kiara.transport.TransportFactory;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -110,29 +110,23 @@ public abstract class NettyTransportFactory implements TransportFactory {
         }
     }
 
-    @Override
-    public void startServer(ServerTransport serverTransport, TransportConnectionListener listener) throws InterruptedException {
+    public void startServer(NettyServerTransport serverTransport, TransportConnectionListener listener) throws InterruptedException {
         if (serverTransport == null) {
             throw new NullPointerException("serverTransport");
         }
         if (listener == null) {
             throw new NullPointerException("listener");
         }
-        if (!(serverTransport instanceof NettyServerTransport)) {
-            throw new IllegalArgumentException("serverTransport is not of type NettyServerTransport, but " + serverTransport.getClass().getName());
-        }
-
-        final NettyServerTransport st = (NettyServerTransport) serverTransport;
 
         ServerBootstrap b = new ServerBootstrap();
         b.group(bossGroup, workerGroup)
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
-                .childHandler(createServerChildHandler(st.getPath(), listener));
+                .childHandler(createServerChildHandler(serverTransport.getPath(), listener));
 
-        final Channel channel = b.bind(st.getLocalSocketAddress()).sync().channel();
-        st.setChannel(channel);
-        st.setListener(listener);
+        final Channel channel = b.bind(serverTransport.getLocalSocketAddress()).sync().channel();
+        serverTransport.setChannel(channel);
+        serverTransport.setListener(listener);
     }
 
     protected abstract ChannelHandler createServerChildHandler(String path, TransportConnectionListener connectionListener);

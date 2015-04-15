@@ -18,10 +18,10 @@
 package org.fiware.kiara.serialization;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/public interface Serializer {
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
+public interface Serializer {
 
-
-
+    public String getName();
 }

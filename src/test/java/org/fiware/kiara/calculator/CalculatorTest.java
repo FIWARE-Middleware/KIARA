@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -27,10 +28,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class CalculatorTest { 
+public class CalculatorTest {
 
     static {
-        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
+        System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
 
     public static class CalculatorServantImpl extends CalculatorServant {
@@ -52,12 +53,8 @@ public class CalculatorTest {
 
     public static class CalculatorSetup extends TestSetup<CalculatorClient> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public CalculatorSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -77,7 +74,7 @@ public class CalculatorTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -87,31 +84,6 @@ public class CalculatorTest {
         @Override
         protected CalculatorClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(CalculatorClient.class);
-        }
-
-        @Override
-        protected String makeServerTransportUri(String transport, int port) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        protected String makeClientTransportUri(String transport, int port, String protocol) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }
@@ -145,6 +117,7 @@ public class CalculatorTest {
     @Parameterized.Parameters
     public static Collection configs() {
         return TestUtils.createDefaultTestConfig();
+        //return TestUtils.createHttpTestConfig();
     }
 
     public CalculatorTest(String transport, String protocol, TypeFactory<ExecutorService> serverExecutorFactory) {
@@ -214,7 +187,7 @@ public class CalculatorTest {
         for (int i = 0; i < result.length; i++) {
             final SettableFuture<Integer> resultValue = SettableFuture.create();
             final int arg = i;
-            calculator.add(i, i, new CalculatorAsync.add_AsyncCallback() {
+            calculator.add(i, i, new AsyncCallback<Integer>() {
 
                 @Override
                 public void onSuccess(Integer result) {
@@ -240,7 +213,7 @@ public class CalculatorTest {
         for (int i = 0; i < result.length; i++) {
             final SettableFuture<Integer> resultValue = SettableFuture.create();
             final int arg = i;
-            calculator.subtract(resultLength, arg, new CalculatorAsync.subtract_AsyncCallback() {
+            calculator.subtract(resultLength, arg, new AsyncCallback<Integer>() {
 
                 @Override
                 public void onSuccess(Integer result) {

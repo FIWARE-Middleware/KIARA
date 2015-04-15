@@ -17,11 +17,12 @@
  */
 package org.fiware.kiara.serialization.impl;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.List;
+import java.util.Set;
 
 import org.fiware.kiara.serialization.Serializer;
-import org.fiware.kiara.transport.impl.TransportMessage;
 
 /**
 *
@@ -29,15 +30,17 @@ import org.fiware.kiara.transport.impl.TransportMessage;
 */
 public interface SerializerImpl extends Serializer {
 
+    /**
+     *
+     * @return Content (MIME) Type of the serialization protocol
+     */
+    public String getContentType();
+
     public Object getNewMessageId();
 
-    public void serializeMessageId(TransportMessage message, Object messageId);
+    public void serializeMessageId(BinaryOutputStream message, Object messageId) throws IOException;
 
-    public Object deserializeMessageId(TransportMessage message);
-    
-    public void serializeMessageId(ByteBuffer buffer, Object messageId);
-
-    public Object deserializeMessageId(ByteBuffer buffer);
+    public Object deserializeMessageId(BinaryInputStream message) throws IOException;
 
     public boolean equalMessageIds(Object id1, Object id2);
 
@@ -45,268 +48,152 @@ public interface SerializerImpl extends Serializer {
      * Services
      */
 
-    public void serializeService(TransportMessage message, String service);
+    public void serializeService(BinaryOutputStream message, String service) throws IOException;
 
-    public String deserializeService(TransportMessage message);
+    public String deserializeService(BinaryInputStream message) throws IOException;
 
     /*
      * Operations
      */
 
-    public void serializeOperation(TransportMessage message, String operation);
+    public void serializeOperation(BinaryOutputStream message, String operation) throws IOException;
 
-    public String deserializeOperation(TransportMessage message);
+    public String deserializeOperation(BinaryInputStream message) throws IOException;
 
     /*
      * Basic Types
      */
 
-    public void serializeChar(TransportMessage message, String name, char value);
+    public void serializeChar(BinaryOutputStream message, String name, char value) throws IOException;
 
-    public char deserializeChar(TransportMessage message, String name);
+    public char deserializeChar(BinaryInputStream message, String name) throws IOException;
 
-    public void serializeByte(TransportMessage message, String name, byte value);
+    public void serializeByte(BinaryOutputStream message, String name, byte value) throws IOException;
 
-    public byte deserializeByte(TransportMessage message, String name);
-
-
-    public void serializeI16(TransportMessage message, String name, short value);
-
-    public short deserializeI16(TransportMessage message, String name);
-
-    public void serializeUI16(TransportMessage message, String name, short value);
-
-    public short deserializeUI16(TransportMessage message, String name);
+    public byte deserializeByte(BinaryInputStream message, String name) throws IOException;
 
 
-    public void serializeI32(TransportMessage message, String name, int value);
+    public void serializeI16(BinaryOutputStream message, String name, short value) throws IOException;
 
-    public int deserializeI32(TransportMessage message, String name);
+    public short deserializeI16(BinaryInputStream message, String name) throws IOException;
 
-    public void serializeUI32(TransportMessage message, String name, int value);
+    public void serializeUI16(BinaryOutputStream message, String name, short value) throws IOException;
 
-    public int deserializeUI32(TransportMessage message, String name);
-
-
-    public void serializeI64(TransportMessage message, String name, long value);
-
-    public long deserializeI64(TransportMessage message, String name);
-
-    public void serializeUI64(TransportMessage message, String name, long value);
-
-    public long deserializeUI64(TransportMessage message, String name);
+    public short deserializeUI16(BinaryInputStream message, String name) throws IOException;
 
 
-    public void serializeFloat32(TransportMessage message, String name, float value);
+    public void serializeI32(BinaryOutputStream message, String name, int value) throws IOException;
 
-    public float deserializeFloat32(TransportMessage message, String name);
+    public int deserializeI32(BinaryInputStream message, String name) throws IOException;
 
-    public void serializeFloat64(TransportMessage message, String name, double value);
+    public void serializeUI32(BinaryOutputStream message, String name, int value) throws IOException;
 
-    public double deserializeFloat64(TransportMessage message, String name);
+    public int deserializeUI32(BinaryInputStream message, String name) throws IOException;
 
 
-    public void serializeBoolean(TransportMessage message, String name, boolean value);
+    public void serializeI64(BinaryOutputStream message, String name, long value) throws IOException;
 
-    public boolean deserializeBoolean(TransportMessage message, String name);
-    
-    
-    public void serializeString(TransportMessage message, String name, String data);
+    public long deserializeI64(BinaryInputStream message, String name) throws IOException;
 
-    public String deserializeString(TransportMessage message, String name);
-    
+    public void serializeUI64(BinaryOutputStream message, String name, long value) throws IOException;
+
+    public long deserializeUI64(BinaryInputStream message, String name) throws IOException;
+
+
+    public void serializeFloat32(BinaryOutputStream message, String name, float value) throws IOException;
+
+    public float deserializeFloat32(BinaryInputStream message, String name) throws IOException;
+
+    public void serializeFloat64(BinaryOutputStream message, String name, double value) throws IOException;
+
+    public double deserializeFloat64(BinaryInputStream message, String name) throws IOException;
+
+
+    public void serializeBoolean(BinaryOutputStream message, String name, boolean value) throws IOException;
+
+    public boolean deserializeBoolean(BinaryInputStream message, String name) throws IOException;
+
+
+    public void serializeString(BinaryOutputStream message, String name, String data) throws IOException;
+
+    public String deserializeString(BinaryInputStream message, String name) throws IOException;
+
+    public void serializeData(BinaryOutputStream message, String name, byte [] data, int offset, int length) throws IOException;
+
+    public byte[] deserializeData(BinaryInputStream message, String name) throws IOException;
+
     /*
      * Generic types
      */
 
-    public <T extends Serializable> void serialize(TransportMessage message, String name, T value);
+    public <T extends Serializable> void serialize(BinaryOutputStream message, String name, T value) throws IOException;
 
-    public <T extends Serializable> T deserialize(TransportMessage message, String name, Class<T> example) throws InstantiationException, IllegalAccessException;
+    public <T extends Serializable> T deserialize(BinaryInputStream message, String name, Class<T> example) throws InstantiationException, IllegalAccessException,  IOException;
 
-    /*
-     * Arrays
-     */
-    
-    public <T> void serializeArrayChar(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayChar(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayByte(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayByte(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayI16(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayI16(TransportMessage message, String name, int... dims);
-    
-    public <T> void serializeArrayUI16(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayUI16(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayI32(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayI32(TransportMessage message, String name, int... dims);
-    
-    public <T> void serializeArrayUI32(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayUI32(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayI64(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayI64(TransportMessage message, String name, int... dims);
-    
-    public <T> void serializeArrayUI64(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayUI64(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayFloat32(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayFloat32(TransportMessage message, String name, int... dims);
-    
-    public <T> void serializeArrayFloat64(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayFloat64(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayBoolean(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayBoolean(TransportMessage message, String name, int... dims);
-    
-    
-    public <T> void serializeArrayString(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArrayString(TransportMessage message, String name, int... dims);
-    
-    /*
-     * Array of generic types
-     */
-    
-    public <T> void serializeArray(TransportMessage message, String name, List<T> array, int... dims);
-    
-    public <T, M> List<M> deserializeArray(TransportMessage message, String name, Class<T> example, int... dims) throws InstantiationException, IllegalAccessException;
-    
-    /*
-     * Sequences
-     */
-    
-    public <T> void serializeSequenceChar(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceChar(TransportMessage message, String name, int depth);
-    
-    
-    public <T> void serializeSequenceByte(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceByte(TransportMessage message, String name, int depth);
-    
- 
-    public <T> void serializeSequenceI16(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceI16(TransportMessage message, String name, int depth);
-    
-    public <T> void serializeSequenceUI16(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceUI16(TransportMessage message, String name, int depth);
-    
-    
-    public <T> void serializeSequenceI32(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceI32(TransportMessage message, String name, int depth);
-    
-    public <T> void serializeSequenceUI32(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceUI32(TransportMessage message, String name, int depth);
-    
-    
-    public <T> void serializeSequenceI64(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceI64(TransportMessage message, String name, int depth);
-    
-    public <T> void serializeSequenceUI64(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceUI64(TransportMessage message, String name, int depth);
-    
-    
-    public <T> void serializeSequenceFloat32(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceFloat32(TransportMessage message, String name, int depth);
-    
-    public <T> void serializeSequenceFloat64(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceFloat64(TransportMessage message, String name, int depth);
-    
 
-    public <T> void serializeSequenceBoolean(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceBoolean(TransportMessage message, String name, int depth);
-    
-    
-    public <T> void serializeSequenceString(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequenceString(TransportMessage message, String name, int depth);
-    
-    /*
-     * Sequences of generic types
-     */
-    
-    public <T> void serializeSequence(TransportMessage message, String name, List<T> sequence);
-    
-    public <T, M> List<M> deserializeSequence(TransportMessage message, String name, Class<T> example, int depth) throws InstantiationException, IllegalAccessException;
-    
     /*
      * Extra array functions
      */
-    
-    public void serializeArrayBegin(TransportMessage message, String name, int length);
 
-    public void serializeArrayEnd(TransportMessage message, String name);
+    public void serializeArrayBegin(BinaryOutputStream message, String name, int length) throws IOException;
 
-    public int deserializeArrayBegin(TransportMessage message, String name);
+    public void serializeArrayEnd(BinaryOutputStream message, String name) throws IOException;
 
-    public void deserializeArrayEnd(TransportMessage message, String name);
-    
+    public int deserializeArrayBegin(BinaryInputStream message, String name) throws IOException;
+
+    public void deserializeArrayEnd(BinaryInputStream message, String name) throws IOException;
+
     /*
      * Extra struct functions
      */
-    
-    public void serializeStructBegin(TransportMessage message, String name);
 
-    public void serializeStructEnd(TransportMessage message, String name);
+    public void serializeStructBegin(BinaryOutputStream message, String name) throws IOException;
 
-    public int deserializeStructBegin(TransportMessage message, String name);
+    public void serializeStructEnd(BinaryOutputStream message, String name) throws IOException;
 
-    public void deserializeStructEnd(TransportMessage message, String name);
-    
+    public int deserializeStructBegin(BinaryInputStream message, String name) throws IOException;
+
+    public void deserializeStructEnd(BinaryInputStream message, String name) throws IOException;
+
     /*
      * Extra sequence functions
      */
-    
-    public void serializeSequenceBegin(TransportMessage message, String name);
 
-    public void serializeSequenceEnd(TransportMessage message, String name);
+    public void serializeSequenceBegin(BinaryOutputStream message, String name) throws IOException;
 
-    public int deserializeSequenceBegin(TransportMessage message, String name);
+    public void serializeSequenceEnd(BinaryOutputStream message, String name) throws IOException;
 
-    public void deserializeSequenceEnd(TransportMessage message, String name);
-    
+    public int deserializeSequenceBegin(BinaryInputStream message, String name) throws IOException;
+
+    public void deserializeSequenceEnd(BinaryInputStream message, String name) throws IOException;
+
     /*
      * Extra union functions
      */
+
+    public void serializeUnionBegin(BinaryOutputStream message, String name) throws IOException;
+
+    public void serializeUnionEnd(BinaryOutputStream message, String name) throws IOException;
+
+    public int deserializeUnionBegin(BinaryInputStream message, String name) throws IOException;
+
+    public void deserializeUnionEnd(BinaryInputStream message, String name) throws IOException;
+
     
-    public void serializeUnionBegin(TransportMessage message, String name);
+    /*
+     * Enum types
+     */
 
-    public void serializeUnionEnd(TransportMessage message, String name);
-
-    public int deserializeUnionBegin(TransportMessage message, String name);
-
-    public void deserializeUnionEnd(TransportMessage message, String name);
-
-
-
-
-
+    public <E extends Enum> void serializeEnum(BinaryOutputStream message, String name, E value) throws IOException;
+    
+    public <E extends Enum> E deserializeEnum(BinaryInputStream message,String name, Class<E> example) throws IOException;
+    
+    /*public <E extends Enum> void serializeArrayEnum(TransportMessage message, String name, List<E> array, int... dims);
+    
+    public <E, M> List<M> deserializeArrayEnum(TransportMessage message, String name, Class<E> example, int... dims);
+    
+    public <E extends Enum> void serializeSequenceEnum(TransportMessage message, String name, List<E> sequence);
+    
+    public <E, M> List<M> deserializeSequenceEnum(TransportMessage message, String name, Class<E> example, int depth);*/
+    
 }

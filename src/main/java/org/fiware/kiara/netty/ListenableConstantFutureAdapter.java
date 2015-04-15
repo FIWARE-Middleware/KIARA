@@ -18,10 +18,8 @@
 package org.fiware.kiara.netty;
 
 import com.google.common.util.concurrent.ListenableFuture;
-
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
-
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -31,21 +29,23 @@ import java.util.concurrent.TimeoutException;
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <V>
+ * @param <F>
  */
-public class ListenableConstantFutureAdapter<V> implements ListenableFuture<V> {
+public class ListenableConstantFutureAdapter<V, F extends Future<?>> implements ListenableFuture<V> {
 
     private final V value;
-    private final ChannelFuture future;
+    private final F future;
 
-    public ListenableConstantFutureAdapter(ChannelFuture future, V value) {
+    public ListenableConstantFutureAdapter(F future, V value) {
         this.future = future;
         this.value = value;
     }
 
     @Override
     public void addListener(final Runnable r, final Executor exctr) {
-        future.addListener(new ChannelFutureListener() {
-            public void operationComplete(ChannelFuture future) throws Exception {
+        future.addListener(new GenericFutureListener() {
+            @Override
+            public void operationComplete(Future future) throws Exception {
                 exctr.execute(r);
             }
         });

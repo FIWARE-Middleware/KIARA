@@ -2,1002 +2,1159 @@ package org.fiware.kiara.serialization;
 
 import static org.junit.Assert.assertTrue;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import org.fiware.kiara.serialization.impl.BasicSerializers;
 
-import org.junit.After;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.junit.Before;
 import org.junit.Test;
-
 import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.transport.impl.TransportMessage;
+import org.fiware.kiara.serialization.impl.EnumSerializer;
+import org.fiware.kiara.serialization.impl.ListAsArraySerializer;
+import org.fiware.kiara.serialization.impl.ObjectSerializer;
+import org.fiware.kiara.serialization.types.GenericEnumeration;
+import org.fiware.kiara.serialization.types.GenericType;
 
 public class CDRArrayTest {
 
     private CDRSerializer ser;
-    private ByteBuffer buffer;
-    private TransportMessage message;
 
     @Before
     public void init() {
         this.ser = new CDRSerializer();
-        this.buffer = ByteBuffer.allocate(500);
-        this.buffer.order(ByteOrder.LITTLE_ENDIAN);
-        this.message = new MockTransportMessage(buffer);
     }
 
-    @After
-    public void detach() {
-        this.message.getPayload().clear();
-    }
-
-    public void reset() {
-        this.message.getPayload().clear();
-    }
-    
     /*
      * SerializeArrayChar
      */
-
     @Test
     public void serializeArrayCharTest() {
-        ArrayList<Character> in = new ArrayList<Character>(1);
+        List<Character> in = new ArrayList<>(1);
         in.add('a');
 
         try {
-            ser.serializeArrayChar(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            org.fiware.kiara.serialization.impl.Serializer<List<Character>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.CharSerializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayByte
      */
-
     @Test
     public void serializeArrayByteTest() {
-        List<Byte> in = new ArrayList<Byte>();
+        List<Byte> in = new ArrayList<>();
         in.add((byte) 5);
 
         try {
-            ser.serializeArrayByte(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Byte>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.ByteSerializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayI16
      */
-
     @Test
     public void serializeArrayI16Test() {
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
 
         try {
-            ser.serializeArrayI16(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Short>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.I16Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayUI16
      */
-
     @Test
     public void serializeArrayUI16Test() {
-        List<Short> in = new ArrayList<Short>();
+        List<Short> in = new ArrayList<>();
         in.add((short) 5);
 
         try {
-            ser.serializeArrayUI16(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Short>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.UI16Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayI32
      */
-
     @Test
     public void serializeArrayI32Test() {
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
 
         try {
-            ser.serializeArrayI32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Integer>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.I32Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayUI32
      */
-
     @Test
     public void serializeArrayUI32Test() {
-        List<Integer> in = new ArrayList<Integer>();
+        List<Integer> in = new ArrayList<>();
         in.add((int) 5);
 
         try {
-            ser.serializeArrayUI32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Integer>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.UI32Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayI64
      */
-
     @Test
     public void serializeArrayI64Test() {
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
 
         try {
-            ser.serializeArrayI64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Long>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.I64Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayUI64
      */
-
     @Test
     public void serializeArrayUI64Test() {
-        List<Long> in = new ArrayList<Long>();
+        List<Long> in = new ArrayList<>();
         in.add((long) 5);
 
         try {
-            ser.serializeArrayUI64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Long>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.UI64Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayFloat32
      */
-
     @Test
     public void serializeArrayFloat32Test() {
-        List<Float> in = new ArrayList<Float>();
+        List<Float> in = new ArrayList<>();
         in.add((float) 5.0);
 
         try {
-            ser.serializeArrayFloat32(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Float>> s
+                    = new ListAsArraySerializer<>(1, new BasicSerializers.Float32Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayFloat64
      */
-
     @Test
     public void serializeArrayFloat64Test() {
-        List<Double> in = new ArrayList<Double>();
+        List<Double> in = new ArrayList<>();
         in.add((double) 5.0);
 
         try {
-            ser.serializeArrayFloat64(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Double>> s
+                = new ListAsArraySerializer<>(1, new BasicSerializers.Float64Serializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayBoolean
      */
-
     @Test
     public void serializeArrayBooleanTest() {
-        List<Boolean> in = new ArrayList<Boolean>();
+        List<Boolean> in = new ArrayList<>();
         in.add(true);
 
         try {
-            ser.serializeArrayBoolean(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<Boolean>> s
+                = new ListAsArraySerializer<>(1, new BasicSerializers.BooleanSerializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayString
      */
-
     @Test
     public void serializeArrayStringTest() {
-        List<String> in = new ArrayList<String>();
+        List<String> in = new ArrayList<>();
         in.add("one");
 
         try {
-            ser.serializeArrayString(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<String>> s
+                = new ListAsArraySerializer<>(1, new BasicSerializers.StringSerializer());
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
+    }
+
+    /*
+     * SerializeArrayEnum
+     */
+    @Test
+    public void serializeArrayEnumTest() {
+        List<GenericEnumeration> in = new ArrayList<>();
+        GenericEnumeration content = GenericEnumeration.second_val;
+        in.add(content);
+
+        try {
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<GenericEnumeration>> s
+                = new ListAsArraySerializer<>(1, new EnumSerializer(GenericEnumeration.class));
+
+            s.write(ser, bos, "", in);
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(true);
+
     }
 
     /*
      * Array of generic types
      */
-
     @Test
     public void serializeArrayTest() {
-        List<GenericType> in = new ArrayList<GenericType>();
+        List<GenericType> in = new ArrayList<>();
         in.add(new GenericType(1, "one"));
 
         try {
-            ser.serializeArray(message, "", in, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+
+            org.fiware.kiara.serialization.impl.Serializer<List<GenericType>> s
+                = new ListAsArraySerializer<>(1, new ObjectSerializer(GenericType.class));
+
+            s.write(ser, bos, "", in);
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(true);
 
-        reset();
     }
 
     /*
      * SerializeArrayChar
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayCharTest() {
-        ArrayList<Character> in = new ArrayList<Character>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayCharTest() {
+        List<Character> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add('A');
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Character>> s
+            = new ListAsArraySerializer<>(1, new BasicSerializers.CharSerializer());
+
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayChar(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayChar(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
     @Test
-    public <T> void deserializeMultiDimArrayCharTest() {
-        List<ArrayList<Character>> in = new ArrayList<ArrayList<Character>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Character> inner = new ArrayList<Character>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayCharTest() {
+        List<List<Character>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Character> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add('A');
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Character>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.CharSerializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayChar(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayChar(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayByte
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayByteTest() {
-        ArrayList<Byte> in = new ArrayList<Byte>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayByteTest() {
+        List<Byte> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((byte) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Byte>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.ByteSerializer());
+
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayByte(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayByte(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayByteTest() {
-        List<ArrayList<Byte>> in = new ArrayList<ArrayList<Byte>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Byte> inner = new ArrayList<Byte>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayByteTest() {
+        List<List<Byte>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            ArrayList<Byte> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((byte) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Byte>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.ByteSerializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayByte(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayByte(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayI16
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayI16Test() {
-        ArrayList<Short> in = new ArrayList<Short>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayI16Test() {
+        List<Short> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((short) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Short>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.I16Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI16(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI16(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayI16Test() {
-        List<ArrayList<Short>> in = new ArrayList<ArrayList<Short>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Short> inner = new ArrayList<Short>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayI16Test() {
+        List<List<Short>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Short> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((short) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Short>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.I16Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI16(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI16(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayUI16
      */
-    
     @Test
-    public <T> void deserializeUniDimArraUyI16Test() {
-        ArrayList<Short> in = new ArrayList<Short>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayUI16Test() {
+        List<Short> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((short) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Short>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.UI16Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI16(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI16(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayUI16Test() {
-        List<ArrayList<Short>> in = new ArrayList<ArrayList<Short>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Short> inner = new ArrayList<Short>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayUI16Test() {
+        List<List<Short>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Short> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((short) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Short>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.UI16Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI16(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI16(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayI32
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayI32Test() {
-        ArrayList<Integer> in = new ArrayList<Integer>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayI32Test() {
+        List<Integer> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((int) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Integer>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.I32Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI32(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayI32Test() {
-        List<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Integer> inner = new ArrayList<Integer>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayI32Test() {
+        List<List<Integer>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Integer> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((int) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.I32Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI32(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI32(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
-     * SerializeArrayUI64
+     * SerializeArrayUI32
      */
-    
     @Test
-    public <T> void deserializeUniDimArraUyI32Test() {
-        ArrayList<Integer> in = new ArrayList<Integer>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayUI32Test() {
+        List<Integer> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((int) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Integer>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.UI32Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI32(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayUI32Test() {
-        List<ArrayList<Integer>> in = new ArrayList<ArrayList<Integer>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Integer> inner = new ArrayList<Integer>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayUI32Test() {
+        List<List<Integer>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            ArrayList<Integer> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((int) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Integer>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.UI32Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI32(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI32(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayI64
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayI64Test() {
-        ArrayList<Long> in = new ArrayList<Long>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayI64Test() {
+        ArrayList<Long> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((long) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Long>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.I64Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI64(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayI64Test() {
-        List<ArrayList<Long>> in = new ArrayList<ArrayList<Long>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Long> inner = new ArrayList<Long>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayI64Test() {
+        List<List<Long>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Long> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((long) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Long>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.I64Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayI64(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayI64(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayUI64
      */
-    
     @Test
-    public <T> void deserializeUniDimArraUyI64Test() {
-        ArrayList<Long> in = new ArrayList<Long>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayUI64Test() {
+        List<Long> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((long) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Long>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.UI64Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI64(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayUI64Test() {
-        List<ArrayList<Long>> in = new ArrayList<ArrayList<Long>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Long> inner = new ArrayList<Long>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayUI64Test() {
+        List<List<Long>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Long> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((long) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Long>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.UI64Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayUI64(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayUI64(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayFloat32
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayFloat32Test() {
-        ArrayList<Float> in = new ArrayList<Float>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayFloat32Test() {
+        List<Float> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((float) 55);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Float>> s1
+            = new ListAsArraySerializer<>(1, new BasicSerializers.Float32Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayFloat32(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayFloat32(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayFloat32Test() {
-        List<ArrayList<Float>> in = new ArrayList<ArrayList<Float>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Float> inner = new ArrayList<Float>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayFloat32Test() {
+        List<List<Float>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Float> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((float) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Float>>> s1
+            = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.Float32Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayFloat32(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayFloat32(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayFloat64
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayFloat64Test() {
-        ArrayList<Double> in = new ArrayList<Double>(1);
-        for(int i=0; i < 1; ++i) {
-            in.add((double) 55);
+    public void deserializeUniDimArrayFloat64Test() {
+        List<Double> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
+            in.add(55.0);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Double>> s1
+                = new ListAsArraySerializer<>(1, new BasicSerializers.Float64Serializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayFloat64(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayFloat64(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayFloat64Test() {
-        List<ArrayList<Double>> in = new ArrayList<ArrayList<Double>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Double> inner = new ArrayList<Double>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayFloat64Test() {
+        List<List<Double>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Double> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((double) 55);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Double>>> s1
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.Float64Serializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayFloat64(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayFloat64(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
      * SerializeArrayBoolean
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayBooleanTest() {
-        ArrayList<Boolean> in = new ArrayList<Boolean>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayBooleanTest() {
+        List<Boolean> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add((boolean) true);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<Boolean>> s1
+                = new ListAsArraySerializer<>(1, new BasicSerializers.BooleanSerializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayBoolean(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayBoolean(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayBooleanTest() {
-        List<ArrayList<Boolean>> in = new ArrayList<ArrayList<Boolean>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<Boolean> inner = new ArrayList<Boolean>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayBooleanTest() {
+        List<List<Boolean>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<Boolean> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add((boolean) true);
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<Boolean>>> s1
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.BooleanSerializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayBoolean(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayBoolean(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
     /*
-     * SerializeArrayBoolean
+     * SerializeArrayString
      */
-    
     @Test
-    public <T> void deserializeUniDimArrayStringTest() {
-        ArrayList<String> in = new ArrayList<String>(1);
-        for(int i=0; i < 1; ++i) {
-            in.add((String) "Hello World");
+    public void deserializeUniDimArrayStringTest() {
+        List<String> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
+            in.add("Hello World");
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<String>> s1
+                = new ListAsArraySerializer<>(1, new BasicSerializers.StringSerializer());
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayString(message, "", in, 1);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayString(message, "", 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
     @Test
-    public <T> void deserializeMultiDimArrayStringTest() {
-        List<ArrayList<String>> in = new ArrayList<ArrayList<String>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<String> inner = new ArrayList<String>(5);
-            for (int j=0; j < 5; ++j) {
-                inner.add((String) "Hello World");
+    public void deserializeMultiDimArrayStringTest() {
+        List<List<String>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            ArrayList<String> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
+                inner.add("Hello World");
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<List<String>>> s1
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new BasicSerializers.StringSerializer()));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArrayString(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = ser.deserializeArrayString(message, "", 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        assertTrue(Objects.deepEquals(in,out));
+        assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
-    
+
+    /*
+     * SerializeArrayString
+     */
+    @Test
+    public void deserializeUniDimArrayEnumTest() {
+        List<GenericEnumeration> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
+            in.add(GenericEnumeration.second_val);
+        }
+
+        org.fiware.kiara.serialization.impl.Serializer<List<GenericEnumeration>> s1
+                = new ListAsArraySerializer<>(1, new EnumSerializer<>(GenericEnumeration.class));
+
+        List<?> out = null;
+
+        try {
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+    }
+
+    @Test
+    public void deserializeMultiDimArrayEnumTest() {
+        List<List<GenericEnumeration>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            List<GenericEnumeration> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
+                if (i % 2 == 0) {
+                    if (j % 2 == 0) {
+                        inner.add(GenericEnumeration.third_val);
+                    } else {
+                        inner.add(GenericEnumeration.second_val);
+                    }
+                } else {
+                    inner.add(GenericEnumeration.first_val);
+                }
+            }
+            in.add(inner);
+        }
+
+        org.fiware.kiara.serialization.impl.Serializer<List<List<GenericEnumeration>>> s1
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new EnumSerializer<>(GenericEnumeration.class)));
+
+        List<?> out = null;
+
+        try {
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
+        } catch (Exception e) {
+            assertTrue(false);
+        }
+
+        assertTrue(Objects.deepEquals(in, out));
+
+    }
+
     /*
      * SerializeArray
      */
-    
-    @SuppressWarnings("unchecked")
     @Test
-    public <T> void deserializeUniDimArrayTest() {
-        ArrayList<GenericType> in = new ArrayList<GenericType>(1);
-        for(int i=0; i < 1; ++i) {
+    public void deserializeUniDimArrayTest() {
+        List<GenericType> in = new ArrayList<>(1);
+        for (int i = 0; i < 1; ++i) {
             in.add(new GenericType(i, "HelloWorld"));
         }
 
-        List<T> out = null;
-        
+        org.fiware.kiara.serialization.impl.Serializer<List<GenericType>> s1
+                = new ListAsArraySerializer<>(1, new ObjectSerializer<>(GenericType.class));
+
+        List<?> out = null;
+
         try {
-            ser.serializeArray(message, "", in, 1);
-            message.getPayload().rewind();
-            out = (List<T>) ser.deserializeArray(message, "", GenericType.class, 1);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, ""); //ser.deserializeArray(bis, "", GenericType.class, 1);
         } catch (Exception e) {
             assertTrue(false);
         }
 
-        assertTrue(Objects.deepEquals(in,out));
+        assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
-    
-    
-    @SuppressWarnings("unchecked")
     @Test
-    public <T> void deserializeMultiDimArrayTest() {
-        List<ArrayList<GenericType>> in = new ArrayList<ArrayList<GenericType>>(3);
-        for(int i=0; i < 3; ++i) {
-            ArrayList<GenericType> inner = new ArrayList<GenericType>(5);
-            for (int j=0; j < 5; ++j) {
+    public void deserializeMultiDimArrayTest() {
+        List<List<GenericType>> in = new ArrayList<>(3);
+        for (int i = 0; i < 3; ++i) {
+            ArrayList<GenericType> inner = new ArrayList<>(5);
+            for (int j = 0; j < 5; ++j) {
                 inner.add(new GenericType(j, "HelloWorld"));
             }
             in.add(inner);
         }
 
-        List<T> out = null;
-        
+        List<?> out = null;
+
+        org.fiware.kiara.serialization.impl.Serializer<List<List<GenericType>>> s1
+                = new ListAsArraySerializer<>(3, new ListAsArraySerializer<>(5, new ObjectSerializer<>(GenericType.class)));
+
         try {
-            ser.serializeArray(message, "", in, 3, 5);
-            message.getPayload().rewind();
-            out = (List<T>) ser.deserializeArray(message, "", GenericType.class, 3, 5);
+            BinaryOutputStream bos = new BinaryOutputStream();
+            s1.write(ser, bos, "", in);
+            BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+            out = s1.read(ser, bis, "");
         } catch (Exception e) {
             assertTrue(false);
         }
 
         assertTrue(Objects.deepEquals(in, out));
 
-        reset();
     }
 
 }

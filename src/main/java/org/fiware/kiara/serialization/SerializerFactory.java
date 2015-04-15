@@ -15,29 +15,20 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.transport.impl;
+package org.fiware.kiara.serialization;
 
-import com.google.common.util.concurrent.ListenableFuture;
-import org.fiware.kiara.transport.ServerTransport;
-import org.fiware.kiara.transport.Transport;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public interface TransportFactory {
+public interface SerializerFactory {
 
     public String getName();
 
     public int getPriority();
 
-    public boolean isSecureTransport();
+    public Serializer createSerializer();
 
-    public ListenableFuture<Transport> createTransport(String uri, Map<String, Object> settings) throws InvalidAddressException, IOException;
-
-    public ServerTransport createServerTransport(String url) throws IOException;
-
-    public void startServer(ServerTransport serverTransport, TransportConnectionListener listener) throws InterruptedException;
 }

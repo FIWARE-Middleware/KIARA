@@ -12,5 +12,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/IDL-Parser/build/libs/kiaraparser-0.1.0.jar" sourcepath="/IDL-Parser/src/main/java"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

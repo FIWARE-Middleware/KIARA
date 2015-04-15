@@ -100,4 +100,22 @@ public class TestUtils {
         return params;
     }
 
+    public static Collection<?> createHttpTestConfig() {
+        Collection<Object[]> params = new ArrayList<>();
+        final String[] transports = {"http"};
+        final String[] protocols = {"cdr"};
+        final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
+
+        for (String transport : transports) {
+            for (String protocol : protocols) {
+                for (TypeFactory executorFactory : executorFactories) {
+                    Object[] config = new Object[]{transport, protocol, executorFactory};
+                    params.add(config);
+                }
+            }
+        }
+        return params;
+    }
+
+
 }

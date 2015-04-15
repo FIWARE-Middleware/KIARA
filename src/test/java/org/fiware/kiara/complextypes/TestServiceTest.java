@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import org.fiware.kiara.client.AsyncCallback;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -105,12 +106,8 @@ public class TestServiceTest {
 
     public static class TestServiceSetup extends TestSetup<TestServiceClient> {
 
-        private final ExecutorService serverDispatchingExecutor;
-
         public TestServiceSetup(int port, String transport, String protocol, String configPath, TypeFactory<ExecutorService> serverDispatchingExecutorFactory) {
-            super(port, transport, protocol, configPath);
-            this.serverDispatchingExecutor = serverDispatchingExecutorFactory != null ? serverDispatchingExecutorFactory.create() : null;
-            System.out.printf("Testing port=%d transport=%s protocol=%s configPath=%s serverDispatchingExecutor=%s%n", port, transport, protocol, configPath, serverDispatchingExecutor);
+            super(port, transport, protocol, configPath, serverDispatchingExecutorFactory);
         }
 
         @Override
@@ -130,7 +127,7 @@ public class TestServiceTest {
             ServerTransport serverTransport = context.createServerTransport(makeServerTransportUri(transport, port));
             Serializer serializer = context.createSerializer(protocol);
 
-            serverTransport.setDispatchingExecutor(this.serverDispatchingExecutor);
+            serverTransport.setDispatchingExecutor(this.getServerDispatchingExecutor());
 
             server.addService(service, serverTransport, serializer);
 
@@ -140,31 +137,6 @@ public class TestServiceTest {
         @Override
         protected TestServiceClient createClient(Connection connection) throws Exception {
             return connection.getServiceProxy(TestServiceClient.class);
-        }
-
-        @Override
-        protected String makeServerTransportUri(String transport, int port) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        protected String makeClientTransportUri(String transport, int port, String protocol) {
-            if ("tcp".equals(transport)) {
-                return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
-            }
-            throw new IllegalArgumentException("Unknown transport " + transport);
-        }
-
-        @Override
-        public void shutdown() throws Exception {
-            super.shutdown();
-            if (serverDispatchingExecutor != null) {
-                serverDispatchingExecutor.shutdown();
-                serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
-            }
         }
 
     }
@@ -298,7 +270,7 @@ public class TestServiceTest {
     @Test
     public void testComplexTypesAsync() throws Exception {
         final SettableFuture<MyStruct> value = SettableFuture.create();
-        testService.only_return_func(new TestServiceAsync.only_return_func_AsyncCallback() {
+        testService.only_return_func(new AsyncCallback<MyStruct>() {
 
             @Override
             public void onSuccess(MyStruct result) {
@@ -320,7 +292,7 @@ public class TestServiceTest {
         for (int i = 0; i < result.length; i++) {
             final SettableFuture<MyStruct> resultValue = SettableFuture.create();
             final int arg = i;
-            testService.return_param_func(value.get(), arg, new TestServiceAsync.return_param_func_AsyncCallback() {
+            testService.return_param_func(value.get(), arg, new AsyncCallback<MyStruct>() {
 
                 @Override
                 public void onSuccess(MyStruct result) {

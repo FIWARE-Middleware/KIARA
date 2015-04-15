@@ -29,4 +29,6 @@ import java.io.IOException;
 public interface TransportServer extends Closeable {
     public void listen(ServerTransport serverTransport, TransportConnectionListener listener);
     public void run() throws IOException;
+    public void stop() throws IOException;
+    public boolean isRunning();
 }
