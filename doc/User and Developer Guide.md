@@ -27,19 +27,18 @@ of functions and data type mapping.
 * Additional communication patterns like publish/subscribe.
 
 KIARA Advanced Middleware is essentially a library which is incorporated into
-the developed applications, the requirements are rather minimal.
+the developed applications, the requirements are rather minimal. 
 In particular it requires no service running in the background.
 
 ### Middleware Operation Modes
-The KIARA Advanced Middleware supports multiple operation modes. From traditional IDL-based approaches like Corba, DDS, Thrift up to newer approaches which start
-with the application data structure and automatically create the wire format.
+The KIARA Advanced Middleware supports multiple operation modes. From traditional IDL-based approaches like Corba, DDS, Thrift up to newer approaches which start with the application data structure and automatically create the wire format.
+
 We therefore differentiate three operation modes.
 
 #### IDL derived operation mode
-The IDL derived operation mode is similar to the traditional middleware approaches. 
-Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, 
-which have to be used by the application to implement the server and client
-(or Publisher/Subscriber) application parts.
+The IDL derived operation mode is similar to the traditional middleware approaches.
+
+Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, which have to be used by the application to implement the server and client (or Publisher/Subscriber) application parts.
 
 **Prerequisite:** IDL definition  
 **Generated:** Stubs and Skeletons (at compile time) which have to be used by the application  
@@ -47,36 +46,28 @@ which have to be used by the application to implement the server and client
 
 #### Application derived operation mode
 This mode is typical for some modern (e.g. RMI, WebService,...) frameworks. 
-Based on an application specific interface definitions, the framework automatically 
-generates Server- and Client-Proxy-Classes, which serialize the application internal 
-data structures and send them over the wire. Using Annotations, the required 
-serialization and transport mechanisms and type mappings can be influenced. 
-This operation implicitly generates an IDL definition based on the Java interfaces 
-definition and provide this IDL through a “service registry” for remote partners.
+Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced. 
+
+This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a “service registry” for remote partners.
 
 **Prerequisite:** Application-Interface-Definition (has to be the same on client and server side)  
 **Generated:**    Server-/Client-Proxies (generated at runtime)  
 **Examples:**     RMI, JAX-RS, Spring REST, …  
 
 #### Mapped operation mode
-Goal of the mapped operation mode is to separate the application interfaces from 
-the data structure used to transport the data over the wire. Therefore the middleware 
-has to map the application internal data structure and interfaces to a common IDL 
-definition. Advantage is, that the application interface on client and server 
-(or publisher/subscriber) side can be different.
+Goal of the mapped operation mode is to separate the application interfaces from the data structure used to transport the data over the wire. Therefore the middleware has to map the application internal data structure and interfaces to a common IDL definition. Advantage is, that the application interface on client and server (or publisher/subscriber) side can be different.
 
 **Prerequisite:** Application-Interface-Definition (can be different on server and client side) IDL Definition  
 **Generated:**    Server-/Client-Proxis (generated at runtime, which map the attributes & operations  
 **Examples:**    KIARA
 
-> Note:
- The first release of KIARA will provide support for the traditional IDL derived operation mode. Application derived and mapped operation mode will follow in a future release. 
+
+> The first release of KIARA will provide support for the traditional IDL derived operation mode. Application derived and mapped operation mode will follow in a future release. 
 
 
 ## A quick example
 
-In the following chapters we will use the following example application to explain 
-the basic concepts of building an application using KIARA.
+In the following chapters we will use the following example application to explain the basic concepts of building an application using KIARA.
 
 ### Calculator
 
@@ -96,9 +87,7 @@ The KIARA Calculator example is provided within this distribution, so it can be 
 
 ### Basic procedure
 
-Before diving into the details describing the features and configure your project
-for KIARA, the following quick example should show the basic steps to create a
-simple client and server application in the different operation modes.
+Before diving into the details describing the features and configure your projectfor KIARA, the following quick example should show the basic steps to create a simple client and server application in the different operation modes.
 
 Detailed instructions on how to execute the particular steps are given in
 chapter [Building a KIARA RPC application](#building-a-kiara-rpc-application).
@@ -106,8 +95,7 @@ chapter [Building a KIARA RPC application](#building-a-kiara-rpc-application).
 #### IDL derived application process
 
 In the IDL derived approach, first the IDL definition has to be created:
-
-```
+```idl
 service Calculator
 {
     float32 add (float32 n1, float32 n2);
@@ -115,7 +103,7 @@ service Calculator
 };
 ```
 
-The developer has to implement the functions inside the class CalculatorServantExample:
+The developer has to implement the functions inside the class `CalculatorServantImpl`:
 ```java
 public static class CalculatorServantImpl extends CalculatorServant
 {
@@ -243,10 +231,8 @@ Following a short overview of the supported KIARA IDL elements. For a detailed d
 * **Operation Declarations**: 
   Operations can be declared within the services following the standard OMG IDL notation.
 
-The IDL file for our example application shows the usage of some of the above elements.
-
-`Calculator.idl`:
-```
+The IDL file (`calculator.idl`) for our example application shows the usage of some of the above elements.
+```idl
   service Calculator
   {
       float32 add (float32 n1, float32 n2);
@@ -275,7 +261,7 @@ Using the `-example` option (described below), kiaragen will generate the follow
 * `x.y.<IDL-ServiceName>Servant`: 
   This abstract class provides all the mechanisms (transport, un/marshalling, etc.) the server requires to call the server functions. 
 * `x.y.<IDL-ServiceName>ServantExample`: 
-  This class will be extended to implement the server side functions (see [Servant Implementation](#servant-implementation-service-functionality).
+  This class will be extended to implement the server side functions (see [Servant Implementation](#servant-implementation).
 * `x.y.ClientExample`: 
   This class contains the code needed to run a possible example of the client side application.
 * `x.y.ServerExample`: 
@@ -289,7 +275,7 @@ To call `kiaragen` manually it has to be installed and in your run path.
 Instructions to install the kiaragen tool can be found in the [KIARA Installation and Administration Guide](Installation and Admin Guide.md)
 
 The usage syntax is:
-```bash
+```
 $ kiaragen [options] <IDL file> [<IDL file> …]
 ```
 
@@ -299,13 +285,13 @@ Options:
 |-----------------------|-------------------------------------------------
 | `-help`               | Shows help information 
 | `-version`            | Shows the current version of KIARA / kiaragen
-| `-package`            | Defines the package prefix of the generated Java classes. \[Default: no package\]
-| `-d <path>`           | Specify the output directory for the generated files. \[Default: current working dir\]
+| `-package`            | Defines the package prefix of the generated Java classes. Default: no package
+| `-d <path>`           | Specify the output directory for the generated files. Default: current working dir
 | `-replace`            | Replaces existing generated files.
 | `-example <platform>` | Generates the support files (interfaces, stubs,  skeletons,...) for the given target platform. These classes will be used to by the developer to implement both client and server part or the application. Supported values:  gradle (creates also build.gradle files)
 | `--ppDisable`         | Disables the preprocessor.
-| `--ppPath <path>`     | Specifies the path of the preprocessor. \[Default: Systems C++ preprocessor\]
-| `-t <path>`           | Specify the output temploral directory for the files generated by the preprocessor. \[Default: machine temp path\]
+| `--ppPath <path>`     | Specifies the path of the preprocessor. Default: Systems C++ preprocessor
+| `-t <path>`           | Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path
 
 
 For our example the call could be:
@@ -347,7 +333,7 @@ This would generate the following files:
 ```
 
 
-### Servant implementation (service functionality)
+### Servant implementation
 Please note that the code inside the file `x.y.<IDL-ServiceName>ServantExample.java` (which in this case is `CalculatorServantExample.java`) has to be modified in order to specify the behaviour of each declared function.
 ```java
 class CalculatorServantExample extends CalculatorServant {
@@ -443,7 +429,7 @@ For the client and server examples to compile, some jar files are needed. These 
 ```
 
 To compile the client using gradle, the call would be the next (changing the file build_client.gradle to build_server.gradle will compile the server):
-```gradle
+```
 $ gradle -b build_client.gradle build
 :compileJava
 :processResources UP-TO-DATE
@@ -487,7 +473,7 @@ The "KIARA RPC Dynamic API" allows the developers to easily execute calls in an 
 Using the dynamic API we still need the IDL file, which declares the "contract" between server and client by defining the data types and services (operations) the server offers.
 
 For the dynamic API the IDL format is identical to the one used for the static/compile time version. For example the IDL file for our demo application (`calculator.idl`) is identical to the static use-case:
-```
+```idl
 service Calculator
 {
     float32 add (float32 n1, float32 n2);

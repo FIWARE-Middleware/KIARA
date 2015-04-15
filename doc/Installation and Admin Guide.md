@@ -98,7 +98,7 @@ $ sudo ln -s /usr/share/gradle-x.x.x /usr/share/gradle
 ```
 
 Open `~/.profile` (single user) or `/etc/profile` (all users) and add the following lines:
-``` bash
+```shell
 export GRADLE_HOME=/usr/share/gradle
 export PATH=$PATH:$GRADLE_HOME/bin
 ```
@@ -151,7 +151,7 @@ $ sudo ln -s apache-maven-x.x.x /usr/share/maven
 ```
 
 Open `~/.profile` (single user) or `/etc/profile` (all users) and add the following lines:
-```
+```shell
 export M2_HOME=/usr/share/maven
 export PATH=$PATH:$M2_HOME/bin
 ```
@@ -228,7 +228,7 @@ Please check the Installation Manual for instructions how to install the require
 ### Gradle
 #### Set up the basic project structure
 If you do not yet have a project you can setup the basic structure using the gradle init plugin:
-```shell
+```
 $ mkdir calculator 
 $ cd calculator
 $ gradle init --type java-library
@@ -331,7 +331,7 @@ This will create a basic directory structure for your source and test code and c
 
 #### Configure your maven project to use KIARA
 To use KIARA in your project you have to extend your project configuration file (`pom.xml`):
-```pom
+```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.example</groupId>
