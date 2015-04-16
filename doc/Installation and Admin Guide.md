@@ -196,7 +196,7 @@ The kiaragen tool is part of the KIARA components available on Maven Central. De
 If you are using Maven or an IDE you can download an executable jar file of kiaragen from the [KIARA Maven-Central](http://search.maven.org/#search|ga|1|g:org.fiware.kiara) repository, or you can find it in a standalone distribution available online.
 
 #### On Windows:
-* Download the file kiaragen-x.x.x-capsule.jar from Maven Central
+* Download the file kiaragen-x.x.x-cli.jar from Maven Central
 * Rename it to kiaragen-x.x.x.jar and place it in a directory in the windows 
   execute path or place it to your project directory (e.g. subdirectory lib).
 * To make the execution simpler you can also download the kiaragen.bat script 
@@ -205,7 +205,7 @@ If you are using Maven or an IDE you can download an executable jar file of kiar
   the installation dir is in the execute path or with a relative path `./scripts/kiaragen.bat` for project local installations
 
 #### On Linux / OS X:
-* Download the file `kiaragen-x.x.x-capsule.jar` from Maven Central
+* Download the file `kiaragen-x.x.x-cli.jar` from Maven Central
 * Rename it to `kiaragen-x.x.x.jar` and place it in a directory of your shells
   execute path (e.g. `/usr/local/bin`). Alternatively you can also add it to your project dir and call it with a relative path (./scripts/kiaragen.sh).
 * To make the execution simpler you can also download the kiaragen.sh script
