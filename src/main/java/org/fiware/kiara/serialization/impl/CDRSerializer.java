@@ -28,9 +28,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class CDRSerializer implements SerializerImpl {
 
     private final AtomicInteger nextId;
+    private boolean endianness = false; // false = BIG_ENDIAN; true = LITTLE_ENDIAN
 
     public CDRSerializer() {
         nextId = new AtomicInteger(1);
+    }
+    
+    public CDRSerializer(boolean endianness) {
+        nextId = new AtomicInteger(1);
+        this.endianness = endianness;
+    }
+    
+    public void setEndianness(boolean endianness) {
+        this.endianness = endianness;
+    }
+    
+    public boolean getEndianness() {
+        return this.endianness;
     }
 
     @Override
@@ -94,11 +108,6 @@ public class CDRSerializer implements SerializerImpl {
         message.write(padding);
     }
 
-    private void jumpPadding(BinaryOutputStream message, int padding_len) {
-        int pos = message.getPosition();
-        message.setPosition(pos+padding_len);
-    }
-
     private void jumpPadding(BinaryInputStream message, int padding_len) {
         int pos = message.getPosition();
         message.setPosition(pos+padding_len);
@@ -156,6 +165,16 @@ public class CDRSerializer implements SerializerImpl {
     public String deserializeOperation(BinaryInputStream message) throws IOException {
         return this.deserializeString(message, "");
     }
+    
+    /*
+     * Auxiliary functions
+     */
+    
+    public void addPadding(BinaryOutputStream message, int nBytes) throws IOException
+    {
+        byte [] bytes = new byte[nBytes];
+        message.write(bytes);
+    }
 
     /*
      * Primitive types
@@ -195,7 +214,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeShort(value);
+        if (!endianness) {
+                message.writeShort(value);
+        } else {
+                message.writeShortLE(value);
+        }
     }
 
     @Override
@@ -206,7 +229,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readShort();
+        if (!endianness) {
+                return message.readShort();
+        } else {
+                return message.readShortLE();
+        }
     }
 
     @Override
@@ -216,7 +243,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeShort(value);
+        if (!endianness) {
+                message.writeShort(value);
+        } else {
+                message.writeShortLE(value);
+        }
     }
 
     @Override
@@ -227,7 +258,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readShort();
+        if (!endianness) {
+                return message.readShort();
+        } else {
+                return message.readShortLE();
+        }
     }
 
     @Override
@@ -237,7 +272,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeInt(value);
+        if (!endianness) {
+                message.writeInt(value);
+        } else {
+                message.writeIntLE(value);
+        }
     }
 
     @Override
@@ -248,7 +287,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readInt();
+        if (!endianness) {
+                return message.readInt();
+        } else {
+                return message.readIntLE();
+        }
     }
 
     @Override
@@ -258,7 +301,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeInt(value);
+        if (!endianness) {
+                message.writeInt(value);
+        } else {
+                message.writeIntLE(value);
+        }
     }
 
     @Override
@@ -269,7 +316,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readInt();
+        if (!endianness) {
+                return message.readInt();
+        } else {
+                return message.readIntLE();
+        }
     }
 
     @Override
@@ -279,7 +330,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeLong(value);
+        if (!endianness) {
+                message.writeLong(value);
+        } else {
+                message.writeLongLE(value);
+        }
     }
 
     @Override
@@ -290,7 +345,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readLong();
+        if (!endianness) {
+                return message.readLong();
+        } else {
+                return message.readLongLE();
+        }
     }
 
     @Override
@@ -300,7 +359,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeLong(value);
+        if (!endianness) {
+                message.writeLong(value);
+        } else {
+                message.writeLongLE(value);
+        }
     }
 
     @Override
@@ -311,7 +374,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readLong();
+        if (!endianness) {
+                return message.readLong();
+        } else {
+                return message.readLongLE();
+        }
     }
 
     @Override
@@ -321,7 +388,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeFloat(value);
+        if (!endianness) {
+                message.writeFloat(value);
+        } else {
+                message.writeFloatLE(value);
+        }
     }
 
     @Override
@@ -332,7 +403,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readFloat();
+        if (!endianness) {
+                return message.readFloat();
+        } else {
+                return message.readFloatLE();
+        }
     }
 
     @Override
@@ -342,7 +417,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             writePadding(message, padding_len);
         }
-        message.writeDouble(value);
+        if (!endianness) {
+                message.writeDouble(value);
+        } else {
+                message.writeDoubleLE(value);
+        }
     }
 
     @Override
@@ -353,7 +432,11 @@ public class CDRSerializer implements SerializerImpl {
         if (padding_len != 0) {
             jumpPadding(message, padding_len);
         }
-        return message.readDouble();
+        if (!endianness) {
+                return message.readDouble();
+        } else {
+                return message.readDoubleLE();
+        }
     }
 
     @Override
