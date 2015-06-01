@@ -58,15 +58,15 @@ Connection connection = context.connect("kiara://127.0.0.1:8080/service");
  DynamicProxy client = connection.getDynamicProxy("Calculator");
 ```
 
-When connecting to the server, the scheme specified in the URI is used by the Context to know where to download the information from. In this example, the scheme “kiara” means the connection information is going to be downloaded from the server and then used in the negotiation process. Otherwise, information such as the transport protocol and serialization mechanism must be specified in the URI itself.
+When connecting to the server, the scheme specified in the URI is used by the Context to decide from where to download the information. In this example, the scheme “kiara” means the connection information is going to be downloaded from the server and then used in the negotiation process. Otherwise, information such as the transport protocol and serialization mechanism must be specified in the URI itself.
 
-Before being able to call remotely a function on the server, the client will need to have access to its functions, and in a typical RPC framework, this can be done by using a Proxy. The class named DynamicProxy allows the user to have access to this information from the data that has been downloaded from the server.
+Before being able to call remotely a function on the server, the client will need to have access to its functions, and in a typical RPC framework, this can be done by using a Proxy. The class named `DynamicProxy` allows the user to have access to this information from the data that has been downloaded from the server.
 
-To do so, the Connection object offers a function called getDynamicProxy, which looks inside the dynamic data types created when connecting to the server and retrieves a DynamicProxy whose name is the same as the service name specified as a parameter.
+To do so, the `Connection` object offers a function called `getDynamicProxy`, which looks inside the dynamic data types created when connecting to the server and retrieves a `DynamicProxy` whose name is the same as the service name specified as a parameter.
 
-Once the user has obtained this DynamicProxy, all the functions defined inside the service are available. To use them, two objects are necessary, the DynamicFunctionRequest and the DynamicFunctionResponse.
+Once the user has obtained this `DynamicProxy`, all the functions defined inside the service are available. To use them, two objects are necessary, the `DynamicFunctionRequest` and the `DynamicFunctionResponse`.
 
-The DynamicFunctionRequest object is created at run-time by using the name of the function the user wants to execute on the server’s side. If there is a function whose name fits the one specified, this object will be filled with all the DynamicValue objects necessary to execute the function.
+The `DynamicFunctionRequest` object is created at run-time by using the name of the function the user wants to execute on the server’s side. If there is a function whose name fits the one specified, this object will be filled with all the `DynamicValue` objects necessary to execute the function.
 
 On the other hand, the DynamicFunctionResponse object will be created and filled with the response obtained from the server after the execution is finished (either if it finished properly or not).
 
@@ -80,13 +80,13 @@ DynamicFunctionRequest request = dclient.createFunctionRequest("add");
 DynamicFunctionResponse response = drequest.execute();
 ```
 
-In this example, the createFunctionRequest method has been executed specifying “add as” the function name. Therefore, the DynamicFunctionRequest object will have two primitive DynamicValue objects (DynamicPrimitive) inside (one for each parameter defined in the IDL description of the function). The user can easily modify these values and call the execute method on the request object, obtaining this way a DynamicFunctionResponse which holds the result of the function execution.
+In this example, the `createFunctionRequest` method has been executed specifying “add as” the function name. Therefore, the `DynamicFunctionRequest` object will have two primitive `DynamicValue` objects (`DynamicPrimitive`) inside (one for each parameter defined in the IDL description of the function). The user can easily modify these values and call the execute method on the request object, obtaining this way a `DynamicFunctionResponse` which holds the result of the function execution.
 
-The *execute* method will have all the business logic so that the service name, the operation name, message ID, etc. as well as all the parameters are serialized properly according to the function that is going to be executed.
+The `execute` method will have all the business logic so that the service name, the operation name, message ID, etc. as well as all the parameters are serialized properly according to the function that is going to be executed.
 
-The same thing happens with the return type of each function. Depending on the DynamicValue that defines it, a different deserialization method will be executed. By using this method, the user only has to specify which function must be executed on the server’s side, and all the information will be (de)serialized automatically.
+The same thing happens with the return type of each function. Depending on the `DynamicValue` that defines it, a different deserialization method will be executed. By using this method, the user only has to specify which function must be executed on the server’s side, and all the information will be (de)serialized automatically.
 
-In order to know if the function finished the way it should, the DynamicFunctionResponse object offers a function named “isException”, which will return true if and only if the function did raise an exception. The following code snippet shows this behaviour:
+In order to know if the function finished the way it should, the `DynamicFunctionResponse` object offers a function named `isException`, which will return true if and only if the function did raise an exception. The following code snippet shows this behaviour:
 
 ```java
 // Check RPC result
@@ -102,6 +102,7 @@ if (dresponse.isException()) {
 API Overview
 ------------
 This section enumerates and describes the classes provided by Advanced Middleware Dynamic Types RPC API.
+
 
 ### Main entry point
 
@@ -126,14 +127,14 @@ This interface is part of the public [Advanced Middleware RPC API][AMiRPCSpec].
 
 #### org.fiware.kiara.serialization.impl.Serializable
 
-This interface is the one that must be implemented by all the used defined data types in order to be serializable. It defines the methods **serialize** and **deserialize** for each data type. This class will not be described in this document, for more information take a look at the [**Advanced Middleware RPC API - Specification**][AMiRPCSpec] document.
+This interface is the one that must be implemented by all the used defined data types in order to be serializable. It defines the methods `serialize` and `deserialize` for each data type. This class will not be described in this document, for more information take a look at the [**Advanced Middleware RPC API Specification**][AMiRPCSpec] document.
 
 
 ### Client API
 
 #### org.fiware.kiara.client.Connection
 
-The connection interface manages the connection to the server. It holds the required Transport objects and Serialization objects. Also it can create these object automatically depending on the server information. The connection provides the service proxy interfaces, which will be used by the application to call remote functions.
+The `Connection` interface manages the connection to the server. It holds the required `Transport` objects and `Serialization` objects. Also it can create these object automatically depending on the server information. The connection provides the service proxy interfaces, which will be used by the application to call remote functions.
 
 **Functions:**
 
@@ -142,13 +143,14 @@ The connection interface manages the connection to the server. It holds the requ
 
 ### TypeDescriptor
 
-This subsection contains the interfaces and classes that are dependent on the user. This section will use the example in section API Examples to define them.
+This subsection contains the interfaces and classes that are dependent on the user. This section will use the example in section API Usage Examples to define them.
 
 <center>
 ![Figure: Class Diagram TypeDescriptor](images/ClassDiagramTypeDescriptor.png "Figure: Class Diagram TypeDescriptor")
 </center>
 <center>Figure: Class Diagram TypeDescriptor</center>
 
+---
 #### org.fiware.kiara.typecode.TypeDescriptorBuilder
 
 This interface defined the operations used to create type-describing objects. It allows the users to create every supported data type inside Advanced Middleware by acting as a single access builder.
@@ -168,6 +170,7 @@ This interface defined the operations used to create type-describing objects. It
 - **createFunctionType**: This function can be used to create a new `FunctionTypeDescriptor` representing a Remote Procedure Call (RPC).
 - **createServiceType**: Function that creates a new `ServiceTypeDescriptor` object used to represent a service defined in the server’s side.
 
+---
 #### org.fiware.kiara.typecode.TypeDescriptor
 
 This class is used to manipulate the objects used to describe the data types. It allows the users to know what type of data an object represents.
@@ -196,7 +199,7 @@ This class is used to manipulate the objects used to describe the data types. It
 - **isFunction:** Function used to know if a `TypeDescriptor` object is a description of a function.
 - **isService:** Function used to know if a `TypeDescriptor` object is a description of a service.
 
-
+---
 #### org.fiware.kiara.typecode.data.DataTypeDescriptor
 
 Interface that represents the top level class of the data type hierarchy. It is used as a generic type to englobe only and exclusively data type descriptors.
@@ -208,7 +211,7 @@ Interface that represents the top level class of the data type hierarchy. It is 
 
 **Functions**: None
 
-
+---
 #### org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor
 
 Interface that represents a primitive data type. Primitive types include **boolean**, **byte**, **i16**, **ui16**, **i32**, **ui32**, **i64**, **ui64**, **float32**, **float64**, **char** and **string**.
@@ -224,7 +227,7 @@ Interface that represents a primitive data type. Primitive types include **boole
 - **setMaxFixedLength**: This function can only be used with string types. It sets the maximum length value for a specific string represented by the `PrimitiveTypeDescriptor` object.
 - **getMaxFixedLength**: This function returns the maximum length specified when creating the `PrimitiveTypeDescriptor` object if it represents a string data type.
 
-
+---
 #### org.fiware.kiara.typecode.data.ContainerTypeDescriptor
 
 Interface that represents a container data type. Container data types are **arrays**, **lists**, **maps** and **sets**.
@@ -239,7 +242,7 @@ Interface that represents a container data type. Container data types are **arra
 - **setMaxSize**: This function sets the maximum size of a container data type.
 - **getMaxSize**: This function returns the maximum size of a container data type.
 
-
+---
 #### org.fiware.kiara.typecode.data.ArrayTypeDescriptor
 
 Interface that represents an array data type. Arrays can hold multiple repeated objects of the same data type inside.
@@ -257,7 +260,7 @@ Interface that represents an array data type. Arrays can hold multiple repeated 
 - **setDimensions**: This method sets the dimensions of the array.
 - **getDimensions**: This method returns the different dimensions of the array.
 
-
+---
 #### org.fiware.kiara.typecode.data.ListTypeDescriptor
 
 Interface that represents a list data type. Lists can hold multiple repeated objects of the same data type inside.
@@ -272,7 +275,7 @@ Interface that represents a list data type. Lists can hold multiple repeated obj
 - **getElementType**: This function returns the `DataTypeDescriptor` object describing the content type of the list.
 - **setElementType**: This function sets the `DataTypeDescriptor` object describing the content type of the list.
 
-
+---
 #### org.fiware.kiara.typecode.data.SetTypeDescriptor
 
 Interface that represents a set data type. Sets can have non repeated objects of the same data type inside.
@@ -287,7 +290,7 @@ Interface that represents a set data type. Sets can have non repeated objects of
 - **getElementType**: This function returns the `DataTypeDescriptor` object describing the content type of the set.
 - **setElementType**: This function sets the `DataTypeDescriptor` object describing the content type of the set.
 
-
+---
 #### org.fiware.kiara.typecode.data.MapTypeDescriptor
 
 Interface that represents a map data type. Maps can hold multiple key-object pairs inside if and only if the key objects are unique.
@@ -304,7 +307,7 @@ Interface that represents a map data type. Maps can hold multiple key-object pai
 - **getValueTypeDescriptor**: This function returns the `DataTypeDescriptor` object describing the value type of the map.
 - **setValueTypeDescriptor**: This function sets the `DataTypeDescriptor` object describing the value type of the map.
 
-
+---
 #### org.fiware.kiara.typecode.data.MemberedTypeDescriptor
 
 Interface that represents a membered data type. `Membered` data types are **structs**, **enumerations**, **unions** and **exceptions**.
@@ -319,7 +322,7 @@ Interface that represents a membered data type. `Membered` data types are **stru
 - **getMembers**: This function returns the list of member objects stored in a `ContainerTypeDescriptor` object.
 - **getName**: This function returns the name of the `ContainerTypeDescriptor` object.
 
-
+---
 #### org.fiware.kiara.typecode.data.StructTypeDescriptor
 
 Interface that represents a struct data type. Structs can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
@@ -334,7 +337,7 @@ Interface that represents a struct data type. Structs can have multiple differen
 - **addMember**: This function adds a new `TypeDescriptor` object as a member using a specific name.
 - **getMember**: This function returns a `DataTypeDescriptor` object identified by the name introduced as a parameter.
 
-
+---
 #### org.fiware.kiara.typecode.data.EnumTypeDescriptor
 
 Interface that represents an enumeration data type. Enumerations are formed by a group of different string values.
@@ -348,7 +351,7 @@ Interface that represents an enumeration data type. Enumerations are formed by a
 
 - **addValue**: This function adds a new value to the enumeration using the string object received as a parameter.
 
-
+---
 #### org.fiware.kiara.typecode.data.UnionTypeDescriptor
 
 Interface that represents a union data type. Unions are formed by a group of members identified by their names and the labels of the discriminator to which they are assigned.
@@ -362,7 +365,7 @@ Interface that represents a union data type. Unions are formed by a group of mem
 
 - **addMember**: This function adds a new `TypeDescriptor` object as a member using a specific name and the labels of the discriminator.
 
-
+---
 #### org.fiware.kiara.typecode.data.ExceptionTypeDescriptor
 
 Interface that represents a struct data type. Exceptions can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
@@ -378,7 +381,7 @@ Interface that represents a struct data type. Exceptions can have multiple diffe
 - **getMember**: This function returns a `DataTypeDescriptor` object identified by the name introduced as a parameter.
 - **getMd5**: This function returns the Md5 hash string of the exception name.
 
-
+---
 #### org.fiware.kiara.typecode.data.Member
 
 Interface that represents a member of a `MemberedTypeDescriptor` object. Each member is identified by its name and the `TypeDescriptor` object that it holds.
@@ -393,7 +396,7 @@ Interface that represents a member of a `MemberedTypeDescriptor` object. Each me
 - **getName**: This function returns the member’s name.
 - **getTypeDescriptor**: This function returns a `DataTypeDescriptor` object stored inside the member.
 
-
+---
 #### org.fiware.kiara.typecode.data.EnumMember
 
 Interface that represents a member of a `EnumTypeDescriptor` object. It inherits from `Member` interface and therefore it has no new methods.
@@ -405,7 +408,7 @@ Interface that represents a member of a `EnumTypeDescriptor` object. It inherits
 
 **Functions:** None
 
-
+---
 #### org.fiware.kiara.typecode.data.UnionMember
 
 Interface that represents a member of a `UnionTypeDescriptor` object. It inherits from Member interface and therefore it has no new methods.
@@ -417,7 +420,7 @@ Interface that represents a member of a `UnionTypeDescriptor` object. It inherit
 
 **Functions:** None
 
-
+---
 #### org.fiware.kiara.typecode.services.FunctionTypeDescriptor
 
 This interface represents a function, providing methods to easily describe it by setting its return type, parameters and exceptions that it might throw.
@@ -439,7 +442,7 @@ This interface represents a function, providing methods to easily describe it by
 - **getServiceName**: This function returns the name of the `ServiceTypeDescriptor` in which the `FunctionTypeDescriptor` is defined.
 - **setServiceName**: This function sets the name of the `ServiceTypeDescriptor` in which the `FunctionTypeDescriptor` is defined.
 
-
+---
 #### org.fiware.kiara.typecode.services.ServiceTypeDescriptor
 
 This interface represents a service, providing methods to add the FunctionTypeDescriptor objects representing every function defined in a specific service.
@@ -461,813 +464,853 @@ This interface represents a service, providing methods to add the FunctionTypeDe
 
 This subsection contains the interfaces and classes that are designed to provide the developer with functions to create and manage dynamic data types.
 
-![](media/image67.png)
+<center>
+![Figure: Class Diagramm DynamicValue](images/ClassDiagramDynamicValue.png "Figure: Class Diagramm DynamicValue")
+</center>  
+<center>Figure: Class Diagramm DynamicValue</center>
 
-### org.fiware.kiara.dynamic.DynamicValueBuilder
+---
+#### org.fiware.kiara.dynamic.DynamicValueBuilder
 
-This class allows the users to create new data types based on their TypeCode descriptions.
+This class allows the users to create new data types based on their `TypeCode` descriptions.
 
-![](media/image26.png)
-
-**Functions:**
-
--   **createData:** This function allows the user to create new DynamicData objects by using their TypeDescriptor.
-
--   **createFunctionRequest:** This function receives a FunctionTypeDescriptor object describing a function, and it generates a new DynamicFunctionRequest (which inherits from DynamicData) object representing it.
-
--   **createFunctionResponse:** This function receives a FunctionTypeDescriptor object describing a function, and it generates a new DynamicFunctionResponse (which inherits from DynamicData) object representing it.
-
--   **createService:** This function receives a ServiceTypeDescriptor object describing a function, and it creates a new DynamicService object representing it.
-
-### org.fiware.kiara.dynamic.DynamicValue
-
-Interface that acts as a supertype for every dynamic value that can me banaged. Every DynamicValue object is defined by using a TypeDescriptor which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the TypeDescriptor object it was created from.
-
-![](media/image07.png)
+<center>
+![Figure: Interface DynamicValueBuilder](images/InterfaceDynamicValueBuilder.png "Figure: Interface DynamicValueBuilder")
+</center>  
+<center>Figure: Interface DynamicValueBuilder</center>
 
 **Functions:**
 
--   **getTypeDescriptor**: This function returns the TypeDescriptor used when creating the DynamicValue object.
+- **createData:** This function allows the user to create new `DynamicData` objects by using their `TypeDescriptor`.
+- **createFunctionRequest:** This function receives a `FunctionTypeDescriptor` object describing a function, and it generates a new `DynamicFunctionRequest` (which inherits from `DynamicData`) object representing it.
+- **createFunctionResponse:** This function receives a `FunctionTypeDescriptor` object describing a function, and it generates a new `DynamicFunctionResponse` (which inherits from `DynamicData`) object representing it.
+- **createService:** This function receives a `ServiceTypeDescriptor` object describing a function, and it creates a new `DynamicService` object representing it.
 
--   **serialize:** This function serializes the content of the DynamicValue object inside a BinaryOutputStream message.
+---
+#### org.fiware.kiara.dynamic.DynamicValue
 
--   **deserialize:** This function deserializes the content of a BinaryInputStream message into a DynamicValue object.
+Interface that acts as a supertype for every dynamic value that can be managed. Every `DynamicValue` object is defined by using a `TypeDescriptor` which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the `TypeDescriptor` object it was created from.
 
-**org.fiware.kiara.dynamic.data.DynamicData**
+<center>
+![Figure: Interface DynamicValue](images/InterfaceDynamicValue.png "Figure: Interface DynamicValue")
+</center>  
+<center>Figure: Interface DynamicValue</center>
 
-Interface that is used to group all the DynamicValues representing data types.
+**Functions:**
 
-![](media/image54.png)
+- **getTypeDescriptor**: This function returns the TypeDescriptor used when creating the DynamicValue object.
+- **serialize:** This function serializes the content of the DynamicValue object inside a BinaryOutputStream message.
+- **deserialize:** This function deserializes the content of a BinaryInputStream message into a DynamicValue object.
+
+---
+#### org.fiware.kiara.dynamic.data.DynamicData
+
+Interface that is used to group all the `DynamicValues` representing data types.
+
+<center>
+![Figure: Interface DynamicData](images/InterfaceDynamicData.png "Figure: Interface DynamicData")
+</center>  
+<center>Figure: Interface DynamicData</center>
 
 **Functions:** None
 
-### org.fiware.kiara.dynamic.data.DynamicPrimitive
+---
+#### org.fiware.kiara.dynamic.data.DynamicPrimitive
 
-This class allows the users to manipulate DynamicData objects made from PrimitiveTypeDescriptor objects.
+This class allows the users to manipulate `DynamicData` objects made from `PrimitiveTypeDescriptor` objects.
 
-![](media/image20.png)
+<center>
+![Figure: Interface DynamicPrimitive](images/InterfaceDynamicPrimitive.png "Figure: Interface DynamicPrimitive")
+</center>  
+<center>Figure: Interface DynamicPrimitive</center>
 
 **Functions:**
 
--   **set:** This function sets the inner value of a DynamicPrimitive object according to the TypeDescriptor specified when creating it.
+- **set:** This function sets the inner value of a `DynamicPrimitive` object according to the `TypeDescriptor` specified when creating it.
+- **get**: This function returns the value of a `DynamicPrimitive` object.
 
--   **get**: This function returns the value of a DynamicPrimitive object.
+---
+#### org.fiware.kiara.dynamic.data.DynamicContainer
 
-### org.fiware.kiara.dynamic.data.DynamicContainer
+This class holds the data values of a `DynamicData` object created from a `ContainerTypeDescriptor`.
 
-This class holds the data values of a DynamicData object created from a ContainerTypeDescriptor.
-
-![](media/image30.png)
+<center>
+![Figure: Interface DynamicContainer](images/InterfaceDynamicContainer.png "Figure: Interface DynamicContainer")
+</center>  
+<center>Figure: Interface DynamicContainer</center>
 
 **Functions:** None
 
-### org.fiware.kiara.dynamic.data.DynamicArray
+---
+#### org.fiware.kiara.dynamic.data.DynamicArray
 
-This class holds the data values of a DynamicData object created from an ArrayTypeDescriptor. A DynamicArray contains a group of DynamicData objects (all must be the same type) stored in single or multi dimensional matrixes.
+This class holds the data values of a `DynamicData` object created from an `ArrayTypeDescriptor`. A `DynamicArray` contains a group of `DynamicData` objects (all must be the same type) stored in single or multi dimensional matrixes.
 
-![](media/image17.png)
+<center>
+![Figure: Interface DynamicArray](images/InterfaceDynamicArray.png "Figure: Interface DynamicArray")
+</center>  
+<center>Figure: Interface DynamicArray</center>
 
 **Functions:**
 
--   **getElementAt:** This function returns DynamicData object stored in a certain position or coordinate..
+- **getElementAt:** This function returns `DynamicData` object stored in a certain position or coordinate..
+- **setElementAt**: This function sets a `DynamicData` object in a specific position inside the array. If the array has multiple dimensions, the object will be set in a specific coordinate.
 
--   **setElementAt**: This function sets a DynamicData object in a specific position inside the array. If the array has multiple dimensions, the object will be set in a specific coordinate.
-
-### org.fiware.kiara.dynamic.data.DynamicList
+---
+#### org.fiware.kiara.dynamic.data.DynamicList
 
 This class holds the data values of a DynamicData object created from a ListTypeDescriptor. A list can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicList must have been created from the same TypeDescriptor definition.
 
-![](media/image29.png)
+<center>
+![Figure: Interface DynamicList](images/InterfaceDynamicList.png "Figure: Interface DynamicList")
+</center>  
+<center>Figure: Interface DynamicList</center>
 
 **Functions:**
 
--   **add:** This function adds a DynamicData object into the list in the last position or in the position specified via parameter.
+- **add:** This function adds a `DynamicData` object into the list in the last position or in the position specified via parameter.
+- **get**: This function returns a `DynamicData` object stored is a specific position in the list.
+- **isEmpty**: This function returns true if the `DynamicList` is empty.
 
--   **get**: This function returns a DynamicData object stored is a specific position in the list.
-
--   **isEmpty**: This function returns true if the DynamicList is empty.
-
-### org.fiware.kiara.dynamic.data.DynamicSet
+---
+#### org.fiware.kiara.dynamic.data.DynamicSet
 
 This class holds the data values of a DynamicData object created from a SetTypeDescriptor. A set can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicSet must have been created from the same TypeDescriptor definition and it cannot be duplicated objects.
 
-![](media/image44.png)
+<center>
+![Figure: Interface DynamicSet](images/InterfaceDynamicSet.png "Figure: Interface DynamicSet")
+</center>  
+<center>Figure: Interface DynamicSet</center>
 
 **Functions:**
 
--   **add:** This function adds a DynamicData object into the list in the last position or in the position specified via parameter.
+- **add:** This function adds a `DynamicData` object into the list in the last position or in the position specified via parameter.
+- **get**: This function returns a `DynamicData` object stored is a specific position in the list.
+- **isEmpty**: This function returns true if the `DynamicSet` is empty.
 
--   **get**: This function returns a DynamicData object stored is a specific position in the list.
-
--   **isEmpty**: This function returns true if the DynamicSet is empty.
-
-**org.fiware.kiara.dynamic.data.DynamicMap**
+---
+#### org.fiware.kiara.dynamic.data.DynamicMap
 
 This class holds a list of pairs key-value instances of DynamicData. In a DynamicMap, the key values cannot be duplicated.
 
-![](media/image77.png)
+<center>
+![Figure: Interface DynamicMap](images/InterfaceDynamicMap.png "Figure: Interface DynamicMap")
+</center>  
+<center>Figure: Interface DynamicMap</center>
 
 **Functions:**
 
--   **put:** This function adds a new key-value pair using the DynamicData objets introduces as parameters. It will return false if the key value already exists in the map.
+- **put:** This function adds a new key-value pair using the DynamicData objets introduces as parameters. It will return false if the key value already exists in the map.
+- **containsKey**: This function returns true if the DynamicMap contains at least one key-value pair in which the key DynamicData object is equal to the one introduced as a parameter.
+- **containsValue**: This function returns true if the DynamicMap contains at least one key-value pair in which the value DynamicData object is equal to the one introduced as a parameter.
+- **get**: This function returns a DynamicData object from a key-value pair whose key is equal to the one introduced as a parameter.
 
--   **containsKey**: This function returns true if the DynamicMap contains at least one key-value pair in which the key DynamicData object is equal to the one introduced as a parameter.
+---
+#### org.fiware.kiara.dynamic.data.DynamicMembered
 
--   **containsValue**: This function returns true if the DynamicMap contains at least one key-value pair in which the value DynamicData object is equal to the one introduced as a parameter.
+This class represents a `DynamicData` type formed by multiple `DynamicData` objects stored into a class named `DynamicMember`.
 
--   **get**: This function returns a DynamicData object from a key-value pair whose key is equal to the one introduced as a parameter.
-
-### org.fiware.kiara.dynamic.data.DynamicMembered
-
-This class represents a DynamicData type formed by multiple DynamicData objects stored into a class named DynamicMember.
-
-![](media/image18.png)
+<center>
+![Figure: Interface DynamicMembered](images/InterfaceDynamicMembered.png "Figure: Interface DynamicMembered")
+</center>  
+<center>Figure: Interface DynamicMembered</center>
 
 **Functions:** None
 
-### org.fiware.kiara.dynamic.data.DynamicStruct
+---
+#### org.fiware.kiara.dynamic.data.DynamicStruct
 
-This class holds group of DynamicData objects acting as members of a stucture. Each member is identified by its name.
+This class holds group of `DynamicData` objects acting as members of a stucture. Each member is identified by its name.
 
-![](media/image40.png)
-
-**Functions:**
-
--   **getMember:** This function returns a DynamicData object (acting as a member of the structure) whose name is the same as the one introduced as a parameter.
-
-### org.fiware.kiara.dynamic.data.DynamicEnum
-
-This class is used to dynamically manipulate enumerations described by a specific EnumTypeDescriptor object.
-
-![](media/image39.png)
+<center>
+![Figure: Interface DynamicStruct](images/InterfaceDynamicStruct.png "Figure: Interface DynamicStruct")
+</center>  
+<center>Figure: Interface DynamicStruct</center>
 
 **Functions:**
 
--   **set:** This function sets the actual value of the DynamicEnum object to the one specified as a parameter.
+- **getMember:** This function returns a `DynamicData` object (acting as a member of the structure) whose name is the same as the one introduced as a parameter.
 
--   **get**: This function returns the actual value of the DynamicEnum object.
+---
+#### org.fiware.kiara.dynamic.data.DynamicEnum
 
-### org.fiware.kiara.dynamic.data.DynamicUnion
+This class is used to dynamically manipulate enumerations described by a specific `EnumTypeDescriptor` object.
 
-This class is used to dynamically manipulate unions described by a specific UnionTypeDescriptor object. A union is formed by some DynamicData objects, and the valid one is selected by using a discriminator.
-
-![](media/image69.png)
-
-**Functions:**
-
--   **\_d:** This function either returns the discriminator or sets a new one, depending on the existence of an object parameter indicating a new value.
-
--   **getMember**: This function returns valid DynamicData value depending on the selected discriminator.
-
--   **setMember**: This function sets the DynamicData object received as a parameter in the member whose name is the same as the one introduced (if and only if the discriminator value is correct).
-
-### org.fiware.kiara.dynamic.data.DynamicException
-
-This class holds group of DynamicData objects acting as members of an exception. Each member is identified by its own name.
-
-![](media/image42.png)
+<center>
+![Figure: Interface DynamicEnum](images/InterfaceDynamicEnum.png "Figure: Interface DynamicEnum")
+</center>  
+<center>Figure: Interface DynamicEnum</center>
 
 **Functions:**
 
--   **getMember:** This function returns a DynamicData object whose name is the same as the one introduced as a parameter.
+- **set:** This function sets the actual value of the DynamicEnum object to the one specified as a parameter.
+- **get**: This function returns the actual value of the DynamicEnum object.
 
-### org.fiware.kiara.dynamic.data.DynamicMember
+---
+#### org.fiware.kiara.dynamic.data.DynamicUnion
+
+This class is used to dynamically manipulate unions described by a specific `UnionTypeDescriptor` object. A union is formed by some `DynamicData` objects, and the valid one is selected by using a discriminator.
+
+<center>
+![Figure: Interface DynamicUnion](images/InterfaceDynamicUnion.png "Figure: Interface DynamicUnion")
+</center>  
+<center>Figure: Interface DynamicUnion</center>
+
+**Functions:**
+
+- **\_d:** This function either returns the discriminator or sets a new one, depending on the existence of an object parameter indicating a new value.
+- **getMember**: This function returns valid `DynamicData` value depending on the selected discriminator.
+- **setMember**: This function sets the `DynamicData` object received as a parameter in the member whose name is the same as the one introduced (if and only if the discriminator value is correct).
+
+---
+#### org.fiware.kiara.dynamic.data.DynamicException
+
+This class holds group of `DynamicData` objects acting as members of an exception. Each member is identified by its own name.
+
+<center>
+![Figure: Interface DynamicException](images/InterfaceDynamicException.png "Figure: Interface DynamicException")
+</center>  
+<center>Figure: Interface DynamicException</center>
+
+**Functions:**
+
+- **getMember:** This function returns a `DynamicData` object whose name is the same as the one introduced as a parameter.
+
+---
+#### org.fiware.kiara.dynamic.data.DynamicMember
 
 This class represents a dynamic member of any DynamicMembered object. It is used to store the DynamicData objects inside structures, unions, enumerations and exceptions.
 
-![](media/image65.png)
+<center>
+![Figure: Interface DynamicMember](images/InterfaceDynamicMember.png "Figure: Interface DynamicMember")
+</center>  
+<center>Figure: Interface DynamicMember</center>
 
 **Functions:**
 
--   **getName:** This function returns the member’s name.
+- **getName:** This function returns the member’s name.
+- **getDynamicData**: This function returns the `DynamicData` stored inside a `DynamicMember` object.
+- **equals**: It returns true if two `DynamicMember` objects are equal.
 
--   **getDynamicData**: This function returns the DynamicData stored inside a DynamicMember object.
-
--   **equals**: It returns true if two DynamicMember objects are equal.
-
-### org.fiware.kiara.dynamic.service.DynamicFunctionRequest
+---
+#### org.fiware.kiara.dynamic.service.DynamicFunctionRequest
 
 This class represents a dynamic function request. This class is used to create objects whose objective is to invoke functions remotely.
 
-![](media/image14.png)
+<center>
+![Figure: Interface DynamicFunctionRequest](images/InterfaceDynamicFunctionRequest.png "Figure: Interface DynamicFunctionRequest")
+</center>  
+<center>Figure: Interface DynamicFunctionRequest</center>
 
 **Functions:**
 
--   **getParameter:** This function returns a DynamicData object stored in the parameter list depending on its name or its position in such list.
+- **getParameter:** This function returns a `DynamicData` object stored in the parameter list depending on its name or its position in such list.
+- **execute**: This function executes a function remotely. It serializes all the necessary information and sends the request over the wire. It returns a `DynamicFunctionResponse` with the result.
+- **executeAsync**: This function behaves the same way as the function `execute`. The only difference is that it needs a callback to be executed when the response arrives from the server.
 
--   **execute**: This function executes a function remotely. It serializes all the necessary information and sends the request over the wire. It returns a DynamicFunctionResponse with the result.
-
--   **executeAsync**: This function behaves the same way as the function **execute.** The only difference is that it needs a callback to be executed when the response arrives from the server.
-
-### org.fiware.kiara.dynamic.service.DynamicFunctionResponse
+---
+#### org.fiware.kiara.dynamic.service.DynamicFunctionResponse
 
 This class represents a dynamic function response. This class is used to retrieve the information sent from the server after a remote procedure call.
 
-![](media/image66.png)
+<center>
+![Figure: Interface DynamicFunctionResponse](images/InterfaceDynamicFunctionResponse.png "Figure: Interface DynamicFunctionResponse")
+</center>  
+<center>Figure: Interface DynamicFunctionResponse</center>
 
 **Functions:**
 
--   **isException:** This function returns true if the server raised an exception when executing the function.
+- **isException:** This function returns true if the server raised an exception when executing the function.
+- **setException**: This method sets the attribute indicating that an exception has been thrown on the server side.
+- **setReturnValue**: This function sets a `DynamicData` object as a return value for the remote call.
+- **getReturnValue**: This function returns the `DynamicData` representing the result of the remote call.
 
--   **setException**: This method sets the attribute indicating that an exception has been thrown on the server’s side.
-
--   **setReturnValue**: This function sets a DynamicData object as a return value for the remote call.
-
--   **getReturnValue**: This function returns the DynamicData representing the result of the remote call.
-
-### org.fiware.kiara.dynamic.service.DynamicProxy
+---
+#### org.fiware.kiara.dynamic.service.DynamicProxy
 
 This class represents a proxy than can be dynamically used to create an instance of DynamicFunctionRequest or a DynamicFunctionResponse depending if the user wants an object to execute a remote call or to store the result.
 
-![](media/image09.png)
+<center>
+![Figure: Interface DynamicProxy](images/InterfaceDynamicProxy.png "Figure: Interface DynamicProxy")
+</center>  
+<center>Figure: Interface DynamicProxy</center>
 
 **Functions:**
 
--   **getServiceName:** This function returns the service name.
+- **getServiceName:** This function returns the service name.
+- **createFunctionRequest**: This function creates a new object instance of `DynamicFunctionRequest` according to the `FunctionTypeDescriptor` that was used to describe it.
+- **createFunctionResponse**: This function creates a new object instance of `DynamicFunctionResponse` according to the `FunctionTypeDescriptor` that was used to describe it.
 
--   **createFunctionRequest**: This function creates a new object instance of DynamicFunctionRequest according to the FunctionTypeDescriptor that was used to describe it.
-
--   **createFunctionResponse**: This function creates a new object instance of DynamicFunctionResponse according to the FunctionTypeDescriptor that was used to describe it.
-
-### org.fiware.kiara.dynamic.service.DynamicFunctionHandler
+---
+#### org.fiware.kiara.dynamic.service.DynamicFunctionHandler
 
 This class represents a dynamic object used to hold the implementation of a specific function. Its process method must be defined by the user when creating the object, and it will be used to register the service’s functions on the server’s side.
 
-![](media/image60.png)
+<center>
+![Figure: Interface DynamicFunctionHandler](images/InterfaceDynamicFunctionHandler.png "Figure: Interface DynamicFunctionHandler")
+</center>  
+<center>Figure: Interface DynamicFunctionHandler</center>
 
 **Functions:**
 
-**process:** This function is the one that will be registered to be executed when a client invokes remotely a function. It must be implemented by the user.
+- **process:** This function is the one that will be registered to be executed when a client invokes remotely a function. It must be implemented by the user.
 
--   
 
 Detailed API
-============
+------------
 
 This section defines in detail the API provided by the classes defined above.
 
-Main entry point
-----------------
+### Main entry point
 
-| **org.fiware.kiara.Kiara**                                                         |
-|------------------------------------------------------------------------------------|
-| **Attributes**                                                                     |
-| | **Name** | **Type** |     |     |                                                
- |----------|----------|-----|-----|                                                 |
-| **Public Operations**                                                              |
-| | **Name**                 | **Parameters** | **Returns/Type**      | **Raises** | 
- |--------------------------|----------------|-----------------------|------------|  
- | getTypeDescriptorBuilder |                | TypeDescriptorBuilder |            |  
- | getDynamicValueBuilder   |                | DynamicValueBuilder   |            |  
- | createContext            |                | Context               |            |  
- | shutdown                 |                | void                  |            |  |
+| **org.fiware.kiara.Kiara**                                               ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_                   | _Type_       |                        |          |
+| -                        | -            |                        |          |
+| **Public Operations**                                                    ||||
+| _Name_                   | _Parameters_ | _Returns/Type_         | _Raises_ |
+| getTypeDescriptorBuilder |              | TypeDescriptorBuilder  |          |
+| getDynamicValueBuilder   |              | DynamicValueBuilder    |          |
+| createContext            |              | Context                |          |
+| shutdown                 |              | void                   |          |
 
-Client API
-----------
+### Client API
 
-This classes are those related to the client’s side API. This section includes all the relevant classes, attributes and methods.
+This classes are those related to the client side API. This section includes all the relevant classes, attributes and methods.
 
-| **org.fiware.kiara.client.Connection**                               |
-|----------------------------------------------------------------------|
-| **Attributes**                                                       |
-| | **Name** | **Type** |     |     |                                  
- |----------|----------|-----|-----|                                   |
-| **Public Operations**                                                |
-| | **Name**        | **Parameters** | **Returns/Type** | **Raises** | 
- |-----------------|----------------|------------------|------------|  
- | getTransport    |                | Transport        |            |  
- | getSerializer   |                | Serializer       |            |  
- | getServiceProxy |                | T                | Exception  |  
- |                 | interfaceClass | Class\<T\>       |            |  
- | getDynamicProxy |                | DynamicProxy     |            |  
- |                 | name           | String           |            |  |
+| **org.fiware.kiara.client.Connection**                                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_            | _Type_         |                            |           |
+| -                 | -              |                            |           |
+| **Public Operations**                                                    ||||
+| _Name_            | _Parameters_   | _Returns/Type_             | _Raises_  |
+| getTransport      |                | Transport                  |           |
+| getSerializer     |                | Serializer                 |           |
+| getServiceProxy   |                | T                          | Exception |
+|                   | interfaceClass | Class\<T\>                 |           |
+| getDynamicProxy   |                | DynamicProxy               |           |
+|                   | name           | String                     |           |
+
 
 TypeDescriptor
 --------------
 
 This classes are those related to the client’s side API. This section includes all the relevant classes, attributes and methods.
 
-| **org.fiware.kiara.typecode.TypeDescriptorBuilder**                                |
-|------------------------------------------------------------------------------------|
-| **Attributes**                                                                     |
-| | **Name** | **Type** |     |     |                                                
- |----------|----------|-----|-----|                                                 |
-| **Public Operations**                                                              |
-| | **Name**            | **Parameters**    | **Returns/Type**        | **Raises** | 
- |---------------------|-------------------|-------------------------|------------|  
- | createVoidType      |                   | DataTypeDescriptor      |            |  
- | createPrimitiveType |                   | PrimitiveTypeDescriptor |            |  
- |                     | kind              | TypeKind                |            |  
- | createArrayType     |                   | ArrayTypeDescriptor     |            |  
- |                     | contentDescriptor | DataTypeDescriptor      |            |  
- |                     | dimensions        | int[]                   |            |  
- | createListType      |                   | ListTypeDescriptor      |            |  
- |                     | contentDescriptor | DataTypeDescriptor      |            |  
- |                     | maxSize           | int                     |            |  
- | createSetType       |                   | SetTypeDescriptor       |            |  
- |                     | contentDescriptor | DataTypeDescriptor      |            |  
- |                     | maxSize           | int                     |            |  
- | createMapType       |                   | MapTypeDescriptor       |            |  
- |                     | keyDescriptor     | DataTypeDescriptor      |            |  
- |                     | valueDescriptor   | DataTypeDescriptor      |            |  
- |                     | maxSize           | int                     |            |  
- | createStructType    |                   | StructTypeDescriptor    |            |  
- |                     | name              | String                  |            |  
- | createEnumType      |                   | EnumTypeDescriptor      |            |  
- |                     | name              | String                  |            |  
- |                     | values            | String[]                |            |  
- | createUnionType     |                   | UnionTypeDescriptor     |            |  
- |                     | name              | String                  |            |  
- |                     | discriminatorDesc | DataTypeDescriptor      |            |  
- | createExceptionType |                   | ExceptionTypeDescriptor |            |  
- |                     | name              | String                  |            |  
- | createFunctionType  |                   | FunctionTypeDescriptor  |            |  
- |                     | name              | String                  |            |  
- | createServiceType   |                   | ServiceTypeDescriptor   |            |  
- |                     | name              | String                  |            |  
- |                     | scopedName        | String                  |            |  |
+| **org.fiware.kiara.typecode.TypeDescriptorBuilder**                      ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| createVoidType      |                   | DataTypeDescriptor      |         |
+| createPrimitiveType |                   | PrimitiveTypeDescriptor |         |
+|                     | kind              | TypeKind                |         |
+| createArrayType     |                   | ArrayTypeDescriptor     |         |
+|                     | contentDescriptor | DataTypeDescriptor      |         |
+|                     | dimensions        | int[]                   |         |
+| createListType      |                   | ListTypeDescriptor      |         |
+|                     | contentDescriptor | DataTypeDescriptor      |         |
+|                     | maxSize           | int                     |         |
+| createSetType       |                   | SetTypeDescriptor       |         |
+|                     | contentDescriptor | DataTypeDescriptor      |         |
+|                     | maxSize           | int                     |         |
+| createMapType       |                   | MapTypeDescriptor       |         |
+|                     | keyDescriptor     | DataTypeDescriptor      |         |
+|                     | valueDescriptor   | DataTypeDescriptor      |         |
+|                     | maxSize           | int                     |         |
+| createStructType    |                   | StructTypeDescriptor    |         |
+|                     | name              | String                  |         |
+| createEnumType      |                   | EnumTypeDescriptor      |         |
+|                     | name              | String                  |         |
+|                     | values            | String[]                |         |
+| createUnionType     |                   | UnionTypeDescriptor     |         |
+|                     | name              | String                  |         |
+|                     | discriminatorDesc | DataTypeDescriptor      |         |
+| createExceptionType |                   | ExceptionTypeDescriptor |         |
+|                     | name              | String                  |         |
+| createFunctionType  |                   | FunctionTypeDescriptor  |         |
+|                     | name              | String                  |         |
+| createServiceType   |                   | ServiceTypeDescriptor   |         |
+|                     | name              | String                  |         |
+|                     | scopedName        | String                  |         |
 
-| **org.fiware.kiara.typecode.TypeDescriptor**                     |
-|------------------------------------------------------------------|
-| **Attributes**                                                   |
-| | **Name** | **Type** |     |     |                              
- |----------|----------|-----|-----|                               |
-| **Public Operations**                                            |
-| | **Name**    | **Parameters** | **Returns/Type** | **Raises** | 
- |-------------|----------------|------------------|------------|  
- | getKind     |                | TypeKind         |            |  
- | isData      |                | boolean          |            |  
- | isPrimitive |                | boolean          |            |  
- | isVoid      |                | boolean          |            |  
- | isContainer |                | boolean          |            |  
- | isArray     |                | boolean          |            |  
- | isList      |                | boolean          |            |  
- | isMap       |                | boolean          |            |  
- | isSet       |                | boolean          |            |  
- | isMembered  |                | boolean          |            |  
- | isEnum      |                | boolean          |            |  
- | isUnion     |                | boolean          |            |  
- | isStruct    |                | boolean          |            |  
- | isException |                | boolean          |            |  
- | isService   |                | boolean          |            |  
- | isFunction  |                | boolean          |            |  |
+| **org.fiware.kiara.typecode.TypeDescriptor**                             ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_            | _Type_         |                              |         |
+| -                 | -              |                              |         |
+| **Public Operations**                                                    ||||
+| _Name_            | _Parameters_   | _Returns/Type_               | _Raises_|
+| getKind           |                | TypeKind                     |         |
+| isData            |                | boolean                      |         |
+| isPrimitive       |                | boolean                      |         |
+| isVoid            |                | boolean                      |         |
+| isContainer       |                | boolean                      |         |
+| isArray           |                | boolean                      |         |
+| isList            |                | boolean                      |         |
+| isMap             |                | boolean                      |         |
+| isSet             |                | boolean                      |         |
+| isMembered        |                | boolean                      |         |
+| isEnum            |                | boolean                      |         |
+| isUnion           |                | boolean                      |         |
+| isStruct          |                | boolean                      |         |
+| isException       |                | boolean                      |         |
+| isService         |                | boolean                      |         |
+| isFunction        |                | boolean                      |         |
 
-| **org.fiware.kiara.typecode.data.DataTypeDescriptor**         |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  |
 
-| **org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor**                    |
-|-------------------------------------------------------------------------------|
-| **Attributes**                                                                |
-| | **Name** | **Type** |     |     |                                           
- |----------|----------|-----|-----|                                            |
-| **Public Operations**                                                         |
-| | **Name**          | **Parameters** | **Returns/Type**        | **Raises** | 
- |-------------------|----------------|-------------------------|------------|  
- | isString          |                | boolean                 |            |  
- | setMaxFixedLength |                | PrimitiveTypeDescriptor |            |  
- |                   | length         | int                     |            |  
- | getMaxFixedLength |                | int                     |            |  |
+| **org.fiware.kiara.typecode.data.DataTypeDescriptor**                    ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| -                   |                   |                         |         |
 
-| **org.fiware.kiara.typecode.data.ContainerTypeDescriptor**      |
-|-----------------------------------------------------------------|
-| **Attributes**                                                  |
-| | **Name**      | **Type** |     |     |                        
- |---------------|----------|-----|-----|                         
- | **UNBOUNDED** | **int**  |     |     |                         |
-| **Public Operations**                                           |
-| | **Name**   | **Parameters** | **Returns/Type** | **Raises** | 
- |------------|----------------|------------------|------------|  
- | setMaxSize |                | void             |            |  
- |            | length         | int              |            |  
- | getMaxSize |                | int              |            |  |
 
-| **org.fiware.kiara.typecode.data.ArrayTypeDescriptor**                |
-|-----------------------------------------------------------------------|
-| **Attributes**                                                        |
-| | **Name** | **Type** |     |     |                                   
- |----------|----------|-----|-----|                                    |
-| **Public Operations**                                                 |
-| | **Name**       | **Parameters** | **Returns/Type**   | **Raises** | 
- |----------------|----------------|--------------------|------------|  
- | getElementType |                | DataTypeDescriptor |            |  
- | setElementType |                | boolean            |            |  
- |                | contentType    | DataTypeDescriptor |            |  
- | setDimensions  |                | void               |            |  
- |                | dimensions     | int[]              |            |  
- | getDimensions  |                | List\<Integer\>    |            |  |
+| **org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor**               ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_            | _Type_         |                              |         |
+| -                 | -              |                              |         |
+| **Public Operations**                                                    ||||
+| _Name_            | _Parameters_   | _Returns/Type_               | _Raises_|
+| isString          |                | boolean                      |         |
+| setMaxFixedLength |                | PrimitiveTypeDescriptor      |         |
+|                   | length         | int                          |         |
+| getMaxFixedLength |                | int                          |         |
 
-| **org.fiware.kiara.typecode.data.ListTypeDescriptor**                 |
-|-----------------------------------------------------------------------|
-| **Attributes**                                                        |
-| | **Name** | **Type** |     |     |                                   
- |----------|----------|-----|-----|                                    |
-| **Public Operations**                                                 |
-| | **Name**       | **Parameters** | **Returns/Type**   | **Raises** | 
- |----------------|----------------|--------------------|------------|  
- | getElementType |                | DataTypeDescriptor |            |  
- | setElementType |                | boolean            |            |  
- |                | contentType    | DataTypeDescriptor |            |  |
 
-| **org.fiware.kiara.typecode.data.SetTypeDescriptor**                  |
-|-----------------------------------------------------------------------|
-| **Attributes**                                                        |
-| | **Name** | **Type** |     |     |                                   
- |----------|----------|-----|-----|                                    |
-| **Public Operations**                                                 |
-| | **Name**       | **Parameters** | **Returns/Type**   | **Raises** | 
- |----------------|----------------|--------------------|------------|  
- | getElementType |                | DataTypeDescriptor |            |  
- | setElementType |                | boolean            |            |  
- |                | contentType    | DataTypeDescriptor |            |  |
+| **org.fiware.kiara.typecode.data.ContainerTypeDescriptor**               ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| setMaxSize    |                  | void                           |         |
+|               | length           | int                            |         |
+| getMaxSize    |                  | int                            |         |
 
-| **org.fiware.kiara.typecode.data.MapTypeDescriptor**                               |
-|------------------------------------------------------------------------------------|
-| **Attributes**                                                                     |
-| | **Name** | **Type** |     |     |                                                
- |----------|----------|-----|-----|                                                 |
-| **Public Operations**                                                              |
-| | **Name**               | **Parameters**      | **Returns/Type**   | **Raises** | 
- |------------------------|---------------------|--------------------|------------|  
- | setKeyTypeDescriptor   |                     | boolean            |            |  
- |                        | keyTypeDescriptor   | DataTypeDescriptor |            |  
- | getKeyTypeDescriptor   |                     | DataTypeDescriptor |            |  
- | setValueTypeDescriptor |                     | boolean            |            |  
- |                        | valueTypeDescriptor | DataTypeDescriptor |            |  
- | getValueTypeDescriptor |                     | DataTypeDescriptor |            |  |
 
-| **org.fiware.kiara.typecode.data.MemberedTypeDescriptor**       |
-|-----------------------------------------------------------------|
-| **Attributes**                                                  |
-| | **Name** | **Type** |     |     |                             
- |----------|----------|-----|-----|                              |
-| **Public Operations**                                           |
-| | **Name**   | **Parameters** | **Returns/Type** | **Raises** | 
- |------------|----------------|------------------|------------|  
- | getMembers |                | List\<Member\>   |            |  
- | getName    |                | String           |            |  |
+| **org.fiware.kiara.typecode.data.ArrayTypeDescriptor**                   ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| getElementType      |                   | DataTypeDescriptor      |         |
+| setElementType      |                   | boolean                 |         |
+|                     | contentType       | DataTypeDescriptor      |         |
+| setDimensions       |                   | void                    |         |
+|                     | dimensions        | int[]                   |         |
+| getDimensions       |                   | List\<Integer\>         |         |
 
-| **org.fiware.kiara.typecode.data.StructTypeDescriptor**          |
-|------------------------------------------------------------------|
-| **Attributes**                                                   |
-| | **Name** | **Type** |     |     |                              
- |----------|----------|-----|-----|                               |
-| **Public Operations**                                            |
-| | **Name**  | **Parameters** | **Returns/Type**   | **Raises** | 
- |-----------|----------------|--------------------|------------|  
- | addMember |                | void               |            |  
- |           | member         | TypeDescriptor     |            |  
- |           | name           | String             |            |  
- | getMember |                | DataTypeDescriptor |            |  
- |           | name           | String             |            |  |
 
-| **org.fiware.kiara.typecode.data.EnumTypeDescriptor**         |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  
- | addValue |                | void             |            |  
- |          | value          | String           |            |  |
+| **org.fiware.kiara.typecode.data.ListTypeDescriptor**                    ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| getElementType      |                   | DataTypeDescriptor      |         |
+| setElementType      |                   | boolean                 |         |
+|                     | contentType       | DataTypeDescriptor      |         |
 
-| **org.fiware.kiara.typecode.data.UnionTypeDescriptor**            |
-|-------------------------------------------------------------------|
-| **Attributes**                                                    |
-| | **Name** | **Type** |     |     |                               
- |----------|----------|-----|-----|                                |
-| **Public Operations**                                             |
-| | **Name**  | **Parameters** | **Returns/Type**    | **Raises** | 
- |-----------|----------------|---------------------|------------|  
- | addMember |                | UnionTypeDescriptor |            |  
- |           | typeDescriptor | DataTypeDescriptor  |            |  
- |           | name           | String              |            |  
- |           | isDefault      | boolean             |            |  
- |           | labels         | Object[]            |            |  |
 
-| **org.fiware.kiara.typecode.data.FunctionTypeDescriptor**                  |
-|----------------------------------------------------------------------------|
-| **Attributes**                                                             |
-| | **Name** | **Type** |     |     |                                        
- |----------|----------|-----|-----|                                         |
-| **Public Operations**                                                      |
-| | **Name**       | **Parameters** | **Returns/Type**        | **Raises** | 
- |----------------|----------------|-------------------------|------------|  
- | getReturnType  |                | DataTypeDescriptor      |            |  
- | setReturnType  |                | void                    |            |  
- |                | returnType     | DataTypeDescriptor      |            |  
- | getParameter   |                | DataTypeDescriptor      |            |  
- |                | name           | String                  |            |  
- | addParameter   |                | void                    |            |  
- |                | parameter      | DataTypeDescriptor      |            |  
- |                | name           | String                  |            |  
- | getException   |                | ExceptionTypeDescriptor |            |  
- |                | name           | String                  |            |  
- | addException   |                | void                    |            |  
- |                | excepion       | ExceptionTypeDescriptor |            |  
- | getName        |                | String                  |            |  
- | getServiceName |                | String                  |            |  
- | setServiceName |                | FunctionTypeDescriptor  |            |  
- |                | serviceName    | String                  |            |  |
+| **org.fiware.kiara.typecode.data.SetTypeDescriptor**                    ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| getElementType      |                   | DataTypeDescriptor      |         |
+| setElementType      |                   | boolean                 |         |
+|                     | contentType       | DataTypeDescriptor      |         |
 
-| **org.fiware.kiara.typecode.data.ServiceTypeDescriptor**                           |
-|------------------------------------------------------------------------------------|
-| **Attributes**                                                                     |
-| | **Name** | **Type** |     |     |                                                
- |----------|----------|-----|-----|                                                 |
-| **Public Operations**                                                              |
-| | **Name**      | **Parameters**   | **Returns/Type**               | **Raises** | 
- |---------------|------------------|--------------------------------|------------|  
- | getName       |                  | String                         |            |  
- | getScopedName |                  | String                         |            |  
- | getFunctions  |                  | List\<FunctionTypeDescriptor\> |            |  
- | addFunction   |                  | void                           |            |  
- |               | functionTypeDesc | FunctionTypeDescriptor         |            |  |
+| **org.fiware.kiara.typecode.data.MapTypeDescriptor**                   ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_                 | _Type_              |                    |         |
+| -                      | -                   |                    |         |
+| **Public Operations**                                                    ||||
+| _Name_                 | _Parameters_        | _Returns/Type_     | _Raises_|
+| setKeyTypeDescriptor   |                     | boolean            |         |
+|                        | keyTypeDescriptor   | DataTypeDescriptor |         |
+| getKeyTypeDescriptor   |                     | DataTypeDescriptor |         |
+| setValueTypeDescriptor |                     | boolean            |         |
+|                        | valueTypeDescriptor | DataTypeDescriptor |         |
+| getValueTypeDescriptor |                     | DataTypeDescriptor |         |
+
+| **org.fiware.kiara.typecode.data.MemberedTypeDescriptor**                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| getMembers          |                   | List\<Member\>          |         |
+| getName             |                   | String                  |         |
+
+
+| **org.fiware.kiara.typecode.data.StructTypeDescriptor**                  ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| addMember           |                   | void                    |         |
+|                     | member            | TypeDescriptor          |         |
+|                     | name              | String                  |         |
+| getMember           |                   | DataTypeDescriptor      |         |
+|                     | name              | String                  |         |
+
+| **org.fiware.kiara.typecode.data.EnumTypeDescriptor**                    ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| addValue            |                   | void                    |         |
+|                     | value             | String                  |         |
+
+
+| **org.fiware.kiara.typecode.data.UnionTypeDescriptor**                   ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| addMember           |                   | UnionTypeDescriptor     |         |
+|                     | typeDescriptor    | DataTypeDescriptor      |         |
+|                     | name              | String                  |         |
+|                     | isDefault         | boolean                 |         |
+|                     | labels            | Object[]                |         |
+
+| **org.fiware.kiara.typecode.data.FunctionTypeDescriptor**                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| getReturnType       |                   | DataTypeDescriptor      |         |
+| setReturnType       |                   | void                    |         |
+|                     | returnType        | DataTypeDescriptor      |         |
+| getParameter        |                   | DataTypeDescriptor      |         |
+|                     | name              | String                  |         |
+| addParameter        |                   | void                    |         |
+|                     | parameter         | DataTypeDescriptor      |         |
+|                     | name              | String                  |         |
+| getException        |                   | ExceptionTypeDescriptor |         |
+|                     | name              | String                  |         |
+| addException        |                   | void                    |         |
+|                     | exception         | ExceptionTypeDescriptor |         |
+| getName             |                   | String                  |         |
+| getServiceName      |                   | String                  |         |
+| setServiceName      |                   | FunctionTypeDescriptor  |         |
+|                     | serviceName       | String                  |         |
+
+
+| **org.fiware.kiara.typecode.data.ServiceTypeDescriptor**                 ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| getName       |                  | String                         |         |
+| getScopedName |                  | String                         |         |
+| getFunctions  |                  | List\<FunctionTypeDescriptor\> |         |
+| addFunction   |                  | void                           |         |
+|               | functionTypeDesc | FunctionTypeDescriptor         |         |
 
 Dynamic
 -------
 
-The following classes are those related to creation and management of dynamic types,
+The following classes are those related to creation and management of dynamic types, including data definition and function description and execution.
 
-including data definition and function description and execution.
+| **org.fiware.kiara.dynamic.DynamicValueBuilder**                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_                 | _Parameters_       | _Returns/Type_      | _Raises_|
+| createData             |                    | DynamicData            |      |
+|                        | dataDescriptor     | DataTypeDescriptor     |      |
+| createFunctionRequest  |                    | DynamicFunctionRequest |      |
+|                        | functionDescriptor | FunctionTypeDescriptor |      |
+|                        | serializer         | Serializer             |      |
+|                        | transport          | Transport              |      |
+| createFunctionRequest  |                    | DynamicFunctionRequest |      |
+|                        | functionDescriptor | FunctionTypeDescriptor |      |
+| createFunctionResponse |                    | DynamicFunctionResponse|      |
+|                        | functionDescriptor | FunctionTypeDescriptor |      |
+|                        | serializer         | Serializer             |      |
+|                        | transport          | Transport              |      |
+| createFunctionResponse |                    | DynamicFunctionResponse|      |
+|                        | functionDescriptor | FunctionTypeDescriptor |      |
+| createService          |                    | DynamicProxy           |      |
+|                        | serviceDescriptor  | ServiceTypeDescriptor  |      |
+|                        | serializer         | Serializer             |      |
+|                        | transport          | Transport              |      |
 
-| **org.fiware.kiara.dynamic.DynamicValueBuilder**                                       |
-|----------------------------------------------------------------------------------------|
-| **Attributes**                                                                         |
-| | **Name** | **Type** |     |     |                                                    
- |----------|----------|-----|-----|                                                     |
-| **Public Operations**                                                                  |
-| | **Name**               | **Parameters**     | **Returns/Type**        | **Raises** | 
- |------------------------|--------------------|-------------------------|------------|  
- | createData             |                    | DynamicData             |            |  
- |                        | dataDescriptor     | DataTypeDescriptor      |            |  
- | createFunctionRequest  |                    | DynamicFunctionRequest  |            |  
- |                        | functionDescriptor | FunctionTypeDescriptor  |            |  
- |                        | serializer         | Serializer              |            |  
- |                        | transport          | Transport               |            |  
- | createFunctionRequest  |                    | DynamicFunctionRequest  |            |  
- |                        | functionDescriptor | FunctionTypeDescriptor  |            |  
- | createFunctionResponse |                    | DynamicFunctionResponse |            |  
- |                        | functionDescriptor | FunctionTypeDescriptor  |            |  
- |                        | serializer         | Serializer              |            |  
- |                        | transport          | Transport               |            |  
- | createFunctionResponse |                    | DynamicFunctionResponse |            |  
- |                        | functionDescriptor | FunctionTypeDescriptor  |            |  
- | createService          |                    | DynamicProxy            |            |  
- |                        | serviceDescriptor  | ServiceTypeDescriptor   |            |  
- |                        | serializer         | Serializer              |            |  
- |                        | transport          | Transport               |            |  |
 
-| **org.fiware.kiara.dynamic.DynamicValue**                                 |
-|---------------------------------------------------------------------------|
-| **Attributes**                                                            |
-| | **Name** | **Type** |     |     |                                       
- |----------|----------|-----|-----|                                        |
-| **Public Operations**                                                     |
-| | **Name**          | **Parameters** | **Returns/Type**   | **Raises**  | 
- |-------------------|----------------|--------------------|-------------|  
- | getTypeDescriptor |                | TypeDescriptor     |             |  
- | serialize         |                | void               | IOException |  
- |                   | impl           | SerializerImpl     |             |  
- |                   | message        | BinaryOutputStream |             |  
- |                   | name           | String             |             |  
- | deserialize       |                | void               | IOException |  
- |                   | impl           | SerializerImpl     |             |  
- |                   | message        | BinaryInputStream  |             |  
- |                   | name           | String             |             |  |
+| **org.fiware.kiara.dynamic.DynamicValue**                                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_            | _Type_         |                          |             |
+| -                 | -              |                          |             |
+| **Public Operations**                                                    ||||
+| _Name_            | _Parameters_   | _Returns/Type_           | _Raises_    |
+| getTypeDescriptor |                | TypeDescriptor           |             |
+| serialize         |                | void                     | IOException |
+|                   | impl           | SerializerImpl           |             |
+|                   | message        | BinaryOutputStream       |             |
+|                   | name           | String                   |             |
+| deserialize       |                | void                     | IOException |
+|                   | impl           | SerializerImpl           |             |
+|                   | message        | BinaryInputStream        |             |
+|                   | name           | String                   |             |
 
-| **org.fiware.kiara.dynamic.data.DynamicData**                 |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  |
 
-| **org.fiware.kiara.dynamic.data.DynamicPrimitive**            |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  
- | set      |                | boolean          |            |  
- |          | value          | Object           |            |  
- | get      |                | Object           |            |  
- | set      |                | boolean          |            |  
- |          | value          | DynamicData      |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicData**                            ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| -                   |                   |                         |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicContainer**            |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  |
+| **org.fiware.kiara.dynamic.data.DynamicPrimitive**                  ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| set           |                  | boolean                        |         |
+|               | value            | Object                         |         |
+| get           |                  | Object                         |         |
+| set           |                  | boolean                        |         |
+|               | value            | DynamicData                    |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicArray**                    |
-|-------------------------------------------------------------------|
-| **Attributes**                                                    |
-| | **Name** | **Type** |     |     |                               
- |----------|----------|-----|-----|                                |
-| **Public Operations**                                             |
-| | **Name**     | **Parameters** | **Returns/Type** | **Raises** | 
- |--------------|----------------|------------------|------------|  
- | getElement   |                | DynamicData      |            |  
- |              | position       | int[]            |            |  
- | setElementAt |                | boolean          |            |  
- |              | value          | DynamicData      |            |  
- |              | position       | int[]            |            |  |
 
-| **org.fiware.kiara.dynamic.data.DynamicList**                 |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  
- | add      |                | boolean          |            |  
- |          | element        | DynamicData      |            |  
- | add      |                | void             |            |  
- |          | index          | int              |            |  
- |          | element        | DynamicData      |            |  
- | get      |                | DynamicData      |            |  
- |          | index          | int              |            |  
- | isEmpty  |                | boolean          |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicContainer**                       ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| -                   |                   |                         |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicSet**                  |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  
- | add      |                | boolean          |            |  
- |          | element        | DynamicData      |            |  
- | add      |                | void             |            |  
- |          | index          | int              |            |  
- |          | element        | DynamicData      |            |  
- | get      |                | DynamicData      |            |  
- |          | index          | int              |            |  
- | isEmpty  |                | boolean          |            |  |
 
-| **org.fiware.kiara.dynamic.data.DynamicMap**                       |
-|--------------------------------------------------------------------|
-| **Attributes**                                                     |
-| | **Name** | **Type** |     |     |                                
- |----------|----------|-----|-----|                                 |
-| **Public Operations**                                              |
-| | **Name**      | **Parameters** | **Returns/Type** | **Raises** | 
- |---------------|----------------|------------------|------------|  
- | put           |                | boolean          |            |  
- |               | key            | DynamicData      |            |  
- |               | value          | DynamicData      |            |  
- | containsKey   |                | boolean          |            |  
- |               | key            | DynamicData      |            |  
- | containsValue |                | boolean          |            |  
- |               | value          | DynamicData      |            |  
- | get           |                | DynamicData      |            |  
- |               | key            | DynamicData      |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicArray**                           ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| getElement    |                  | DynamicData                    |         |
+|               | position         | int[]                          |         |
+| setElementAt  |                  | boolean                        |         |
+|               | value            | DynamicData                    |         |
+|               | position         | int[]                          |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicMembered**             |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  |
 
-| **org.fiware.kiara.dynamic.data.DynamicStruct**                |
-|----------------------------------------------------------------|
-| **Attributes**                                                 |
-| | **Name** | **Type** |     |     |                            
- |----------|----------|-----|-----|                             |
-| **Public Operations**                                          |
-| | **Name**  | **Parameters** | **Returns/Type** | **Raises** | 
- |-----------|----------------|------------------|------------|  
- | getMember |                | DynamicData      |            |  
- |           | name           | String           |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicList**                           ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| add           |                  | boolean                        |         |
+|               | element          | DynamicData                    |         |
+| add           |                  | void                           |         |
+|               | index            | int                            |         |
+|               | element          | DynamicData                    |         |
+| get           |                  | DynamicData                    |         |
+|               | index            | int                            |         |
+| isEmpty       |                  | boolean                        |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicEnum**                 |
-|---------------------------------------------------------------|
-| **Attributes**                                                |
-| | **Name** | **Type** |     |     |                           
- |----------|----------|-----|-----|                            |
-| **Public Operations**                                         |
-| | **Name** | **Parameters** | **Returns/Type** | **Raises** | 
- |----------|----------------|------------------|------------|  
- | set      |                | void             |            |  
- |          | value          | String           |            |  
- | get      |                | String           |            |  |
 
-| **org.fiware.kiara.dynamic.data.Dynamic**                      |
-|----------------------------------------------------------------|
-| **Attributes**                                                 |
-| | **Name** | **Type** |     |     |                            
- |----------|----------|-----|-----|                             |
-| **Public Operations**                                          |
-| | **Name**  | **Parameters** | **Returns/Type** | **Raises** | 
- |-----------|----------------|------------------|------------|  
- | \_d       |                | void             |            |  
- |           | value          | Object           |            |  
- | \_d       |                | Object           |            |  
- | getMember |                | DynamicData      |            |  
- |           | name           | String           |            |  
- | setMember |                | void             |            |  
- |           | name           | String           |            |  
- |           | data           | DynamicData      |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicSet**                           ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| add           |                  | boolean                        |         |
+|               | element          | DynamicData                    |         |
+| add           |                  | void                           |         |
+|               | index            | int                            |         |
+|               | element          | DynamicData                    |         |
+| get           |                  | DynamicData                    |         |
+|               | index            | int                            |         |
+| isEmpty       |                  | boolean                        |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicException**             |
-|----------------------------------------------------------------|
-| **Attributes**                                                 |
-| | **Name** | **Type** |     |     |                            
- |----------|----------|-----|-----|                             |
-| **Public Operations**                                          |
-| | **Name**  | **Parameters** | **Returns/Type** | **Raises** | 
- |-----------|----------------|------------------|------------|  
- | getMember |                | DynamicData      |            |  
- |           | name           | String           |            |  |
 
-| **org.fiware.kiara.dynamic.data.DynamicMember**                     |
-|---------------------------------------------------------------------|
-| **Attributes**                                                      |
-| | **Name** | **Type** |     |     |                                 
- |----------|----------|-----|-----|                                  |
-| **Public Operations**                                               |
-| | **Name**       | **Parameters** | **Returns/Type** | **Raises** | 
- |----------------|----------------|------------------|------------|  
- | getName        |                | String           |            |  
- | getDynamicData |                | DynamicData      |            |  
- | equals         |                | boolean          |            |  
- |                | anotherObject  | Object           |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicMap**                          ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| put           |                  | boolean                        |         |
+|               | key              | DynamicData                    |         |
+|               | value            | DynamicData                    |         |
+| containsKey   |                  | boolean                        |         |
+|               | key              | DynamicData                    |         |
+| containsValue |                  | boolean                        |         |
+|               | value            | DynamicData                    |         |
+| get           |                  | DynamicData                    |         |
+|               | key              | DynamicData                    |         |
 
-| **org.fiware.kiara.dynamic.service.DynamicFunctionRequest**                                 |
-|---------------------------------------------------------------------------------------------|
-| **Attributes**                                                                              |
-| | **Name** | **Type** |     |     |                                                         
- |----------|----------|-----|-----|                                                          |
-| **Public Operations**                                                                       |
-| | **Name**       | **Parameters** | **Returns/Type**                         | **Raises** | 
- |----------------|----------------|------------------------------------------|------------|  
- | getParameter   |                | DynamicData                              |            |  
- |                | name           | String                                   |            |  
- | getParameterAt |                | DynamicData                              |            |  
- |                | index          | int                                      |            |  
- | execute        |                | DynamicFunctionResponse                  |            |  
- | executeAsync   |                | void                                     |            |  
- |                | callback       | AsyncCallback\<DynamicFunctionResponse\> |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicMembered**                       ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_              | _Type_            |                         |         |
+| -                   | -                 |                         |         |
+| **Public Operations**                                                    ||||
+| _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
+| -                   |                   |                         |         |
 
-| **org.fiware.kiara.dynamic.service.DynamicFunctionResponse**        |
-|---------------------------------------------------------------------|
-| **Attributes**                                                      |
-| | **Name** | **Type** |     |     |                                 
- |----------|----------|-----|-----|                                  |
-| **Public Operations**                                               |
-| | **Name**       | **Parameters** | **Returns/Type** | **Raises** | 
- |----------------|----------------|------------------|------------|  
- | isException    |                | boolean          |            |  
- | setException   |                | void             |            |  
- |                | isException    | boolean          |            |  
- | setReturnValue |                | void             |            |  
- |                | returnType     | DynamicData      |            |  
- | getReturnValue |                | DynamicData      |            |  |
 
-| **org.fiware.kiara.dynamic.service.DynamicProxy**                                  |
-|------------------------------------------------------------------------------------|
-| **Attributes**                                                                     |
-| | **Name** | **Type** |     |     |                                                
- |----------|----------|-----|-----|                                                 |
-| **Public Operations**                                                              |
-| | **Name**               | **Parameters** | **Returns/Type**        | **Raises** | 
- |------------------------|----------------|-------------------------|------------|  
- | getServiceName         |                | String                  |            |  
- | createFunctionRequest  |                | DynamicFunctionRequest  |            |  
- |                        | name           | String                  |            |  
- | createFunctionReqponse |                | DynamicFunctionResponse |            |  
- |                        | name           | String                  |            |  |
+| **org.fiware.kiara.dynamic.data.DynamicStruct**                          ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| getMember     |                  | DynamicData                    |         |
+|               | name             | String                         |         |
 
-| **org.fiware.kiara.dynamic.service.DynamicFunctionRequest**          |
-|----------------------------------------------------------------------|
-| **Attributes**                                                       |
-| | **Name** | **Type** |     |     |                                  
- |----------|----------|-----|-----|                                   |
-| **Public Operations**                                                |
-| | **Name** | **Parameters** | **Returns/Type**        | **Raises** | 
- |----------|----------------|-------------------------|------------|  
- | process  |                | void                    |            |  
- |          | request        | DynamicFunctionRequest  |            |  
- |          | response       | DynamicFunctionResponse |            |  |
+
+| **org.fiware.kiara.dynamic.data.DynamicEnum**                         ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| set           |                  | void                           |         |
+|               | value            | String                         |         |
+| get           |                  | String                         |         |
+
+
+| **org.fiware.kiara.dynamic.data.Dynamic**                                ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| \_d           |                  | void                           |         |
+|               | value            | Object                         |         |
+| \_d           |                  | Object                         |         |
+| getMember     |                  | DynamicData                    |         |
+|               | name             | String                         |         |
+| setMember     |                  | void                           |         |
+|               | name             | String                         |         |
+|               | data             | DynamicData                    |         |
+
+
+| **org.fiware.kiara.dynamic.data.DynamicException**                       ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_        | _Type_           |                                |         |
+| -             | -                |                                |         |
+| **Public Operations**                                                    ||||
+| _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
+| getMember     |                  | DynamicData                    |         |
+|               | name             | String                         |         |
+
+| **org.fiware.kiara.dynamic.data.DynamicMember**                          ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_         | _Type_         |                                 |         |
+| -              | -              |                                 |         |
+| **Public Operations**                                                    ||||
+| _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
+| getName        |                | String                          |         |
+| getDynamicData |                | DynamicData                     |         |
+| equals         |                | boolean                         |         |
+|                | anotherObject  | Object                          |         |
+
+
+| **org.fiware.kiara.dynamic.service.DynamicFunctionRequest**              ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_         | _Type_         |                                 |         |
+| -              | -              |                                 |         |
+| **Public Operations**                                                    ||||
+| _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
+| getParameter   |                | DynamicData                     |         |
+|                | name           | String                          |         |
+| getParameterAt |                | DynamicData                     |         |
+|                | index          | int                             |         |
+| execute        |                | DynamicFunctionResponse         |         |
+| executeAsync   |                | void                            |         |
+|                | callback       | AsyncCallback\<DynamicFunctionResponse\> ||
+
+
+| **org.fiware.kiara.dynamic.service.DynamicFunctionResponse**             ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_         | _Type_         |                                 |         |
+| -              | -              |                                 |         |
+| **Public Operations**                                                    ||||
+| _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
+| isException    |                | boolean                         |         |
+| setException   |                | void                            |         |
+|                | isException    | boolean                         |         |
+| setReturnValue |                | void                            |         |
+|                | returnType     | DynamicData                     |         |
+| getReturnValue |                | DynamicData                     |         |
+
+
+| **org.fiware.kiara.dynamic.service.DynamicProxy**                        ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_         | _Type_         |                                 |         |
+| -              | -              |                                 |         |
+| **Public Operations**                                                    ||||
+| _Name_                 | _Parameters_   | _Returns/Type_          | _Raises_|
+| getServiceName         |                | String                  |         |
+| createFunctionRequest  |                | DynamicFunctionRequest  |         |
+|                        | name           | String                  |         |
+| createFunctionReqponse |                | DynamicFunctionResponse |         |
+|                        | name           | String                  |         |
+
+
+| **org.fiware.kiara.dynamic.service.DynamicFunctionRequest**              ||||
+|-----------------------------------------------------------------------|-|-|-|
+| **Attributes**                                                           ||||
+| _Name_         | _Type_         |                                 |         |
+| -              | -              |                                 |         |
+| **Public Operations**                                                    ||||
+| _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
+| process        |                | void                            |         |
+|                | request        | DynamicFunctionRequest          |         |
+|                | response       | DynamicFunctionResponse         |         |
 
 
