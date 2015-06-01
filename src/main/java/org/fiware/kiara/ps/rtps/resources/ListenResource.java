@@ -42,6 +42,8 @@ public class ListenResource {
 	
 	private LocatorList m_listenLocators;
 	
+	private Locator m_senderLocator;
+	
 	private RTPSParticipant m_RTPSParticipant;
 	
 	private final int m_ID;
@@ -50,6 +52,8 @@ public class ListenResource {
 	
 	//private java.net.Socket m_listenEndpoint;
 	private AsioEndpoint m_listenEndpoint;
+	
+	private AsioEndpoint m_senderEndpoint;
 	
 	//private java.net.DatagramSocket m_listenSocket;
 	
@@ -70,42 +74,53 @@ public class ListenResource {
 		this.m_ID = ID;
 		this.m_isDefaultListenResource = isDefault;
 		this.m_listenEndpoint = new AsioEndpoint();
+		this.m_senderEndpoint = new AsioEndpoint();
+		this.m_senderLocator = new Locator();
 		
+	}
+	
+	public Locator getSenderLocator() {
+	    return this.m_senderLocator;
+	}
+	
+	public AsioEndpoint getSenderEndpoint() {
+	    return this.m_senderEndpoint;
 	}
 	
 	public boolean addAssociatedEndpoint(Endpoint endpoint) {
 		this.m_mutex.lock();
-		
-		boolean found = false;
-		if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
-			for (RTPSWriter it : this.m_assocWriters) {
-				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				this.m_assocWriters.add((RTPSWriter) endpoint);
-				System.out.println(endpoint.getGuid().getEntityId()+ " added to listemn locators list."); // Log this(info)
-				this.m_mutex.unlock();
-				return true;
-			}
-		} else if (endpoint.getAttributes().endpointKind == EndpointKind.READER) {
-			for (RTPSReader it : this.m_assocReaders) {
-				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
-				this.m_assocReaders.add((RTPSReader) endpoint);
-				System.out.println(endpoint.getGuid().getEntityId()+ " added to listemn locators list."); // Log this(info)
-				this.m_mutex.unlock();
-				return true;
-			}
+		try {
+			boolean found = false;
+        		if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
+        			for (RTPSWriter it : this.m_assocWriters) {
+        				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+        					found = true;
+        					break;
+        				}
+        			}
+        			if (!found) {
+        				this.m_assocWriters.add((RTPSWriter) endpoint);
+        				System.out.println(endpoint.getGuid().getEntityId()+ " added to listemn locators list."); // Log this(info)
+        				this.m_mutex.unlock();
+        				return true;
+        			}
+        		} else if (endpoint.getAttributes().endpointKind == EndpointKind.READER) {
+        			for (RTPSReader it : this.m_assocReaders) {
+        				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+        					found = true;
+        					break;
+        				}
+        			}
+        			if (!found) {
+        				this.m_assocReaders.add((RTPSReader) endpoint);
+        				System.out.println(endpoint.getGuid().getEntityId()+ " added to listemn locators list."); // Log this(info)
+        				this.m_mutex.unlock();
+        				return true;
+        			}
+        		}
+		} finally {
+		    this.m_mutex.unlock();
 		}
-		
-		this.m_mutex.unlock();
 		
 		return false;
 	}
@@ -114,25 +129,27 @@ public class ListenResource {
 		
 		this.m_mutex.lock();
 		
-		if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
-			for (RTPSWriter it : this.m_assocWriters) {
-				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-					this.m_assocWriters.remove(endpoint);
-					this.m_mutex.unlock();
-					return true;
-				}
-			}
-		} else if (endpoint.getAttributes().endpointKind == EndpointKind.READER) {
-			for (RTPSReader it : this.m_assocReaders) {
-				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-					this.m_assocReaders.remove(endpoint);
-					this.m_mutex.unlock();
-					return true;
-				}
-			}
+		try {
+        		if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
+        			for (RTPSWriter it : this.m_assocWriters) {
+        				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+        					this.m_assocWriters.remove(endpoint);
+        					this.m_mutex.unlock();
+        					return true;
+        				}
+        			}
+        		} else if (endpoint.getAttributes().endpointKind == EndpointKind.READER) {
+        			for (RTPSReader it : this.m_assocReaders) {
+        				if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+        					this.m_assocReaders.remove(endpoint);
+        					this.m_mutex.unlock();
+        					return true;
+        				}
+        			}
+        		}
+		} finally {
+		    this.m_mutex.unlock();
 		}
-		
-		this.m_mutex.unlock();
 		
 		return false;
 	}
@@ -277,7 +294,7 @@ public class ListenResource {
 		
 		//this.m_listenSocket.r
 		
-		ReceptionThread runnable = new ReceptionThread(this.m_listenChannel);
+		ReceptionThread runnable = new ReceptionThread(this.m_listenChannel, this);
 		Thread thread = new Thread(runnable, "");
 		thread.start();
 		
@@ -330,13 +347,4 @@ public class ListenResource {
 		}
 		
 	}
-	
-	/*private void putToListen() {
-		
-		this.m_receiver.
-		RTPSMessageBuilder.createMessage(endian)
-		
-		//this.m_listenSocket.
-	}*/
-
 }
