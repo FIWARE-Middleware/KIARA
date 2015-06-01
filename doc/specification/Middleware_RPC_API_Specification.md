@@ -283,8 +283,8 @@ This section defines in detail the API provided by the classes defined above.
 | **org.fiware.kiara.Kiara**                                               ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
-| _Name_                  | _Type_        |                        |          |
-| -                       | -             |                        |          |
+| _Name_                   | _Type_       |                        |          |
+| n/a                      | n/a          |                        |          |
 | **Public Operations**                                                    ||||
 | _Name_                   | _Parameters_ | _Returns/Type_         | _Raises_ |
 | getTypeDescriptorBuilder |              | TypeDescriptorBuilder  |          |
@@ -299,7 +299,7 @@ This section defines in detail the API provided by the classes defined above.
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_                | _Type_         |                      |             |
-| -                     | -              |                      |             |
+| n/a                   | n/a            |                      |             |
 | **Public Operations**                                                    ||||
 | _Name_                | _Parameters_   | _Returns/Type_       | _Raises_    |
 | connect               |                | Connection           | IOException |
@@ -323,7 +323,7 @@ This section defines in detail the API provided by the classes defined above.
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_                  | _Type_        |                        |          |
-| -                       | -             |                        |          |
+| n/a                     | n/a           |                        |          |
 | **Public Operations**                                                    ||||
 | _Name_                  | _Parameters_  | _Returns/Type_         | _Raises_ |
 | getTransportFactory     |               | TransportFactory       |          |
@@ -337,7 +337,7 @@ Cause the described classes in this section are dependant of the Advanced Middle
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_        |                              |          |
-| -                 | -             |                              |          |
+| n/a               | n/a           |                              |          |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_  | _Returns/Type_               | _Raises_ |
 | add               |               | int                          |          |
@@ -349,7 +349,7 @@ Cause the described classes in this section are dependant of the Advanced Middle
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_        |                              |          |
-| -                 | -             |                              |          |
+| n/a               | n/a           |                              |          |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_  | _Returns/Type_               | _Raises_ |
 | add               |               | void                         |          |
@@ -362,7 +362,7 @@ Cause the described classes in this section are dependant of the Advanced Middle
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_        |                              |          |
-| -                 | -             |                              |          |
+| n/a               | n/a           |                              |          |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_  | _Returns/Type_               | _Raises_ |
 | Inherited from x.y.\<IDL-ServiceName\> and x.y.\<IDL-ServiceName\>Async  ||||
@@ -383,7 +383,7 @@ Cause the described classes in this section are dependant of the Advanced Middle
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_        |                              |          |
-| -                 | -             |                              |          |
+| n/a               | n/a           |                              |          |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_  | _Returns/Type_               | _Raises_ |
 | getServiceName    |               | String                       |          |
@@ -399,7 +399,7 @@ Cause the described classes in this section are dependant of the Advanced Middle
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_        |                              |          |
-| -                 | -             |                              |          |
+| n/a               | n/a           |                              |          |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_  | _Returns/Type_               | _Raises_ |
 | add_processsAsync |               | void                         |          |

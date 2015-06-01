@@ -146,7 +146,7 @@ The `Connection` interface manages the connection to the server. It holds the re
 This subsection contains the interfaces and classes that are dependent on the user. This section will use the example in section API Usage Examples to define them.
 
 <center>
-![Figure: Class Diagram TypeDescriptor](images/ClassDiagramTypeDescriptor.png "Figure: Class Diagram TypeDescriptor")
+![Figure: Class Diagram TypeDescriptor](images/MiddlewareClassDiagramTypeDescriptor.png "Figure: Class Diagram TypeDescriptor")
 </center>
 <center>Figure: Class Diagram TypeDescriptor</center>
 
@@ -176,7 +176,7 @@ This interface defined the operations used to create type-describing objects. It
 This class is used to manipulate the objects used to describe the data types. It allows the users to know what type of data an object represents.
 
 <center>
-![Figure: Interface TypeDescriptor](images/InterfaceTypeDescriptor.png "Figure: Interface TypeDescriptor")
+![Figure: Interface TypeDescriptor](images/MiddlewareInterfaceTypeDescriptor.png "Figure: Interface TypeDescriptor")
 </center>
 <center>Figure: Interface TypeDescriptor</center>
 
@@ -205,7 +205,7 @@ This class is used to manipulate the objects used to describe the data types. It
 Interface that represents the top level class of the data type hierarchy. It is used as a generic type to englobe only and exclusively data type descriptors.
 
 <center>
-![Figure: Interface DataTypeDescriptor](images/InterfaceDataTypeDescriptor.png "Figure: Interface DataTypeDescriptor")
+![Figure: Interface DataTypeDescriptor](images/MiddlewareInterfaceDataTypeDescriptor.png "Figure: Interface DataTypeDescriptor")
 </center>
 <center>Figure: Interface DataTypeDescriptor</center>
 
@@ -217,7 +217,7 @@ Interface that represents the top level class of the data type hierarchy. It is 
 Interface that represents a primitive data type. Primitive types include **boolean**, **byte**, **i16**, **ui16**, **i32**, **ui32**, **i64**, **ui64**, **float32**, **float64**, **char** and **string**.
 
 <center>
-![Figure: Interface PrimitiveTypeDescriptor](images/InterfacePrimitiveTypeDescriptor.png "Figure: Interface PrimitiveTypeDescriptor")
+![Figure: Interface PrimitiveTypeDescriptor](images/MiddlewareInterfacePrimitiveTypeDescriptor.png "Figure: Interface PrimitiveTypeDescriptor")
 </center>
 <center>Figure: Interface PrimitiveTypeDescriptor</center>
 
@@ -233,7 +233,7 @@ Interface that represents a primitive data type. Primitive types include **boole
 Interface that represents a container data type. Container data types are **arrays**, **lists**, **maps** and **sets**.
 
 <center>
-![Figure: Interface ContainerTypeDescriptor](images/InterfaceContainerTypeDescriptor.png "Figure: Interface ContainerTypeDescriptor")
+![Figure: Interface ContainerTypeDescriptor](images/MiddlewareInterfaceContainerTypeDescriptor.png "Figure: Interface ContainerTypeDescriptor")
 </center>
 <center>Figure: Interface ContainerTypeDescriptor</center>
 
@@ -248,7 +248,7 @@ Interface that represents a container data type. Container data types are **arra
 Interface that represents an array data type. Arrays can hold multiple repeated objects of the same data type inside.
 
 <center>
-![Figure: Interface ArrayTypeDescriptor](images/InterfaceArrayTypeDescriptor.png "Figure: Interface ArrayTypeDescriptor")
+![Figure: Interface ArrayTypeDescriptor](images/MiddlewareInterfaceArrayTypeDescriptor.png "Figure: Interface ArrayTypeDescriptor")
 </center>
 <center>Figure: Interface ArrayTypeDescriptor</center>
 
@@ -266,7 +266,7 @@ Interface that represents an array data type. Arrays can hold multiple repeated 
 Interface that represents a list data type. Lists can hold multiple repeated objects of the same data type inside.
 
 <center>
-![Figure: Interface ListTypeDescriptor](images/InterfaceListTypeDescriptor.png "Figure: Interface ListTypeDescriptor")
+![Figure: Interface ListTypeDescriptor](images/MiddlewareInterfaceListTypeDescriptor.png "Figure: Interface ListTypeDescriptor")
 </center>
 <center>Figure: Interface ListTypeDescriptor</center>
 
@@ -281,7 +281,7 @@ Interface that represents a list data type. Lists can hold multiple repeated obj
 Interface that represents a set data type. Sets can have non repeated objects of the same data type inside.
 
 <center>
-![Figure: Interface SetTypeDescriptor](images/InterfaceSetTypeDescriptor.png "Figure: Interface SetTypeDescriptor")
+![Figure: Interface SetTypeDescriptor](images/MiddlewareInterfaceSetTypeDescriptor.png "Figure: Interface SetTypeDescriptor")
 </center>
 <center>Figure: Interface SetTypeDescriptor</center>
 
@@ -296,7 +296,7 @@ Interface that represents a set data type. Sets can have non repeated objects of
 Interface that represents a map data type. Maps can hold multiple key-object pairs inside if and only if the key objects are unique.
 
 <center>
-![Figure: Interface MapTypeDescriptor](images/InterfaceMapTypeDescriptor.png "Figure: Interface MapTypeDescriptor")
+![Figure: Interface MapTypeDescriptor](images/MiddlewareInterfaceMapTypeDescriptor.png "Figure: Interface MapTypeDescriptor")
 </center>
 <center>Figure: Interface MapTypeDescriptor</center>
 
@@ -313,7 +313,7 @@ Interface that represents a map data type. Maps can hold multiple key-object pai
 Interface that represents a membered data type. `Membered` data types are **structs**, **enumerations**, **unions** and **exceptions**.
 
 <center>
-![Figure: Interface MemberedTypeDescriptor](images/InterfaceMemberedTypeDescriptor.png "Figure: Interface MemberedTypeDescriptor")
+![Figure: Interface MemberedTypeDescriptor](images/MiddlewareInterfaceMemberedTypeDescriptor.png "Figure: Interface MemberedTypeDescriptor")
 </center>
 <center>Figure: Interface MemberedTypeDescriptor</center>
 
@@ -328,7 +328,7 @@ Interface that represents a membered data type. `Membered` data types are **stru
 Interface that represents a struct data type. Structs can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
 
 <center>
-![Figure: Interface StructTypeDescriptor](images/InterfaceStructTypeDescriptor.png "Figure: Interface StructTypeDescriptor")
+![Figure: Interface StructTypeDescriptor](images/MiddlewareInterfaceStructTypeDescriptor.png "Figure: Interface StructTypeDescriptor")
 </center>
 <center>Figure: Interface StructTypeDescriptor</center>
 
@@ -343,7 +343,7 @@ Interface that represents a struct data type. Structs can have multiple differen
 Interface that represents an enumeration data type. Enumerations are formed by a group of different string values.
 
 <center>
-![Figure: Interface EnumTypeDescriptor](images/InterfaceEnumTypeDescriptor.png "Figure: Interface EnumTypeDescriptor")
+![Figure: Interface EnumTypeDescriptor](images/MiddlewareInterfaceEnumTypeDescriptor.png "Figure: Interface EnumTypeDescriptor")
 </center>
 <center>Figure: Interface EnumTypeDescriptor</center>
 
@@ -357,7 +357,7 @@ Interface that represents an enumeration data type. Enumerations are formed by a
 Interface that represents a union data type. Unions are formed by a group of members identified by their names and the labels of the discriminator to which they are assigned.
 
 <center>
-![Figure: Interface UnionTypeDescriptor](images/InterfaceUnionTypeDescriptor.png "Figure: Interface UnionTypeDescriptor")
+![Figure: Interface UnionTypeDescriptor](images/MiddlewareInterfaceUnionTypeDescriptor.png "Figure: Interface UnionTypeDescriptor")
 </center>
 <center>Figure: Interface UnionTypeDescriptor</center>
 
@@ -371,7 +371,7 @@ Interface that represents a union data type. Unions are formed by a group of mem
 Interface that represents a struct data type. Exceptions can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
 
 <center>
-![Figure: Interface ExceptionTypeDescriptor](images/InterfaceExceptionTypeDescriptor.png "Figure: Interface ExceptionTypeDescriptor")
+![Figure: Interface ExceptionTypeDescriptor](images/MiddlewareInterfaceExceptionTypeDescriptor.png "Figure: Interface ExceptionTypeDescriptor")
 </center>
 <center>Figure: Interface ExceptionTypeDescriptor</center>
 
@@ -387,7 +387,7 @@ Interface that represents a struct data type. Exceptions can have multiple diffe
 Interface that represents a member of a `MemberedTypeDescriptor` object. Each member is identified by its name and the `TypeDescriptor` object that it holds.
 
 <center>
-![Figure: Interface Member](images/InterfaceMember.png "Figure: Interface Member")
+![Figure: Interface Member](images/MiddlewareInterfaceMember.png "Figure: Interface Member")
 </center>
 <center>Figure: Interface Member</center>
 
@@ -402,7 +402,7 @@ Interface that represents a member of a `MemberedTypeDescriptor` object. Each me
 Interface that represents a member of a `EnumTypeDescriptor` object. It inherits from `Member` interface and therefore it has no new methods.
 
 <center>
-![Figure: Interface EnumMember](images/InterfaceMember.png "Figure: Interface EnumMember")
+![Figure: Interface EnumMember](images/MiddlewareInterfaceMember.png "Figure: Interface EnumMember")
 </center>
 <center>Figure: Interface EnumMember</center>
 
@@ -414,7 +414,7 @@ Interface that represents a member of a `EnumTypeDescriptor` object. It inherits
 Interface that represents a member of a `UnionTypeDescriptor` object. It inherits from Member interface and therefore it has no new methods.
 
 <center>
-![Figure: Interface UnionMember](images/InterfaceUnionMember.png "Figure: Interface UnionMember")
+![Figure: Interface UnionMember](images/MiddlewareInterfaceUnionMember.png "Figure: Interface UnionMember")
 </center>
 <center>Figure: Interface UnionMember</center>
 
@@ -426,7 +426,7 @@ Interface that represents a member of a `UnionTypeDescriptor` object. It inherit
 This interface represents a function, providing methods to easily describe it by setting its return type, parameters and exceptions that it might throw.
 
 <center>
-![Figure: Interface FunctionTypeDescriptor](images/InterfaceFunctionTypeDescriptor.png "Figure: Interface FunctionTypeDescriptor")
+![Figure: Interface FunctionTypeDescriptor](images/MiddlewareInterfaceFunctionTypeDescriptor.png "Figure: Interface FunctionTypeDescriptor")
 </center>
 <center>Figure: Interface FunctionTypeDescriptor</center>
 
@@ -448,7 +448,7 @@ This interface represents a function, providing methods to easily describe it by
 This interface represents a service, providing methods to add the FunctionTypeDescriptor objects representing every function defined in a specific service.
 
 <center>
-![Figure: Interface ServiceTypeDescriptor](images/InterfaceServiceTypeDescriptor.png "Figure: Interface ServiceTypeDescriptor")
+![Figure: Interface ServiceTypeDescriptor](images/MiddlewareInterfaceServiceTypeDescriptor.png "Figure: Interface ServiceTypeDescriptor")
 </center>
 <center>Figure: Interface ServiceTypeDescriptor</center>
 
@@ -465,7 +465,7 @@ This interface represents a service, providing methods to add the FunctionTypeDe
 This subsection contains the interfaces and classes that are designed to provide the developer with functions to create and manage dynamic data types.
 
 <center>
-![Figure: Class Diagramm DynamicValue](images/ClassDiagramDynamicValue.png "Figure: Class Diagramm DynamicValue")
+![Figure: Class Diagramm DynamicValue](images/MiddlewareClassDiagramDynamicValue.png "Figure: Class Diagramm DynamicValue")
 </center>  
 <center>Figure: Class Diagramm DynamicValue</center>
 
@@ -475,7 +475,7 @@ This subsection contains the interfaces and classes that are designed to provide
 This class allows the users to create new data types based on their `TypeCode` descriptions.
 
 <center>
-![Figure: Interface DynamicValueBuilder](images/InterfaceDynamicValueBuilder.png "Figure: Interface DynamicValueBuilder")
+![Figure: Interface DynamicValueBuilder](images/MiddlewareInterfaceDynamicValueBuilder.png "Figure: Interface DynamicValueBuilder")
 </center>  
 <center>Figure: Interface DynamicValueBuilder</center>
 
@@ -492,7 +492,7 @@ This class allows the users to create new data types based on their `TypeCode` d
 Interface that acts as a supertype for every dynamic value that can be managed. Every `DynamicValue` object is defined by using a `TypeDescriptor` which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the `TypeDescriptor` object it was created from.
 
 <center>
-![Figure: Interface DynamicValue](images/InterfaceDynamicValue.png "Figure: Interface DynamicValue")
+![Figure: Interface DynamicValue](images/MiddlewareInterfaceDynamicValue.png "Figure: Interface DynamicValue")
 </center>  
 <center>Figure: Interface DynamicValue</center>
 
@@ -508,7 +508,7 @@ Interface that acts as a supertype for every dynamic value that can be managed. 
 Interface that is used to group all the `DynamicValues` representing data types.
 
 <center>
-![Figure: Interface DynamicData](images/InterfaceDynamicData.png "Figure: Interface DynamicData")
+![Figure: Interface DynamicData](images/MiddlewareInterfaceDynamicData.png "Figure: Interface DynamicData")
 </center>  
 <center>Figure: Interface DynamicData</center>
 
@@ -520,7 +520,7 @@ Interface that is used to group all the `DynamicValues` representing data types.
 This class allows the users to manipulate `DynamicData` objects made from `PrimitiveTypeDescriptor` objects.
 
 <center>
-![Figure: Interface DynamicPrimitive](images/InterfaceDynamicPrimitive.png "Figure: Interface DynamicPrimitive")
+![Figure: Interface DynamicPrimitive](images/MiddlewareInterfaceDynamicPrimitive.png "Figure: Interface DynamicPrimitive")
 </center>  
 <center>Figure: Interface DynamicPrimitive</center>
 
@@ -535,7 +535,7 @@ This class allows the users to manipulate `DynamicData` objects made from `Primi
 This class holds the data values of a `DynamicData` object created from a `ContainerTypeDescriptor`.
 
 <center>
-![Figure: Interface DynamicContainer](images/InterfaceDynamicContainer.png "Figure: Interface DynamicContainer")
+![Figure: Interface DynamicContainer](images/MiddlewareInterfaceDynamicContainer.png "Figure: Interface DynamicContainer")
 </center>  
 <center>Figure: Interface DynamicContainer</center>
 
@@ -547,7 +547,7 @@ This class holds the data values of a `DynamicData` object created from a `Conta
 This class holds the data values of a `DynamicData` object created from an `ArrayTypeDescriptor`. A `DynamicArray` contains a group of `DynamicData` objects (all must be the same type) stored in single or multi dimensional matrixes.
 
 <center>
-![Figure: Interface DynamicArray](images/InterfaceDynamicArray.png "Figure: Interface DynamicArray")
+![Figure: Interface DynamicArray](images/MiddlewareInterfaceDynamicArray.png "Figure: Interface DynamicArray")
 </center>  
 <center>Figure: Interface DynamicArray</center>
 
@@ -562,7 +562,7 @@ This class holds the data values of a `DynamicData` object created from an `Arra
 This class holds the data values of a DynamicData object created from a ListTypeDescriptor. A list can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicList must have been created from the same TypeDescriptor definition.
 
 <center>
-![Figure: Interface DynamicList](images/InterfaceDynamicList.png "Figure: Interface DynamicList")
+![Figure: Interface DynamicList](images/MiddlewareInterfaceDynamicList.png "Figure: Interface DynamicList")
 </center>  
 <center>Figure: Interface DynamicList</center>
 
@@ -578,7 +578,7 @@ This class holds the data values of a DynamicData object created from a ListType
 This class holds the data values of a DynamicData object created from a SetTypeDescriptor. A set can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicSet must have been created from the same TypeDescriptor definition and it cannot be duplicated objects.
 
 <center>
-![Figure: Interface DynamicSet](images/InterfaceDynamicSet.png "Figure: Interface DynamicSet")
+![Figure: Interface DynamicSet](images/MiddlewareInterfaceDynamicSet.png "Figure: Interface DynamicSet")
 </center>  
 <center>Figure: Interface DynamicSet</center>
 
@@ -594,7 +594,7 @@ This class holds the data values of a DynamicData object created from a SetTypeD
 This class holds a list of pairs key-value instances of DynamicData. In a DynamicMap, the key values cannot be duplicated.
 
 <center>
-![Figure: Interface DynamicMap](images/InterfaceDynamicMap.png "Figure: Interface DynamicMap")
+![Figure: Interface DynamicMap](images/MiddlewareInterfaceDynamicMap.png "Figure: Interface DynamicMap")
 </center>  
 <center>Figure: Interface DynamicMap</center>
 
@@ -611,7 +611,7 @@ This class holds a list of pairs key-value instances of DynamicData. In a Dynami
 This class represents a `DynamicData` type formed by multiple `DynamicData` objects stored into a class named `DynamicMember`.
 
 <center>
-![Figure: Interface DynamicMembered](images/InterfaceDynamicMembered.png "Figure: Interface DynamicMembered")
+![Figure: Interface DynamicMembered](images/MiddlewareInterfaceDynamicMembered.png "Figure: Interface DynamicMembered")
 </center>  
 <center>Figure: Interface DynamicMembered</center>
 
@@ -623,7 +623,7 @@ This class represents a `DynamicData` type formed by multiple `DynamicData` obje
 This class holds group of `DynamicData` objects acting as members of a stucture. Each member is identified by its name.
 
 <center>
-![Figure: Interface DynamicStruct](images/InterfaceDynamicStruct.png "Figure: Interface DynamicStruct")
+![Figure: Interface DynamicStruct](images/MiddlewareInterfaceDynamicStruct.png "Figure: Interface DynamicStruct")
 </center>  
 <center>Figure: Interface DynamicStruct</center>
 
@@ -637,7 +637,7 @@ This class holds group of `DynamicData` objects acting as members of a stucture.
 This class is used to dynamically manipulate enumerations described by a specific `EnumTypeDescriptor` object.
 
 <center>
-![Figure: Interface DynamicEnum](images/InterfaceDynamicEnum.png "Figure: Interface DynamicEnum")
+![Figure: Interface DynamicEnum](images/MiddlewareInterfaceDynamicEnum.png "Figure: Interface DynamicEnum")
 </center>  
 <center>Figure: Interface DynamicEnum</center>
 
@@ -652,7 +652,7 @@ This class is used to dynamically manipulate enumerations described by a specifi
 This class is used to dynamically manipulate unions described by a specific `UnionTypeDescriptor` object. A union is formed by some `DynamicData` objects, and the valid one is selected by using a discriminator.
 
 <center>
-![Figure: Interface DynamicUnion](images/InterfaceDynamicUnion.png "Figure: Interface DynamicUnion")
+![Figure: Interface DynamicUnion](images/MiddlewareInterfaceDynamicUnion.png "Figure: Interface DynamicUnion")
 </center>  
 <center>Figure: Interface DynamicUnion</center>
 
@@ -668,7 +668,7 @@ This class is used to dynamically manipulate unions described by a specific `Uni
 This class holds group of `DynamicData` objects acting as members of an exception. Each member is identified by its own name.
 
 <center>
-![Figure: Interface DynamicException](images/InterfaceDynamicException.png "Figure: Interface DynamicException")
+![Figure: Interface DynamicException](images/MiddlewareInterfaceDynamicException.png "Figure: Interface DynamicException")
 </center>  
 <center>Figure: Interface DynamicException</center>
 
@@ -682,7 +682,7 @@ This class holds group of `DynamicData` objects acting as members of an exceptio
 This class represents a dynamic member of any DynamicMembered object. It is used to store the DynamicData objects inside structures, unions, enumerations and exceptions.
 
 <center>
-![Figure: Interface DynamicMember](images/InterfaceDynamicMember.png "Figure: Interface DynamicMember")
+![Figure: Interface DynamicMember](images/MiddlewareInterfaceDynamicMember.png "Figure: Interface DynamicMember")
 </center>  
 <center>Figure: Interface DynamicMember</center>
 
@@ -698,7 +698,7 @@ This class represents a dynamic member of any DynamicMembered object. It is used
 This class represents a dynamic function request. This class is used to create objects whose objective is to invoke functions remotely.
 
 <center>
-![Figure: Interface DynamicFunctionRequest](images/InterfaceDynamicFunctionRequest.png "Figure: Interface DynamicFunctionRequest")
+![Figure: Interface DynamicFunctionRequest](images/MiddlewareInterfaceDynamicFunctionRequest.png "Figure: Interface DynamicFunctionRequest")
 </center>  
 <center>Figure: Interface DynamicFunctionRequest</center>
 
@@ -714,7 +714,7 @@ This class represents a dynamic function request. This class is used to create o
 This class represents a dynamic function response. This class is used to retrieve the information sent from the server after a remote procedure call.
 
 <center>
-![Figure: Interface DynamicFunctionResponse](images/InterfaceDynamicFunctionResponse.png "Figure: Interface DynamicFunctionResponse")
+![Figure: Interface DynamicFunctionResponse](images/MiddlewareInterfaceDynamicFunctionResponse.png "Figure: Interface DynamicFunctionResponse")
 </center>  
 <center>Figure: Interface DynamicFunctionResponse</center>
 
@@ -731,7 +731,7 @@ This class represents a dynamic function response. This class is used to retriev
 This class represents a proxy than can be dynamically used to create an instance of DynamicFunctionRequest or a DynamicFunctionResponse depending if the user wants an object to execute a remote call or to store the result.
 
 <center>
-![Figure: Interface DynamicProxy](images/InterfaceDynamicProxy.png "Figure: Interface DynamicProxy")
+![Figure: Interface DynamicProxy](images/MiddlewareInterfaceDynamicProxy.png "Figure: Interface DynamicProxy")
 </center>  
 <center>Figure: Interface DynamicProxy</center>
 
@@ -747,7 +747,7 @@ This class represents a proxy than can be dynamically used to create an instance
 This class represents a dynamic object used to hold the implementation of a specific function. Its process method must be defined by the user when creating the object, and it will be used to register the service’s functions on the server’s side.
 
 <center>
-![Figure: Interface DynamicFunctionHandler](images/InterfaceDynamicFunctionHandler.png "Figure: Interface DynamicFunctionHandler")
+![Figure: Interface DynamicFunctionHandler](images/MiddlewareInterfaceDynamicFunctionHandler.png "Figure: Interface DynamicFunctionHandler")
 </center>  
 <center>Figure: Interface DynamicFunctionHandler</center>
 
@@ -767,7 +767,7 @@ This section defines in detail the API provided by the classes defined above.
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_                   | _Type_       |                        |          |
-| -                        | -            |                        |          |
+| n/a                      | n/a          |                        |          |
 | **Public Operations**                                                    ||||
 | _Name_                   | _Parameters_ | _Returns/Type_         | _Raises_ |
 | getTypeDescriptorBuilder |              | TypeDescriptorBuilder  |          |
@@ -783,7 +783,7 @@ This classes are those related to the client side API. This section includes all
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_         |                            |           |
-| -                 | -              |                            |           |
+| n/a               | n/a            |                            |           |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_   | _Returns/Type_             | _Raises_  |
 | getTransport      |                | Transport                  |           |
@@ -803,7 +803,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | createVoidType      |                   | DataTypeDescriptor      |         |
@@ -842,7 +842,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_         |                              |         |
-| -                 | -              |                              |         |
+| n/a               | n/a            |                              |         |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_   | _Returns/Type_               | _Raises_|
 | getKind           |                | TypeKind                     |         |
@@ -867,17 +867,17 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
-| -                   |                   |                         |         |
+| n/a                   |                   |                         |         |
 
 
 | **org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor**               ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_         |                              |         |
-| -                 | -              |                              |         |
+| n/a               | n/a            |                              |         |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_   | _Returns/Type_               | _Raises_|
 | isString          |                | boolean                      |         |
@@ -890,7 +890,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | setMaxSize    |                  | void                           |         |
@@ -902,7 +902,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | getElementType      |                   | DataTypeDescriptor      |         |
@@ -917,7 +917,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | getElementType      |                   | DataTypeDescriptor      |         |
@@ -929,18 +929,19 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | getElementType      |                   | DataTypeDescriptor      |         |
 | setElementType      |                   | boolean                 |         |
 |                     | contentType       | DataTypeDescriptor      |         |
 
+
 | **org.fiware.kiara.typecode.data.MapTypeDescriptor**                   ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_                 | _Type_              |                    |         |
-| -                      | -                   |                    |         |
+| n/a                    | n/a                 |                    |         |
 | **Public Operations**                                                    ||||
 | _Name_                 | _Parameters_        | _Returns/Type_     | _Raises_|
 | setKeyTypeDescriptor   |                     | boolean            |         |
@@ -954,7 +955,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | getMembers          |                   | List\<Member\>          |         |
@@ -965,7 +966,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | addMember           |                   | void                    |         |
@@ -974,11 +975,12 @@ This classes are those related to the client’s side API. This section includes
 | getMember           |                   | DataTypeDescriptor      |         |
 |                     | name              | String                  |         |
 
+
 | **org.fiware.kiara.typecode.data.EnumTypeDescriptor**                    ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | addValue            |                   | void                    |         |
@@ -989,7 +991,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | addMember           |                   | UnionTypeDescriptor     |         |
@@ -998,11 +1000,12 @@ This classes are those related to the client’s side API. This section includes
 |                     | isDefault         | boolean                 |         |
 |                     | labels            | Object[]                |         |
 
+
 | **org.fiware.kiara.typecode.data.FunctionTypeDescriptor**                ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
 | getReturnType       |                   | DataTypeDescriptor      |         |
@@ -1027,7 +1030,7 @@ This classes are those related to the client’s side API. This section includes
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | getName       |                  | String                         |         |
@@ -1045,7 +1048,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_                 | _Parameters_       | _Returns/Type_      | _Raises_|
 | createData             |                    | DynamicData            |      |
@@ -1072,7 +1075,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_            | _Type_         |                          |             |
-| -                 | -              |                          |             |
+| n/a               | n/a            |                          |             |
 | **Public Operations**                                                    ||||
 | _Name_            | _Parameters_   | _Returns/Type_           | _Raises_    |
 | getTypeDescriptor |                | TypeDescriptor           |             |
@@ -1090,16 +1093,16 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
-| -                   |                   |                         |         |
+| n/a                   |                   |                         |         |
 
 | **org.fiware.kiara.dynamic.data.DynamicPrimitive**                  ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | set           |                  | boolean                        |         |
@@ -1113,17 +1116,17 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
-| -                   |                   |                         |         |
+| n/a                   |                   |                         |         |
 
 
 | **org.fiware.kiara.dynamic.data.DynamicArray**                           ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | getElement    |                  | DynamicData                    |         |
@@ -1137,7 +1140,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | add           |                  | boolean                        |         |
@@ -1154,7 +1157,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | add           |                  | boolean                        |         |
@@ -1171,7 +1174,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | put           |                  | boolean                        |         |
@@ -1188,17 +1191,17 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
-| -                   | -                 |                         |         |
+| n/a                 | n/a               |                         |         |
 | **Public Operations**                                                    ||||
 | _Name_              | _Parameters_      | _Returns/Type_          | _Raises_|
-| -                   |                   |                         |         |
+| n/a                   |                   |                         |         |
 
 
 | **org.fiware.kiara.dynamic.data.DynamicStruct**                          ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | getMember     |                  | DynamicData                    |         |
@@ -1209,7 +1212,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | set           |                  | void                           |         |
@@ -1221,7 +1224,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | \_d           |                  | void                           |         |
@@ -1238,17 +1241,18 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
-| -             | -                |                                |         |
+| n/a           | n/a              |                                |         |
 | **Public Operations**                                                    ||||
 | _Name_        | _Parameters_     | _Returns/Type_                 | _Raises_|
 | getMember     |                  | DynamicData                    |         |
 |               | name             | String                         |         |
 
+
 | **org.fiware.kiara.dynamic.data.DynamicMember**                          ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_         | _Type_         |                                 |         |
-| -              | -              |                                 |         |
+| n/a            | n/a            |                                 |         |
 | **Public Operations**                                                    ||||
 | _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
 | getName        |                | String                          |         |
@@ -1261,7 +1265,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_         | _Type_         |                                 |         |
-| -              | -              |                                 |         |
+| n/a            | n/a            |                                 |         |
 | **Public Operations**                                                    ||||
 | _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
 | getParameter   |                | DynamicData                     |         |
@@ -1277,7 +1281,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_         | _Type_         |                                 |         |
-| -              | -              |                                 |         |
+| n/a            | n/a            |                                 |         |
 | **Public Operations**                                                    ||||
 | _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
 | isException    |                | boolean                         |         |
@@ -1292,7 +1296,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_         | _Type_         |                                 |         |
-| -              | -              |                                 |         |
+| n/a            | n/a            |                                 |         |
 | **Public Operations**                                                    ||||
 | _Name_                 | _Parameters_   | _Returns/Type_          | _Raises_|
 | getServiceName         |                | String                  |         |
@@ -1306,7 +1310,7 @@ The following classes are those related to creation and management of dynamic ty
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_         | _Type_         |                                 |         |
-| -              | -              |                                 |         |
+| n/a            | n/a            |                                 |         |
 | **Public Operations**                                                    ||||
 | _Name_         | _Parameters_   | _Returns/Type_                  | _Raises_|
 | process        |                | void                            |         |
