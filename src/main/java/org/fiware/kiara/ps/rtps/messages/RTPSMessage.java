@@ -119,6 +119,12 @@ public class RTPSMessage {
 		this.m_buffer = buffer;
 	}
 	
+	public void setBuffer(byte[] buffer, int payloadSize) {
+	    this.m_buffer = new byte[payloadSize];
+	    System.arraycopy(buffer, 0, this.m_buffer, 0, payloadSize);
+            //this.m_buffer = buffer;
+        }
+	
 	public int getSize() {
 		if (this.m_buffer != null) {
 			return this.m_buffer.length;
