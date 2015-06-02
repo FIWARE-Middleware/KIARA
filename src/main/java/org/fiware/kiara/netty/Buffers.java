@@ -40,4 +40,11 @@ public class Buffers {
 
         return ByteBuffer.wrap(array, offset, length);
     }
+    
+    public static byte[] toByteArray(ByteBuf msg) {
+        final int length = msg.readableBytes();
+        byte[] array = new byte[length];
+        msg.getBytes(msg.readerIndex(), array, 0, length);
+        return array;
+    }
 }

@@ -326,7 +326,7 @@ public class MessageReceiver {
 			// TODO: Delete this
 			//firstReader = new RTPSReader();
 			// TODO: Uncomment this
-			if (this.m_listenResource.getAssocReaders().isEmpty()) {
+			/*if (this.m_listenResource.getAssocReaders().isEmpty()) {
 				System.out.println("Data received in locator: " + this.m_listenResource.getListenLocators() +  ", when NO readers are listening"); // TODO Log this
 				return false;
 			}
@@ -342,7 +342,7 @@ public class MessageReceiver {
 				System.out.println("No Reader in this Locator"); // TODO Log this
 				return false;
 			}
-			
+			*/
 			// Add readerId
 			subMsg.addSubmessageElement(readerId);
 			
