@@ -17,11 +17,11 @@
  */
 package org.fiware.kiara.ps.rtps.resources;
 
-/*import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.nio.NioDatagramChannel;*/
+import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -33,7 +33,6 @@ import java.net.SocketException;
 import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
-import java.nio.channels.DatagramChannel;
 import java.nio.channels.MembershipKey;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +84,7 @@ public class ListenResource {
 
     //private io.netty.channel.socket.DatagramChannel m_listenChannel;
     private java.nio.channels.DatagramChannel m_listenChannel;
+        private io.netty.channel.socket.DatagramChannel m_listenChannelNetty;
 
     private final Lock m_mutex = new ReentrantLock(true);
 
@@ -384,7 +384,7 @@ public class ListenResource {
 				//this.m_listenChannel = DatagramChannel.open(StandardProtocolFamily.INET);
 			        this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
 			} else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
-				this.m_listenChannel = DatagramChannel.open(StandardProtocolFamily.INET6);
+				this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET6);
 			}
 
 			//this.m_listenChannel.configureBlocking(false);
@@ -516,4 +516,149 @@ public class ListenResource {
 		}
 
 	}
+
+
+        public boolean initThreadNetty(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
+            System.out.println("Creating ListenResource in " + loc + " with ID " + this.m_ID); // TODO Log this (info)
+            this.m_RTPSParticipant = participant;
+            if (!loc.isAddressDefined() && isMulticast) {
+                    System.out.println("MulticastAddresses need to have the IP defined, ignoring this address"); // TODO Log this (info)
+                    return false;
+            }
+            this.m_receiver = new MessageReceiver(listenSocketSize);
+            this.m_receiver.setListenResource(this);
+
+            this.getLocatorAdresses(loc);
+
+            System.out.println("Initializing in : " + this.m_listenLocators); // TODO Log this
+
+            InetAddress multicastAddress = null;
+
+            Bootstrap b = new Bootstrap();
+
+            if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
+                    //this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
+            } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
+                    //this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET6);
+            }
+
+            EventLoopGroup group = Global.transportGroup;
+            b.group(group)
+                    .channel(NioDatagramChannel.class)
+                    .handler(new ReceptionHandler(this))
+                    .option(ChannelOption.SO_RCVBUF, listenSocketSize)
+                    .option(ChannelOption.SO_REUSEADDR, true);
+
+
+            /*try {
+                    //System.out.println(this.m_listenSocket.getLocalAddress().toString());
+            } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+            }*/
+            //java.net.ServerSocket recvSocket = new ServerSocket();
+            //recvSocket.
+            if (isMulticast) {
+                    multicastAddress = this.m_listenEndpoint.address;
+                    if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
+                            //this.m_listenSocket.setOption(SocketOptions., value)
+                            this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
+                    } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
+                            this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
+                    }
+            }
+
+            if (isFixed) {
+                    InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
+                    try {
+                        this.m_listenChannelNetty = (DatagramChannel)b.bind(sockAddr).sync().channel();
+                    } catch (InterruptedException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                    }
+
+            } else {
+                    boolean binded = false;
+
+                    for (int i=0; i < 1000; ++i) {
+                            this.m_listenEndpoint.port += 1;
+                            InetSocketAddress sockAddr = new InetSocketAddress(/*this.m_listenEndpoint.address, */this.m_listenEndpoint.port);
+                            try {
+                                System.err.println(sockAddr); //???DEBUG
+
+                                this.m_listenChannelNetty = (DatagramChannel)b.bind(sockAddr).sync().channel();
+                                binded = true;
+                                break;
+                            } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
+
+                    }
+
+                    if (!binded) {
+                            System.out.println("Tried 1000 ports and none was working, last tried: " + this.m_listenEndpoint.port);
+                    } else {
+                            for (Locator it : this.m_listenLocators.getLocators()) {
+                                    it.setPort(this.m_listenEndpoint.port);
+                            }
+                    }
+            }
+
+            if (isMulticast && multicastAddress != null) {
+                    joinMulticastGroupNetty(multicastAddress);
+            }
+
+            System.out.println("Finishing ListenResource thread");
+
+            // TODO Thread stuff
+
+            return true;
+
+    }
+
+    private void joinMulticastGroupNetty(InetAddress multicastAddress) {
+
+            LocatorList loclist;
+
+            if (this.m_listenEndpoint.address instanceof Inet4Address) {
+                    loclist = IPFinder.getIPv4Adress();
+                    for (Locator it : loclist.getLocators()) {
+                            try {
+                                    InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, 0);
+                                    NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
+                                    this.m_listenChannelNetty.config().setOption(ChannelOption.IP_MULTICAST_IF, netInt);
+                                    this.m_listenChannelNetty.joinGroup(multicastAddress, netInt, null);
+
+                            } catch (UnknownHostException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                            } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                            }
+                    }
+            } else if (this.m_listenEndpoint.address instanceof Inet6Address) {
+                    loclist = IPFinder.getIPv6Adress();
+                    //int index = 0;
+                    for (Locator it : loclist.getLocators()) {
+                            try {
+                                    //((MulticastSocket) this.m_listenSocket).joinGroup(Inet6Address.getByAddress(it.getAddress()));
+                                    NetworkInterface netInt = NetworkInterface.getByInetAddress(Inet6Address.getByAddress(it.getAddress()));
+                                    InetSocketAddress sockAddr = new InetSocketAddress(Inet6Address.getByAddress(it.getAddress()), 0);
+                                    this.m_listenChannelNetty.joinGroup(sockAddr, netInt);
+                                    //++index;
+                            } catch (UnknownHostException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                            } catch (IOException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                            }
+                    }
+            }
+
+    }
+
+
 }
