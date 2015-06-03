@@ -57,7 +57,6 @@ public class ReceptionHandler extends SimpleChannelInboundHandler<DatagramPacket
         System.out.println("Message created");
 
         msg.setBuffer(Buffers.toByteArray(packet.content()));
-        
         System.out.println("Buffer set");
 
         newRTPSMessage(msg);
