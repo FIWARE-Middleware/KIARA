@@ -18,11 +18,15 @@
 package org.fiware.kiara.ps.rtps.resources;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.bootstrap.ChannelFactory;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelException;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-
+import io.netty.util.internal.StringUtil;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -517,6 +521,28 @@ public class ListenResource {
 
 	}
 
+        private static final class NioDatagramChannelFactory implements ChannelFactory<NioDatagramChannel> {
+            private final InternetProtocolFamily ipFamily;
+
+            public NioDatagramChannelFactory(InternetProtocolFamily ipFamily) {
+                this.ipFamily = ipFamily;
+            }
+
+            @Override
+            public NioDatagramChannel newChannel() {
+                try {
+                    return new NioDatagramChannel(ipFamily);
+                } catch (Throwable t) {
+                    throw new ChannelException("Unable to create Channel from class NioDatagramChannel", t);
+                }
+            }
+
+            @Override
+            public String toString() {
+                return "NioDatagramChannelFactory";
+            }
+        }
+
 
         public boolean initThreadNetty(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
             System.out.println("Creating ListenResource in " + loc + " with ID " + this.m_ID); // TODO Log this (info)
@@ -537,14 +563,13 @@ public class ListenResource {
             Bootstrap b = new Bootstrap();
 
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
-                    //this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
+                b.channelFactory(new NioDatagramChannelFactory(InternetProtocolFamily.IPv4));
             } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
-                    //this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET6);
+                b.channelFactory(new NioDatagramChannelFactory(InternetProtocolFamily.IPv6));
             }
 
             EventLoopGroup group = Global.transportGroup;
             b.group(group)
-                    .channel(NioDatagramChannel.class)
                     .handler(new ReceptionHandler(this))
                     .option(ChannelOption.SO_RCVBUF, listenSocketSize)
                     .option(ChannelOption.SO_REUSEADDR, true);
@@ -628,8 +653,9 @@ public class ListenResource {
                                     InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, 0);
                                     NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
                                     this.m_listenChannelNetty.config().setOption(ChannelOption.IP_MULTICAST_IF, netInt);
-                                    this.m_listenChannelNetty.joinGroup(multicastAddress, netInt, null);
-
+                                    this.m_listenChannelNetty.joinGroup(multicastAddress, netInt, null).sync();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             } catch (UnknownHostException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
