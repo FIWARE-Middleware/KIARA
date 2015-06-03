@@ -34,7 +34,7 @@ import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
 import java.nio.channels.DatagramChannel;
-//import java.nio.channels.DatagramChannel;
+import java.nio.channels.MembershipKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -430,7 +430,7 @@ public class ListenResource {
 
 			for (int i=0; i < 1000; ++i) {
 				this.m_listenEndpoint.port += 1;
-				InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
+				InetSocketAddress sockAddr = new InetSocketAddress(/*this.m_listenEndpoint.address, */this.m_listenEndpoint.port);
 				try {
 					this.m_listenChannel.socket().bind(sockAddr);
 					binded = true;
@@ -480,8 +480,13 @@ public class ListenResource {
 				try {
 					InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, 0);
 					NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
-					this.m_listenChannel.join(multicastAddress, netInt);
+                                        this.m_listenChannel.setOption(StandardSocketOptions.IP_MULTICAST_IF, netInt);
+                                        MembershipKey key = this.m_listenChannel.join(multicastAddress, netInt);
 
+                                        System.err.printf("MulticastJoin: Address: %s, NetIf: %s, Key: %s%n", multicastAddress, netInt, key);
+					if (!key.isValid()) {
+                                            System.err.println("Invalid membership key: "+key);
+                                        }
 				} catch (UnknownHostException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -497,6 +502,7 @@ public class ListenResource {
 				try {
 					//((MulticastSocket) this.m_listenSocket).joinGroup(Inet6Address.getByAddress(it.getAddress()));
 					NetworkInterface netInt = NetworkInterface.getByInetAddress(Inet6Address.getByAddress(it.getAddress()));
+                                        this.m_listenChannel.setOption(StandardSocketOptions.IP_MULTICAST_IF, netInt);
 					this.m_listenChannel.join(Inet6Address.getByAddress(it.getAddress()), netInt);
 					//++index;
 				} catch (UnknownHostException e) {
