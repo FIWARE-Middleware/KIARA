@@ -1,5 +1,5 @@
 KIARA User and Developer Guide
-==================================================
+==============================
 
 Version 0.2.0
 
@@ -67,13 +67,12 @@ Goal of the mapped operation mode is to separate the application interfaces from
 
 ## A quick example
 
-In the following chapters we will use the following example application to explain the basic concepts of building an application using KIARA.
+In the next chapters we will use the following example application to explain the basic concepts of building an application using KIARA.
 
 ### Calculator
 
 The KIARA Calculator example application provides an API to ask for simple 
-mathematics operations over two numbers. Is a common used example when trying 
-to understand how an RPC framework works.
+mathematics operations over two numbers. It is a common used example when trying to understand how an RPC framework works.
 
 Basically the service provides two functions:
 
