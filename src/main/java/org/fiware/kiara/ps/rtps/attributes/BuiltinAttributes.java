@@ -19,6 +19,8 @@ public class BuiltinAttributes {
     
     public Timestamp leaseDurationAnnouncementPeriod;
     
+    public SimpleEDPAttributes simpleEDP;
+    
     public LocatorList metatrafficUnicastLocatorList;
     
     public LocatorList metatrafficMulticastLocatorList;
