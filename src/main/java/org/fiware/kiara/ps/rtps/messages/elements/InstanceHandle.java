@@ -47,6 +47,14 @@ public class InstanceHandle extends RTPSSubmessageElement {
 		
 	}
 	
+	@Override
+	public boolean equals(Object other) {
+	    if (other instanceof InstanceHandle) {
+	        return this.m_value.equals(((InstanceHandle) other).m_value);
+	    }
+	    return false;
+	}
+	
 	
 
 }

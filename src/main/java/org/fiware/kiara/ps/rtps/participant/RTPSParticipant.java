@@ -1,6 +1,6 @@
 package org.fiware.kiara.ps.rtps.participant;
 
-import org.fiware.kiara.ps.rtps.attributes.ParticipantAttributes;
+import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 
@@ -11,7 +11,7 @@ public class RTPSParticipant {
     //private BuiltinProtocols m_builtinProtocols;
     
     public RTPSParticipant(
-            ParticipantAttributes participantAtt, 
+            RTPSParticipantAttributes participantAtt, 
             GUIDPrefix guidPrefix,
             RTPSParticipantListener partListener
             ) {
