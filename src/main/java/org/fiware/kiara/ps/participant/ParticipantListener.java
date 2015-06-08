@@ -1,5 +1,7 @@
 package org.fiware.kiara.ps.participant;
 
-public class ParticipantListener {
-
+public abstract class ParticipantListener {
+    
+    public abstract void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info);
+    
 }

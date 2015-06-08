@@ -5,13 +5,21 @@ import java.util.List;
 
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
+import org.fiware.kiara.ps.attributes.SubscriberAttributes;
 import org.fiware.kiara.ps.publisher.Publisher;
 import org.fiware.kiara.ps.publisher.PublisherListener;
+import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind;
+import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
+import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.participant.RTPSParticipantDiscoveryInfo;
+import org.fiware.kiara.ps.rtps.participant.RTPSParticipantListener;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.subscriber.Subscriber;
+import org.fiware.kiara.ps.subscriber.SubscriberListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,22 +34,44 @@ public class Participant {
     
     private ParticipantListener m_listener;
     
+    private MyRTPSParticipantListener m_rtpsListener;
+    
     private List<Publisher> m_publishers;
     
     private List<Subscriber> m_subscribers;
     
     private List<TopicDataType> m_types;
     
-    private Participant(ParticipantAttributes participantAttributes, ParticipantListener listener) {
+    public class MyRTPSParticipantListener extends RTPSParticipantListener {
+        
+        private Participant m_participant;
+        
+        public MyRTPSParticipantListener(Participant part) {
+            this.m_participant = part;
+        }
+
+        @Override
+        public void onRTPSParticipantDiscovery(RTPSParticipant participant, RTPSParticipantDiscoveryInfo rtpsinfo) {
+            if (this.m_participant.m_listener != null) {
+                ParticipantDiscoveryInfo info = new ParticipantDiscoveryInfo();
+                info.rtps = rtpsinfo;
+                this.m_participant.m_rtpsParticipant = participant;
+                this.m_participant.m_listener.onParticipantDiscovery(this.m_participant, info);
+            }
+        }
+        
+    }
+    
+    public Participant(ParticipantAttributes participantAttributes, ParticipantListener listener) {
         this.m_att = participantAttributes;
         this.m_rtpsParticipant = null;
         this.m_listener = listener;
         
-        //rtpsPartListener TODO Finish this
-        
         this.m_publishers = new ArrayList<Publisher>();
         this.m_subscribers = new ArrayList<Subscriber>();
         this.m_types = new ArrayList<TopicDataType>();
+        
+        this.m_rtpsListener = new MyRTPSParticipantListener(this);
     }
     
     private void deleteParticipant() {
@@ -85,9 +115,49 @@ public class Participant {
             return null;
         }
         
-        //Publisher publisher = new Publisher();
+        Publisher publisher = new Publisher(this, type, att, listener);
+        publisher.setRTPSParticipant(this.m_rtpsParticipant);
+        
+        WriterAttributes writerAtt = new WriterAttributes();
+        writerAtt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
+        writerAtt.endpointAtt.endpointKind = EndpointKind.WRITER;
+        writerAtt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        writerAtt.endpointAtt.topicKind = att.topic.topicKind;
+        writerAtt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
+        
+        if (att.getEntityId() > 0) {
+            writerAtt.endpointAtt.setEntityID(att.getEntityId());
+        } 
+        
+        if (att.getUserDefinedId() > 0) {
+            writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedId());
+        }
+        
+        writerAtt.times = att.times;
+        
+        //RTPSWriter writer = RTPSDomain. TODO continue impl
         
         return null;
+    }
+    
+    public Subscriber createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    public boolean removePublisher(Publisher pub) {
+     // TODO Auto-generated method stub
+        return true;
+    }
+    
+    public boolean removeSubscriber(Subscriber sub) {
+     // TODO Auto-generated method stub
+        return true;
+    }
+    
+    public boolean registerType(TopicDataType type) {
+        // TODO Auto-generated method stub
+        return false;
     }
     
     private TopicDataType getRegisteredType(String typeName) {
@@ -117,4 +187,17 @@ public class Participant {
         
     }
 
+    public RTPSParticipantListener getListener() {
+        return this.m_rtpsListener;
+    }
+
+    public void setRTPSParticipant(RTPSParticipant part) {
+        this.m_rtpsParticipant = part;
+    }
+
+    
+
+   
+
+    
 }
