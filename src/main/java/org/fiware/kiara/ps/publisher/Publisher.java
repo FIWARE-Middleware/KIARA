@@ -64,5 +64,13 @@ public class Publisher {
     public GUID getGuid() {
         return this.m_writer.getGuid();
     }
+    
+    public RTPSParticipant getRTPSParticipant() {
+        return this.m_rtpsParticipant;
+    }
+    
+    public void setRTPSParticipant(RTPSParticipant participant) {
+        this.m_rtpsParticipant = participant;
+    }
 
 }
