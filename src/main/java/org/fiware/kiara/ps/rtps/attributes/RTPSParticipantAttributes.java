@@ -2,7 +2,13 @@ package org.fiware.kiara.ps.rtps.attributes;
 
 import java.util.List;
 
+import org.fiware.kiara.ps.rtps.common.LocatorList;
+
 public class RTPSParticipantAttributes {
+    
+    public LocatorList defaultUnicastLocatorList;
+    
+    public LocatorList defaultMulticastLocatorList;
     
     public int defaultSendPort;
     
@@ -25,6 +31,8 @@ public class RTPSParticipantAttributes {
     private String m_name;
     
     public RTPSParticipantAttributes() {
+        this.defaultUnicastLocatorList = new LocatorList();
+        this.defaultMulticastLocatorList = new LocatorList();
         this.defaultSendPort = 10040;
         this.setName("RTPSParticipant");
         this.sendSocketBufferSize = 65536;

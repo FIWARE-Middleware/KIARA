@@ -11,19 +11,30 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
 public class RTPSReader extends Endpoint {
 
-	public RTPSReader(RTPSParticipant participant, GUID guid, ReaderAttributes att, ReaderHistoryCache history, ReaderListener listener) {
-		super(participant, guid, att.endpointAtt);
-		// TODO Auto-generated constructor stub
-	}
+    protected boolean m_acceptMessagesFromUnknownWriters;
+    
+    protected EntityId m_trustedWriterEntityId;
 
-	public void changeRemovedByHistory(CacheChange change) {
-		// TODO Auto-generated method stub
-		
-	}
+    public RTPSReader(RTPSParticipant participant, GUID guid, ReaderAttributes att, ReaderHistoryCache history, ReaderListener listener) {
+        super(participant, guid, att.endpointAtt);
+        // TODO Auto-generated constructor stub
+        this.m_acceptMessagesFromUnknownWriters = true;
+        this.m_trustedWriterEntityId = new EntityId();
+    }
 
-	public boolean acceptMsgDirectedTo(EntityId readerId) {
-		// TODO Auto-generated method stub
-		return false;
-	}
+    public void changeRemovedByHistory(CacheChange change) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public boolean acceptMsgDirectedTo(EntityId readerId) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    public void setTrustedWriter(EntityId writerId) {
+        this.m_acceptMessagesFromUnknownWriters = false;
+        this.m_trustedWriterEntityId = writerId;
+    }
 
 }
