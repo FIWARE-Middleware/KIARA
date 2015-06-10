@@ -59,6 +59,10 @@ public class EntityId extends RTPSSubmessageElement {
 	public EntityId(EntityIdEnum value) {
 		this.m_value = value.getValue();
 	}
+	
+	public void setValue(int index, byte value) {
+	    this.m_value[index] = value;
+	}
 
 	/*@Override
 	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {

@@ -686,5 +686,25 @@ public class ListenResource {
 
     }
 
+    public boolean isListeningTo(Locator loc) {
+        if (loc.isAddressDefined()) {
+            LocatorList locList = this.m_listenLocators;
+            return locList.contains(loc);
+        } else {
+            if (loc.getPort() == this.m_listenLocators.begin().getPort()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasAssociatedEndpoints() {
+        return !(this.m_assocWriters.isEmpty() && this.m_assocReaders.isEmpty());
+    }
+
+    public boolean isDefaultListenResource() {
+        return this.m_isDefaultListenResource;
+    }
+
 
 }

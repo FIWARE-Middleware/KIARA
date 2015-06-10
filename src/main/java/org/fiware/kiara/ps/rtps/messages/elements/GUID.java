@@ -12,6 +12,11 @@ public class GUID {
 		this.m_entityId = new EntityId();
 	}
 	
+	public GUID(GUIDPrefix guidPrefix, EntityId entityId) {
+            this.m_guidPrefix = guidPrefix;
+            this.m_entityId = entityId;
+    }
+	
 	public GUIDPrefix getGUIDPrefix() {
 		return this.m_guidPrefix;
 	}
