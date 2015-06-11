@@ -78,6 +78,7 @@ This class is the main entry point to use the Advanced Middlware. It creates or 
 - **createContext**: This function creates a new instance of the Context class, which is described below.
 - **shutdown**: This function closes and releases all internal Advanced Middleware structures (e.g. stops all pending tasks). Call this before you exit your application.
 
+
 ### Common interfaces
 
 #### org.fiware.kiara.Context
@@ -91,6 +92,7 @@ This interface is the starting point to use the Advanced Middleware. It holds th
 - **createSerializer**: This function provides a direct way to create a specific `Serializer` instance which can be configured for specific use cases.
 - **createServer**: This function creates a new `Server` instance used to add `Service` instances.
 - **createService**: This function creates a new `Service` instance used to register `Servant` instances.
+
 
 ### Network transports
 
@@ -130,6 +132,7 @@ This interface provides the abstraction of the factory that creates `Transport` 
 - **createTransport:** This function instantiates a network transport when the user wants later to configure it.
 - **createServerTransport:** This function instantiates a specific network `ServerTransport` instance which can be configured for specific use cases
 
+
 ### Serialization mechanisms
 
 #### org.fiware.kiara.serialization.Serializer
@@ -159,6 +162,7 @@ Different threading strategies are implemented by using different implementation
 - **Single thread:** by creating single thread executor with: [*java.util.concurrent.Executors.newSingleThreadExecutor*](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executors.html#newSingleThreadExecutor())[*()*](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executors.html#newSingleThreadExecutor())
 - **Thread pool:** by creating fixed thread pool executor with: [*java.util.concurrent.Executors.newFixedThreadPool()*](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executors.html#newFixedThreadPool(int))
 - **Thread per request:** by creating cached thread pool executor with: [*java.util.concurrent.Executors.newCachedThreadPool()*](http://docs.oracle.com/javase/7/docs/api/java/util/concurrent/Executors.html#newCachedThreadPool())
+
 
 ### Client API
 

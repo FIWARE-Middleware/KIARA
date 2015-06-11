@@ -13,10 +13,10 @@ Following is a list of Open Specifications linked to this Generic Enabler. Speci
 
 ### Open API Specifications
 
-- [Middleware IDL Specification](IDL Specification.md)
-- [Middleware RPC Static API Specification ](RPC Static API Specification.md)
-- [Middleware RPC Dynamic API Specification](RPC Dynamic API Specification.md)
-<!-- - [Middlware Pub-Sub API Specification](Pub-Sub API Specification.md) --> 
+- [Advanced Middleware IDL Specification](Middleware_IDL_Specification.md)
+- [Advanced Middleware RPC API Specification ](Middleware_RPC_API_Specification.md)
+- [Advanced Middleware RPC Dynamic Types API Specification](Middleware_RPC_Dynamic_Types_API_Specification.md)
+<!-- - [Middlware Pub-Sub API Specification](Middleware_Pub-Sub_API_Specification.md) --> 
 
 <!-- /{{:FIWARE.OpenSpecification.Details.I2ND.Middleware}} -->
 
