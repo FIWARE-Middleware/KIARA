@@ -11,6 +11,14 @@ public class LocatorList {
     public LocatorList() {
         this.m_locators = new ArrayList<Locator>();
     }
+    
+    public LocatorList(LocatorList other) {
+        this.m_locators = new ArrayList<Locator>();
+        //System.arraycopy(other.m_locators, 0, this.m_locators, 0, other.m_locators.size());
+        for (Locator loc : other.m_locators) {
+            this.m_locators.add(new Locator(loc));
+        }
+    }
 
     public void clear() {
         this.m_locators.clear();

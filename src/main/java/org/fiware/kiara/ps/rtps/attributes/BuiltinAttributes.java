@@ -35,6 +35,7 @@ public class BuiltinAttributes {
         this.domainID = 0;
         this.leaseDuration = new Timestamp(500, 0);
         this.leaseDurationAnnouncementPeriod = new Timestamp(250, 0);
+        this.simpleEDP = new SimpleEDPAttributes();
         this.useWriterLP = true;
     }
     

@@ -58,7 +58,9 @@ public class WriterQos {
     public GroupDataQosPolicy groupData;
 
     public WriterQos() {
+        this.reliability = new ReliabilityQosPolicy();
         this.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+        this.durability = new DurabilityQosPolicy();
         this.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
         
         this.durability = new DurabilityQosPolicy();

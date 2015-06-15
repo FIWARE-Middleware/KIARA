@@ -1,5 +1,6 @@
 package org.fiware.kiara.ps;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
@@ -13,13 +14,14 @@ import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
+import org.fiware.kiara.ps.topic.TopicDataTypeOld;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Domain {
     
-    private static List<Participant> m_participants;
+    private static List<Participant> m_participants = new ArrayList<Participant>();
     
     private static final Logger logger = LoggerFactory.getLogger(Domain.class);
     
@@ -90,6 +92,17 @@ public class Domain {
         return null;
     }
     
+    public static boolean RemovePublisher(Publisher pub) {
+        if (pub != null) {
+            for (Participant it : m_participants) {
+                if (it.getGuid().getGUIDPrefix().equals(pub.getGuid().getGUIDPrefix())) {
+                    
+                }
+            }
+        }
+        return false;
+    }
+    
     public static Subscriber createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
@@ -100,6 +113,15 @@ public class Domain {
     }
     
     public static boolean registerType(Participant part, TopicDataType type) {
+        for (Participant it : m_participants) {
+            if (it.getGuid().equals(part.getGuid())) {
+                return part.registerType(type);
+            }
+        }
+        return false;
+    }
+    
+    public static boolean registerTypeAlt(Participant part, TopicDataType type) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.registerType(type);

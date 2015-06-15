@@ -21,12 +21,16 @@ public class TopicAttributes {
         this.topicKind = TopicKind.NO_KEY;
         this.topicName = "UNDEF";
         this.topicDataType = "UNDEF";
+        this.historyQos = new HistoryQosPolicy();
+        this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
     
     public TopicAttributes(String name, String dataType, TopicKind kind) {
         this.topicKind = kind;
         this.topicName = name;
         this.topicDataType = dataType;
+        this.historyQos = new HistoryQosPolicy();
+        this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
     
     public boolean checkQos() {

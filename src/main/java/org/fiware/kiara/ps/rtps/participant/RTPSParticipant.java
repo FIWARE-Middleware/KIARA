@@ -121,7 +121,7 @@ public class RTPSParticipant {
                 this.m_att.defaultUnicastLocatorList.pushBack(newloc);
             }
             
-            LocatorList defCopy = this.m_att.defaultUnicastLocatorList;
+            LocatorList defCopy = new LocatorList(this.m_att.defaultUnicastLocatorList);
             this.m_att.defaultUnicastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
                 ListenResource lr = new ListenResource(this, ++this.m_threadID, true);
@@ -135,7 +135,7 @@ public class RTPSParticipant {
                 logger.warn(this.m_att.getName() + " Created with NO default Unicast Locator List, adding Locators:");
             }
             
-            defCopy = this.m_att.defaultMulticastLocatorList;
+            defCopy = new LocatorList(this.m_att.defaultMulticastLocatorList);
             this.m_att.defaultMulticastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
                 ListenResource lr = new ListenResource(this,  ++this.m_threadID, true);
