@@ -92,17 +92,6 @@ public class Domain {
         return null;
     }
     
-    public static boolean RemovePublisher(Publisher pub) {
-        if (pub != null) {
-            for (Participant it : m_participants) {
-                if (it.getGuid().getGUIDPrefix().equals(pub.getGuid().getGUIDPrefix())) {
-                    
-                }
-            }
-        }
-        return false;
-    }
-    
     public static Subscriber createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {

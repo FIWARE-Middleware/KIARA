@@ -66,20 +66,18 @@ public abstract class HistoryCache {
 		return false;
 	}
 	
-	public boolean getMinChange(CacheChange minChange) {
+	public CacheChange getMinChange() {
 		if (!this.m_minSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
-			minChange = this.m_minSeqCacheChange;
-			return true;
+			return this.m_minSeqCacheChange;
 		}
-		return false;
+		return null;
 	}
 	
-	public boolean getMaxChange(CacheChange maxChange) {
+	public CacheChange getMaxChange() {
 		if (this.m_maxSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
-			maxChange = this.m_maxSeqCacheChange;
-			return true;
+			return this.m_maxSeqCacheChange;
 		}
-		return false;
+		return null;
 	}
 	
 	public boolean getChange(SequenceNumber seq, GUID guid, CacheChange change) {
