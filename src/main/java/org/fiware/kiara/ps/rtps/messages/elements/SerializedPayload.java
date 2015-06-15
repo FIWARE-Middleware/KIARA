@@ -34,11 +34,15 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		this.m_ownSerializer = new CDRSerializer(false);
 		
 	}
-	
+
+        public CDRSerializer getSerializer() {
+            return m_ownSerializer;
+        }
+
 	public short getLength() {
 		return this.m_length;
 	}
-	
+
 	public void setLength(short length) {
 		this.m_length = length;
 	}
