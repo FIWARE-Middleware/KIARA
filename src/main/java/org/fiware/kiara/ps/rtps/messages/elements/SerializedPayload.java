@@ -42,7 +42,16 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	public void setLength(short length) {
 		this.m_length = length;
 	}
-	
+
+        public byte[] getBuffer() {
+            return m_buffer;
+        }
+
+        public void setBuffer(byte[] buffer) {
+            m_buffer = buffer;
+            m_length = (short)buffer.length;
+        }
+
 	public Serializable getData() {
 		return this.m_appData;
 	}
