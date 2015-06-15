@@ -9,11 +9,16 @@ import org.fiware.kiara.ps.attributes.SubscriberAttributes;
 import org.fiware.kiara.ps.publisher.Publisher;
 import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind;
+import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
+import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
+import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
+import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipantDiscoveryInfo;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipantListener;
@@ -89,7 +94,7 @@ public class Participant {
             return null;
         }
         
-        if (att.topic.topicKind == TopicKind.WITH_KEY && !type.isKeyDefined) {
+        if (att.topic.topicKind == TopicKind.WITH_KEY && !type.isGetKeyDefined()) {
             logger.error("Keyed Topic needs getKey function");
             return null;
         }
@@ -122,6 +127,7 @@ public class Participant {
         writerAtt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
         writerAtt.endpointAtt.endpointKind = EndpointKind.WRITER;
         writerAtt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        writerAtt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
         writerAtt.endpointAtt.topicKind = att.topic.topicKind;
         writerAtt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
         
@@ -137,7 +143,16 @@ public class Participant {
         
         //RTPSWriter writer = RTPSDomain. TODO continue impl
         
-        return null;
+        RTPSWriter writer = RTPSDomain.createRTPSWriter(this.m_rtpsParticipant, writerAtt, (WriterHistoryCache) publisher.getHistory(), publisher.getWriterListener());
+        if (writer == null) {
+            logger.error("Problem creating associated Writer");
+            return null;
+        }
+        publisher.setWriter(writer);
+        
+        this.m_publishers.add(publisher);
+        
+        return publisher;
     }
     
     public Subscriber createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
@@ -155,9 +170,33 @@ public class Participant {
         return true;
     }
     
-    public boolean registerType(TopicDataType type) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean registerType(TopicDataType<?> type) {
+        
+        if (type.getTypeSize() <= 0) {
+            logger.error("Registered Type must have maximum byte size > 0");
+            return false;
+        }
+        
+        if (type.getTypeSize() > SerializedPayload.PAYLOAD_MAX_SIZE) {
+            logger.error("Current version only supports types of sizes < " + SerializedPayload.PAYLOAD_MAX_SIZE);
+            return false;
+        }
+        
+        if (type.getName().length() <= 0) {
+            logger.error("Registered Type must have a name");
+            return false;
+        }
+        
+        for (TopicDataType<?> it : this.m_types) {
+            if (it.getName().equals(type.getName())) {
+                logger.error("Type with the same name already exists");
+                return false;
+            }
+        }
+        
+        this.m_types.add(type);
+        logger.info("Type " + type.getName() + " registered");
+        return true;
     }
     
     private TopicDataType getRegisteredType(String typeName) {
@@ -173,8 +212,7 @@ public class Participant {
     }
     
     public GUID getGuid() {
-        return null;
-        
+         return this.m_rtpsParticipant.getGUID();
     }
     
     public ParticipantAttributes getAttributes() {

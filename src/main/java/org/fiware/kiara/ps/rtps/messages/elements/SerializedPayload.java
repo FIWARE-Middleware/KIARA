@@ -22,6 +22,8 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	private boolean m_dataFlag;
 	private boolean m_keyFlag;
 	
+	public static final int PAYLOAD_MAX_SIZE = 64000;
+	
 	private byte[] m_buffer;
 	
 	public SerializedPayload() {
@@ -133,9 +135,6 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		System.arraycopy(message.getBuffer(), message.getPosition(), this.m_buffer, 0, this.m_length);
 		
 		message.skipBytes(this.m_length);
-		
-		
-		
 	}
 	
 	public void deserializeData(/*SerializerImpl impl, String name*/) throws IOException {
@@ -156,6 +155,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 			boolean ret = true;
 			ret &= (this.m_length == obj.m_length);
 			ret &= (this.m_dataFlag == obj.m_dataFlag);
+			// TODO More comparisons
 			return ret;
 		}
 		return false;

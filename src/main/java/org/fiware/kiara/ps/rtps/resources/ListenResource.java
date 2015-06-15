@@ -88,7 +88,8 @@ public class ListenResource {
 
     //private io.netty.channel.socket.DatagramChannel m_listenChannel;
     private java.nio.channels.DatagramChannel m_listenChannel;
-        private io.netty.channel.socket.DatagramChannel m_listenChannelNetty;
+        
+    private io.netty.channel.socket.DatagramChannel m_listenChannelNetty;
 
     private final Lock m_mutex = new ReentrantLock(true);
 

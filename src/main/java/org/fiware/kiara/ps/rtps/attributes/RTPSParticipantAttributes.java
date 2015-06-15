@@ -37,9 +37,11 @@ public class RTPSParticipantAttributes {
         this.setName("RTPSParticipant");
         this.sendSocketBufferSize = 65536;
         this.listenSocketBufferSize = 65536;
+        this.builtinAtt = new BuiltinAttributes();
         this.useIPv4ToSend = true;
         this.useIPv6ToSend = false;
         this.participantID = -1;
+        this.portParameters = new PortParameters();
     }
     
     public void setName(String name) {

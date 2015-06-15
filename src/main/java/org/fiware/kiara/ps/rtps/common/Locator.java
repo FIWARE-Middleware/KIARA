@@ -28,7 +28,8 @@ public class Locator {
 	public Locator(Locator other) {
 		this.m_kind = other.m_kind;
 		this.m_port = other.m_port;
-		this.m_address = other.m_address;
+		this.m_address = new byte[other.m_address.length];
+		System.arraycopy(other.m_address, 0, this.m_address, 0, other.m_address.length);
 	}
 	
 	public boolean isValid() {
@@ -49,6 +50,10 @@ public class Locator {
 
 	public void setPort(int m_port) {
 		this.m_port = m_port;
+	}
+	
+	public void incrementPort() {
+	    ++this.m_port;
 	}
 
 	public byte[] getAddress() {

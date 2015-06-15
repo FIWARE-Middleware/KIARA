@@ -23,7 +23,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class LatencyDataType extends TopicDataTypeAlt<LatencyType> {
+public class LatencyDataType extends TopicDataType<LatencyType> {
 
     @Override
     public boolean serialize(LatencyType data, SerializedPayload payload) {

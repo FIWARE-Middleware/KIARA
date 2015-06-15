@@ -8,14 +8,18 @@ import java.util.Set;
 
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
+import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
+import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipantListener;
+import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
@@ -28,9 +32,9 @@ public class RTPSDomain {
     
     private static int m_maxRTPSParticipantID;
     
-    private static List<RTPSParticipant> m_rtpsParticipants;
+    private static List<RTPSParticipant> m_rtpsParticipants = new ArrayList<RTPSParticipant>();;
     
-    private static Set<Integer> m_rtpsParticipantsIDs;
+    private static Set<Integer> m_rtpsParticipantsIDs = new HashSet<Integer>();
     
     private static final Logger logger = LoggerFactory.getLogger(RTPSDomain.class);
     
@@ -131,7 +135,7 @@ public class RTPSDomain {
         return false;
     }
     
-    public RTPSWriter createRTPSWriter(RTPSParticipant p, WriterAttributes watt, WriterHistoryCache history, WriterListener listener) {
+    public static RTPSWriter createRTPSWriter(RTPSParticipant p, WriterAttributes watt, WriterHistoryCache history, WriterListener listener) {
         for (RTPSParticipant it : m_rtpsParticipants) {
             if (it.getGUID().getGUIDPrefix().equals(p.getGUID().getGUIDPrefix())) {
                 RTPSWriter writer = it.createWriter(watt, history, listener, new EntityId(), false);
@@ -144,11 +148,31 @@ public class RTPSDomain {
         return null;
     }
     
-    public boolean removeRTPSWriter(RTPSWriter writer) {
+    public static boolean removeRTPSWriter(RTPSWriter writer) {
         if (writer != null) {
-            for (RTPSParticipant it : this.m_rtpsParticipants) {
+            for (RTPSParticipant it : m_rtpsParticipants) {
                 if (it.getGUID().getGUIDPrefix().equals(writer.getGuid().getGUIDPrefix())) {
-                    
+                    return it.deleteUserEndpoint((Endpoint) writer);
+                }
+            }
+        }
+        return false;
+    }
+    
+    public static RTPSReader createRTPSReader(RTPSParticipant p, ReaderAttributes ratt, ReaderHistoryCache history, ReaderListener listener) {
+        for (RTPSParticipant it : m_rtpsParticipants) {
+            if (it.getGUID().getGUIDPrefix().equals(p.getGUID().getGUIDPrefix())) {
+                return it.createReader(ratt, history, listener, new EntityId(), false);
+            }
+        }
+        return null;
+    }
+    
+    public static boolean removeRTPSReader(RTPSReader reader) {
+        if (reader != null) {
+            for (RTPSParticipant it : m_rtpsParticipants) {
+                if (it.getGUID().getGUIDPrefix().equals(reader.getGuid().getGUIDPrefix())) {
+                    return it.deleteUserEndpoint((Endpoint) reader);
                 }
             }
         }

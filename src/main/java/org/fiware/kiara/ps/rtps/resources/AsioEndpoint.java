@@ -10,5 +10,10 @@ public class AsioEndpoint {
 	public AsioEndpoint() {
 		
 	}
+	
+	@Override
+	public String toString() {
+	    return this.address.toString() + ":" + this.port;
+	}
 
 }
