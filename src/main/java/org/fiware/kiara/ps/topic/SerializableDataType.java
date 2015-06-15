@@ -15,37 +15,40 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.ps;
+package org.fiware.kiara.ps.topic;
 
 import java.io.IOException;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
-import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.Serializable;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
+ * @param <T>
  */
-public class LatencyDataType extends TopicDataType<LatencyType> {
+public class SerializableDataType<T extends Serializable> extends TopicDataType<T> {
 
-    public LatencyDataType() {
-        setName("LatencyType");
-        m_typeSize = 17000;
-        m_isGetKeyDefined = false;
+    private Class<T> dataClass;
+
+    public SerializableDataType(Class<T> dataClass, String name, int typeSize, boolean isGetKeyDefined) {
+        if (dataClass == null) {
+            throw new NullPointerException("dataClass");
+        }
+        this.dataClass = dataClass;
+        this.m_typeSize = typeSize;
+        this.m_isGetKeyDefined = isGetKeyDefined;
+        setName(name);
     }
 
     @Override
-    public boolean serialize(LatencyType data, SerializedPayload payload) {
-        BinaryOutputStream bos = new BinaryOutputStream(m_typeSize);
+    public boolean serialize(T data, SerializedPayload payload) {
+        BinaryOutputStream bos = new BinaryOutputStream();
+        SerializerImpl ser = payload.getSerializer();
         try {
-            bos.writeIntLE(data.seqnum);
-            if (data.data != null) {
-                bos.writeIntLE(data.data.length);
-                bos.write(data.data);
-            } else {
-                bos.writeIntLE(0);
-            }
+            ser.serialize(bos, "", data);
         } catch (IOException ex) {
             return false;
         }
@@ -54,27 +57,23 @@ public class LatencyDataType extends TopicDataType<LatencyType> {
     }
 
     @Override
-    public LatencyType deserialize(SerializedPayload payload) {
+    public T deserialize(SerializedPayload payload) throws InstantiationException, IllegalAccessException {
         BinaryInputStream bis = new BinaryInputStream(payload.getBuffer(), 0, payload.getLength());
+        SerializerImpl ser = payload.getSerializer();
         try {
-            LatencyType data = new LatencyType();
-            data.seqnum = bis.readIntLE();
-            final int siz = bis.readIntLE();
-            if (siz == 0) {
-                data.data = null;
-            } else {
-                data.data = new byte[siz];
-                bis.readFully(data.data);
-            }
-            return data;
+            return ser.deserialize(bis, "", dataClass);
         } catch (IOException ex) {
             return null;
         }
     }
 
     @Override
-    public LatencyType createData() {
-        return new LatencyType();
+    public T createData() {
+        try {
+            return dataClass.newInstance();
+        } catch (InstantiationException | IllegalAccessException ex) {
+            return null;
+        }
     }
 
 }

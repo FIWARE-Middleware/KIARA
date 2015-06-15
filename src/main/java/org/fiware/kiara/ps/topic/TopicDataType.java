@@ -23,6 +23,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
+ * @param <T>
  */
 public abstract class TopicDataType<T> {
 
@@ -41,8 +42,8 @@ public abstract class TopicDataType<T> {
      * abstract. It is VERY IMPORTANT that the user sets the serializedPaylaod
      * length correctly.
      *
-     * @param[in] data Pointer to the data
-     * @param[out] payload Pointer to the payload
+     * @param data Pointer to the data
+     * @param payload Pointer to the payload
      * @return True if correct.
      */
     public abstract boolean serialize(T data, SerializedPayload payload);
@@ -51,11 +52,12 @@ public abstract class TopicDataType<T> {
      * Deserialize method, it should be implemented by the user, since it is
      * abstract.
      *
-     * @param[in] payload Pointer to the payload
-     * @param[out] data Pointer to the data
+     * @param payload Pointer to the payload
      * @return True if correct.
+     * @throws java.lang.InstantiationException
+     * @throws java.lang.IllegalAccessException
      */
-    public abstract boolean deserialize(SerializedPayload payload, T data);
+    public abstract T deserialize(SerializedPayload payload) throws InstantiationException, IllegalAccessException;
 
     /**
      * Create a Data Type.
@@ -67,8 +69,8 @@ public abstract class TopicDataType<T> {
     /**
      * Get the key associated with the data.
      *
-     * @param[in] data Pointer to the data.
-     * @param[out] ihandle Pointer to the Handle.
+     * @param data Pointer to the data.
+     * @param ihandle Pointer to the Handle.
      * @return True if correct.
      */
     public boolean getKey(T data, InstanceHandle ihandle) {
@@ -78,7 +80,7 @@ public abstract class TopicDataType<T> {
     /**
      * Set topic data type name
      *
-     * @param nam Topic data type name
+     * @param name Topic data type name
      */
     public void setName(String name) {
         m_topicDataTypeName = name;
