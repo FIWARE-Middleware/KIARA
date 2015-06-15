@@ -9,13 +9,14 @@ import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.eprosima.log.Log;
 
-public class RTPSWriter extends Endpoint {
+public abstract class RTPSWriter extends Endpoint {
 
     protected boolean m_pushMode;
     
@@ -55,6 +56,28 @@ public class RTPSWriter extends Endpoint {
         ch.setWriterGUID(this.m_guid);
         
         return ch;
+    }
+    
+    public SequenceNumber getSeqNumMin() {
+        CacheChange change = this.m_history.getMinChange();
+        if (change != null) {
+            return change.getSequenceNumber();
+        } else {
+            return new SequenceNumber();
+        }
+    }
+    
+    public SequenceNumber getSeqNumMax() {
+        CacheChange change = this.m_history.getMaxChange();
+        if (change != null) {
+            return change.getSequenceNumber();
+        } else {
+            return new SequenceNumber();
+        }
+    }
+    
+    public int getTypeMaxSerialized() {
+        return this.m_history.getTypeMaxSerialized();
     }
 
     public void unsentChangeAddedToHistory(CacheChange change) {
