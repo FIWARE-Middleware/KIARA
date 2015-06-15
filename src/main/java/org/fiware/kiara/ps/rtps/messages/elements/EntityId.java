@@ -75,7 +75,7 @@ public class EntityId extends RTPSSubmessageElement {
 	}*/
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return 4;
 	}
 

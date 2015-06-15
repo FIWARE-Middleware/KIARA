@@ -5,6 +5,6 @@ import org.fiware.kiara.serialization.impl.Serializable;
 
 public abstract class RTPSSubmessageElement implements Serializable {
 	
-	public abstract short getSize();
+	public abstract short getSerializedSize();
 	
 }

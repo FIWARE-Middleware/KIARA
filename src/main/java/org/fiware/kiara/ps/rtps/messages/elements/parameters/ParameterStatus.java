@@ -57,8 +57,8 @@ public class ParameterStatus extends Parameter {
 	}
 	
 	@Override
-	public short getSize() {
-		return (short) (super.getSize() + this.m_length);
+	public short getSerializedSize() {
+		return (short) (super.getSerializedSize() + this.m_length);
 	}
 
 }

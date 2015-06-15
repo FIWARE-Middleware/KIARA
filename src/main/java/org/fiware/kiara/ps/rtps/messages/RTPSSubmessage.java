@@ -126,7 +126,7 @@ public class RTPSSubmessage {
 		short retVal = 0;
 		
 		for (RTPSSubmessageElement elm : this.m_submessageElements) {
-			retVal = (short) (retVal + elm.getSize());
+			retVal = (short) (retVal + elm.getSerializedSize());
 		}
 		
 		return retVal;

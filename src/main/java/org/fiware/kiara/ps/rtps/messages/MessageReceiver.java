@@ -370,8 +370,8 @@ public class MessageReceiver {
 			subMsg.addSubmessageElement(writerSN);
 			ch.setSequenceNumber(writerSN);
 			
-			if (otiQos.getSize() > RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG) {
-				msg.getBinaryInputStream().skipBytes(otiQos.getSize() - RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG);
+			if (otiQos.getSerializedSize() > RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG) {
+				msg.getBinaryInputStream().skipBytes(otiQos.getSerializedSize() - RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG);
 			}
 			
 			int inlineQosSize = 0;

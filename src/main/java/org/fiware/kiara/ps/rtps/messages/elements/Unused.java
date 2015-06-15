@@ -40,7 +40,7 @@ public class Unused  extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return (short) this.m_gap.length;
 	}
 

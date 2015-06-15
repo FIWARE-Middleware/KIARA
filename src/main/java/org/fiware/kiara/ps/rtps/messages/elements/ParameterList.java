@@ -45,10 +45,10 @@ public class ParameterList extends RTPSSubmessageElement {
 	}*/
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		short retVal = 0;
 		for (Parameter p : this.m_parameters) {
-			retVal = (short) (retVal + p.getSize());
+			retVal = (short) (retVal + p.getSerializedSize());
 		}
 		return retVal;
 	}
@@ -80,7 +80,7 @@ public class ParameterList extends RTPSSubmessageElement {
 			}
 			
 			this.m_parameters.add(param);
-			this.m_totalBytes += param.getSize();
+			this.m_totalBytes += param.getSerializedSize();
 			this.m_hasChanged = true;
 			
 			

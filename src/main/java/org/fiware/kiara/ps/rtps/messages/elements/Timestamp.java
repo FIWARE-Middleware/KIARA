@@ -61,7 +61,7 @@ public class Timestamp extends RTPSSubmessageElement {
 	}*/
 
     @Override
-    public short getSize() {
+    public short getSerializedSize() {
         return 8;
     }
 

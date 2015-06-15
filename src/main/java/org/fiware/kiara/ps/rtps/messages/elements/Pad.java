@@ -30,7 +30,7 @@ public class Pad extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return this.m_length;
 	}
 	
