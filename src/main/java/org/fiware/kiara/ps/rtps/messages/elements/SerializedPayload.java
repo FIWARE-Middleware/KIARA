@@ -140,10 +140,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		message.skipBytes(2); // Encapsulation options
 		
 		this.m_buffer = new byte[this.m_length];
-		
-		System.arraycopy(message.getBuffer(), message.getPosition(), this.m_buffer, 0, this.m_length);
-		
-		message.skipBytes(this.m_length);
+                message.readFully(m_buffer);
 	}
 	
 	public void deserializeData(/*SerializerImpl impl, String name*/) throws IOException {
