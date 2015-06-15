@@ -15,29 +15,38 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.ps.topic;
+package org.fiware.kiara.ps;
 
-import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
+import java.util.Arrays;
 
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class LatencyDataType extends TopicDataType<LatencyType> {
+public class LatencyType {
 
-    @Override
-    public boolean serialize(LatencyType data, SerializedPayload payload) {
-        return true;
+    public int seqnum;
+    public byte[] data;
+
+    public LatencyType(short number) {
+        seqnum = 0;
+        data = new byte[number];
     }
 
     @Override
-    public boolean deserialize(SerializedPayload payload, LatencyType data) {
-        return true;
-    }
+    public boolean equals(Object obj) {
+        if (!(obj instanceof LatencyType)) {
+            return false;
+        }
 
-    @Override
-    public LatencyType createData() {
-        return new LatencyType((short) getTypeSize());
+        LatencyType other = (LatencyType) obj;
+        if (seqnum != other.seqnum) {
+            return false;
+        }
+        if (!Arrays.equals(data, other.data)) {
+            return false;
+        }
+        return true;
     }
 
 }
