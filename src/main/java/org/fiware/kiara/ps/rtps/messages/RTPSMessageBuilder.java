@@ -344,7 +344,7 @@ public class RTPSMessageBuilder {
 			//SerializedPayload payload = new SerializedPayload();
 			//payload.setEncapsulationKind(change.getSerializedPayload().getEncapsulation());
 			// payload.options are serialized automatically (no existing attribute)
-			//payload.setData(change.getSerializedPayload().getData(), change.getSerializedPayload().getSize());
+			//payload.setData(change.getSerializedPayload().getData(), change.getSerializedPayload().getSerializedSize());
 			//submessageData.setSubmessageEndian(change.getSerializedPayload().getEncapsulation());
 			submessageData.addSubmessageElement(change.getSerializedPayload());
 			

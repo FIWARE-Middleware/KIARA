@@ -71,7 +71,7 @@ public class VendorId extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return 2;
 	}
 

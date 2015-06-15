@@ -47,7 +47,7 @@ public class GUIDPrefix extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return 12;
 	}
 	

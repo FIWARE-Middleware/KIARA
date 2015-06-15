@@ -135,7 +135,7 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

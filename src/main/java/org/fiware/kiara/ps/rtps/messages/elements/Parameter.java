@@ -23,7 +23,7 @@ public abstract class Parameter extends RTPSSubmessageElement {
     }
 
     @Override
-    public short getSize() {
+    public short getSerializedSize() {
         return 4;
     }
 

@@ -14,7 +14,7 @@ public class ParameterKey extends Parameter {
 	private InstanceHandle m_instanceHandle;
 
 	public ParameterKey(InstanceHandle instanceHandle) {
-		super(ParameterId.PID_KEY_HASH, instanceHandle.getSize());
+		super(ParameterId.PID_KEY_HASH, instanceHandle.getSerializedSize());
 		this.m_instanceHandle = instanceHandle;
 	}
 	
@@ -36,8 +36,8 @@ public class ParameterKey extends Parameter {
 	}
 	
 	@Override
-	public short getSize() {
-		return (short) (super.getSize() + this.m_length);
+	public short getSerializedSize() {
+		return (short) (super.getSerializedSize() + this.m_length);
 	}
 
 	 

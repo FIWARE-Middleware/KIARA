@@ -70,7 +70,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	
 	/*public void addData(RTPSSubmessageElement data) {
 		this.m_data.add(data);
-		this.m_length = (short) (this.m_length + data.getSize());
+		this.m_length = (short) (this.m_length + data.getSerializedSize());
 	}*/
 	
 	public void addParameter(Parameter param) {
@@ -79,7 +79,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 				this.m_parameterList = new ParameterList();
 			}
 			this.m_parameterList.addParameter(param);
-			this.m_length = (short) (this.m_length + param.getSize());
+			this.m_length = (short) (this.m_length + param.getSerializedSize());
 		}
 	}
 	
@@ -99,7 +99,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return (short) (2 + 2 + this.m_length);
 	}
 	

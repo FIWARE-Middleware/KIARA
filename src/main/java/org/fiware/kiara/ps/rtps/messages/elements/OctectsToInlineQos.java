@@ -30,7 +30,7 @@ public class OctectsToInlineQos extends RTPSSubmessageElement {
 	}
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return 2;
 	}
 

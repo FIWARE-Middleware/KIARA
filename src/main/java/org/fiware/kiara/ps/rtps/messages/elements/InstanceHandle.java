@@ -29,7 +29,7 @@ public class InstanceHandle extends RTPSSubmessageElement {
 	}*/
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return (short) 16;
 	}
 

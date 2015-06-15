@@ -51,7 +51,7 @@ public class SequenceNumber extends RTPSSubmessageElement {
 	}*/
 
 	@Override
-	public short getSize() {
+	public short getSerializedSize() {
 		return 8;
 	}
 	
