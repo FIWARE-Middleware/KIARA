@@ -4,6 +4,7 @@ package org.fiware.kiara.ps;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
@@ -41,9 +42,9 @@ public class NewMain {
                 }
 
 		//IPFinder.getIPs();
-		
-		ListenResource lr = new ListenResource(new RTPSParticipant(null, null, null), 1, true);
-		
+		RTPSParticipantAttributes pa = new RTPSParticipantAttributes();
+		ListenResource lr = new ListenResource(new RTPSParticipant(pa, null, null), 1, true);
+
 		byte[] addr = new byte[16];
 		addr[12] = (byte) 239;
 		addr[13] = (byte) 255;
@@ -56,10 +57,10 @@ public class NewMain {
 		Locator loc = new Locator();
 		loc.setAddress(addr);
 		loc.setPort(7400);
-		
-		lr.initThread(new RTPSParticipant(null, new GUIDPrefix(), null), loc, 1024, true, false);
+
+		lr.initThread(new RTPSParticipant(pa, new GUIDPrefix(), null), loc, 1024, true, false);
 		//lr.initThread(new RTPSParticipant(null, null, null), loc, 1024, false, false);
-		
+
 	}
 
 }
