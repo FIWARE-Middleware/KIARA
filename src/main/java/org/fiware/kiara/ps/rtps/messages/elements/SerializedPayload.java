@@ -122,12 +122,11 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		
 		if (this.m_parameterList != null) {
 			this.m_parameterList.serialize(impl, message, name);
-		}
-		
-		if (this.m_appData != null) {
+		} else if (this.m_appData != null) {
 			this.m_appData.serialize(this.m_ownSerializer, message, name);
-		}
-		
+		} else if (this.m_buffer != null) {
+                    message.write(m_buffer, 0, getLength());
+                }
 	}
 
 	@Override
