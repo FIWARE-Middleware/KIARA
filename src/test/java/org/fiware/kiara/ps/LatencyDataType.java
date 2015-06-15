@@ -17,8 +17,11 @@
  */
 package org.fiware.kiara.ps;
 
+import java.io.IOException;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 
 /**
  *
@@ -34,17 +37,43 @@ public class LatencyDataType extends TopicDataType<LatencyType> {
 
     @Override
     public boolean serialize(LatencyType data, SerializedPayload payload) {
+        BinaryOutputStream bos = new BinaryOutputStream(m_typeSize);
+        try {
+            bos.writeIntLE(data.seqnum);
+            if (data.data != null) {
+                bos.writeIntLE(data.data.length);
+                bos.write(data.data);
+            } else {
+                bos.writeIntLE(0);
+            }
+        } catch (IOException ex) {
+            return false;
+        }
+        payload.setBuffer(bos.toByteArray());
         return true;
     }
 
     @Override
     public boolean deserialize(SerializedPayload payload, LatencyType data) {
+        BinaryInputStream bis = new BinaryInputStream(payload.getBuffer(), 0, payload.getLength());
+        try {
+            data.seqnum = bis.readIntLE();
+            final int siz = bis.readIntLE();
+            if (siz == 0) {
+                data.data = null;
+            } else {
+                data.data = new byte[siz];
+                bis.readFully(data.data);
+            }
+        } catch (IOException ex) {
+            return false;
+        }
         return true;
     }
 
     @Override
     public LatencyType createData() {
-        return new LatencyType((short) getTypeSize());
+        return new LatencyType();
     }
 
 }

@@ -28,6 +28,11 @@ public class LatencyType {
     public int seqnum;
     public byte[] data;
 
+    public LatencyType() {
+        seqnum = 0;
+        data = null;
+    }
+
     public LatencyType(short number) {
         seqnum = 0;
         data = new byte[number];
