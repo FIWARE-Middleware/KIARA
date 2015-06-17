@@ -30,7 +30,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterStatus;
 public class RTPSMessageBuilder {
 	
 	public static RTPSMessage createMessage(RTPSEndian endian) {
-		RTPSMessage retVal = new RTPSMessage(128, endian); // TODO Change buffer size
+		RTPSMessage retVal = new RTPSMessage(500, endian); // TODO Change buffer size
 		
 		return retVal;
 	}

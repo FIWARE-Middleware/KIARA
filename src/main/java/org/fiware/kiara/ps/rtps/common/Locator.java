@@ -1,5 +1,7 @@
 package org.fiware.kiara.ps.rtps.common;
 
+import java.util.Arrays;
+
 public class Locator {
 	
 	private LocatorKind m_kind;
@@ -52,7 +54,7 @@ public class Locator {
 		this.m_port = m_port;
 	}
 	
-	public void incrementPort() {
+	public void increasePort() {
 	    ++this.m_port;
 	}
 
@@ -62,6 +64,15 @@ public class Locator {
 
 	public void setAddress(byte[] m_address) {
 		this.m_address = m_address;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (other instanceof Locator) {
+	        Locator loc = (Locator) other;
+	        return Arrays.equals(this.m_address, loc.m_address) && this.m_kind == loc.m_kind && this.m_port == loc.m_port;
+	    }
+	    return false;
 	}
 
 	public boolean isAddressDefined() {

@@ -2,6 +2,7 @@ package org.fiware.kiara.ps.rtps.history;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -16,7 +17,7 @@ public abstract class HistoryCache {
 	
 	protected HistoryCacheAttributes m_attributes;
 	
-	protected ArrayList<CacheChange> m_changes;
+	protected List<CacheChange> m_changes;
 	
 	protected boolean m_isHistoryFull;
 	
@@ -97,6 +98,10 @@ public abstract class HistoryCache {
 		return false;
 	}
 	
+	public HistoryCacheAttributes getAttributes() {
+	    return this.m_attributes;
+	}
+	
 	public CacheChange reserveCache() {
 		return this.m_changePool.reserveCache();
 	}
@@ -128,6 +133,10 @@ public abstract class HistoryCache {
 	public Iterator<CacheChange> changesIterator() {
 		return this.m_changes.iterator();
 	}
+	
+	public List<CacheChange> getChanges() {
+            return this.m_changes;
+        }
 	
 	public int getTypeMaxSerialized() {
 		return this.m_changePool.getPayloadSize();

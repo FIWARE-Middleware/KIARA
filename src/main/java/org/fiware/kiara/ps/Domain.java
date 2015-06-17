@@ -36,6 +36,7 @@ public class Domain {
             for (Participant current : m_participants) {
                 if (current.getGuid().equals(part.getGuid())) {
                     // Found
+                    current.destroy();
                     m_participants.remove(current);
                     return true;
                 }

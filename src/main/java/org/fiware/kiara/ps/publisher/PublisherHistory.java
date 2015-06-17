@@ -127,6 +127,19 @@ public class PublisherHistory extends WriterHistoryCache {
         
     }
     
+    public int removeAllChangesNum() {
+        int rem = 0;
+        while(this.m_changes.size() > 0) {
+            if (this.removeChangePub(this.m_changes.get(0), null)) {
+                ++rem;
+            } else {
+                break;
+            }
+        }
+        
+        return rem;
+    }
+    
     /*private int findKeyIndex(CacheChange change) {
         for (Pair<InstanceHandle, List<CacheChange>> entry : this.m_keyedChanges) {
             if (change.getInstanceHandle().equals(entry.getFirst())) {

@@ -1,5 +1,6 @@
 package org.fiware.kiara.ps.rtps.participant;
 
+import java.lang.management.LockInfo;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,7 @@ import org.fiware.kiara.ps.attributes.TopicAttributes;
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.Endpoint;
+import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
@@ -72,6 +74,7 @@ public class RTPSParticipant {
     private final Lock m_mutex;
     
     private final Semaphore m_resourceSemaphore;
+    //private final Object m_resourceSemaphore;
     
     private int m_threadID;
     
@@ -93,7 +96,8 @@ public class RTPSParticipant {
         
         this.m_listenResourceList = new ArrayList<ListenResource>();
         
-        this.m_resourceSemaphore = new Semaphore(0, true);
+        //this.m_resourceSemaphore = new Semaphore(0, true);
+        this.m_resourceSemaphore = new Semaphore(0, false);
         this.m_mutex = new ReentrantLock(true);
         
         this.m_mutex.lock();
@@ -153,6 +157,24 @@ public class RTPSParticipant {
             
         } finally {
             this.m_mutex.unlock();
+        }
+        
+    }
+    
+    public void destroy() {
+        logger.info("Removing RTPSParticipant: " + this.getGUID().toString());
+        
+        while (this.m_userReaderList.size() > 0) {
+            RTPSDomain.removeRTPSReader(this.m_userReaderList.get(0));
+        }
+        
+        while (this.m_userWriterList.size() > 0) {
+            RTPSDomain.removeRTPSWriter(this.m_userWriterList.get(0));
+        }
+        
+        // Destroy threads
+        for (ListenResource it : this.m_listenResourceList) {
+            it.destroy();
         }
         
     }
@@ -569,18 +591,22 @@ public class RTPSParticipant {
     }
     
     public void resourceSemaphorePost() {
-        if (this.m_resourceSemaphore != null) {
-            this.m_resourceSemaphore.notify();
+        synchronized(this.m_resourceSemaphore) {
+            if (this.m_resourceSemaphore != null) {
+                this.m_resourceSemaphore.notify();
+            }
         }
     }
     
     public void resourceSemaphoreWait() {
-        if (this.m_resourceSemaphore != null) {
-            try {
-                this.m_resourceSemaphore.wait();
-            } catch (InterruptedException e) {
-                // TODO Handle exception
-                e.printStackTrace();
+        synchronized(this.m_resourceSemaphore) {
+            if (this.m_resourceSemaphore != null) {
+                try {
+                    this.m_resourceSemaphore.wait();
+                } catch (InterruptedException e) {
+                    // TODO Handle exception
+                    e.printStackTrace();
+                }
             }
         }
     }

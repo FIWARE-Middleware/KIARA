@@ -33,7 +33,9 @@ public class ReceptionThread implements Runnable {
     public void run() {
 
         System.out.println("Thread started");
-
+        
+        this.m_listenResource.getRTPSParticipant().resourceSemaphorePost();
+        
         ByteBuffer buf;
         try {
             System.out.println("Size: " + this.m_channel.socket().getReceiveBufferSize());
@@ -68,8 +70,12 @@ public class ReceptionThread implements Runnable {
             }
 
 
+        } catch (java.nio.channels.AsynchronousCloseException ace) {
+            // DO Nothing
+            
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            System.out.println("");
             e.printStackTrace();
         }
 

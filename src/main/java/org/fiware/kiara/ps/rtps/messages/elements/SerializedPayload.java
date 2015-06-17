@@ -53,7 +53,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 
         public void setBuffer(byte[] buffer) {
             m_buffer = buffer;
-            m_length = (short)buffer.length;
+            m_length = (short) buffer.length;
         }
 
 	public Serializable getData() {
@@ -131,6 +131,8 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		} else if (this.m_buffer != null) {
                     message.write(m_buffer, 0, getLength());
                 }
+		this.m_length = (short) message.getBufferLength();
+		
 	}
 
 	@Override
@@ -169,5 +171,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		}
 		return false;
 	}
+
+    
 
 }

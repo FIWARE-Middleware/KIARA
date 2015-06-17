@@ -19,6 +19,7 @@ import java.net.SocketAddress;
 import java.net.StandardProtocolFamily;
 import java.net.StandardSocketOptions;
 import java.net.UnknownHostException;
+import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,12 +33,15 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.rtps.utils.IPTYPE;
 
+import io.netty.buffer.Unpooled;
+import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import org.fiware.kiara.ps.rtps.utils.InfoIP;
 import org.fiware.kiara.transport.impl.Global;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MarkerFactory;
 
 import com.eprosima.log.Log;
 
@@ -62,6 +66,10 @@ public class SendResource {
     private List<java.nio.channels.DatagramChannel> m_sendSocketIPv4;
     
     private List<java.nio.channels.DatagramChannel> m_sendSocketIPv6;
+    
+    private AsioEndpoint m_sendEndpointIPv4;
+    
+    private AsioEndpoint m_sendEndpointIPv6;
     
     private int m_bytesSent;
     
@@ -130,7 +138,7 @@ public class SendResource {
                         notBind = false;
                     } catch (IOException e) {
                         logger.info("UDPv4 Error binding endpoint: " + endpoint.toString());
-                        loc.incrementPort();
+                        loc.increasePort();
                     }
 
                     ++bindTries;
@@ -184,7 +192,7 @@ public class SendResource {
                         notBind = false;
                     } catch (IOException e) {
                         logger.info("UDPv6 Error binding endpoint: " + endpoint.toString());
-                        loc.incrementPort();
+                        loc.increasePort();
                     }
 
                     ++bindTries;
@@ -211,9 +219,59 @@ public class SendResource {
         return initialized;
     }
     
-    public Object sendSync(RTPSMessage msg, Locator loc) {
+    public void sendSync(RTPSMessage msg, Locator loc) {
         // TODO Implement
-        return null;
+        
+        this.m_mutex.lock();
+        try {
+            
+            if (loc.getPort() == 0) {
+                return;
+            }
+            
+            if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4 && this.m_useIPv4) {
+                this.m_sendEndpointIPv4 = new AsioEndpoint();
+                try {
+                    this.m_sendEndpointIPv4.address = InetAddress.getByAddress(loc.getAddress());
+                    this.m_sendEndpointIPv4.port = loc.getPort();
+                } catch (UnknownHostException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    return;
+                }
+                
+                for (DatagramChannel dcit : this.m_sendSocketIPv4) {
+                    logger.info("UDPv4: " + msg.getBuffer().length + " Bytes TO endpoint: " + this.m_sendEndpointIPv4.toString());
+                    
+                    if (this.m_sendEndpointIPv4.port > 0) {
+                        this.m_bytesSent = 0;
+                        if (this.m_sendNext) {
+                            /*InetSocketAddress sockAddr = new InetSocketAddress(this.m_sendEndpointIPv4.address, this.m_sendEndpointIPv4.port);
+                            dcit.socket().sesend(ByteBuffer(msg.getBinaryInputStream().getBuffer()), sockAddr);*/
+                            //DatagramPacket dp = new DatagramPacket(data, recipient)
+                            InetSocketAddress sockAddr = new InetSocketAddress(this.m_sendEndpointIPv4.address, this.m_sendEndpointIPv4.port);
+                            //dcit.socket().send(new DatagramPacket(Unpooled.wrappedBuffer(msg.getBuffer()), sockAddr));
+                            try {
+                                dcit.send(Unpooled.wrappedBuffer(msg.getBuffer()).nioBuffer(), (SocketAddress) sockAddr);
+                            } catch (IOException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                                return;
+                            }
+                        }
+                    }
+                }
+                
+            } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6 && this.m_useIPv6) {
+                
+            } else {
+                logger.info("Destination not valid for this ListenResource");
+            }
+            
+        } finally {
+            this.m_mutex.unlock();
+        }
+        
     }
 
     public void looseNextChange() {
