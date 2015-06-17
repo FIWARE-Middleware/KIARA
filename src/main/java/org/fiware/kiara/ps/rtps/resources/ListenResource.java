@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.rtps.resources;
 
+import org.fiware.kiara.netty.NioDatagramChannelFactory;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ChannelFactory;
 import io.netty.channel.Channel;
@@ -420,29 +421,6 @@ public class ListenResource {
 		}
 
 	}
-
-        private static final class NioDatagramChannelFactory implements ChannelFactory<NioDatagramChannel> {
-            private final InternetProtocolFamily ipFamily;
-
-            public NioDatagramChannelFactory(InternetProtocolFamily ipFamily) {
-                this.ipFamily = ipFamily;
-            }
-
-            @Override
-            public NioDatagramChannel newChannel() {
-                try {
-                    return new NioDatagramChannel(ipFamily);
-                } catch (Throwable t) {
-                    throw new ChannelException("Unable to create Channel from class NioDatagramChannel", t);
-                }
-            }
-
-            @Override
-            public String toString() {
-                return "NioDatagramChannelFactory";
-            }
-        }
-
 
         public boolean initThreadNetty(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
             System.out.println("Creating ListenResource in " + loc + " with ID " + this.m_ID); // TODO Log this (info)
