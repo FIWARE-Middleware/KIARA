@@ -44,9 +44,11 @@ public class StatelessWriter extends RTPSWriter {
         // TODO Remove this:
         RemoteReaderAttributes rratt = new RemoteReaderAttributes();
         rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+        
         Locator l = new Locator();
         try {
             l.setAddress(InetAddress.getByName("239.255.0.1").getAddress());
+            l.setPort(7400);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
