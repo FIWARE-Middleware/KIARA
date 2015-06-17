@@ -20,6 +20,9 @@ public class ParticipantTest {
         HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
         ParticipantAttributes pAtt = new ParticipantAttributes();
         pAtt.rtps.defaultSendPort = 11511;
         pAtt.rtps.useIPv4ToSend = true;
@@ -66,6 +69,10 @@ public class ParticipantTest {
             System.out.println("Error creating publisher");
             return;
         }
+        
+        publisher.write(hw);
+        
+        //Domain.removeParticipant(participant);
         
         
     }

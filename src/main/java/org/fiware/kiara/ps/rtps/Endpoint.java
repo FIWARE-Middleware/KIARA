@@ -30,5 +30,9 @@ public class Endpoint {
 	public GUID getGuid() {
 		return this.m_guid;
 	}
+	
+	public RTPSParticipant getRTPSParticipant() {
+	    return this.m_participant;
+	}
 
 }

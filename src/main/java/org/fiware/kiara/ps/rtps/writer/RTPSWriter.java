@@ -2,15 +2,20 @@ package org.fiware.kiara.ps.rtps.writer;
 
 import org.fiware.kiara.ps.rtps.Endpoint;
 import org.fiware.kiara.ps.rtps.attributes.EndpointAttributes;
+import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
+import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
+import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
+import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.writer.timedevent.UnsentChangesNotEmptyEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +27,11 @@ public abstract class RTPSWriter extends Endpoint {
     
     //protected RTPSMessageGroup;
     
+    protected RTPSMessage m_rtpsMessage;
+    
     protected boolean m_livelinessAsserted;
     
-    //protected UnsentChangesNotEmptyEvent m_unsentChangesNotEmpty;
+    protected UnsentChangesNotEmptyEvent m_unsentChangesNotEmpty;
     
     protected WriterHistoryCache m_history;
     
@@ -34,7 +41,18 @@ public abstract class RTPSWriter extends Endpoint {
 
     public RTPSWriter(RTPSParticipant participant, GUID guid, WriterAttributes att, WriterHistoryCache history, WriterListener listener) {
         super(participant, guid, att.endpointAtt);
-        // TODO Auto-generated constructor stub
+        this.m_livelinessAsserted = false;
+        this.m_history = history;
+        this.m_history.m_writer = this;
+        this.m_listener = listener;
+        this.initHeader();
+        logger.info("RTPSWriter created");
+    }
+    
+    private void initHeader() {
+        m_rtpsMessage =  RTPSMessageBuilder.createMessage(this.m_history.getAttributes().payloadMaxSize, RTPSEndian.LITTLE_ENDIAN); // TODO Set endianned defined by user
+        RTPSMessageBuilder.addHeader(m_rtpsMessage, this.m_guid.getGUIDPrefix());
+       
     }
 
     public CacheChange newChange(ChangeKind changeKind, InstanceHandle handle) {
@@ -79,15 +97,30 @@ public abstract class RTPSWriter extends Endpoint {
     public int getTypeMaxSerialized() {
         return this.m_history.getTypeMaxSerialized();
     }
-
-    public void unsentChangeAddedToHistory(CacheChange change) {
-        // TODO Auto-generated method stub
-
+    
+    public boolean isAckedByAll(CacheChange change) {
+        return true;
     }
+    
+    public abstract boolean matchedReaderAdd(RemoteReaderAttributes ratt);
+    
+    public abstract boolean matchedReaderRemove(RemoteReaderAttributes ratt);
+    
+    public abstract boolean matchedReaderIsMatched(RemoteReaderAttributes ratt);
+    
+    public abstract void updateAttributes(WriterAttributes att);
+    
+    public abstract void unsentChangesNotEmpty();
 
-    public void changeRemovedByHistory(CacheChange change) {
-        // TODO Auto-generated method stub
+    public abstract void unsentChangeAddedToHistory(CacheChange change);
 
+    public abstract boolean changeRemovedByHistory(CacheChange change);
+    
+    public void setLivelinessAsserted(boolean value) {
+        this.m_livelinessAsserted = value;
     }
-
+    
+    public boolean getLivelinessAsserted() {
+        return this.m_livelinessAsserted;
+    }
 }

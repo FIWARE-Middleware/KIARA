@@ -27,6 +27,7 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.InternetProtocolFamily;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.util.internal.StringUtil;
+
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -54,6 +55,8 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.transport.impl.Global;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -93,14 +96,17 @@ public class ListenResource {
 
     private final Lock m_mutex = new ReentrantLock(true);
 
-    private ReceptionThread m_thread;
+    private Thread m_thread;
 
     //0private java.nio.channels.AsynchronousDatagramChannel channel = DatagramChannel.open().r
 
     //DatagramChannel channel = DatagramChannel.open().
+    
+    private static final Logger logger = LoggerFactory.getLogger(ListenResource.class);
 
     public ListenResource(RTPSParticipant participant, int ID, boolean isDefault) {
         this.m_assocReaders = new ArrayList<RTPSReader>();
+        this.m_assocWriters = new ArrayList<RTPSWriter>();
         this.m_listenLocators = new LocatorList();
         this.m_RTPSParticipant = participant;
         this.m_ID = ID;
@@ -108,6 +114,28 @@ public class ListenResource {
         this.m_listenEndpoint = new AsioEndpoint();
         this.m_senderEndpoint = new AsioEndpoint();
         this.m_senderLocator = new Locator();
+    }
+    
+    public void destroy() {
+        if (this.m_thread != null) {
+            logger.info("Removing listening thread " + this.m_thread.getId());
+            try {
+                this.m_listenChannel.socket().close();
+                this.m_listenChannel.disconnect();
+                this.m_listenChannel.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            logger.info("Joining with thread");
+            try {
+                this.m_thread.join();
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            logger.info("Listening thread closed successfully");
+        }
     }
 
     public Locator getSenderLocator() {
@@ -234,139 +262,6 @@ public class ListenResource {
         this.m_listenEndpoint.port = loc.getPort();
     }
 
-    /*public boolean initThread(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
-        System.out.println("Creating ListenResource in " + loc + " with ID " + this.m_ID); // TODO Log this (info)
-
-        this.m_RTPSParticipant = participant;
-        if (!loc.isAddressDefined() && isMulticast) {
-            System.out.println("MulticastAddresses need to have the IP defined, ignoring this address"); // TODO Log this (info)
-            return false;
-        }
-
-        this.m_receiver = new MessageReceiver(listenSocketSize);
-        this.m_receiver.setListenResource(this);
-
-        this.getLocatorAdresses(loc);
-
-        System.out.println("Initializing in : " + this.m_listenLocators); // TODO Log this
-
-        InetAddress multicastAddress = null;
-
-        Bootstrap b = new Bootstrap();
-
-        EventLoopGroup group = Global.transportGroup;
-        b.group(group)
-        .channel(NioDatagramChannel.class)
-        .handler(new ReceptionHandler(this))
-        .option(ChannelOption.SO_RCVBUF, listenSocketSize)
-        .option(ChannelOption.SO_REUSEADDR, true);
-
-
-        if (isMulticast) {
-            System.out.println("ENTRA");
-            multicastAddress = this.m_listenEndpoint.address;
-            if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
-                //this.m_listenSocket.setOption(SocketOptions., value)
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
-            } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
-            }
-        }
-
-        if (isFixed) {
-            InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
-            try {
-                //this.m_listenChannel.socket().bind(sockAddr);
-                this.m_listenChannel = (DatagramChannel) b.bind(sockAddr).sync().channel();
-            } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-
-
-        } else {
-            boolean binded = false;
-
-            for (int i=0; i < 1000; ++i) {
-                if (i != 0) {
-                    this.m_listenEndpoint.port += 1;
-                }
-                InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
-                try {
-                    //this.m_listenChannel.socket().bind(sockAddr);
-                    this.m_listenChannel = (DatagramChannel) b.bind(sockAddr).sync().channel();
-                    binded = true;
-                    break;
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-
-            }
-
-            if (!binded) {
-                System.out.println("Tried 1000 ports and none was working, last tried: " + this.m_listenEndpoint.port);
-            } else {
-                for (Locator it : this.m_listenLocators.getLocators()) {
-                    it.setPort(this.m_listenEndpoint.port);
-                }
-            }
-        }
-
-        if (isMulticast && multicastAddress != null) {
-            joinMulticastGroup(multicastAddress);
-        }
-
-        System.out.println("Finishing ListenResource thread");
-
-        return true;
-
-    }*/
-
-    /*private void joinMulticastGroup(InetAddress multicastAddress) {
-
-        LocatorList loclist = new LocatorList();
-
-        if (this.m_listenEndpoint.address instanceof Inet4Address) {
-            loclist = IPFinder.getIPv4Adress();
-            for (Locator it : loclist.getLocators()) {
-                try {
-                    InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, 0);
-                    NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
-                   // this.m_listenChannel.
-                    //this.m_listenChannel.joinGroup(sockAddr, netInt);
-                    //this.m_listenChannel.joinGroup(InetAddress.getByName("239.255.0.1"));
-                    //this.m_listenChannel.joinGroup(multicastAddress);
-
-                } catch (UnknownHostException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        } else if (this.m_listenEndpoint.address instanceof Inet6Address) {
-            loclist = IPFinder.getIPv6Adress();
-
-            for (Locator it : loclist.getLocators()) {
-                try {
-                    NetworkInterface netInt = NetworkInterface.getByInetAddress(Inet6Address.getByAddress(it.getAddress()));
-                    InetSocketAddress sockAddr = new InetSocketAddress(Inet6Address.getByAddress(it.getAddress()), 0);
-                    this.m_listenChannel.joinGroup(sockAddr, netInt);
-                    //++index;
-                } catch (UnknownHostException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        }
-
-    }*/
-
     public boolean initThread(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
 		System.out.println("Creating ListenResource in " + loc + " with ID " + this.m_ID); // TODO Log this (info)
 		this.m_RTPSParticipant = participant;
@@ -463,9 +358,13 @@ public class ListenResource {
 		//this.m_listenSocket.r
 
 		ReceptionThread runnable = new ReceptionThread(this.m_listenChannel, this);
-		Thread thread = new Thread(runnable, "");
-		thread.start();
-
+		this.m_thread = new Thread(runnable, "");
+		this.m_thread.start();
+		
+		this.m_RTPSParticipant.resourceSemaphoreWait();
+		
+		//Thread thread = new Thread(runnable, "");
+                //thread.start();    
 
 		System.out.println("Finishing ListenResource thread");
 

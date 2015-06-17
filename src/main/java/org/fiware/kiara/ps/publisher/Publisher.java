@@ -2,13 +2,23 @@ package org.fiware.kiara.ps.publisher;
 
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
 import org.fiware.kiara.ps.participant.Participant;
+import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
+import org.fiware.kiara.ps.rtps.RTPSDomain;
+import org.fiware.kiara.ps.rtps.common.Locator;
+import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
+import org.fiware.kiara.ps.rtps.common.TopicKind;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
+import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.ps.topic.TopicDataTypeOld;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Publisher {
     
@@ -47,39 +57,160 @@ public class Publisher {
     
     private PublisherWriterListener m_writerListener;
     
+    private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
+    
     public Publisher(Participant participant, TopicDataType dataType, PublisherAttributes att, PublisherListener listener) {
         this.m_participant = participant;
         this.m_writer = null;
         this.m_type = dataType;
         this.m_att = att;
+        this.m_history = new PublisherHistory(this, dataType.getTypeSize(), att.topic.historyQos, att.topic.resourceLimitQos);
+        this.m_listener = listener;
         this.m_writerListener = new PublisherWriterListener(this);
-        //this.m_history = new PublisherHistory(); // TODO Implement constructor
+        this.m_userPublisher = null;
+        this.m_rtpsParticipant = null;
     }
     
-    /*public boolean write(Object data) {
-        
+    public void destroy() {
+        logger.info("Publisher destruction");
+        RTPSDomain.removeRTPSWriter(this.m_writer);
+        if (this.m_userPublisher != null) {
+            this.m_userPublisher.destroy();
+        }
     }
     
-    private boolean createNewChange(ChangeKind kind, Object data) {
-        
+    public boolean write(Object data) {
+        logger.info("Writing new data");
+        return this.createNewChange(ChangeKind.ALIVE, data);
     }
+    
+    public boolean createNewChange(ChangeKind kind, Object data) {
+        if (data == null) {
+            logger.error("Data is null");
+            return false;
+        }
+        
+        if (kind == ChangeKind.NOT_ALIVE_UNREGISTERED || kind == ChangeKind.NOT_ALIVE_DISPOSED || kind == ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED) {
+            if (this.m_att.topic.topicKind == TopicKind.NO_KEY) {
+                logger.error("Topic is NO_KEY, operation not permitted");
+                return false;
+            }
+        }
+        
+        InstanceHandle handle = new InstanceHandle();
+        if (this.m_att.topic.topicKind == TopicKind.WITH_KEY) {
+            this.m_type.getKey(data, handle);
+        }
+        
+        CacheChange ch = this.m_writer.newChange(kind, handle);
+        if (ch != null) {
+            if (kind == ChangeKind.ALIVE) {
+                if (!this.m_type.serialize(data, ch.getSerializedPayload())) {
+                    logger.warn("RTPSWriter: Serialization returns false");
+                    this.m_history.releaseCache(ch);
+                    return false;
+                } else if (ch.getSerializedPayload().getLength() > this.m_type.getTypeSize()) {
+                    logger.warn("Serialized Payload length larger than maximum type size");
+                    this.m_history.releaseCache(ch);
+                    return false;
+                } else if (ch.getSerializedPayload().getLength() == 0) {
+                    logger.warn("Serialized Payload length must be greater then zero");
+                    this.m_history.releaseCache(ch);
+                    return false;
+                }
+            }
+            if (!this.m_history.addPubChange(ch)) {
+                this.m_history.releaseCache(ch);
+                return false;
+            }
+            return true;
+        }
+        
+        return false;
+    }
+    
     
     public boolean dispose(Object data) {
-        
+        logger.info("Disposing of data");
+        return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED, data);
     }
     
     public boolean unregister(Object data) {
-        
+        logger.info("Unregistering of type");
+        return this.createNewChange(ChangeKind.NOT_ALIVE_UNREGISTERED, data);
     }
     
     public boolean disposeAndUnregister(Object data) {
-        
+        logger.info("Disposing and unregistering data");
+        return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED, data);
     }
     
-    public int removeAllChanges() {
-        
-    }*/
     
+    public int removeAllChanges(int removed) {
+        logger.info("Removing all data from hsitory");
+        return this.m_history.removeAllChangesNum();
+    }
+    
+    public boolean updateAttributes(PublisherAttributes att) {
+        boolean updated = true;
+        boolean missing = false;
+        
+        if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
+            if (att.unicastLocatorList.getLocators().size() != this.m_att.unicastLocatorList.getLocators().size() || 
+                    att.multicastLocatorList.getLocators().size() != this.m_att.multicastLocatorList.getLocators().size()) {
+                logger.warn("Locator Lists cannot be changed or updated in this version");
+                updated &= false;
+            } else {
+                for (Locator it : this.m_att.unicastLocatorList.getLocators()) {
+                    missing = true;
+                    for (Locator it2 : att.unicastLocatorList.getLocators()) {
+                        if (it.equals(it2)) {
+                            missing = false;
+                            break;
+                        }
+                    }
+                    if (missing) {
+                        logger.warn("Locator: not present in new list");
+                        logger.warn("Locator Lists cannot be changed or updated in this version");
+                    }
+                }
+                for (Locator it : this.m_att.multicastLocatorList.getLocators()) {
+                    missing = true;
+                    for (Locator it2 : att.multicastLocatorList.getLocators()) {
+                        if (it.equals(it2)) {
+                            missing = false;
+                            break;
+                        }
+                    }
+                    if (missing) {
+                        logger.warn("Locator: not present in new list");
+                        logger.warn("Locator Lists cannot be changed or updated in this version");
+                    }
+                }
+            }
+        }
+        
+        if (!this.m_att.topic.equals(att.topic)) {
+            logger.warn("Topic attributes cannot be updated");
+            updated &= false;
+        }
+        
+        if (!this.m_att.qos.canQosBeUpdated(att.qos)) {
+            updated &= false;
+        }
+        
+        if (updated) {
+            if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
+                // TODO Not supported in this version (StatefulWriter)
+            }
+            this.m_att.qos.setQos(att.qos,  false);
+            this.m_att = att;
+            this.m_rtpsParticipant.updateLocalWriter(this.m_writer, this.m_att.qos);
+        }
+        
+        return updated;
+    }
+
     public PublisherAttributes getAttributes() {
         return this.m_att;
     }

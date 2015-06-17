@@ -126,6 +126,7 @@ public class RTPSDomain {
         if (p != null) {
             for (RTPSParticipant it : m_rtpsParticipants) {
                 if (it.getGUID().getGUIDPrefix().equals(p.getGUID().getGUIDPrefix())) {
+                    it.destroy();
                     m_rtpsParticipants.remove(it);
                     return true;
                 }

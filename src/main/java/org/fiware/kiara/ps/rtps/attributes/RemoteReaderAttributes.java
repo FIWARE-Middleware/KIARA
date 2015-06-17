@@ -9,10 +9,11 @@ public class RemoteReaderAttributes {
     
     public GUID guid;
     
-    boolean expectsInlineQos;
+    public boolean expectsInlineQos;
     
     public RemoteReaderAttributes() {
         this.endpoint = new EndpointAttributes();
+        this.guid = new GUID();
         this.endpoint.endpointKind = EndpointKind.READER;
         this.expectsInlineQos = false;
     }

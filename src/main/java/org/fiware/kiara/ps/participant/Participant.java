@@ -79,15 +79,19 @@ public class Participant {
         this.m_rtpsListener = new MyRTPSParticipantListener(this);
     }
     
-    private void deleteParticipant() {
-        this.m_publishers.clear();
-        this.m_subscribers.clear();
-        
-        // TODO Remove participant -> Domain::removeRTPSParticipant(this);
+    public void destroy() {
+        while (this.m_publishers.size() > 0) {
+            this.removePublisher(this.m_publishers.get(0));
+        }
+        while (this.m_subscribers.size() > 0) {
+            this.removeSubscriber(this.m_subscribers.get(0));
+        }
+   
+        RTPSDomain.removeRTPSParticipant(this.m_rtpsParticipant);
     }
     
     public Publisher createPublisher(PublisherAttributes att, PublisherListener listener) {
-        TopicDataType type = getRegisteredType(att.topic.topicDataType);
+        TopicDataType<?> type = getRegisteredType(att.topic.topicDataType);
         
         if (type == null) {
             logger.error("Type : " + att.topic.topicDataType + " Not Registered");
@@ -148,6 +152,7 @@ public class Participant {
             logger.error("Problem creating associated Writer");
             return null;
         }
+        
         publisher.setWriter(writer);
         
         this.m_publishers.add(publisher);
@@ -161,7 +166,13 @@ public class Participant {
     }
     
     public boolean removePublisher(Publisher pub) {
-     // TODO Auto-generated method stub
+        for (Publisher it : this.m_publishers) {
+            if (it.getGuid().equals(pub.getGuid())) {
+                it.destroy();
+                this.m_publishers.remove(it);
+                return true;
+            }
+        }
         return true;
     }
     
