@@ -24,6 +24,10 @@ import org.fiware.kiara.ps.rtps.attributes.EndpointAttributes;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class Endpoint {
 	
 	protected RTPSParticipant m_participant;

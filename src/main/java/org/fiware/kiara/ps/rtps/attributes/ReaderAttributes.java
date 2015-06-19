@@ -21,6 +21,10 @@ import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ReaderAttributes {
 	
 	public EndpointAttributes endpointAtt;

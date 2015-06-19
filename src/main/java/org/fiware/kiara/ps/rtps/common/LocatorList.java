@@ -21,6 +21,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class LocatorList {
 
     private List<Locator> m_locators;

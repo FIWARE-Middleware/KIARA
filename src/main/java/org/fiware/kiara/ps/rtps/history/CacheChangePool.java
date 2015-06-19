@@ -27,6 +27,10 @@ import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class CacheChangePool {
 
     private int m_payloadSize;

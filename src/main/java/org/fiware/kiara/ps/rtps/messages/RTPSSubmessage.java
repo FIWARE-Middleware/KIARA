@@ -27,6 +27,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.CDRSerializer;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSSubmessage {
 	
 	protected RTPSSubmessageHeader m_submessageHeader;

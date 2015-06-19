@@ -18,6 +18,10 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class GUID {
 	
 	private GUIDPrefix m_guidPrefix;
@@ -32,7 +36,7 @@ public class GUID {
 	public GUID(GUIDPrefix guidPrefix, EntityId entityId) {
             this.m_guidPrefix = guidPrefix;
             this.m_entityId = entityId;
-    }
+        }
 	
 	public GUIDPrefix getGUIDPrefix() {
 		return this.m_guidPrefix;

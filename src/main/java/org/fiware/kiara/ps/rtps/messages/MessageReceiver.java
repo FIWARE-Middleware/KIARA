@@ -45,6 +45,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class MessageReceiver {
 	
 	private CacheChange m_change;

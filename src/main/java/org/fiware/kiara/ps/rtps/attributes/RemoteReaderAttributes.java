@@ -20,6 +20,10 @@ package org.fiware.kiara.ps.rtps.attributes;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RemoteReaderAttributes {
     
     public EndpointAttributes endpoint;

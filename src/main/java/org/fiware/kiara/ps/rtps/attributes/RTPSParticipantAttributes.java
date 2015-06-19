@@ -21,6 +21,10 @@ import java.util.List;
 
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSParticipantAttributes {
     
     public LocatorList defaultUnicastLocatorList;

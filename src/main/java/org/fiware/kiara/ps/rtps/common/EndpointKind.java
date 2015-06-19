@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.common;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum EndpointKind {
 	READER,
 	WRITER

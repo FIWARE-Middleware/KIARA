@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.utils;
 
 import org.fiware.kiara.ps.rtps.common.Locator;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class InfoIP {
 	public IPTYPE type;
 	public int scopeId;

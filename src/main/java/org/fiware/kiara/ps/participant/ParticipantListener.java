@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.participant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class ParticipantListener {
     
     public abstract void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info);

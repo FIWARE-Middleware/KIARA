@@ -36,6 +36,10 @@ import org.fiware.kiara.ps.topic.TopicDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class Domain {
     
     private static List<Participant> m_participants = new ArrayList<Participant>();

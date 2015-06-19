@@ -51,6 +51,10 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class SendResource {
 
     public static final int MAX_BIND_TRIES = 100;

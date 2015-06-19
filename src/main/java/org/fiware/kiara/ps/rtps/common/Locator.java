@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.common;
 
 import java.util.Arrays;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class Locator {
 	
 	private LocatorKind m_kind;

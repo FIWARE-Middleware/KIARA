@@ -21,6 +21,10 @@ import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class SubscriberAttributes {
     
     private short m_userDefinedID;

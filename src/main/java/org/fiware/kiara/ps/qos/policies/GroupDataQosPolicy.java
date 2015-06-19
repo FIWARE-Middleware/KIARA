@@ -26,11 +26,15 @@ import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class GroupDataQosPolicy extends Parameter {
     
     // TODO
     
-public QosPolicy parent;
+    public QosPolicy parent;
     
     private List<Byte> m_value;
     

@@ -29,6 +29,10 @@ import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class SerializedPayload extends RTPSSubmessageElement {
 	
 	private short m_length;

@@ -20,6 +20,10 @@ package org.fiware.kiara.ps.rtps.attributes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class BuiltinAttributes {
     
     public boolean useSimplePDP; // SimpleParticipantDiscoveryProtocol

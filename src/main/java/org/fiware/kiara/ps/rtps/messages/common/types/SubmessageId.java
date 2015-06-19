@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.messages.common.types;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum SubmessageId {
 	
 	PAD((byte) 0x01), /* Pad */

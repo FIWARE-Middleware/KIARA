@@ -36,6 +36,10 @@ import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class PublisherHistory extends WriterHistoryCache {
     
     private static final Logger logger = LoggerFactory.getLogger(PublisherHistory.class);

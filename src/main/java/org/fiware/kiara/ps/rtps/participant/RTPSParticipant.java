@@ -17,7 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.participant;
 
-import java.lang.management.LockInfo;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +29,6 @@ import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.Endpoint;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
-import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
@@ -62,6 +60,10 @@ import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSParticipant {
     
     private static final Logger logger = LoggerFactory.getLogger(RTPSParticipant.class);

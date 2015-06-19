@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.common;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum LocatorKind {
 	
 	LOCATOR_KIND_RESERVED(0),

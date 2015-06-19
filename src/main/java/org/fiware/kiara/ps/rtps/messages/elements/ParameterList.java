@@ -27,6 +27,10 @@ import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ParameterList extends RTPSSubmessageElement {
 	
 	private ArrayList<Parameter> m_parameters;

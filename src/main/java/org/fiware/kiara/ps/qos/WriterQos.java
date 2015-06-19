@@ -40,6 +40,10 @@ import org.fiware.kiara.ps.qos.policies.TopicDataQosPolicy;
 import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class WriterQos {
 
     public DurabilityQosPolicy durability;

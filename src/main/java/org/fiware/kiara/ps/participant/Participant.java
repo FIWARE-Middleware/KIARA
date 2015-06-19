@@ -46,6 +46,10 @@ import org.fiware.kiara.ps.topic.TopicDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class Participant {
     
     private static final Logger logger = LoggerFactory.getLogger(Participant.class);

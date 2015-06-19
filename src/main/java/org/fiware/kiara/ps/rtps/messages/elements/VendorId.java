@@ -24,6 +24,10 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class VendorId extends RTPSSubmessageElement {
 	
 	byte m_id_0;

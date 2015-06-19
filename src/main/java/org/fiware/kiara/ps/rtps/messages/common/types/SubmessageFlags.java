@@ -21,6 +21,10 @@ import java.util.BitSet;
 
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageHeader;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class SubmessageFlags {
 	
 	BitSet m_bits;

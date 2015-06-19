@@ -24,6 +24,10 @@ import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class StatefulWriter extends RTPSWriter {
     
     // TODO Implement

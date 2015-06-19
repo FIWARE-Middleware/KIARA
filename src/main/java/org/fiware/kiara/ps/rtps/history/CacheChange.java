@@ -24,6 +24,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class CacheChange implements Comparable {
 	
 	private ChangeKind m_changeKind;

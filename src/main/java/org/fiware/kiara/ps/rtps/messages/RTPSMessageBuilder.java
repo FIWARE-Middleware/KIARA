@@ -17,8 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.messages;
 
-import javax.sound.midi.Sequence;
-
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -44,6 +42,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterStatus;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSMessageBuilder {
 	
 	public static RTPSMessage createMessage(RTPSEndian endian) {

@@ -24,6 +24,10 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ExtraFlags extends RTPSSubmessageElement {
 
 	/*@Override

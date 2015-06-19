@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.participant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class RTPSParticipantListener {
     
     public abstract void onRTPSParticipantDiscovery(RTPSParticipant participant, RTPSParticipantDiscoveryInfo info); 

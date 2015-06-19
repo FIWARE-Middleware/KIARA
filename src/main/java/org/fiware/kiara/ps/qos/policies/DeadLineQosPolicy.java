@@ -25,6 +25,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class DeadLineQosPolicy extends Parameter {
 
     // TODO

@@ -27,6 +27,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSMessageGroup {
     
     // TODO Implement

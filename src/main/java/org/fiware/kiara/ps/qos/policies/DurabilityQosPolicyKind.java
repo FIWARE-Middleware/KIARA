@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum DurabilityQosPolicyKind {
     
     VOLATILE_DURABILITY_QOS((byte) 0), //!< Volatile Durability (default for Subscribers).

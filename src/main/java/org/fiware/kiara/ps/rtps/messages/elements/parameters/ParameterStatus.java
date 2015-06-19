@@ -26,6 +26,10 @@ import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ParameterStatus extends Parameter {
 	
 	private byte m_status;

@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.utils;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum IPTYPE {
 	IPv4,
 	IPv6,

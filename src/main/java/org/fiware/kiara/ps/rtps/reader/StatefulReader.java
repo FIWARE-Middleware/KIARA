@@ -22,6 +22,10 @@ import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class StatefulReader extends RTPSReader {
     
     // TODO Implement

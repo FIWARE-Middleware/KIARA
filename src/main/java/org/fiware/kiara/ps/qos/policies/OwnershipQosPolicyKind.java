@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum OwnershipQosPolicyKind {
     SHARED_OWNERSHIP_QOS ((byte) 0), //!< Shared Ownership, default value.
     EXCLUSIVE_OWNERSHIP_QOS((byte) 1); //!< Exclusive ownership
