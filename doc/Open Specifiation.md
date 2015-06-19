@@ -16,19 +16,16 @@ Following is a list of Open Specifications linked to this Generic Enabler. Speci
 - [Advanced Middleware IDL Specification](Middleware_IDL_Specification.md)
 - [Advanced Middleware RPC API Specification ](Middleware_RPC_API_Specification.md)
 - [Advanced Middleware RPC Dynamic Types API Specification](Middleware_RPC_Dynamic_Types_API_Specification.md)
-
-<!-- 
-- [Advanced Middlware Pub-Sub API Specification](Middleware_Pub-Sub_API_Specification.md) 
---> 
+<!-- - [Middlware Pub-Sub API Specification](Middleware_Pub-Sub_API_Specification.md) --> 
 
 <!-- /{{:FIWARE.OpenSpecification.Details.I2ND.Middleware}} -->
 
 Re-utilised Technologies/Specifications
 ---------------------------------------
 The Advanced Middleware GE is a set of communication libraries and tools to be delivered with applications/services. It is not a RESTful service running as a standalone component.
-<!--
+
 The technologies and specifications used in basic version of this GE are:
--->
+
 <!--
 - DDS - Data Distribution Services ([http://www.omg.org/spec/DDS/1.2/ OMG Standard V1.2])
 - RPC-DDS – RPC over DDS ([http://www.omg.org/cgi-bin/doc?mars/2012-06-29 OMG proposed Standard])

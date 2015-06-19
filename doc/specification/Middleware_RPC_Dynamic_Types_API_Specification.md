@@ -127,7 +127,7 @@ This interface is part of the public [Advanced Middleware RPC API][AMiRPCSpec].
 
 #### org.fiware.kiara.serialization.impl.Serializable
 
-This interface is the one that must be implemented by all the used defined data types in order to be serializable. It defines the methods `serialize` and `deserialize` for each data type. This class will not be described in this document, for more information take a look at the [**Advanced Middleware RPC API Specification**][AMiRPCSpec] document.
+This interface is the one that must be implemented by all the used defined data types in order to be serializable. It defines the methods `serialize` and `deserialize` for each data type. This class will not be described in this document, for more information take a look at the [Advanced Middleware RPC API Specification][AMiRPCSpec] document.
 
 
 ### Client API
@@ -145,9 +145,7 @@ The `Connection` interface manages the connection to the server. It holds the re
 
 This subsection contains the interfaces and classes that are dependent on the user. This section will use the example in section API Usage Examples to define them.
 
-<center>
-![Figure: Class Diagram TypeDescriptor](images/MiddlewareClassDiagramTypeDescriptor.png "Figure: Class Diagram TypeDescriptor")
-</center>
+![Figure: Class Diagram TypeDescriptor](images/MiddlewareClassDiagramTypeDescriptor.png "center|Figure: Class Diagram TypeDescriptor") 
 <center>Figure: Class Diagram TypeDescriptor</center>
 
 ---
@@ -175,9 +173,7 @@ This interface defined the operations used to create type-describing objects. It
 
 This class is used to manipulate the objects used to describe the data types. It allows the users to know what type of data an object represents.
 
-<center>
-![Figure: Interface TypeDescriptor](images/MiddlewareInterfaceTypeDescriptor.png "Figure: Interface TypeDescriptor")
-</center>
+![Figure: Interface TypeDescriptor](images/MiddlewareInterfaceTypeDescriptor.png "center|Figure: Interface TypeDescriptor")  
 <center>Figure: Interface TypeDescriptor</center>
 
 **Functions:**
@@ -204,9 +200,7 @@ This class is used to manipulate the objects used to describe the data types. It
 
 Interface that represents the top level class of the data type hierarchy. It is used as a generic type to englobe only and exclusively data type descriptors.
 
-<center>
-![Figure: Interface DataTypeDescriptor](images/MiddlewareInterfaceDataTypeDescriptor.png "Figure: Interface DataTypeDescriptor")
-</center>
+![Figure: Interface DataTypeDescriptor](images/MiddlewareInterfaceDataTypeDescriptor.png "center|Figure: Interface DataTypeDescriptor")  
 <center>Figure: Interface DataTypeDescriptor</center>
 
 **Functions**: None
@@ -216,9 +210,7 @@ Interface that represents the top level class of the data type hierarchy. It is 
 
 Interface that represents a primitive data type. Primitive types include **boolean**, **byte**, **i16**, **ui16**, **i32**, **ui32**, **i64**, **ui64**, **float32**, **float64**, **char** and **string**.
 
-<center>
-![Figure: Interface PrimitiveTypeDescriptor](images/MiddlewareInterfacePrimitiveTypeDescriptor.png "Figure: Interface PrimitiveTypeDescriptor")
-</center>
+![Figure: Interface PrimitiveTypeDescriptor](images/MiddlewareInterfacePrimitiveTypeDescriptor.png "center|Figure: Interface PrimitiveTypeDescriptor")  
 <center>Figure: Interface PrimitiveTypeDescriptor</center>
 
 **Functions:**
@@ -232,9 +224,7 @@ Interface that represents a primitive data type. Primitive types include **boole
 
 Interface that represents a container data type. Container data types are **arrays**, **lists**, **maps** and **sets**.
 
-<center>
-![Figure: Interface ContainerTypeDescriptor](images/MiddlewareInterfaceContainerTypeDescriptor.png "Figure: Interface ContainerTypeDescriptor")
-</center>
+![Figure: Interface ContainerTypeDescriptor](images/MiddlewareInterfaceContainerTypeDescriptor.png "center|Figure: Interface ContainerTypeDescriptor")  
 <center>Figure: Interface ContainerTypeDescriptor</center>
 
 **Functions:**
@@ -247,9 +237,7 @@ Interface that represents a container data type. Container data types are **arra
 
 Interface that represents an array data type. Arrays can hold multiple repeated objects of the same data type inside.
 
-<center>
-![Figure: Interface ArrayTypeDescriptor](images/MiddlewareInterfaceArrayTypeDescriptor.png "Figure: Interface ArrayTypeDescriptor")
-</center>
+![Figure: Interface ArrayTypeDescriptor](images/MiddlewareInterfaceArrayTypeDescriptor.png "center|Figure: Interface ArrayTypeDescriptor")  
 <center>Figure: Interface ArrayTypeDescriptor</center>
 
 
@@ -265,9 +253,7 @@ Interface that represents an array data type. Arrays can hold multiple repeated 
 
 Interface that represents a list data type. Lists can hold multiple repeated objects of the same data type inside.
 
-<center>
-![Figure: Interface ListTypeDescriptor](images/MiddlewareInterfaceListTypeDescriptor.png "Figure: Interface ListTypeDescriptor")
-</center>
+![Figure: Interface ListTypeDescriptor](images/MiddlewareInterfaceListTypeDescriptor.png "center|Figure: Interface ListTypeDescriptor")  
 <center>Figure: Interface ListTypeDescriptor</center>
 
 **Functions:**
@@ -280,9 +266,7 @@ Interface that represents a list data type. Lists can hold multiple repeated obj
 
 Interface that represents a set data type. Sets can have non repeated objects of the same data type inside.
 
-<center>
-![Figure: Interface SetTypeDescriptor](images/MiddlewareInterfaceSetTypeDescriptor.png "Figure: Interface SetTypeDescriptor")
-</center>
+![Figure: Interface SetTypeDescriptor](images/MiddlewareInterfaceSetTypeDescriptor.png "center|Figure: Interface SetTypeDescriptor")  
 <center>Figure: Interface SetTypeDescriptor</center>
 
 **Functions:**
@@ -295,9 +279,7 @@ Interface that represents a set data type. Sets can have non repeated objects of
 
 Interface that represents a map data type. Maps can hold multiple key-object pairs inside if and only if the key objects are unique.
 
-<center>
-![Figure: Interface MapTypeDescriptor](images/MiddlewareInterfaceMapTypeDescriptor.png "Figure: Interface MapTypeDescriptor")
-</center>
+![Figure: Interface MapTypeDescriptor](images/MiddlewareInterfaceMapTypeDescriptor.png "center|Figure: Interface MapTypeDescriptor")  
 <center>Figure: Interface MapTypeDescriptor</center>
 
 **Functions:**
@@ -312,9 +294,7 @@ Interface that represents a map data type. Maps can hold multiple key-object pai
 
 Interface that represents a membered data type. `Membered` data types are **structs**, **enumerations**, **unions** and **exceptions**.
 
-<center>
-![Figure: Interface MemberedTypeDescriptor](images/MiddlewareInterfaceMemberedTypeDescriptor.png "Figure: Interface MemberedTypeDescriptor")
-</center>
+![Figure: Interface MemberedTypeDescriptor](images/MiddlewareInterfaceMemberedTypeDescriptor.png "center|Figure: Interface MemberedTypeDescriptor")  
 <center>Figure: Interface MemberedTypeDescriptor</center>
 
 **Functions:**
@@ -327,9 +307,7 @@ Interface that represents a membered data type. `Membered` data types are **stru
 
 Interface that represents a struct data type. Structs can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
 
-<center>
-![Figure: Interface StructTypeDescriptor](images/MiddlewareInterfaceStructTypeDescriptor.png "Figure: Interface StructTypeDescriptor")
-</center>
+![Figure: Interface StructTypeDescriptor](images/MiddlewareInterfaceStructTypeDescriptor.png "center|Figure: Interface StructTypeDescriptor")  
 <center>Figure: Interface StructTypeDescriptor</center>
 
 **Functions:**
@@ -342,9 +320,7 @@ Interface that represents a struct data type. Structs can have multiple differen
 
 Interface that represents an enumeration data type. Enumerations are formed by a group of different string values.
 
-<center>
-![Figure: Interface EnumTypeDescriptor](images/MiddlewareInterfaceEnumTypeDescriptor.png "Figure: Interface EnumTypeDescriptor")
-</center>
+![Figure: Interface EnumTypeDescriptor](images/MiddlewareInterfaceEnumTypeDescriptor.png "center|Figure: Interface EnumTypeDescriptor")  
 <center>Figure: Interface EnumTypeDescriptor</center>
 
 **Functions:**
@@ -356,9 +332,7 @@ Interface that represents an enumeration data type. Enumerations are formed by a
 
 Interface that represents a union data type. Unions are formed by a group of members identified by their names and the labels of the discriminator to which they are assigned.
 
-<center>
-![Figure: Interface UnionTypeDescriptor](images/MiddlewareInterfaceUnionTypeDescriptor.png "Figure: Interface UnionTypeDescriptor")
-</center>
+![Figure: Interface UnionTypeDescriptor](images/MiddlewareInterfaceUnionTypeDescriptor.png "center|Figure: Interface UnionTypeDescriptor")  
 <center>Figure: Interface UnionTypeDescriptor</center>
 
 **Functions:**
@@ -370,9 +344,7 @@ Interface that represents a union data type. Unions are formed by a group of mem
 
 Interface that represents a struct data type. Exceptions can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
 
-<center>
-![Figure: Interface ExceptionTypeDescriptor](images/MiddlewareInterfaceExceptionTypeDescriptor.png "Figure: Interface ExceptionTypeDescriptor")
-</center>
+![Figure: Interface ExceptionTypeDescriptor](images/MiddlewareInterfaceExceptionTypeDescriptor.png "center|Figure: Interface ExceptionTypeDescriptor")  
 <center>Figure: Interface ExceptionTypeDescriptor</center>
 
 **Functions:**
@@ -386,9 +358,7 @@ Interface that represents a struct data type. Exceptions can have multiple diffe
 
 Interface that represents a member of a `MemberedTypeDescriptor` object. Each member is identified by its name and the `TypeDescriptor` object that it holds.
 
-<center>
-![Figure: Interface Member](images/MiddlewareInterfaceMember.png "Figure: Interface Member")
-</center>
+![Figure: Interface Member](images/MiddlewareInterfaceMember.png "center|Figure: Interface Member")  
 <center>Figure: Interface Member</center>
 
 **Functions:**
@@ -401,9 +371,7 @@ Interface that represents a member of a `MemberedTypeDescriptor` object. Each me
 
 Interface that represents a member of a `EnumTypeDescriptor` object. It inherits from `Member` interface and therefore it has no new methods.
 
-<center>
-![Figure: Interface EnumMember](images/MiddlewareInterfaceMember.png "Figure: Interface EnumMember")
-</center>
+![Figure: Interface EnumMember](images/MiddlewareInterfaceMember.png "center|Figure: Interface EnumMember")  
 <center>Figure: Interface EnumMember</center>
 
 **Functions:** None
@@ -413,9 +381,7 @@ Interface that represents a member of a `EnumTypeDescriptor` object. It inherits
 
 Interface that represents a member of a `UnionTypeDescriptor` object. It inherits from Member interface and therefore it has no new methods.
 
-<center>
-![Figure: Interface UnionMember](images/MiddlewareInterfaceUnionMember.png "Figure: Interface UnionMember")
-</center>
+![Figure: Interface UnionMember](images/MiddlewareInterfaceUnionMember.png "center|Figure: Interface UnionMember")  
 <center>Figure: Interface UnionMember</center>
 
 **Functions:** None
@@ -425,9 +391,7 @@ Interface that represents a member of a `UnionTypeDescriptor` object. It inherit
 
 This interface represents a function, providing methods to easily describe it by setting its return type, parameters and exceptions that it might throw.
 
-<center>
-![Figure: Interface FunctionTypeDescriptor](images/MiddlewareInterfaceFunctionTypeDescriptor.png "Figure: Interface FunctionTypeDescriptor")
-</center>
+![Figure: Interface FunctionTypeDescriptor](images/MiddlewareInterfaceFunctionTypeDescriptor.png "center|Figure: Interface FunctionTypeDescriptor")  
 <center>Figure: Interface FunctionTypeDescriptor</center>
 
 **Functions:**
@@ -447,9 +411,7 @@ This interface represents a function, providing methods to easily describe it by
 
 This interface represents a service, providing methods to add the FunctionTypeDescriptor objects representing every function defined in a specific service.
 
-<center>
-![Figure: Interface ServiceTypeDescriptor](images/MiddlewareInterfaceServiceTypeDescriptor.png "Figure: Interface ServiceTypeDescriptor")
-</center>
+![Figure: Interface ServiceTypeDescriptor](images/MiddlewareInterfaceServiceTypeDescriptor.png "center|Figure: Interface ServiceTypeDescriptor")  
 <center>Figure: Interface ServiceTypeDescriptor</center>
 
 **Functions:**
@@ -464,9 +426,7 @@ This interface represents a service, providing methods to add the FunctionTypeDe
 
 This subsection contains the interfaces and classes that are designed to provide the developer with functions to create and manage dynamic data types.
 
-<center>
-![Figure: Class Diagramm DynamicValue](images/MiddlewareClassDiagramDynamicValue.png "Figure: Class Diagramm DynamicValue")
-</center>  
+![Figure: Class Diagramm DynamicValue](images/MiddlewareClassDiagramDynamicValue.png "center|Figure: Class Diagramm DynamicValue")  
 <center>Figure: Class Diagramm DynamicValue</center>
 
 ---
@@ -474,9 +434,7 @@ This subsection contains the interfaces and classes that are designed to provide
 
 This class allows the users to create new data types based on their `TypeCode` descriptions.
 
-<center>
-![Figure: Interface DynamicValueBuilder](images/MiddlewareInterfaceDynamicValueBuilder.png "Figure: Interface DynamicValueBuilder")
-</center>  
+![Figure: Interface DynamicValueBuilder](images/MiddlewareInterfaceDynamicValueBuilder.png "center|Figure: Interface DynamicValueBuilder")  
 <center>Figure: Interface DynamicValueBuilder</center>
 
 **Functions:**
@@ -491,9 +449,7 @@ This class allows the users to create new data types based on their `TypeCode` d
 
 Interface that acts as a supertype for every dynamic value that can be managed. Every `DynamicValue` object is defined by using a `TypeDescriptor` which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the `TypeDescriptor` object it was created from.
 
-<center>
-![Figure: Interface DynamicValue](images/MiddlewareInterfaceDynamicValue.png "Figure: Interface DynamicValue")
-</center>  
+![Figure: Interface DynamicValue](images/MiddlewareInterfaceDynamicValue.png "center|Figure: Interface DynamicValue")  
 <center>Figure: Interface DynamicValue</center>
 
 **Functions:**
@@ -507,9 +463,7 @@ Interface that acts as a supertype for every dynamic value that can be managed. 
 
 Interface that is used to group all the `DynamicValues` representing data types.
 
-<center>
-![Figure: Interface DynamicData](images/MiddlewareInterfaceDynamicData.png "Figure: Interface DynamicData")
-</center>  
+![Figure: Interface DynamicData](images/MiddlewareInterfaceDynamicData.png "center|Figure: Interface DynamicData")  
 <center>Figure: Interface DynamicData</center>
 
 **Functions:** None
@@ -519,9 +473,7 @@ Interface that is used to group all the `DynamicValues` representing data types.
 
 This class allows the users to manipulate `DynamicData` objects made from `PrimitiveTypeDescriptor` objects.
 
-<center>
-![Figure: Interface DynamicPrimitive](images/MiddlewareInterfaceDynamicPrimitive.png "Figure: Interface DynamicPrimitive")
-</center>  
+![Figure: Interface DynamicPrimitive](images/MiddlewareInterfaceDynamicPrimitive.png "center|Figure: Interface DynamicPrimitive")  
 <center>Figure: Interface DynamicPrimitive</center>
 
 **Functions:**
@@ -534,9 +486,7 @@ This class allows the users to manipulate `DynamicData` objects made from `Primi
 
 This class holds the data values of a `DynamicData` object created from a `ContainerTypeDescriptor`.
 
-<center>
-![Figure: Interface DynamicContainer](images/MiddlewareInterfaceDynamicContainer.png "Figure: Interface DynamicContainer")
-</center>  
+![Figure: Interface DynamicContainer](images/MiddlewareInterfaceDynamicContainer.png "center|Figure: Interface DynamicContainer")  
 <center>Figure: Interface DynamicContainer</center>
 
 **Functions:** None
@@ -546,9 +496,7 @@ This class holds the data values of a `DynamicData` object created from a `Conta
 
 This class holds the data values of a `DynamicData` object created from an `ArrayTypeDescriptor`. A `DynamicArray` contains a group of `DynamicData` objects (all must be the same type) stored in single or multi dimensional matrixes.
 
-<center>
-![Figure: Interface DynamicArray](images/MiddlewareInterfaceDynamicArray.png "Figure: Interface DynamicArray")
-</center>  
+![Figure: Interface DynamicArray](images/MiddlewareInterfaceDynamicArray.png "center|Figure: Interface DynamicArray")  
 <center>Figure: Interface DynamicArray</center>
 
 **Functions:**
@@ -561,9 +509,7 @@ This class holds the data values of a `DynamicData` object created from an `Arra
 
 This class holds the data values of a DynamicData object created from a ListTypeDescriptor. A list can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicList must have been created from the same TypeDescriptor definition.
 
-<center>
-![Figure: Interface DynamicList](images/MiddlewareInterfaceDynamicList.png "Figure: Interface DynamicList")
-</center>  
+![Figure: Interface DynamicList](images/MiddlewareInterfaceDynamicList.png "center|Figure: Interface DynamicList")  
 <center>Figure: Interface DynamicList</center>
 
 **Functions:**
@@ -577,9 +523,7 @@ This class holds the data values of a DynamicData object created from a ListType
 
 This class holds the data values of a DynamicData object created from a SetTypeDescriptor. A set can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicSet must have been created from the same TypeDescriptor definition and it cannot be duplicated objects.
 
-<center>
-![Figure: Interface DynamicSet](images/MiddlewareInterfaceDynamicSet.png "Figure: Interface DynamicSet")
-</center>  
+![Figure: Interface DynamicSet](images/MiddlewareInterfaceDynamicSet.png "center|Figure: Interface DynamicSet")  
 <center>Figure: Interface DynamicSet</center>
 
 **Functions:**
@@ -593,9 +537,7 @@ This class holds the data values of a DynamicData object created from a SetTypeD
 
 This class holds a list of pairs key-value instances of DynamicData. In a DynamicMap, the key values cannot be duplicated.
 
-<center>
-![Figure: Interface DynamicMap](images/MiddlewareInterfaceDynamicMap.png "Figure: Interface DynamicMap")
-</center>  
+![Figure: Interface DynamicMap](images/MiddlewareInterfaceDynamicMap.png "center|Figure: Interface DynamicMap")  
 <center>Figure: Interface DynamicMap</center>
 
 **Functions:**
@@ -610,9 +552,7 @@ This class holds a list of pairs key-value instances of DynamicData. In a Dynami
 
 This class represents a `DynamicData` type formed by multiple `DynamicData` objects stored into a class named `DynamicMember`.
 
-<center>
-![Figure: Interface DynamicMembered](images/MiddlewareInterfaceDynamicMembered.png "Figure: Interface DynamicMembered")
-</center>  
+![Figure: Interface DynamicMembered](images/MiddlewareInterfaceDynamicMembered.png "center|Figure: Interface DynamicMembered")  
 <center>Figure: Interface DynamicMembered</center>
 
 **Functions:** None
@@ -622,9 +562,7 @@ This class represents a `DynamicData` type formed by multiple `DynamicData` obje
 
 This class holds group of `DynamicData` objects acting as members of a stucture. Each member is identified by its name.
 
-<center>
-![Figure: Interface DynamicStruct](images/MiddlewareInterfaceDynamicStruct.png "Figure: Interface DynamicStruct")
-</center>  
+![Figure: Interface DynamicStruct](images/MiddlewareInterfaceDynamicStruct.png "center|Figure: Interface DynamicStruct")  
 <center>Figure: Interface DynamicStruct</center>
 
 **Functions:**
@@ -636,9 +574,7 @@ This class holds group of `DynamicData` objects acting as members of a stucture.
 
 This class is used to dynamically manipulate enumerations described by a specific `EnumTypeDescriptor` object.
 
-<center>
-![Figure: Interface DynamicEnum](images/MiddlewareInterfaceDynamicEnum.png "Figure: Interface DynamicEnum")
-</center>  
+![Figure: Interface DynamicEnum](images/MiddlewareInterfaceDynamicEnum.png "center|Figure: Interface DynamicEnum")  
 <center>Figure: Interface DynamicEnum</center>
 
 **Functions:**
@@ -651,9 +587,7 @@ This class is used to dynamically manipulate enumerations described by a specifi
 
 This class is used to dynamically manipulate unions described by a specific `UnionTypeDescriptor` object. A union is formed by some `DynamicData` objects, and the valid one is selected by using a discriminator.
 
-<center>
-![Figure: Interface DynamicUnion](images/MiddlewareInterfaceDynamicUnion.png "Figure: Interface DynamicUnion")
-</center>  
+![Figure: Interface DynamicUnion](images/MiddlewareInterfaceDynamicUnion.png "center|Figure: Interface DynamicUnion")  
 <center>Figure: Interface DynamicUnion</center>
 
 **Functions:**
@@ -667,9 +601,7 @@ This class is used to dynamically manipulate unions described by a specific `Uni
 
 This class holds group of `DynamicData` objects acting as members of an exception. Each member is identified by its own name.
 
-<center>
-![Figure: Interface DynamicException](images/MiddlewareInterfaceDynamicException.png "Figure: Interface DynamicException")
-</center>  
+![Figure: Interface DynamicException](images/MiddlewareInterfaceDynamicException.png "center|Figure: Interface DynamicException")  
 <center>Figure: Interface DynamicException</center>
 
 **Functions:**
@@ -681,9 +613,7 @@ This class holds group of `DynamicData` objects acting as members of an exceptio
 
 This class represents a dynamic member of any DynamicMembered object. It is used to store the DynamicData objects inside structures, unions, enumerations and exceptions.
 
-<center>
-![Figure: Interface DynamicMember](images/MiddlewareInterfaceDynamicMember.png "Figure: Interface DynamicMember")
-</center>  
+![Figure: Interface DynamicMember](images/MiddlewareInterfaceDynamicMember.png "center|Figure: Interface DynamicMember")  
 <center>Figure: Interface DynamicMember</center>
 
 **Functions:**
@@ -697,9 +627,7 @@ This class represents a dynamic member of any DynamicMembered object. It is used
 
 This class represents a dynamic function request. This class is used to create objects whose objective is to invoke functions remotely.
 
-<center>
-![Figure: Interface DynamicFunctionRequest](images/MiddlewareInterfaceDynamicFunctionRequest.png "Figure: Interface DynamicFunctionRequest")
-</center>  
+![Figure: Interface DynamicFunctionRequest](images/MiddlewareInterfaceDynamicFunctionRequest.png "center|Figure: Interface DynamicFunctionRequest")  
 <center>Figure: Interface DynamicFunctionRequest</center>
 
 **Functions:**
@@ -713,9 +641,7 @@ This class represents a dynamic function request. This class is used to create o
 
 This class represents a dynamic function response. This class is used to retrieve the information sent from the server after a remote procedure call.
 
-<center>
-![Figure: Interface DynamicFunctionResponse](images/MiddlewareInterfaceDynamicFunctionResponse.png "Figure: Interface DynamicFunctionResponse")
-</center>  
+![Figure: Interface DynamicFunctionResponse](images/MiddlewareInterfaceDynamicFunctionResponse.png "center|Figure: Interface DynamicFunctionResponse")  
 <center>Figure: Interface DynamicFunctionResponse</center>
 
 **Functions:**
@@ -730,9 +656,7 @@ This class represents a dynamic function response. This class is used to retriev
 
 This class represents a proxy than can be dynamically used to create an instance of DynamicFunctionRequest or a DynamicFunctionResponse depending if the user wants an object to execute a remote call or to store the result.
 
-<center>
-![Figure: Interface DynamicProxy](images/MiddlewareInterfaceDynamicProxy.png "Figure: Interface DynamicProxy")
-</center>  
+![Figure: Interface DynamicProxy](images/MiddlewareInterfaceDynamicProxy.png "center|Figure: Interface DynamicProxy")  
 <center>Figure: Interface DynamicProxy</center>
 
 **Functions:**
@@ -746,9 +670,7 @@ This class represents a proxy than can be dynamically used to create an instance
 
 This class represents a dynamic object used to hold the implementation of a specific function. Its process method must be defined by the user when creating the object, and it will be used to register the service’s functions on the server’s side.
 
-<center>
-![Figure: Interface DynamicFunctionHandler](images/MiddlewareInterfaceDynamicFunctionHandler.png "Figure: Interface DynamicFunctionHandler")
-</center>  
+![Figure: Interface DynamicFunctionHandler](images/MiddlewareInterfaceDynamicFunctionHandler.png "center|Figure: Interface DynamicFunctionHandler")  
 <center>Figure: Interface DynamicFunctionHandler</center>
 
 **Functions:**
@@ -775,6 +697,7 @@ This section defines in detail the API provided by the classes defined above.
 | createContext            |              | Context                |          |
 | shutdown                 |              | void                   |          |
 
+
 ### Client API
 
 This classes are those related to the client side API. This section includes all the relevant classes, attributes and methods.
@@ -794,8 +717,7 @@ This classes are those related to the client side API. This section includes all
 |                   | name           | String                     |           |
 
 
-TypeDescriptor
---------------
+### TypeDescriptor
 
 This classes are those related to the client’s side API. This section includes all the relevant classes, attributes and methods.
 
@@ -1039,12 +961,12 @@ This classes are those related to the client’s side API. This section includes
 | addFunction   |                  | void                           |         |
 |               | functionTypeDesc | FunctionTypeDescriptor         |         |
 
-Dynamic
--------
+
+### Dynamic
 
 The following classes are those related to creation and management of dynamic types, including data definition and function description and execution.
 
-| **org.fiware.kiara.dynamic.DynamicValueBuilder**                ||||
+| **org.fiware.kiara.dynamic.DynamicValueBuilder**                         ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
@@ -1136,7 +1058,7 @@ The following classes are those related to creation and management of dynamic ty
 |               | position         | int[]                          |         |
 
 
-| **org.fiware.kiara.dynamic.data.DynamicList**                           ||||
+| **org.fiware.kiara.dynamic.data.DynamicList**                            ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
@@ -1153,7 +1075,7 @@ The following classes are those related to creation and management of dynamic ty
 | isEmpty       |                  | boolean                        |         |
 
 
-| **org.fiware.kiara.dynamic.data.DynamicSet**                           ||||
+| **org.fiware.kiara.dynamic.data.DynamicSet**                             ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
@@ -1170,7 +1092,7 @@ The following classes are those related to creation and management of dynamic ty
 | isEmpty       |                  | boolean                        |         |
 
 
-| **org.fiware.kiara.dynamic.data.DynamicMap**                          ||||
+| **org.fiware.kiara.dynamic.data.DynamicMap**                             ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
@@ -1187,7 +1109,7 @@ The following classes are those related to creation and management of dynamic ty
 | get           |                  | DynamicData                    |         |
 |               | key              | DynamicData                    |         |
 
-| **org.fiware.kiara.dynamic.data.DynamicMembered**                       ||||
+| **org.fiware.kiara.dynamic.data.DynamicMembered**                        ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_              | _Type_            |                         |         |
@@ -1208,7 +1130,7 @@ The following classes are those related to creation and management of dynamic ty
 |               | name             | String                         |         |
 
 
-| **org.fiware.kiara.dynamic.data.DynamicEnum**                         ||||
+| **org.fiware.kiara.dynamic.data.DynamicEnum**                            ||||
 |-----------------------------------------------------------------------|-|-|-|
 | **Attributes**                                                           ||||
 | _Name_        | _Type_           |                                |         |
