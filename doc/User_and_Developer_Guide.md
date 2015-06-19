@@ -271,7 +271,7 @@ The package name `x.y.` can be declared when generating the support code using `
 #### Generate support code manually using kiaragen 
 
 To call `kiaragen` manually it has to be installed and in your run path.
-Instructions to install the kiaragen tool can be found in the [KIARA Installation and Administration Guide](Installation and Admin Guide.md)
+Instructions to install the kiaragen tool can be found in the [KIARA Installation and Administration Guide](Installation_and_Admin_Guide.md)
 
 The usage syntax is:
 ```
