@@ -1,5 +1,8 @@
 package org.fiware.kiara.ps.participant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
@@ -16,6 +19,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 public class ParticipantTest {
     
     public static void main(String[] args) {
+        
         
         HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();

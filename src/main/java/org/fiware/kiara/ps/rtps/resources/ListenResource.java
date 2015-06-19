@@ -199,18 +199,22 @@ public class ListenResource {
 
         try {
             if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
-                for (RTPSWriter it : this.m_assocWriters) {
+                for (int i=0; i < this.m_assocWriters.size(); ++i) {
+                    RTPSWriter it = this.m_assocWriters.get(i);
                     if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_assocWriters.remove(endpoint);
                         this.m_mutex.unlock();
+                        i--;
                         return true;
                     }
                 }
             } else if (endpoint.getAttributes().endpointKind == EndpointKind.READER) {
-                for (RTPSReader it : this.m_assocReaders) {
+                for (int i=0; i < this.m_assocReaders.size(); ++i) {
+                    RTPSReader it = this.m_assocReaders.get(i);
                     if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_assocReaders.remove(endpoint);
                         this.m_mutex.unlock();
+                        i--;
                         return true;
                     }
                 }

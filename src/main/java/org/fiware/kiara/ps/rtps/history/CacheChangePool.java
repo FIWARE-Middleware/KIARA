@@ -82,7 +82,6 @@ public class CacheChangePool {
                     return null;
                 }
             }
-            //change = this.m_freeChanges.lastElement();
             CacheChange change = this.m_freeChanges.remove(this.m_freeChanges.size() - 1);
             return change;
         } finally {

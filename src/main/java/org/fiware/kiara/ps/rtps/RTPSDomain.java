@@ -124,10 +124,12 @@ public class RTPSDomain {
     
     public static boolean removeRTPSParticipant(RTPSParticipant p) {
         if (p != null) {
-            for (RTPSParticipant it : m_rtpsParticipants) {
+            for (int i=0; i < m_rtpsParticipants.size(); ++i) {
+                RTPSParticipant it = m_rtpsParticipants.get(i);
                 if (it.getGUID().getGUIDPrefix().equals(p.getGUID().getGUIDPrefix())) {
                     it.destroy();
                     m_rtpsParticipants.remove(it);
+                    i--;
                     return true;
                 }
             }

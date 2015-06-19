@@ -47,7 +47,13 @@ public class StatelessWriter extends RTPSWriter {
         
         Locator l = new Locator();
         try {
-            l.setAddress(InetAddress.getByName("239.255.0.1").getAddress());
+            byte [] addr = new byte[16];
+            byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
+            addr[12] = obtainedAddr[0];
+            addr[13] = obtainedAddr[1];
+            addr[14] = obtainedAddr[2];
+            addr[15] = obtainedAddr[3];
+            l.setAddress(addr);
             l.setPort(7400);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
@@ -69,7 +75,7 @@ public class StatelessWriter extends RTPSWriter {
         if (!this.m_readerLocator.isEmpty()) {
             
             for (ReaderLocator it : this.m_readerLocator) {
-                locList.pushBack(it);
+                locList.pushBack(it.getLocator());
             }
             
             if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
@@ -195,10 +201,12 @@ public class StatelessWriter extends RTPSWriter {
             if (ratt.guid.equals(new GUID())) {
                 found = true;
             } else {
-                for (RemoteReaderAttributes it : this.m_matchedReaders) {
+                for (int i=0; i < this.m_matchedReaders.size(); ++i) {
+                    RemoteReaderAttributes it = this.m_matchedReaders.get(i);
                     if (it.guid.equals(ratt.guid)) {
                         found = true;
                         this.m_matchedReaders.remove(it);
+                        i--;
                         break;
                     }
                 }
@@ -222,11 +230,13 @@ public class StatelessWriter extends RTPSWriter {
     }
     
     private boolean removeLocator(Locator loc) {
-        for (ReaderLocator it : this.m_readerLocator) {
+        for (int i=0; i < this.m_readerLocator.size(); ++i) {
+            ReaderLocator it = this.m_readerLocator.get(i);
             if (it.getLocator().equals(loc)) {
                 it.decreaseUsed();
                 if (it.getUsed() == 0) {
                     this.m_readerLocator.remove(it);
+                    i--;
                 }
                 break;
             }

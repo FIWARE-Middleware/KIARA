@@ -74,7 +74,23 @@ public class ReaderHistoryCache extends HistoryCache {
 			System.out.println("CacheChange is null."); // TODO Log this
 		}
 		
-		Iterator<CacheChange> it = this.m_changes.iterator();
+		for (int i=0; i < this.m_changes.size(); ++i) {
+		    
+		    CacheChange it = this.m_changes.get(i);
+		    if (it.getSequenceNumber().equals(change.getSequenceNumber()) && it.getWriterGUID().equals(change.getWriterGUID())) {
+		        System.out.println("Removing change " + change.getSequenceNumber()); // TODO Log this
+                        this.m_reader.changeRemovedByHistory(change);
+                        this.m_changePool.releaseCache(change);
+                        this.m_changes.remove(it);
+                        i--;
+                        updateMaxMinSeqNum();
+                        this.m_mutex.unlock();
+                        return true;
+		    }
+		
+		}
+		
+		/*Iterator<CacheChange> it = this.m_changes.iterator();
 		while(it.hasNext()) {
 			CacheChange current = it.next();
 			if (current.getSequenceNumber().equals(change.getSequenceNumber()) && current.getWriterGUID().equals(change.getWriterGUID())) {
@@ -86,7 +102,7 @@ public class ReaderHistoryCache extends HistoryCache {
 				this.m_mutex.unlock();
 				return true;
 			}
-		}
+		}*/
 		
 		this.m_mutex.unlock();
 		return false;

@@ -498,10 +498,12 @@ public class RTPSParticipant {
         if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
             this.m_mutex.lock();
             try {
-                for (RTPSWriter wit : this.m_userWriterList) {
+                for (int i=0; i < this.m_userWriterList.size(); ++i) {
+                    RTPSWriter wit = this.m_userWriterList.get(i);
                     if (wit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_userWriterList.remove(wit);
                         found = true;
+                        i--;
                         break;
                     }
                 }
@@ -511,10 +513,12 @@ public class RTPSParticipant {
         } else {
             this.m_mutex.lock();
             try {
-                for (RTPSReader rit : this.m_userReaderList) {
+                for (int i=0; i < this.m_userReaderList.size(); ++i) {
+                    RTPSReader rit = this.m_userReaderList.get(i);
                     if (rit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_userReaderList.remove(rit);
                         found = true;
+                        i--;
                         break;
                     }
                 }
@@ -545,10 +549,12 @@ public class RTPSParticipant {
             boolean continueRemoving = true;
             while (continueRemoving) {
                 continueRemoving = false;
-                for (ListenResource lrit : this.m_listenResourceList) {
+                for (int i=0; i < this.m_listenResourceList.size(); ++i) {
+                    ListenResource lrit = this.m_listenResourceList.get(i);
                     if (lrit.hasAssociatedEndpoints() && !lrit.isDefaultListenResource()) {
                         this.m_listenResourceList.remove(lrit);
                         continueRemoving = true;
+                        i--;
                         break;
                     }
                 }
