@@ -38,8 +38,16 @@ import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class Publisher<T> {
     
+    /**
+    *
+    * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+    */
     public class PublisherWriterListener extends WriterListener {
 
         private Publisher<T> m_publisher;

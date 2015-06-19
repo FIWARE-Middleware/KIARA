@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.common;
 
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class MatchingInfo {
 	
 	public MatchingStatus status;

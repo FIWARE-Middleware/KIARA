@@ -19,7 +19,10 @@ package org.fiware.kiara.ps.rtps.messages;
 
 import org.fiware.kiara.serialization.impl.Serializable;
 
-
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class RTPSSubmessageElement implements Serializable {
 	
 	public abstract short getSerializedSize();

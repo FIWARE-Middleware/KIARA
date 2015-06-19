@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.publisher;
 
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class PublisherListener {
     
     public abstract void onPublicationMatched(Publisher pub, MatchingInfo info);

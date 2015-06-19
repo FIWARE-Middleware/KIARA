@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.attributes;
 
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ReaderTimes {
 	
 	public Timestamp heartbeatResponseDelay;

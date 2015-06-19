@@ -30,6 +30,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ReaderHistoryCache extends HistoryCache {
 	
 	protected RTPSReader m_reader;

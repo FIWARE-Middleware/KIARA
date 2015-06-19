@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum PresentationQosPolicyAccessScopeKind {
     
     INSTANCE_PRESENTATION_QOS((byte) 0), //!< Instance Presentation, default value.

@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.resources;
 
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class EventResource {
     
     private EventThread m_thread;

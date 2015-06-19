@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum ReliabilityQosPolicyKind {
     
     BEST_EFFORT_RELIABILITY_QOS((byte) 0),

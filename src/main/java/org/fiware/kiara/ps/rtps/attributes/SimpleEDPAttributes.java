@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.attributes;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class SimpleEDPAttributes {
     
     public boolean usePulicationWriterAndSubscriptionReader;

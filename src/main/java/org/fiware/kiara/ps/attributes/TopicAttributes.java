@@ -22,6 +22,10 @@ import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.ResourceLimitsQosPolicy;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class TopicAttributes {
     
     public TopicKind topicKind;

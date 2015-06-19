@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.resources;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class EventThread implements Runnable {
     
     private EventResource m_eventResource;

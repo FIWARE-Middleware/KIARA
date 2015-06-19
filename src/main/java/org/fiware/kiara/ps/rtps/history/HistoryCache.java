@@ -28,6 +28,10 @@ import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class HistoryCache {
 	
 	/* Attributes */

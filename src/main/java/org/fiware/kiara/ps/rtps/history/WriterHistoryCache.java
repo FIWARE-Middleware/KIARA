@@ -21,6 +21,10 @@ import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class WriterHistoryCache extends HistoryCache {
 
 	public SequenceNumber m_lastCacheChangeSeqNum;

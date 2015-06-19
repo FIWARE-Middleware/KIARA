@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum LivelinessQosPolicyKind {
     AUTOMATIC_LIVELINESS_QOS((byte) 0), //!< Automatic Liveliness, default value.
     MANUAL_BY_PARTICIPANT_LIVELINESS_QOS((byte) 1), //!< MANUAL_BY_PARTICIPANT_LIVELINESS_QOS

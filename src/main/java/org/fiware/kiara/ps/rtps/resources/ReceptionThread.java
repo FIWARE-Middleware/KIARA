@@ -33,6 +33,10 @@ import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ReceptionThread implements Runnable {
 
     private DatagramChannel m_channel;

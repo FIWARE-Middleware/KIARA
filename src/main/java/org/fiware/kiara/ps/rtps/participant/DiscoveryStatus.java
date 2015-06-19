@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.participant;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum DiscoveryStatus {
     DISCOVERED_PARTICIPANT,
     CHANGED_QOS_RTPSPARTICIPANT,

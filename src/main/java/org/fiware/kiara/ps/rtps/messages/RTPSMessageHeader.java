@@ -28,6 +28,10 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSMessageHeader implements Serializable {
 	
 	public static final int RTPS_MESSAGE_HEADER_SIZE = 20;

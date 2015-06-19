@@ -25,6 +25,10 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public abstract class Parameter extends RTPSSubmessageElement {
     
     public static short PARAMETER_KIND_LENGTH = 4;

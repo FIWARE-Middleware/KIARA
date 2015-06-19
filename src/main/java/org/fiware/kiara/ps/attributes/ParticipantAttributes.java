@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.attributes;
 
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class ParticipantAttributes {
     
     public RTPSParticipantAttributes rtps;

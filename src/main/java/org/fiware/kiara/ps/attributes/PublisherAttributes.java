@@ -21,6 +21,10 @@ import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.attributes.WriterTimes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class PublisherAttributes {
     
     public TopicAttributes topic;

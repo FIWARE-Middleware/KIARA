@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.common;
 
 import org.fiware.kiara.ps.rtps.messages.common.types.SubmessageId;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum EncapsulationKind {
 	
 	CDR_BE((byte) 0x00),

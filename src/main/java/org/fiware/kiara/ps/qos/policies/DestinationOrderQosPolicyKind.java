@@ -17,6 +17,10 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public enum DestinationOrderQosPolicyKind {
     BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS((byte) 0), //!< By Reception Timestamp, default value.
     BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS((byte) 1); //!< By Source Timestamp.

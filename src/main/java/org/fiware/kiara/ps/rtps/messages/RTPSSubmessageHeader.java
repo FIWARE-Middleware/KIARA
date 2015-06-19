@@ -27,6 +27,10 @@ import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSSubmessageHeader implements Serializable {
 	
 	SubmessageId m_submessageId;

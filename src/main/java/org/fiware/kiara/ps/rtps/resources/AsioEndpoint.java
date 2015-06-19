@@ -19,6 +19,10 @@ package org.fiware.kiara.ps.rtps.resources;
 
 import java.net.InetAddress;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class AsioEndpoint {
 	
 	public int port;

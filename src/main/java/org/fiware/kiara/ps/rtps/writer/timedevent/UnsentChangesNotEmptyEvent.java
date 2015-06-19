@@ -22,6 +22,10 @@ import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class UnsentChangesNotEmptyEvent extends TimedEvent {
     
     private RTPSWriter m_writer;

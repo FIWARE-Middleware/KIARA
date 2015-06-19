@@ -43,6 +43,10 @@ import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+*
+* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+*/
 public class RTPSDomain {
     
     private static byte[] vendorId = new byte[] {0x01, 0x0F};
