@@ -17,16 +17,17 @@ import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.ps.topic.TopicDataTypeOld;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Publisher {
+public class Publisher<T> {
     
     public class PublisherWriterListener extends WriterListener {
 
-        private Publisher m_publisher;
+        private Publisher<T> m_publisher;
         
-        public PublisherWriterListener(Publisher publisher) {
+        public PublisherWriterListener(Publisher<T> publisher) {
             this.m_publisher = publisher;
         }
 
@@ -43,7 +44,7 @@ public class Publisher {
     
     private RTPSWriter m_writer;
     
-    private TopicDataType m_type;
+    private TopicDataType<T> m_type;
     
     private PublisherAttributes m_att;
     
@@ -51,7 +52,7 @@ public class Publisher {
     
     private PublisherListener m_listener;
     
-    private Publisher m_userPublisher;
+    private Publisher<T> m_userPublisher;
     
     private RTPSParticipant m_rtpsParticipant;
     
@@ -59,7 +60,7 @@ public class Publisher {
     
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
     
-    public Publisher(Participant participant, TopicDataType dataType, PublisherAttributes att, PublisherListener listener) {
+    public Publisher(Participant participant, TopicDataType<T> dataType, PublisherAttributes att, PublisherListener listener) {
         this.m_participant = participant;
         this.m_writer = null;
         this.m_type = dataType;
@@ -79,12 +80,12 @@ public class Publisher {
         }
     }
     
-    public boolean write(Object data) {
+    public  boolean write(T data) {
         logger.info("Writing new data");
         return this.createNewChange(ChangeKind.ALIVE, data);
     }
     
-    public boolean createNewChange(ChangeKind kind, Object data) {
+    public  boolean createNewChange(ChangeKind kind, T data) {
         if (data == null) {
             logger.error("Data is null");
             return false;
@@ -105,6 +106,7 @@ public class Publisher {
         CacheChange ch = this.m_writer.newChange(kind, handle);
         if (ch != null) {
             if (kind == ChangeKind.ALIVE) {
+                ch.getSerializedPayload().setData((Serializable) data); 
                 if (!this.m_type.serialize(data, ch.getSerializedPayload())) {
                     logger.warn("RTPSWriter: Serialization returns false");
                     this.m_history.releaseCache(ch);
@@ -130,17 +132,17 @@ public class Publisher {
     }
     
     
-    public boolean dispose(Object data) {
+    public  boolean dispose(T data) {
         logger.info("Disposing of data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED, data);
     }
     
-    public boolean unregister(Object data) {
+    public  boolean unregister(T data) {
         logger.info("Unregistering of type");
         return this.createNewChange(ChangeKind.NOT_ALIVE_UNREGISTERED, data);
     }
     
-    public boolean disposeAndUnregister(Object data) {
+    public  boolean disposeAndUnregister(T data) {
         logger.info("Disposing and unregistering data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED, data);
     }

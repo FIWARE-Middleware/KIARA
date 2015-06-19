@@ -180,9 +180,11 @@ public class PublisherHistory extends WriterHistoryCache {
             this.m_keyedChanges.add(newPair);
             return newPair;
         } else {
-            for (Pair<InstanceHandle, List<CacheChange>> pair : this.m_keyedChanges) {
+            for (int i=0; i < this.m_keyedChanges.size(); ++i) {
+                Pair<InstanceHandle, List<CacheChange>> pair = this.m_keyedChanges.get(i);
                 if (pair.getSecond().size() == 0) {
                     this.m_keyedChanges.remove(pair);
+                    i--;
                     Pair<InstanceHandle, List<CacheChange>> newPair;
                     newPair = new Pair<InstanceHandle, List<CacheChange>>(change.getInstanceHandle(), new ArrayList<CacheChange>());
                     this.m_keyedChanges.add(newPair);

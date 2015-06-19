@@ -166,7 +166,8 @@ public class Participant {
     }
     
     public boolean removePublisher(Publisher pub) {
-        for (Publisher it : this.m_publishers) {
+        for (int i=0; i < this.m_publishers.size(); ++i) {
+            Publisher it = this.m_publishers.get(i);
             if (it.getGuid().equals(pub.getGuid())) {
                 it.destroy();
                 this.m_publishers.remove(it);
