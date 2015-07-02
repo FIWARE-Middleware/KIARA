@@ -52,13 +52,13 @@ public class StatelessWriter extends RTPSWriter {
     
     private List<RemoteReaderAttributes> m_matchedReaders;
     
-    private final Lock m_mutex;
+    //private final Lock m_mutex;
     
     private static final Logger logger = LoggerFactory.getLogger(StatelessWriter.class);
 
     public StatelessWriter(RTPSParticipant participant, GUID guid, WriterAttributes att, WriterHistoryCache history, WriterListener listener) {
         super(participant, guid, att, history, listener);
-        this.m_mutex = new ReentrantLock(true);
+        //this.m_mutex = new ReentrantLock(true);
         this.m_readerLocator = new ArrayList<ReaderLocator>();
         this.m_matchedReaders = new ArrayList<RemoteReaderAttributes>();
         
@@ -66,22 +66,23 @@ public class StatelessWriter extends RTPSWriter {
         RemoteReaderAttributes rratt = new RemoteReaderAttributes();
         rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
         
-        Locator l = new Locator();
+        /*Locator l = new Locator();
         try {
             byte [] addr = new byte[16];
-            byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
+            //byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
+            byte [] obtainedAddr = InetAddress.getByName("192.168.1.133").getAddress();
             addr[12] = obtainedAddr[0];
             addr[13] = obtainedAddr[1];
             addr[14] = obtainedAddr[2];
             addr[15] = obtainedAddr[3];
             l.setAddress(addr);
-            l.setPort(7400);
+            l.setPort(27414);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        rratt.endpoint.unicastLocatorList.pushBack(l);
-        matchedReaderAdd(rratt);
+        rratt.endpoint.multicastLocatorList.pushBack(l);
+        matchedReaderAdd(rratt);*/
     }
     
     public void unsentChangeAddedToHistory(CacheChange change) {
@@ -100,7 +101,7 @@ public class StatelessWriter extends RTPSWriter {
             }
             
             if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
-                RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
+                RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
             } else {
                 RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
             }

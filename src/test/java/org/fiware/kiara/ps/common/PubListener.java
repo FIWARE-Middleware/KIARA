@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps.participant;
+package org.fiware.kiara.ps.common;
 
 import org.fiware.kiara.ps.publisher.Publisher;
 import org.fiware.kiara.ps.publisher.PublisherListener;

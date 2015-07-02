@@ -276,7 +276,7 @@ public class RTPSParticipant {
         
         EntityId entId = new EntityId();
         
-        if (entityId == new EntityId()) {
+        if (entityId.equals(new EntityId())) {
             if (ratt.endpointAtt.topicKind == TopicKind.NO_KEY) {
                 entId.setValue(3, (byte) 0x04); 
             } else if (ratt.endpointAtt.topicKind == TopicKind.WITH_KEY) {
@@ -292,7 +292,8 @@ public class RTPSParticipant {
             
             byte[] bytes = ByteBuffer.allocate(4).putInt(idnum).array();
             for (int i=0; i < 3; ++i) {
-                entId.setValue(2-i, bytes[i]);
+                //entId.setValue(2-i, bytes[i]);
+                entId.setValue(i, bytes[i+1]);
             }
             
             if (this.existsEntityId(entId, EndpointKind.READER)) { // TODO Check this
@@ -646,6 +647,20 @@ public class RTPSParticipant {
 
     public int getRTPSParticipantID() {
         return m_att.participantID;
+    }
+    
+    public RTPSParticipantAttributes getAttributes() {
+        return this.m_att;
+    }
+
+    public void updateReader(RTPSReader m_reader, ReaderQos qos) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public void assertRemoteRTPSParticipantLiveliness(GUIDPrefix guidPrefix) {
+        this.m_builtinProtocols.getPDP().assertRemoteParticipantLiveliness(guidPrefix);
+        
     }
 
     

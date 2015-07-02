@@ -43,6 +43,9 @@ public class SubscriberAttributes {
     
     public boolean expectsInlineQos;
     
+    /**
+     * Main Constructor
+     */
     public SubscriberAttributes() {
         this.m_userDefinedID = -1;
         this.m_entityID = -1;

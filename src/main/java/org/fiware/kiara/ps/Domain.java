@@ -31,8 +31,10 @@ import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
+import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataTypeOld;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -123,7 +125,16 @@ public class Domain {
         return null;
     }
     
-    public static boolean registerType(Participant part, TopicDataType type) {
+    /*public static boolean registerType(Participant part, TopicDataType<?> type) {
+        for (Participant it : m_participants) {
+            if (it.getGuid().equals(part.getGuid())) {
+                return part.registerType(type);
+            }
+        }
+        return false;
+    }*/
+    
+    public static <T extends Serializable> boolean registerType(Participant part, SerializableDataType<T> type) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.registerType(type);
@@ -132,13 +143,13 @@ public class Domain {
         return false;
     }
     
-    public static boolean registerTypeAlt(Participant part, TopicDataType type) {
+   /* public static boolean registerTypeAlt(Participant part, TopicDataType<?> type) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.registerType(type);
             }
         }
         return false;
-    }
+    }*/
 
 }

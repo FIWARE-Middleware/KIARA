@@ -95,6 +95,14 @@ public abstract class HistoryCache {
 		return null;
 	}
 	
+	public boolean getMinChange(CacheChange change) {
+            if (!this.m_minSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
+                change = this.m_minSeqCacheChange;
+                return true;
+            }
+            return false;
+        }
+	
 	public CacheChange getMaxChange() {
 		if (this.m_maxSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
 			return this.m_maxSeqCacheChange;

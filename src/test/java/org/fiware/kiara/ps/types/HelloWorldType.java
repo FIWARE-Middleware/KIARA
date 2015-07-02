@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps.participant;
+package org.fiware.kiara.ps.types;
 
 import java.io.IOException;
 

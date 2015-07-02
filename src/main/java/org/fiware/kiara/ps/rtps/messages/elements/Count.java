@@ -68,5 +68,13 @@ public class Count extends RTPSSubmessageElement {
 	public void setValue(int m_value) {
 		this.m_value = m_value;
 	}
+	
+	public void increase() {
+	    this.m_value++;
+	}
+	
+	public void decrease() {
+            this.m_value--;
+        }
 
 }

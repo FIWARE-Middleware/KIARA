@@ -54,6 +54,12 @@ public class RTPSMessageBuilder {
 		return retVal;
 	}
 	
+	public static RTPSMessage createMessage() {
+            RTPSMessage retVal = new RTPSMessage(500, RTPSEndian.LITTLE_ENDIAN); // Default 
+            
+            return retVal;
+    }
+	
 	public static RTPSMessage createMessage(int bufferSize, RTPSEndian endian) {
 		RTPSMessage retVal = new RTPSMessage(bufferSize, endian);
 		

@@ -32,6 +32,11 @@ import org.fiware.kiara.ps.rtps.messages.MessageReceiver;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
+
+import com.eprosima.log.Log;
 
 /**
 *
@@ -42,6 +47,8 @@ public class ReceptionThread implements Runnable {
     private DatagramChannel m_channel;
 
     private ListenResource m_listenResource;
+    
+    private static final Logger logger = LoggerFactory.getLogger(ReceptionThread.class);
 
     //private final Lock m_mutex = new ReentrantLock(true);
 
@@ -53,17 +60,17 @@ public class ReceptionThread implements Runnable {
     @Override
     public void run() {
 
-        System.out.println("Thread started");
-        
         this.m_listenResource.getRTPSParticipant().resourceSemaphorePost();
         
         ByteBuffer buf;
         try {
-            System.out.println("Size: " + this.m_channel.socket().getReceiveBufferSize());
+            //System.out.println("Size: " + this.m_channel.socket().getReceiveBufferSize());
             buf = ByteBuffer.allocate(this.m_channel.socket().getReceiveBufferSize());
 
             DatagramPacket dp = new DatagramPacket(buf.array(), this.m_channel.socket().getReceiveBufferSize());
-            System.out.println(this.m_channel.socket().getLocalPort());
+            //System.out.println(this.m_channel.socket().getLocalPort());
+            
+            logger.info("Thread " + Thread.currentThread().getId() + " listening in IP " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
             
             while(true) {
             
@@ -71,11 +78,6 @@ public class ReceptionThread implements Runnable {
                 
                 this.m_listenResource.getSenderEndpoint().port = dp.getPort();
                 this.m_listenResource.getSenderEndpoint().address = dp.getAddress();
-    
-                /*InetAddress addr = dp.getAddress(); // <<<-------------------- AQUI
-    			int port = dp.getPort();*/
-    
-                System.out.println("Received");
     
                 RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
     
@@ -108,7 +110,12 @@ public class ReceptionThread implements Runnable {
                 return;
             }
 
-            System.out.println(""); // TODO Log this
+            try {
+                logger.info(msg.getSize() + " bytes FROM " + this.m_listenResource.getSenderEndpoint().toString() + " TO: " + this.m_channel.getLocalAddress());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
             this.m_listenResource.getSenderLocator().setPort(this.m_listenResource.getSenderEndpoint().port);
 

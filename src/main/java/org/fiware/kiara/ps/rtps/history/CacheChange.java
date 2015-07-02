@@ -28,7 +28,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class CacheChange implements Comparable {
+public class CacheChange implements Comparable<CacheChange> {
 	
 	private ChangeKind m_changeKind;
 	
@@ -110,7 +110,7 @@ public class CacheChange implements Comparable {
 	}
 
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(CacheChange o) {
 		if (this.m_sequenceNumber.equals(((CacheChange) o).m_sequenceNumber)){
 			return 0;
 		} else if (this.m_sequenceNumber.isGreaterOrEqualThan(((CacheChange) o).m_sequenceNumber)){
@@ -120,6 +120,20 @@ public class CacheChange implements Comparable {
 		}
 		return 0;
 	}
+
+    public boolean copy(CacheChange ch) {
+        this.m_changeKind = ch.m_changeKind;
+        this.m_writerGUID = ch.m_writerGUID;
+        this.m_instanceHandle = ch.m_instanceHandle;
+        this.m_sourceTimestamp = ch.m_sourceTimestamp;
+        return this.m_payload.copy(ch.getSerializedPayload());
+    }
+
+    /*@Override
+    public int compareTo(CacheChange o) {
+        // TODO Auto-generated method stub
+        return 0;
+    }*/
 
 	
 

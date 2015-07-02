@@ -28,6 +28,7 @@ import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
+import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
@@ -39,6 +40,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipantDiscoveryInfo;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipantListener;
+import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
@@ -114,6 +116,8 @@ public class Participant {
     public Publisher createPublisher(PublisherAttributes att, PublisherListener listener) {
         TopicDataType<?> type = getRegisteredType(att.topic.topicDataType);
         
+        logger.info("Creating Publisher in Topic: " + att.topic.topicName);
+        
         if (type == null) {
             logger.error("Type : " + att.topic.topicDataType + " Not Registered");
             return null;
@@ -125,7 +129,7 @@ public class Participant {
         }
         
         if (this.m_att.rtps.builtinAtt.useStaticEDP) {
-            if (att.getUserDefinedId() <= 0) {
+            if (att.getUserDefinedID() <= 0) {
                 logger.error("Static EDP requires user defined Id");
                 return null;
             }
@@ -160,8 +164,8 @@ public class Participant {
             writerAtt.endpointAtt.setEntityID(att.getEntityId());
         } 
         
-        if (att.getUserDefinedId() > 0) {
-            writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedId());
+        if (att.getUserDefinedID() > 0) {
+            writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedID());
         }
         
         writerAtt.times = att.times;
@@ -182,8 +186,72 @@ public class Participant {
     }
     
     public Subscriber createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
-        // TODO Auto-generated method stub
-        return null;
+        
+        logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
+        
+        TopicDataType type = getRegisteredType(att.topic.topicDataType);
+        
+        if (type == null) {
+            logger.error("Type : " + att.topic.topicDataType + " Not Registered");
+            return null;
+        }
+        
+        if (att.topic.topicKind == TopicKind.WITH_KEY && !type.isGetKeyDefined()) {
+            logger.error("Keyed Topic needs getKey function");
+            return null;
+        }
+        
+        if (this.m_att.rtps.builtinAtt.useStaticEDP) {
+            if (att.getUserDefinedID() <= 0) {
+                logger.error("Static EDP requires user defined Id");
+                return null;
+            }
+        }
+        
+        if (!att.unicastLocatorList.isValid()) {
+            logger.error("Unicast Locator List for Publisher contains invalid Locator");
+            return null;
+        }
+        
+        if (!att.multicastLocatorList.isValid()) {
+            logger.error("Multicast Locator List for Publisher contains invalid Locator");
+            return null;
+        }
+        
+        if (!att.qos.checkQos() || !att.topic.checkQos()) {
+            return null;
+        }
+        
+        Subscriber subscriber = new Subscriber(this, type, att, listener);
+        subscriber.setRTPSParticipant(this.m_rtpsParticipant);
+        
+        ReaderAttributes ratt = new ReaderAttributes();
+        ratt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
+        ratt.endpointAtt.endpointKind = EndpointKind.READER;
+        ratt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        ratt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
+        ratt.endpointAtt.topicKind = att.topic.topicKind;
+        ratt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
+        ratt.expectsInlineQos = att.expectsInlineQos;
+        if (att.getEntityID() > 0) {
+            ratt.endpointAtt.setEntityID(att.getEntityID());
+        }
+        if (att.getUserDefinedID() > 0) {
+            ratt.endpointAtt.setUserDefinedID(att.getUserDefinedID());
+        }
+        ratt.times = att.times;
+        
+        RTPSReader reader = RTPSDomain.createRTPSReader(this.m_rtpsParticipant, ratt, subscriber.getHistory(), subscriber.getReaderListener());
+        if (reader == null) {
+            logger.error("Problem creating associated reader");
+            return null;
+        }
+        
+        subscriber.setReader(reader);
+        
+        this.m_subscribers.add(subscriber);
+        
+        return subscriber;
     }
     
     public boolean removePublisher(Publisher pub) {
@@ -199,7 +267,7 @@ public class Participant {
     }
     
     public boolean removeSubscriber(Subscriber sub) {
-     // TODO Auto-generated method stub
+        // TODO Auto-generated method stub
         return true;
     }
     

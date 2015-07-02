@@ -59,7 +59,7 @@ public class Publisher<T> {
         @Override
         public void onWriterMatcher(RTPSWriter writer, MatchingInfo info) {
             if (this.m_publisher.m_listener != null) {
-                this.m_publisher.m_listener.onPublicationMatched(m_userPublisher, info);
+                this.m_publisher.m_listener.onPublicationMatched(this.m_publisher, info);
             }
         }
         
@@ -77,7 +77,7 @@ public class Publisher<T> {
     
     private PublisherListener m_listener;
     
-    private Publisher<T> m_userPublisher;
+    //private Publisher<T> m_userPublisher;
     
     private RTPSParticipant m_rtpsParticipant;
     
@@ -93,16 +93,16 @@ public class Publisher<T> {
         this.m_history = new PublisherHistory(this, dataType.getTypeSize(), att.topic.historyQos, att.topic.resourceLimitQos);
         this.m_listener = listener;
         this.m_writerListener = new PublisherWriterListener(this);
-        this.m_userPublisher = null;
+        //this.m_userPublisher = null;
         this.m_rtpsParticipant = null;
     }
     
     public void destroy() {
         logger.info("Publisher destruction");
         RTPSDomain.removeRTPSWriter(this.m_writer);
-        if (this.m_userPublisher != null) {
+        /*if (this.m_userPublisher != null) {
             this.m_userPublisher.destroy();
-        }
+        }*/
     }
     
     public  boolean write(T data) {

@@ -87,6 +87,17 @@ public class Locator {
 		this.m_address = m_address;
 	}
 	
+	public void setIPv4Address(String m_address) {
+	    String[] splitted = m_address.split("\\.");
+	    if (splitted.length != 4) {
+	        return;
+	    }
+            this.m_address[12] = (byte) Integer.parseInt(splitted[0]);
+            this.m_address[13] = (byte) Integer.parseInt(splitted[1]);
+            this.m_address[14] = (byte) Integer.parseInt(splitted[2]);
+            this.m_address[15] = (byte) Integer.parseInt(splitted[3]);
+        }
+	
 	@Override
 	public boolean equals(Object other) {
 	    if (other instanceof Locator) {
