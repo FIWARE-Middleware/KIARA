@@ -44,6 +44,10 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
 		this.m_base = base;
 	}
 	
+	public SequenceNumber getBase() {
+	    return this.m_base;
+	}
+	
 	public boolean add(SequenceNumber seqNum) {
 		long base64 = m_base.toLong();
 		long in64 = seqNum.toLong();
@@ -159,6 +163,10 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
 	public short getSerializedSize() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+	
+	public boolean isSetEmpty() {
+	    return this.m_set.isEmpty();   
 	}
 
 }

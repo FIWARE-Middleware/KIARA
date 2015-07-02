@@ -22,20 +22,22 @@ import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ReaderAttributes {
-	
-	public EndpointAttributes endpointAtt;
-	public ReaderTimes times;
-	public boolean expectsInlineQos;
-	
-	public ReaderAttributes() {
-		this.endpointAtt.endpointKind = EndpointKind.READER;
-		this.endpointAtt.durabilityKind = DurabilityKind.VOLATILE;
-		this.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
-		this.expectsInlineQos = false;
-	}
+
+    public EndpointAttributes endpointAtt;
+    public ReaderTimes times;
+    public boolean expectsInlineQos;
+
+    public ReaderAttributes() {
+        this.endpointAtt = new EndpointAttributes();
+        this.times = new ReaderTimes();
+        this.endpointAtt.endpointKind = EndpointKind.READER;
+        this.endpointAtt.durabilityKind = DurabilityKind.VOLATILE;
+        this.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
+        this.expectsInlineQos = false;
+    }
 
 }

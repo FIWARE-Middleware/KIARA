@@ -193,6 +193,17 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		return false;
 	}
 
+    public boolean copy(SerializedPayload serializedPayload) {
+        this.m_length = serializedPayload.getLength();
+        this.m_encapsulation = serializedPayload.m_encapsulation;
+        if (this.m_appData == null) {
+            this.m_appData = serializedPayload.m_appData;
+        }
+        this.m_buffer = new byte[serializedPayload.m_length];
+        System.arraycopy(serializedPayload.m_buffer, 0, this.m_buffer, 0, serializedPayload.m_length);
+        return true;
+    }
+
     
 
 }

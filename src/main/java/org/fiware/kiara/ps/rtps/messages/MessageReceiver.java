@@ -19,10 +19,14 @@ package org.fiware.kiara.ps.rtps.messages;
 
 import java.io.IOException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
+import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
@@ -42,8 +46,11 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.Unused;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 *
@@ -76,6 +83,10 @@ public class MessageReceiver {
 	
 	
 	private ListenResource m_listenResource;
+	
+	private static final Logger logger = LoggerFactory.getLogger(MessageReceiver.class);
+	
+	private final Lock m_guardWriterMutex = new ReentrantLock(true);
 	
 	public MessageReceiver(int recBufferSize) {
 		// this.m_rec_msg(recBufferSize); TODO Fix this
@@ -194,6 +205,7 @@ public class MessageReceiver {
 					System.out.println("Data Submsg ignored, DST is another RTPSParticipant"); // TODO Log this
 				} else {
 					valid = processSubmessageData(msg, subMsg);
+					msg.addSubmessage(subMsg);
 				}
 				break;
 			
@@ -347,7 +359,7 @@ public class MessageReceiver {
 			// TODO: Delete this
 			//firstReader = new RTPSReader();
 			// TODO: Uncomment this
-			/*if (this.m_listenResource.getAssocReaders().isEmpty()) {
+			if (this.m_listenResource.getAssocReaders().isEmpty()) {
 				System.out.println("Data received in locator: " + this.m_listenResource.getListenLocators() +  ", when NO readers are listening"); // TODO Log this
 				return false;
 			}
@@ -363,7 +375,7 @@ public class MessageReceiver {
 				System.out.println("No Reader in this Locator"); // TODO Log this
 				return false;
 			}
-			*/
+			
 			// Add readerId
 			subMsg.addSubmessageElement(readerId);
 			
@@ -424,6 +436,7 @@ public class MessageReceiver {
 					payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
 					ch.setSerializedPayload(payload);
 					ch.setKind(ChangeKind.ALIVE);
+					subMsg.addSubmessageElement(payload);
 					//payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
 				} else if (keyFlag) {
 					// TODO Complete this
@@ -431,6 +444,52 @@ public class MessageReceiver {
 				
 			}
 			
+			logger.info("FROM Writer " + ch.getWriterGUID() + "; possible RTPSReaders: " + this.m_listenResource.getAssocReaders().size());
+			
+			for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
+			    WriterProxy proxy = new WriterProxy();
+			    if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), proxy)) {
+			        logger.info("Trying to add change " + ch.getSequenceNumber().toLong() + " TO Reader: " + it.getGuid().getEntityId());
+			        CacheChange changeToAdd = it.reserveCache();
+			        //if (it.reserveCache(changeToAdd)) {
+			        if (changeToAdd != null) {
+			            if (!changeToAdd.copy(ch)) {
+			                logger.warn("Problem copying CacheChange");
+			                it.releaseCache(changeToAdd);
+			                return false;
+			            }
+			        } else {
+			            logger.error("Problem reserving CacheChange in reader");
+			            return false;
+			        }
+			        
+			        if (this.m_haveTimestamp) {
+			            changeToAdd.setSourceTimestamp(this.m_timestamp);
+			        }
+			        
+			        if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+			            try {
+			                this.m_guardWriterMutex.lock();
+			                proxy.assertLiveliness();
+			                if (!it.changeReceived(changeToAdd, proxy)) {
+			                    logger.info("MessageReceiver not adding CacheChange");
+			                    it.releaseCache(changeToAdd);
+			                }
+			            } finally {
+			                this.m_guardWriterMutex.unlock();
+			            }
+			        } else {
+			            if (!it.changeReceived(changeToAdd, null)) {
+			                logger.info("MessageReceiver not adding CacheChange");
+			                it.releaseCache(changeToAdd);
+			                if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
+			                    this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(this.m_sourceGuidPrefix);
+			                }
+			            }
+			        }
+			        
+			    }
+			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

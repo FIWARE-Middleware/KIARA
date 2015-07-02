@@ -41,6 +41,9 @@ public class PublisherAttributes {
     
     private short m_entityId;
     
+    /**
+     * Main Constructor
+     */
     public PublisherAttributes() {
         this.m_userDefinedId = -1;
         this.m_entityId = -1;
@@ -53,7 +56,7 @@ public class PublisherAttributes {
         
     }
     
-    public short getUserDefinedId() {
+    public short getUserDefinedID() {
         return this.m_userDefinedId;
     }
     

@@ -76,6 +76,15 @@ public class InstanceHandle extends RTPSSubmessageElement {
 	    return false;
 	}
 	
+	public boolean isDefined() {
+	    for (Byte b : this.m_value) {
+	        if (b != 0) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	
 
 }

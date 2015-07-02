@@ -17,7 +17,11 @@
  */
 package org.fiware.kiara.ps.rtps.reader;
 
+import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
+import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
+import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
@@ -37,4 +41,70 @@ public class StatefulReader extends RTPSReader {
         // TODO Auto-generated constructor stub
     }
 
+    public void updateTimes(ReaderTimes times) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public boolean acceptMsgFrom(GUID rntityGUID, WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean matchedWriterAdd(RemoteWriterAttributes wdata) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean matchedWriterRemove(RemoteWriterAttributes wdata) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean matchedWriterIsMatched(RemoteWriterAttributes wdata) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean changeReceived(CacheChange change, WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean changeRemovedByHistory(CacheChange change, WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public CacheChange nextUntakenCache(WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public CacheChange nextUnreadCache(WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean nextUntakenCache(CacheChange change, WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean nextUnreadCache(CacheChange change, WriterProxy proxy) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    
 }

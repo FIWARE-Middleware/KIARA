@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps.participant;
+package org.fiware.kiara.ps.publisher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
 import org.fiware.kiara.ps.common.PubListener;
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.publisher.Publisher;
 import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
@@ -19,7 +20,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
 
-public class ParticipantTest {
+public class PublisherTest {
     
     public static void main(String[] args) {
         
@@ -79,7 +80,7 @@ public class ParticipantTest {
         
         publisher.write(hw);
         
-        //Domain.removeParticipant(participant);
+        Domain.removeParticipant(participant);
         
         
     }

@@ -233,13 +233,12 @@ public class PublisherHistory extends WriterHistoryCache {
                 }
                 
                 if (it != null) {
-                    //Pair<InstanceHandle, List<CacheChange>> entry = it.next();
-                    Iterator<CacheChange> innerIterator = it.getSecond().iterator();
-                    while(innerIterator.hasNext()) {
-                        CacheChange current = innerIterator.next();
+                    for (int i=0; i < it.getSecond().size(); ++i) {
+                        CacheChange current = it.getSecond().get(i);
                         if (current.getSequenceNumber().equals(change.getSequenceNumber())) {
                             if (removeChange(change)) {
                                 it.getSecond().remove(current);
+                                i--;
                                 return true;
                             }
                         }

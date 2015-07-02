@@ -39,6 +39,8 @@ import org.fiware.kiara.ps.qos.policies.TimeBasedFilterQosPolicy;
 import org.fiware.kiara.ps.qos.policies.TopicDataQosPolicy;
 import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 *
@@ -77,6 +79,8 @@ public class WriterQos {
     public TopicDataQosPolicy topicData;
 
     public GroupDataQosPolicy groupData;
+    
+    private static final Logger logger = LoggerFactory.getLogger(WriterQos.class);
 
     public WriterQos() {
         this.reliability = new ReliabilityQosPolicy();
@@ -213,25 +217,25 @@ public class WriterQos {
         boolean updatable = true;
         if(durability.kind != qos.durability.kind) {
             updatable = false;
-            System.out.println("Durability kind cannot be changed after the creation of a subscriber."); // TODO Log this
+            logger.warn("Durability kind cannot be changed after the creation of a publisher."); 
         }
 
         if(liveliness.kind !=  qos.liveliness.kind) {
             updatable = false;
-            System.out.println("Liveliness Kind cannot be changed after the creation of a subscriber."); // TODO Log this
+            logger.warn("Liveliness Kind cannot be changed after the creation of a publisher."); 
         }
 
         if(reliability.kind != qos.reliability.kind) {
             updatable = false;
-            System.out.println("Reliability Kind cannot be changed after the creation of a subscriber."); // TODO Log this
+            logger.warn("Reliability Kind cannot be changed after the creation of a publisher.");
         }
         if(ownership.kind != qos.ownership.kind) {
             updatable = false;
-            System.out.println("Ownership Kind cannot be changed after the creation of a subscriber."); // TODO Log this
+            logger.warn("Ownership Kind cannot be changed after the creation of a publisher.");
         }
         if(destinationOrder.kind != qos.destinationOrder.kind) {
             updatable = false;
-            System.out.println("Destination order Kind cannot be changed after the creation of a subscriber."); // TODO Log this
+            logger.warn("Destination order Kind cannot be changed after the creation of a publisher.");
         }
         return updatable;
     }

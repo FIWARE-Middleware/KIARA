@@ -38,6 +38,9 @@ public class TopicAttributes {
     
     public ResourceLimitsQosPolicy resourceLimitQos;
     
+    /**
+     * Main Constructor
+     */
     public TopicAttributes() {
         this.topicKind = TopicKind.NO_KEY;
         this.topicName = "UNDEF";
@@ -46,6 +49,12 @@ public class TopicAttributes {
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
     
+    /**
+     * Constructor
+     * @param name The name of the topic
+     * @param dataType The name of the data type
+     * @param kind The TopicKind of the topic
+     */
     public TopicAttributes(String name, String dataType, TopicKind kind) {
         this.topicKind = kind;
         this.topicName = name;

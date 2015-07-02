@@ -25,8 +25,12 @@ import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 */
 public class ParticipantAttributes {
     
+    //!Attributes of the associated RTPSParticipant.
     public RTPSParticipantAttributes rtps;
     
+    /**
+     * Main Constructor
+     */
     public ParticipantAttributes() {
         this.rtps = new RTPSParticipantAttributes();
     }
