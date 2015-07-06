@@ -60,19 +60,19 @@ public class ReaderHistoryCache extends HistoryCache {
         this.m_mutex.lock();
         try {
             if (this.m_reader == null) {
-                this.m_mutex.unlock();
+                //this.m_mutex.unlock();
                 logger.error("You need to create a Reader with this History before adding any changes"); 
                 return false;
             }
     
             if (change.getSerializedPayload().getSerializedSize() > this.m_attributes.payloadMaxSize) {
-                this.m_mutex.unlock();
+                //this.m_mutex.unlock();
                 logger.error("The Payload length is larger than the maximum payload size"); 
                 return false;
             }
     
             if (change.getWriterGUID().equals(new GUID())) {
-                this.m_mutex.unlock();
+                //this.m_mutex.unlock();
                 logger.error("The Writer GUID_t must be defined"); 
                 return false;
             }
@@ -85,7 +85,7 @@ public class ReaderHistoryCache extends HistoryCache {
                 this.m_changes.add(change);
                 this.updateMaxMinSeqNum();
                 logger.info("Change " + change.getSequenceNumber().toLong() + " added with " + change.getSerializedPayload().getSerializedSize() + " bytes"); // TODO Log this
-                this.m_mutex.unlock();
+                //this.m_mutex.unlock();
                 return true;
             }
         } finally {
@@ -112,7 +112,7 @@ public class ReaderHistoryCache extends HistoryCache {
                     this.m_changes.remove(it);
                     i--;
                     updateMaxMinSeqNum();
-                    this.m_mutex.unlock();
+                    //this.m_mutex.unlock();
                     return true;
                 }
     
