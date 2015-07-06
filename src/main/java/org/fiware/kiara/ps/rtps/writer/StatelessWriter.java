@@ -183,7 +183,7 @@ public class StatelessWriter extends RTPSWriter {
         return true;
     }
     
-    private boolean addLocator(RemoteReaderAttributes ratt, Locator loc) {
+    public boolean addLocator(RemoteReaderAttributes ratt, Locator loc) {
         logger.info("Adding Locator: " + loc.toString() + " to StatelessWriter");
         boolean found = false;
         for (ReaderLocator it: this.m_readerLocator) {

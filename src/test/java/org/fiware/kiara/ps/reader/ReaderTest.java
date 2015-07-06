@@ -1,5 +1,8 @@
 package org.fiware.kiara.ps.reader;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
@@ -19,7 +22,25 @@ import org.fiware.kiara.ps.types.HelloWorldType;
 
 public class ReaderTest {
     
+    public static List<HelloWorld> list = new ArrayList<HelloWorld>();
+    
     public static void main(String [] args) {
+        list.add(new HelloWorld());
+        list.add(new HelloWorld());
+        list.add(new HelloWorld());
+        list.get(0).setInnerLongAtt(10);
+        list.get(0).setInnerStringAtt("Hello World");
+        
+        HelloWorld obj = new HelloWorld();
+        //test(obj);
+        //test2(obj);
+        //test3(obj);
+        /*
+        int i1 = 0;
+        int i2 = 5;
+        i1 = i2;
+        i2 = 10;
+        */
         
         RTPSParticipantAttributes pparam = new RTPSParticipantAttributes();
         pparam.builtinAtt.useSimplePDP = false;
@@ -49,6 +70,35 @@ public class ReaderTest {
         if (reader == null) {
             System.out.println("ERROR creating reader");
             return;
+        }
+        
+    }
+    
+    public static void test(HelloWorld obj) {
+        HelloWorld obj2 = new HelloWorld();
+        obj2.setInnerLongAtt(10);
+        obj2.setInnerStringAtt("Hello World");
+        obj.setInnerLongAtt(obj2.getInnerLongAtt());
+        obj.setInnerStringAtt(obj2.getInnerStringAtt());
+        //obj = obj2;
+    }
+    
+    public static void test2(HelloWorld obj) {
+        for (HelloWorld it : list) {
+            if (it.getInnerLongAtt() == 10) {
+                obj = it;
+                return;
+            }
+        }
+        
+    }
+    
+    public static void test3(HelloWorld obj) {
+        for (HelloWorld it : list) {
+            if (it.getInnerLongAtt() == 10) {
+                obj.copy(it);
+                return;
+            }
         }
         
     }
