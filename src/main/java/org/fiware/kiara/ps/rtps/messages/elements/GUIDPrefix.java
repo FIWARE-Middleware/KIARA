@@ -57,6 +57,12 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         }
     }
 
+    public void copy(GUIDPrefix value) {
+        for (int i = 0; i < 12; ++i) {
+            m_value[i] = value.m_value[i];
+        }
+    }
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         for (int i=0; i < 12; ++i) {

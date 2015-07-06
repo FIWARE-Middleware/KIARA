@@ -54,6 +54,11 @@ public class GUID {
         this.m_entityId = id;
     }
 
+    public void copy(GUID value) {
+        m_guidPrefix.copy(value.m_guidPrefix);
+        m_entityId.copy(value.m_entityId);
+    }
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof GUID) {

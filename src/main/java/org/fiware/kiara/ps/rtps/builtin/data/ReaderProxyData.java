@@ -71,7 +71,7 @@ public class ReaderProxyData {
     }
 
     public void setGUID(GUID value) {
-        m_guid = value;
+        m_guid.copy(value);
     }
 
     public void setKey(GUID value) {
