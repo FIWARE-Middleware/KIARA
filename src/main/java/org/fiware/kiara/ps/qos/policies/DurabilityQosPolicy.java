@@ -40,7 +40,12 @@ public class DurabilityQosPolicy extends Parameter {
         this.parent = new QosPolicy(true);
         this.kind = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
     }
-    
+
+    public void copy(DurabilityQosPolicy value) {
+        parent.copy(value.parent);
+        kind = value.kind;
+    }
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);

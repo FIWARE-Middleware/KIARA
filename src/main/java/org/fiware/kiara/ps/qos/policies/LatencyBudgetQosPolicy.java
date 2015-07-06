@@ -34,5 +34,10 @@ public class LatencyBudgetQosPolicy {
         this.parent = new QosPolicy(true);
         this.duration = new Timestamp().timeZero();
     }
-    
+
+    public void copy(LatencyBudgetQosPolicy value) {
+        parent.copy(value.parent);
+        duration.copy(value.duration);
+    }
+
 }

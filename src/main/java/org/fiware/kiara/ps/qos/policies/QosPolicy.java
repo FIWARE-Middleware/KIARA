@@ -57,5 +57,10 @@ public class QosPolicy{
         this.hasChanged = false;
         this.m_sendAlways = sendAlways;
     }
-    
+
+    public void copy(QosPolicy value) {
+        hasChanged = value.hasChanged;
+        m_sendAlways = value.m_sendAlways;
+    }
+
 }

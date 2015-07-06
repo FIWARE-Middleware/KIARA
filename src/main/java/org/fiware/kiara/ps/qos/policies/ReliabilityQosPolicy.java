@@ -46,6 +46,12 @@ public class ReliabilityQosPolicy extends Parameter {
         this.maxBlockingTime = new Timestamp();
     }
 
+    public void copy(ReliabilityQosPolicy value) {
+        parent.copy(value.parent);
+        kind = value.kind;
+        maxBlockingTime.copy(value.maxBlockingTime);
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

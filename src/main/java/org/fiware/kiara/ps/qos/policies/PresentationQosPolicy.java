@@ -48,6 +48,13 @@ public class PresentationQosPolicy extends Parameter {
         this.orderedAccess = false;
     }
 
+    public void copy(PresentationQosPolicy value) {
+        parent.copy(value.parent);
+        accessScope = value.accessScope;
+        coherentAccess = value.coherentAccess;
+        orderedAccess = value.orderedAccess;
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

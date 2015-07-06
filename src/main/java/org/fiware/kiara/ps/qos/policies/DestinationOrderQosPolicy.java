@@ -42,10 +42,15 @@ public class DestinationOrderQosPolicy extends Parameter {
         this.kind = DestinationOrderQosPolicyKind.BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS;
     }
 
+    public void copy(DestinationOrderQosPolicy value) {
+        parent.copy(value.parent);
+        kind = value.kind;
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
 
 }

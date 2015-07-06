@@ -51,11 +51,17 @@ public class TopicDataQosPolicy extends Parameter {
     public void clear() {
         this.m_value.clear();
     }
-    
-    public void setValue(List<Byte> value) {
-        this.m_value = value;
+
+    public void copy(TopicDataQosPolicy value) {
+        parent.copy(value.parent);
+        m_value.clear();
     }
-    
+
+    public void setValue(List<Byte> value) {
+        this.m_value.clear();
+        this.m_value.addAll(value);
+    }
+
     public List<Byte> getValue() {
         return this.m_value;
     }

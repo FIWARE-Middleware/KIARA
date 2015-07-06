@@ -34,13 +34,18 @@ public class LifespanQosPolicy extends Parameter {
     // TODO
     
     public QosPolicy parent;
-    
-    public Timestamp duration;
+
+    public final Timestamp duration;
 
     public LifespanQosPolicy() {
         super(ParameterId.PID_LIFESPAN, Parameter.PARAMETER_TIME_LENGTH);
         this.parent = new QosPolicy(true);
         this.duration = new Timestamp().timeInfinite();
+    }
+
+    public void copy(LifespanQosPolicy value) {
+        parent.copy(value.parent);
+        duration.copy(value.duration);
     }
 
     @Override

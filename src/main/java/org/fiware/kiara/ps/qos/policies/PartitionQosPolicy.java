@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.qos.policies;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
@@ -35,9 +36,9 @@ public class PartitionQosPolicy extends Parameter {
     // TODO
 
     public QosPolicy parent;
-    
-    private List<String> m_names;
-    
+
+    private final List<String> m_names;
+
     public PartitionQosPolicy() {
         super(ParameterId.PID_PARTITION, (short) 0);
         this.parent = new QosPolicy(false);
@@ -56,9 +57,15 @@ public class PartitionQosPolicy extends Parameter {
     public List<String> getNames() {
         return this.m_names;
     }
-    
+
     public void setNames(List<String> names) {
-        this.m_names = names;
+        m_names.clear();
+        m_names.addAll(names);
+    }
+
+    public void copy(PartitionQosPolicy value) {
+        parent.copy(value.parent);
+        setNames(value.m_names);
     }
 
     @Override

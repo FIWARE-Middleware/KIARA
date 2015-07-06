@@ -42,6 +42,11 @@ public class TimeBasedFilterQosPolicy extends Parameter {
         this.minimumSeparation = new Timestamp().timeZero();
     }
 
+    public void copy(TimeBasedFilterQosPolicy value) {
+        parent.copy(value.parent);
+        minimumSeparation.copy(value.minimumSeparation);
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
