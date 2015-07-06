@@ -545,7 +545,19 @@ public class PDPSimple {
     public void assertLocalWritersLiveliness(LivelinessQosPolicyKind kind) {
         logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "") + 
                 (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
-        
+        this.m_mutex.lock();
+        try {
+            this.m_participantProxies.get(0).getMutex().lock();
+            try {
+                for (WriterProxyData wit : this.m_participantProxies.get(0).getWriters()) {
+                    //if (wit.)
+                }
+            } finally {
+                this.m_participantProxies.get(0).getMutex().unlock();
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
     public boolean newRemoteEndpointStaticallyDiscovered(GUID pguid, short userDefienedId, EndpointKind kind) {
