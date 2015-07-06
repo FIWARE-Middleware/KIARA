@@ -155,7 +155,7 @@ public class ReaderProxyData {
     }
 
     public void setQos(ReaderQos value) {
-        throw new UnsupportedOperationException();
+        m_qos.copy(value);
     }
 
     public short getUserDefinedId() {

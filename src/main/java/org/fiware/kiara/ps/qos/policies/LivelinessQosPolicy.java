@@ -46,6 +46,14 @@ public class LivelinessQosPolicy extends Parameter {
         this.leaseDuration = new Timestamp().timeInfinite();
         this.announcementPeriod = new Timestamp().timeInfinite();
     }
+
+    public void copy(LivelinessQosPolicy value) {
+        parent.copy(value.parent);
+        kind = value.kind;
+        leaseDuration.copy(value.leaseDuration);
+        announcementPeriod.copy(value.announcementPeriod);
+    }
+
     // TODO
 
     @Override

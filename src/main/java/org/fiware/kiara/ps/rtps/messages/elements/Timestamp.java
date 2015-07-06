@@ -51,6 +51,11 @@ public class Timestamp extends RTPSSubmessageElement {
         this.m_fraction =  fraction;
     }
 
+    public void copy(Timestamp value) {
+        m_seconds = value.m_seconds;
+        m_fraction = value.m_fraction;
+    }
+
     public Timestamp timeInfinite() {
         this.m_seconds = 0x7fffffff;
         this.m_fraction = 0x7fffffff;

@@ -41,12 +41,17 @@ public class DeadLineQosPolicy extends Parameter {
         super(ParameterId.PID_DEADLINE, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(true);
         this.period = new Timestamp().timeInfinite();
-    } 
+    }
+
+    public void copy(DeadLineQosPolicy value) {
+        parent.copy(value.parent);
+        period.copy(value.period);
+    }
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
 
 }

@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.qos.policies;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
@@ -44,9 +45,20 @@ public class UserDataQosPolicy extends Parameter {
     public byte[] getDataBuf() {
         return this.dataBuf;
     }
-    
+
     public void setDataBuf(byte[] buf) {
-        this.dataBuf = buf;
+        if (buf == null)
+            dataBuf = null;
+        else if (dataBuf != null && dataBuf.length == buf.length) {
+            System.arraycopy(buf, 0, dataBuf, 0, buf.length);
+        } else {
+            dataBuf = Arrays.copyOf(buf, buf.length);
+        }
+    }
+
+    public void copy(UserDataQosPolicy value) {
+        parent.copy(value.parent);
+        setDataBuf(value.dataBuf);
     }
 
     @Override

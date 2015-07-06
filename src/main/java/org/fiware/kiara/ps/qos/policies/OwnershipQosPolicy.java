@@ -42,6 +42,11 @@ public class OwnershipQosPolicy extends Parameter {
         this.kind = OwnershipQosPolicyKind.SHARED_OWNERSHIP_QOS;
     }
 
+    public void copy(OwnershipQosPolicy value) {
+        parent.copy(value.parent);
+        kind = value.kind;
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

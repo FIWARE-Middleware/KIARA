@@ -51,19 +51,25 @@ public class GroupDataQosPolicy extends Parameter {
     public void clear() {
         this.m_value.clear();
     }
-    
+
     public void setValue(List<Byte> value) {
-        this.m_value = value;
+        this.m_value.clear();
+        this.m_value.addAll(value);
     }
-    
+
     public List<Byte> getValue() {
         return this.m_value;
+    }
+
+    public void copy(GroupDataQosPolicy value) {
+        parent.copy(value.parent);
+        setValue(value.m_value);
     }
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
 
 }

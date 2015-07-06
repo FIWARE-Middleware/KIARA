@@ -56,11 +56,21 @@ public class DurabilityServiceQosPolicy extends Parameter {
         this.maxInstances = -1;
         this.maxSamplesPerInstance = -1;
     }
-    
+
+    public void copy(DurabilityServiceQosPolicy value) {
+        parent.copy(value.parent);
+        serviceCleanupDelay.copy(value.serviceCleanupDelay);
+        kind = value.kind;
+        historyDepth = value.historyDepth;
+        maxSamples = value.maxSamples;
+        maxInstances = value.maxInstances;
+        maxSamplesPerInstance = value.maxSamplesPerInstance;
+    }
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
-        
+
         this.serviceCleanupDelay.serialize(impl, message, name);
         
         impl.serializeByte(message, name, this.kind.getValue());
