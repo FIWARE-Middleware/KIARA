@@ -116,10 +116,21 @@ public abstract class RTPSReader extends Endpoint {
         this.m_trustedWriterEntityId = writerId;
     }
 
+    public void setAcceptMessagesFromUnknownWriters(boolean value) {
+        m_acceptMessagesFromUnknownWriters = value;
+    }
+
+    /**
+     * @return True if the reader expects Inline QOS.
+     */
+    public boolean getExpectsInlineQos() {
+        return m_expectsInlineQos;
+    }
+
     public ReaderHistoryCache getHistory() {
         return this.m_history;
     }
-    
+
     
 
 }

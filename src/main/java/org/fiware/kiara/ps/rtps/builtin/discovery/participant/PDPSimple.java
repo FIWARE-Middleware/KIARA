@@ -336,7 +336,11 @@ public class PDPSimple {
         logger.info("SPDP Endpoints creation finished");
         return true;
     }
-    
+
+    public boolean addReaderProxyData(ReaderProxyData rdata) {
+        return addReaderProxyData(rdata, false, null, null);
+    }
+
     public boolean addReaderProxyData(ReaderProxyData rdata, boolean copyData, ReaderProxyData returnReaderProxyData, ParticipantProxyData pdata) {
         logger.info("Adding ReaderProxyData: " + rdata.getGUID());
         this.m_mutex.lock();

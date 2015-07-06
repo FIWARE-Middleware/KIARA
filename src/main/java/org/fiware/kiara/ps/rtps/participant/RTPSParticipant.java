@@ -177,12 +177,16 @@ public class RTPSParticipant {
         } finally {
             this.m_mutex.unlock();
         }
-        
+
     }
-    
+
+    public GUID getGuid() {
+        return m_guid;
+    }
+
     public void destroy() {
         logger.info("Removing RTPSParticipant: " + this.getGUID().toString());
-        
+
         while (this.m_userReaderList.size() > 0) {
             RTPSDomain.removeRTPSReader(this.m_userReaderList.get(0));
         }
