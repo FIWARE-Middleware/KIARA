@@ -143,6 +143,11 @@ public class HelloWorld implements Serializable {
     public static int getMaxSize() {
         return 4 + 4 + 255;
     }
+    
+    public void copy(HelloWorld other) {
+        this.innerLongAtt = other.innerLongAtt;
+        this.innerStringAtt = other.innerStringAtt;
+    }
 
 	
 }

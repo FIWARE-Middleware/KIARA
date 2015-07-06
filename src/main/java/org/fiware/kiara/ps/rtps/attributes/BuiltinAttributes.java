@@ -58,6 +58,8 @@ public class BuiltinAttributes {
         this.leaseDurationAnnouncementPeriod = new Timestamp(250, 0);
         this.simpleEDP = new SimpleEDPAttributes();
         this.useWriterLP = true;
+        this.metatrafficMulticastLocatorList = new LocatorList();
+        this.metatrafficUnicastLocatorList = new LocatorList();
     }
     
     public String getStaticEndpointXMLFilename() {

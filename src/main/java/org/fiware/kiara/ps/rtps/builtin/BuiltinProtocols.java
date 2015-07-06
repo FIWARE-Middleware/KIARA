@@ -22,9 +22,15 @@ import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
+import org.fiware.kiara.ps.rtps.builtin.liveliness.WLP;
+import org.fiware.kiara.ps.rtps.common.Locator;
+import org.fiware.kiara.ps.rtps.common.LocatorKind;
+import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 *
@@ -32,62 +38,183 @@ import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 */
 public class BuiltinProtocols {
 
-    // TODO Implement
+    private BuiltinAttributes m_att;
+    
+    private RTPSParticipant m_participant;
     
     private PDPSimple m_PDP;
     
+    private WLP m_WLP;
+    
+    private int m_SPDPWellKnownMulticastPort;
+    
+    private int m_SPDPWellKnownUnicastPort;
+    
+    private LocatorList m_metatrafficMulticastLocatorList;
+    
+    private LocatorList m_metatrafficUnicastLocatorList;
+    
+    private Locator m_mandatoryMulticastLocator;
+    
+    private boolean m_useMandatory;
+    
+    private static final Logger logger = LoggerFactory.getLogger(BuiltinProtocols.class);
+    
     public BuiltinProtocols() {
-        this.m_PDP = null;
+        this.m_SPDPWellKnownMulticastPort = 7400;
+        this.m_SPDPWellKnownUnicastPort = 7410;
+        this.m_useMandatory = false;
+        this.m_metatrafficMulticastLocatorList = new LocatorList();
+        this.m_metatrafficUnicastLocatorList = new LocatorList();
     }
 
     public boolean initBuiltinProtocols(RTPSParticipant rtpsParticipant, BuiltinAttributes builtinAtt) {
-        // TODO Implement
-        return false;
+        
+        this.m_participant = rtpsParticipant;
+        this.m_att = builtinAtt;
+        
+        this.m_SPDPWellKnownMulticastPort = this.m_participant.getAttributes().portParameters.getMulticastPort(
+                this.m_att.domainID);
+        
+        this.m_SPDPWellKnownUnicastPort = this.m_participant.getAttributes().portParameters.getUnicastPort(
+                this.m_att.domainID, 
+                this.m_participant.getAttributes().participantID);
+        
+        this.m_mandatoryMulticastLocator = new Locator();
+        this.m_mandatoryMulticastLocator.setKind(LocatorKind.LOCATOR_KIND_UDPv4);
+        this.m_mandatoryMulticastLocator.setPort(this.m_SPDPWellKnownMulticastPort);
+        this.m_mandatoryMulticastLocator.setIPv4Address("239.255.0.1");
+        
+        if (this.m_att.metatrafficMulticastLocatorList.isEmpty()) {
+            this.m_metatrafficMulticastLocatorList.pushBack(this.m_mandatoryMulticastLocator);
+        } else {
+            this.m_useMandatory = false;
+            for (Locator it : this.m_att.metatrafficMulticastLocatorList.getLocators()) {
+                this.m_metatrafficMulticastLocatorList.pushBack(it);
+            }
+        }
+        
+        if (this.m_att.metatrafficUnicastLocatorList.isEmpty()) {
+            Locator loc = new Locator();
+            loc.setPort(this.m_SPDPWellKnownUnicastPort);
+            loc.setKind(LocatorKind.LOCATOR_KIND_UDPv4);
+            this.m_metatrafficUnicastLocatorList.pushBack(loc);
+        } else {
+            for (Locator it : this.m_att.metatrafficUnicastLocatorList.getLocators()) {
+                this.m_metatrafficUnicastLocatorList.pushBack(it);
+            }
+        }
+        
+        if (this.m_att.useSimplePDP) {
+            this.m_PDP = new PDPSimple(this);
+            this.m_PDP.initPDP(this.m_participant);
+            if (this.m_att.useWriterLP) {
+                // TODO Implement WLP (simulated for now)
+                this.m_WLP = new WLP(this);
+                this.m_WLP.initWL(this.m_participant);
+            }
+            this.m_PDP.announceParticipantState(true);
+            this.m_PDP.resetParticipantAnnouncement();
+        }
+        
+        logger.info("Builtin protocols have been initialized");
+        
+        return true;
+    }
+    
+    public boolean updateMetatrafficLocators(LocatorList loclist) {
+        this.m_metatrafficUnicastLocatorList = loclist;
+        return true;
     }
 
     public boolean addLocalWriter(RTPSWriter writer, TopicAttributes topicAtt, WriterQos wqos) {
-        // TODO Implement
-        return false;
+        boolean ok = false;
+        
+        if (this.m_PDP != null) {
+            ok |= this.m_PDP.getEDP().newLocalWriterProxyData(writer, topicAtt, wqos);
+        } else {
+            logger.warn("EDP is not used in this Participant, register a Writer is impossible");
+        }
+        
+        if (this.m_WLP != null) {
+            ok |= this.m_WLP.addLocalWriter(writer, wqos);
+        } else {
+            logger.warn("LIVELINESS is not used in this Participant, register a Writer is impossible");
+        }
+        
+        return ok;
     }
 
     public boolean addLocalReader(RTPSReader reader, TopicAttributes topicAtt, ReaderQos rqos) {
-        // TODO Implement
-        return false;
+        boolean ok = false;
+        
+        if (this.m_PDP != null) {
+            ok |= this.m_PDP.getEDP().newLocalReaderProxyData(reader, topicAtt, rqos);
+        } else {
+            logger.warn("EDP is not used in this Participant, register a Reader is impossible");
+        }
+        
+        return ok;
     }
 
     public boolean updateLocalWriter(RTPSWriter writer, WriterQos wqos) {
-        // TODO Implement
-        return false;
+        boolean ok = false;
+        
+        if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
+            ok |= this.m_PDP.getEDP().updatedLocalWriter(writer, wqos);
+        }
+        
+        if (this.m_WLP != null) {
+            ok |= this.m_WLP.updateLocalWriter(writer, wqos);
+        }
+        
+        return ok;
     }
 
     public boolean updateLocalReader(RTPSReader reader, ReaderQos rqos) {
-        // TODO Implement
-        return false;
+        boolean ok = false;
+        
+        if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
+            ok |= this.m_PDP.getEDP().updatedLocalReader(reader, rqos);
+        }
+        
+        return ok;
     }
 
-    public void removeLocalWriter(RTPSWriter endpoint) {
-        // TODO Implement
+    public boolean removeLocalWriter(RTPSWriter writer) {
+        boolean ok = false;
         
+        if (this.m_WLP != null) {
+            ok |= this.m_WLP.removeLocalWriter(writer);
+        }
+        
+        if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
+            ok |= this.m_PDP.getEDP().removeLocalWriter(writer);
+        }
+        
+        return ok;
     }
 
-    public void removeLocalReader(RTPSReader endpoint) {
-        // TODO Implement
+    public boolean removeLocalReader(RTPSReader reader) {
+        boolean ok = false;
         
+        if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
+            ok |= this.m_PDP.getEDP().removeLocalReader(reader);
+        }
+        
+        return ok;
     }
 
     public void announceRTPSParticipantState() {
-        // TODO Implement
-        
+        this.m_PDP.announceParticipantState(false);
     }
 
     public void stopRTPSParticipantAnnouncement() {
-        // TODO Implement
-        
+        this.m_PDP.stopParticipantAnnouncement();
     }
 
     public void resetRTPSParticipantAnnouncement() {
-        // TODO Implement
-        
+        this.m_PDP.resetParticipantAnnouncement();
     }
     
     public PDPSimple getPDP() {
@@ -97,6 +224,28 @@ public class BuiltinProtocols {
     public void setPDP(PDPSimple PDP) {
         this.m_PDP = PDP;
     }
+
+    public LocatorList getMetatrafficMulticastLocatorList() {
+        return this.m_metatrafficMulticastLocatorList;
+    }
+    
+    public LocatorList getMetatrafficUnicastLocatorList() {
+        return this.m_metatrafficUnicastLocatorList;
+    }
+
+    public boolean getUseMandaory() {
+        return this.m_useMandatory;
+    }
+
+    public Locator getMandatoryMulticastLocator() {
+        return this.m_mandatoryMulticastLocator;
+    }
+
+    public WLP getWLP() {
+        return this.m_WLP;
+    }
+
+    
     
 
 }
