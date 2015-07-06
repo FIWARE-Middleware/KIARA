@@ -65,4 +65,12 @@ public class EndpointAttributes {
         this.m_endityId = id;
     }
 
+    public LocatorList getUnicastLocatorList() {
+        return unicastLocatorList;
+    }
+
+    public LocatorList getMulticastLocatorList() {
+        return multicastLocatorList;
+    }
+
 }

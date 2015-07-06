@@ -75,7 +75,20 @@ public class InstanceHandle extends RTPSSubmessageElement {
 	    }
 	    return false;
 	}
-	
+
+        public void setGuid(GUID guid) {
+            for (int i = 0; i < 16; i++) {
+                if (i<12)
+                    m_value[i] = guid.getGUIDPrefix().getValue(i);
+                else
+                    m_value[i] = guid.getEntityId().getValue(i-12);
+            }
+        }
+
+        public void copy(InstanceHandle ihandle) {
+            System.arraycopy(ihandle.m_value, 0, m_value, 0, 16);
+        }
+
 	public boolean isDefined() {
 	    for (Byte b : this.m_value) {
 	        if (b != 0) {

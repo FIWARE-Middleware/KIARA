@@ -43,6 +43,10 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         this.m_value[index] = value;
     }
 
+    public byte getValue(int index) {
+        return this.m_value[index];
+    }
+
     public GUIDPrefix(byte[] value) throws Exception {
         if (value.length != 12) {
             throw new Exception();

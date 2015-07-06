@@ -62,7 +62,19 @@ public class TopicAttributes {
         this.historyQos = new HistoryQosPolicy();
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
-    
+
+    public String getTopicDataType() {
+        return topicDataType;
+    }
+
+    public TopicKind getTopicKind() {
+        return topicKind;
+    }
+
+    public String getTopicName() {
+        return topicName;
+    }
+
     public boolean checkQos() {
         if (resourceLimitQos.maxSamplesPerInstance > resourceLimitQos.maxSamples && this.topicKind == TopicKind.WITH_KEY) {
             System.out.println("INCORRECT TOPIC QOS: Max samples per instance must be less or equal than max samples"); // TODO Log this
