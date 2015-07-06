@@ -89,6 +89,12 @@ public class EntityId extends RTPSSubmessageElement {
         return this.m_value[index];
     }
 
+    public void copy(EntityId value) {
+        for (int i = 0; i < 4; ++i) {
+            m_value[i] = value.m_value[i];
+        }
+    }
+
     /*@Override
 	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
 		try {
