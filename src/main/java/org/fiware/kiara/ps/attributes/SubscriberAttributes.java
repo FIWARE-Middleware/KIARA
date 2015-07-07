@@ -62,16 +62,16 @@ public class SubscriberAttributes {
         return m_userDefinedID;
     }
 
-    public void setUserDefinedID(short m_userDefinedID) {
-        this.m_userDefinedID = m_userDefinedID;
+    public void setUserDefinedID(short userDefinedID) {
+        this.m_userDefinedID = userDefinedID;
     }
 
     public short getEntityID() {
         return m_entityID;
     }
 
-    public void setEntityID(short m_entityID) {
-        this.m_entityID = m_entityID;
+    public void setEntityID(short entityID) {
+        this.m_entityID = entityID;
     }
 
 }

@@ -32,7 +32,7 @@ public class TopicAttributes {
     
     public String topicName;
     
-    public String topicDataType;
+    public String topicDataTypeName;
     
     public HistoryQosPolicy historyQos;
     
@@ -44,7 +44,7 @@ public class TopicAttributes {
     public TopicAttributes() {
         this.topicKind = TopicKind.NO_KEY;
         this.topicName = "UNDEF";
-        this.topicDataType = "UNDEF";
+        this.topicDataTypeName = "UNDEF";
         this.historyQos = new HistoryQosPolicy();
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
@@ -58,13 +58,13 @@ public class TopicAttributes {
     public TopicAttributes(String name, String dataType, TopicKind kind) {
         this.topicKind = kind;
         this.topicName = name;
-        this.topicDataType = dataType;
+        this.topicDataTypeName = dataType;
         this.historyQos = new HistoryQosPolicy();
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
 
     public String getTopicDataType() {
-        return topicDataType;
+        return topicDataTypeName;
     }
 
     public TopicKind getTopicKind() {
@@ -114,7 +114,7 @@ public class TopicAttributes {
             if (!this.topicName.equals(t2.topicName)) {
                 return false;
             }
-            if (!this.topicDataType.equals(t2.topicDataType)) {
+            if (!this.topicDataTypeName.equals(t2.topicDataTypeName)) {
                 return false;
             }
             if (this.historyQos.kind != t2.historyQos.kind) {
