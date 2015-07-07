@@ -42,7 +42,7 @@ public class GUIDPrefix extends RTPSSubmessageElement {
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
     }
-
+    
     public byte getValue(int index) {
         return this.m_value[index];
     }
@@ -97,6 +97,11 @@ public class GUIDPrefix extends RTPSSubmessageElement {
     @Override
     public String toString() {
         return new String(this.m_value);
+    }
+
+    public byte getValueAt(byte i) {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

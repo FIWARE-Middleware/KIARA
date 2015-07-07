@@ -63,8 +63,8 @@ public class StatelessWriter extends RTPSWriter {
         this.m_matchedReaders = new ArrayList<RemoteReaderAttributes>();
         
         // TODO Remove this:
-        RemoteReaderAttributes rratt = new RemoteReaderAttributes();
-        rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+        //RemoteReaderAttributes rratt = new RemoteReaderAttributes();
+        //rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
         
         /*Locator l = new Locator();
         try {

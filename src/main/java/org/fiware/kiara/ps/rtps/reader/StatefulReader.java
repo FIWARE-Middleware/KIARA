@@ -106,5 +106,10 @@ public class StatefulReader extends RTPSReader {
         return false;
     }
 
+    public boolean matchedWriterLookup(GUID guid, WriterProxy wp) {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
     
 }

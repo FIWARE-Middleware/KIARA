@@ -666,6 +666,14 @@ public class RTPSParticipant {
         this.m_builtinProtocols.getPDP().assertRemoteParticipantLiveliness(guidPrefix);
         
     }
+    
+    public Lock getParticipantMutex() {
+        return this.m_mutex;
+    }
+
+    public List<RTPSReader> getUserReaders() {
+        return this.m_userReaderList;
+    }
 
     
 

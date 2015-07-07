@@ -25,79 +25,88 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class InstanceHandle extends RTPSSubmessageElement {
-	
-	private byte[] m_value;
-	
-	public InstanceHandle() {
-		this.m_value = new byte[16];
-		for (int i=0; i < 16; ++i) {
-			this.m_value[i] = (byte) 0;
-		}
-	}
 
-	/*@Override
+    private byte[] m_value;
+
+    public InstanceHandle() {
+        this.m_value = new byte[16];
+        for (int i=0; i < 16; ++i) {
+            this.m_value[i] = (byte) 0;
+        }
+    }
+
+    /*@Override
 	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
 		try {
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}*/
 
-	@Override
-	public short getSerializedSize() {
-		return (short) 16;
-	}
+    public void setValue(int index, byte value) {
+        this.m_value[index] = value;
+    }
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		for (int i=0; i < 16; ++i) {
-			impl.serializeByte(message, "", this.m_value[i]);
-		}
-	}
+    public byte getValue(int index) {
+        return this.m_value[index];
+    }
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message,
-			String name) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-	    if (other instanceof InstanceHandle) {
-	        return this.m_value.equals(((InstanceHandle) other).m_value);
-	    }
-	    return false;
-	}
+    @Override
+    public short getSerializedSize() {
+        return (short) 16;
+    }
 
-        public void setGuid(GUID guid) {
-            for (int i = 0; i < 16; i++) {
-                if (i<12)
-                    m_value[i] = guid.getGUIDPrefix().getValue(i);
-                else
-                    m_value[i] = guid.getEntityId().getValue(i-12);
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        for (int i=0; i < 16; ++i) {
+            impl.serializeByte(message, "", this.m_value[i]);
+        }
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message,
+            String name) throws IOException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof InstanceHandle) {
+            return this.m_value.equals(((InstanceHandle) other).m_value);
+        }
+        return false;
+    }
+
+    public void setGuid(GUID guid) {
+        for (int i = 0; i < 16; i++) {
+            if (i<12)
+                m_value[i] = guid.getGUIDPrefix().getValue(i);
+            else
+                m_value[i] = guid.getEntityId().getValue(i-12);
+        }
+    }
+
+    public void copy(InstanceHandle ihandle) {
+        System.arraycopy(ihandle.m_value, 0, m_value, 0, 16);
+    }
+
+    public boolean isDefined() {
+        for (Byte b : this.m_value) {
+            if (b != 0) {
+                return true;
             }
         }
+        return false;
+    }
 
-        public void copy(InstanceHandle ihandle) {
-            System.arraycopy(ihandle.m_value, 0, m_value, 0, 16);
-        }
 
-	public boolean isDefined() {
-	    for (Byte b : this.m_value) {
-	        if (b != 0) {
-	            return true;
-	        }
-	    }
-	    return false;
-	}
-	
-	
+
 
 }

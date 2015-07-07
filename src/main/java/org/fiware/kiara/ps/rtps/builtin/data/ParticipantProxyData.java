@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.qos.QosList;
+import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.QosPolicy;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
@@ -15,6 +16,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
@@ -45,15 +47,25 @@ public class ParticipantProxyData {
     
     private VendorId m_vendorId;
     
+    private boolean m_expectsInlineQos;
+    
     private int m_availableBuiltinEndpoints;
     
     private LocatorList m_metatrafficUnicastLocatorList;
     
     private LocatorList m_metatrafficMulticastLocatorList;
     
+    private LocatorList m_defaultUnicastLocatorList;
+    
+    private LocatorList m_defaultMulticastLocatorList;
+    
     private Count m_manualLivelinessCount;
     
+    private String m_participantName;
+    
     private InstanceHandle m_key;
+    
+    private Timestamp m_leaseDuration;
     
     private boolean m_isAlive;
     
@@ -77,9 +89,12 @@ public class ParticipantProxyData {
         this.m_vendorId = new VendorId();
         this.m_metatrafficUnicastLocatorList = new LocatorList();
         this.m_metatrafficMulticastLocatorList = new LocatorList();
+        this.m_defaultUnicastLocatorList = new LocatorList();
+        this.m_defaultMulticastLocatorList = new LocatorList();
         this.m_manualLivelinessCount = new Count(0);
         this.m_hasChanged = true;
         this.m_isAlive = false;
+        this.m_expectsInlineQos = false;
         this.m_QosList = new QosList();
         this.m_readers = new ArrayList<ReaderProxyData>();
         this.m_writers = new ArrayList<WriterProxyData>();
@@ -87,26 +102,68 @@ public class ParticipantProxyData {
         this.m_builtinWriters = new ArrayList<RemoteWriterAttributes>();
     }
 
-    public void initializeData(RTPSParticipant m_RTPSParticipant,
-            PDPSimple pdpSimple) {
-        // TODO Auto-generated method stub
+    public void initializeData(RTPSParticipant participant, PDPSimple pdpSimple) {
+        this.m_leaseDuration = participant.getAttributes().builtinAtt.leaseDuration;
+        this.m_vendorId = new VendorId().setVendoreProsima();
+        
+        this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER;
+        this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
+        
+        if (participant.getAttributes().builtinAtt.useWriterLP) {
+            this.m_availableBuiltinEndpoints |= BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_WRITER;
+            this.m_availableBuiltinEndpoints |= BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_READER;
+        }
+        
+        if (participant.getAttributes().builtinAtt.useSimpleEDP) {
+            if (participant.getAttributes().builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader) {
+                this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_PUBLICATION_ANNOUNCER;
+                this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_SUBSCRIPTION_DETECTOR;
+            }
+            if (participant.getAttributes().builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter) {
+                this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_PUBLICATION_DETECTOR;
+                this.m_availableBuiltinEndpoints |= DISC_BUILTIN_ENDPOINT_SUBSCRIPTION_ANNOUNCER;
+            }
+        }
+        
+        this.m_defaultUnicastLocatorList = participant.getAttributes().defaultUnicastLocatorList;
+        this.m_defaultMulticastLocatorList = participant.getAttributes().defaultMulticastLocatorList;
+        this.m_expectsInlineQos = false;
+        this.m_guid = participant.getGUID();
+        for (int i = 0; i < 16; ++i) {
+            if (i < 12) {
+                this.m_key.setValue(i, this.m_guid.getGUIDPrefix().getValue(i));
+            } else  if (i <= 16) {
+                this.m_key.setValue(i, this.m_guid.getEntityId().getValue(i));
+            }
+        }
+        
+        this.m_metatrafficMulticastLocatorList = pdpSimple.getBuiltinProtocols().getMetatrafficMulticastLocatorList();
+        this.m_metatrafficUnicastLocatorList = pdpSimple.getBuiltinProtocols().getMetatrafficUnicastLocatorList();
+        
+        this.m_participantName = participant.getAttributes().getName();
+        //participant.getAttributes().
+        // TODO User Data
         
     }
 
-    public void incrementManualLivelinessCount() {
+    public boolean toParameterList() {
+        if (this.m_hasChanged) {
+            this.m_QosList.getAllQos().deleteParams();
+            this.m_QosList.getAllQos().resetList();
+            this.m_QosList.getInlineQos().deleteParams();
+            this.m_QosList.getInlineQos().resetList();
+            
+            boolean valid = this.m_QosList.addQos(ParameterId.PID_PROTOCOL_VERSION, this.m_protocolVersion);
+        }
+        return true;
+    }
+
+    public void increaseManualLivelinessCount() {
         this.m_manualLivelinessCount.increase();
     }
 
     public InstanceHandle getKey() {
         return this.m_key;
-    }
-
-    public boolean toParameterList() {
-        // TODO Implement
-        if (this.m_hasChanged) {
-            
-        }
-        return false;
     }
 
     public QosList getQosList() {
@@ -161,6 +218,10 @@ public class ParticipantProxyData {
     
     public boolean getIsAlive() {
         return this.m_isAlive;
+    }
+    
+    public String getParticipantName() {
+        return this.m_participantName;
     }
 
 }

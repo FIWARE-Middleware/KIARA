@@ -17,10 +17,12 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.discovery.participant;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
@@ -54,6 +56,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
 import org.fiware.kiara.ps.rtps.utils.InfoEndianness;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
@@ -110,6 +113,7 @@ public class PDPSimple {
         this.m_guardMutexAlt = new Object();
         this.m_guardW = new Object();
         this.m_guardR = new Object();
+        this.m_participantProxies = new ArrayList<ParticipantProxyData>();
         // TODO Create objects properly
     }
     
@@ -167,7 +171,7 @@ public class PDPSimple {
         CacheChange change = null;
         
         if (newChange || this.m_hasChangedLocalPDP) {
-            this.getLocalParticipantProxyData().incrementManualLivelinessCount();
+            this.getLocalParticipantProxyData().increaseManualLivelinessCount();
             if (this.m_SPDPWriterHistory.getHistorySize() > 0) {
                 this.m_SPDPWriterHistory.removeMinChange();
             }
@@ -554,7 +558,10 @@ public class PDPSimple {
             this.m_participantProxies.get(0).getMutex().lock();
             try {
                 for (WriterProxyData wit : this.m_participantProxies.get(0).getWriters()) {
-                    //if (wit.)
+                    if (wit.getQos().liveliness.kind == kind) {
+                        logger.info("Local writer " + wit.getGUID().getEntityId() + " marked as ALIVE");
+                        wit.setIsAlive(true);
+                    }
                 }
             } finally {
                 this.m_participantProxies.get(0).getMutex().unlock();
@@ -563,15 +570,64 @@ public class PDPSimple {
             this.m_mutex.unlock();
         }
     }
+    
+    public void assertRemoteWritersLiveliness(GUIDPrefix guidP, LivelinessQosPolicyKind kind) {
+        this.m_mutex.lock();
+        try {
+            logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "") + 
+                    (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                pit.getMutex().lock();
+                try {
+                    for (WriterProxyData wit : pit.getWriters()) {
+                        if (wit.getQos().liveliness.kind == kind) {
+                            wit.setIsAlive(true);
+                            this.m_RTPSParticipant.getParticipantMutex().lock();
+                            try {
+                                for (RTPSReader rit : this.m_RTPSParticipant.getUserReaders()) {
+                                    if (rit.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                                        // Not supported in this version
+                                        /*StatefulReader sfr = (StatefulReader) rit;
+                                        WriterProxy wp = new WriterProxy();
+                                        if (sfr.matchedWriterLookup(wit.getGUID(), wp)) {
+                                            wp.assertLiveliness();
+                                            continue;
+                                        }*/
+                                    }
+                                }
+                            } finally {
+                                this.m_RTPSParticipant.getParticipantMutex().unlock();
+                            }
+                        }
+                        break;
+                    }
+                } finally {
+                    pit.getMutex().unlock();
+                }
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
 
     public boolean newRemoteEndpointStaticallyDiscovered(GUID pguid, short userDefienedId, EndpointKind kind) {
-        // TODO Implement
+        ParticipantProxyData pdata = lookupParticipantProxyData(pguid);
+        if (pdata != null) {
+            if (kind == EndpointKind.WRITER) {
+                ((EDPStatic) this.m_EDP).newRemoteWriter(pdata, userDefienedId, new EntityId());
+            } else {
+                ((EDPStatic) this.m_EDP).newRemoteReader(pdata, userDefienedId, new EntityId());
+            }
+        }
         return false;
     }
 
     public EDP getEDP() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.m_EDP;
+    }
+
+    public BuiltinProtocols getBuiltinProtocols() {
+        return this.m_builtin;
     }
 
     

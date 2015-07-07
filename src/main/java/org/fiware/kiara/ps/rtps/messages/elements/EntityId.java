@@ -84,7 +84,7 @@ public class EntityId extends RTPSSubmessageElement {
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
     }
-
+    
     public byte getValue(int index) {
         return this.m_value[index];
     }
@@ -140,5 +140,7 @@ public class EntityId extends RTPSSubmessageElement {
     public String toString() {
         return new String(this.m_value);
     }
+
+    
 
 }

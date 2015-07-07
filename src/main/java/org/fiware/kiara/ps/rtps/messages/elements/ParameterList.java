@@ -111,4 +111,16 @@ public class ParameterList extends RTPSSubmessageElement {
 		
 	}
 
+    public void deleteParams() {
+        for (Parameter param : this.m_parameters) {
+            //param.delete(); TODO Check if necessary
+        }
+        resetList();
+    }
+    
+    public void resetList() {
+        this.m_parameters.clear();
+        this.m_hasChanged = true;
+    }
+
 }
