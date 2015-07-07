@@ -42,6 +42,7 @@ public class LocatorList {
     }
 
     public void copy(LocatorList other) {
+        this.m_locators.clear();
         for (Locator loc : other.m_locators) {
             this.m_locators.add(new Locator(loc));
         }
