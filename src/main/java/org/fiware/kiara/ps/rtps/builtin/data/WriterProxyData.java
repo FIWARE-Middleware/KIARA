@@ -9,40 +9,76 @@ import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 
 public class WriterProxyData {
-    
-    private GUID m_guid;
-    
-    private LocatorList m_unicastLocatorList;
-    
-    private LocatorList m_multicastLocatorList;
-    
-    private InstanceHandle m_key;
-    
-    private InstanceHandle m_RTPSParticipantKey;
-    
+
+    private final GUID m_guid;
+    /**
+     * Unicast locator list
+     */
+    private final LocatorList m_unicastLocatorList;
+    /**
+     * Multicast locator list
+     */
+    private final LocatorList m_multicastLocatorList;
+    /**
+     * GUID_t of the Reader converted to InstanceHandle_t
+     */
+    private final InstanceHandle m_key;
+    /**
+     * GUID_t of the participant converted to InstanceHandle
+     */
+    private final InstanceHandle m_RTPSParticipantKey;
+    /**
+     * Type name
+     */
     private String m_typeName;
-    
+    /**
+     * Topic name
+     */
     private String m_topicName;
-    
-    private WriterQos m_qos;
-    
+    /**
+     * User defined ID
+     */
+    private short m_userDefinedId;
+    /**
+     * Writer Qos
+     */
+    private final WriterQos m_qos;
+    /**
+     * Maximum size of the type associated with this Writer, serialized.
+     */
     private int m_typeMaxSerialized;
-    
+    /**
+     * Indicates if the Writer is Alive.
+     */
     private boolean m_isAlive;
-    
+    /**
+     * Topic kind
+     */
     private TopicKind m_topicKind;
-    
+    /**
+     * Parameter list
+     */
     private ParameterList m_parameterList;
-    
+
+    /**
+     * Remote Attributes associated with this proxy data.
+     */
     private RemoteWriterAttributes m_remoteAtt;
-    
+
     public WriterProxyData() {
         this.m_guid = new GUID();
+        m_unicastLocatorList = new LocatorList();
+        m_multicastLocatorList = new LocatorList();
+        m_key = new InstanceHandle();
+        m_RTPSParticipantKey = new InstanceHandle();
+        m_qos = new WriterQos();
+        m_parameterList = new ParameterList();
+        m_remoteAtt = new RemoteWriterAttributes();
     }
 
     public void copy(WriterProxyData rit) {
         // TODO Implement
-        
+
     }
 
     public GUID getGUID() {
@@ -50,7 +86,7 @@ public class WriterProxyData {
     }
 
     public void setGUID(GUID guid) {
-        this.m_guid = guid;
+        m_guid.copy(guid);
     }
 
     public LocatorList getUnicastLocatorList() {
@@ -58,15 +94,15 @@ public class WriterProxyData {
     }
 
     public void setUnicastLocatorList(LocatorList unicastLocatorList) {
-        this.m_unicastLocatorList = unicastLocatorList;
+        this.m_unicastLocatorList.copy(unicastLocatorList);
     }
 
     public LocatorList getMulticastLocatorList() {
         return m_multicastLocatorList;
     }
 
-    public void setMulticastLocatorList(LocatorList multicastLocatorList) {
-        this.m_multicastLocatorList = multicastLocatorList;
+    public void setMulticastLocatorList(LocatorList m_multicastLocatorList) {
+        this.m_multicastLocatorList.copy(m_multicastLocatorList);
     }
 
     public InstanceHandle getKey() {
@@ -74,7 +110,11 @@ public class WriterProxyData {
     }
 
     public void setKey(InstanceHandle key) {
-        this.m_key = key;
+        m_key.copy(key);
+    }
+
+    public void setKey(GUID value) {
+        m_key.setGuid(m_guid);
     }
 
     public InstanceHandle getRTPSParticipantKey() {
@@ -82,7 +122,11 @@ public class WriterProxyData {
     }
 
     public void setRTPSParticipantKey(InstanceHandle RTPSParticipantKey) {
-        this.m_RTPSParticipantKey = RTPSParticipantKey;
+        this.m_RTPSParticipantKey.copy(RTPSParticipantKey);
+    }
+
+    public void setRTPSParticipantKey(GUID value) {
+        this.m_RTPSParticipantKey.setGuid(m_guid);
     }
 
     public String getTypeName() {
@@ -106,7 +150,7 @@ public class WriterProxyData {
     }
 
     public void setQos(WriterQos qos) {
-        this.m_qos = qos;
+        this.m_qos.copy(qos);
     }
 
     public int getTypeMaxSerialized() {
@@ -117,20 +161,28 @@ public class WriterProxyData {
         this.m_typeMaxSerialized = typeMaxSerialized;
     }
 
-    public boolean isIsAlive() {
+    public boolean getIsAlive() {
         return m_isAlive;
     }
 
-    public void setIsAlive(boolean isAlive) {
-        this.m_isAlive = isAlive;
+    public void setIsAlive(boolean value) {
+        this.m_isAlive = value;
     }
 
     public TopicKind getTopicKind() {
         return m_topicKind;
     }
 
-    public void setTopicKind(TopicKind topicKind) {
-        this.m_topicKind = topicKind;
+    public void setTopicKind(TopicKind value) {
+        this.m_topicKind = value;
+    }
+
+    public short getUserDefinedId() {
+        return m_userDefinedId;
+    }
+
+    public void setUserDefinedId(short value) {
+        m_userDefinedId = value;
     }
 
     public ParameterList getParameterList() {
@@ -148,7 +200,5 @@ public class WriterProxyData {
     public void setRemoteAtt(RemoteWriterAttributes remoteAtt) {
         this.m_remoteAtt = remoteAtt;
     }
-
-    
 
 }

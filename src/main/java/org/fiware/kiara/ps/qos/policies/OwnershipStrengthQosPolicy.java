@@ -42,6 +42,11 @@ public class OwnershipStrengthQosPolicy extends Parameter {
         this.value = 0;
     }
 
+    public void copy(OwnershipStrengthQosPolicy other) {
+        parent.copy(other.parent);
+        value = other.value;
+    }
+
     @Override
     public void deserializeContent(SerializerImpl impl,
             BinaryInputStream message, String name) throws IOException {

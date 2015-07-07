@@ -69,6 +69,16 @@ public class EDP {
         return false;
     }
 
+    /**
+     * After a new local WriterProxyData has been created some processing is needed (depends on the implementation).
+     * @param wdata Pointer to the Writer ProxyData object.
+     * @return True if correct.
+     */
+    public boolean processLocalWriterProxyData(WriterProxyData wdata) {
+        // FIXME abstract method
+        return false;
+    }
+
     public boolean newLocalReaderProxyData(RTPSReader reader,
             TopicAttributes att, ReaderQos rqos) {
 
@@ -101,9 +111,32 @@ public class EDP {
     }
 
     public boolean newLocalWriterProxyData(RTPSWriter writer,
-            TopicAttributes topicAtt, WriterQos wqos) {
-        // TODO Auto-generated method stub
-        return false;
+            TopicAttributes att, WriterQos wqos) {
+        logger.info("Adding {} in topic {}", writer.getGuid().getEntityId(), att.topicName);
+
+	WriterProxyData wpd = new WriterProxyData();
+	wpd.setIsAlive(true);
+	wpd.setGUID(writer.getGuid());
+	wpd.setKey(wpd.getGUID());
+	wpd.setMulticastLocatorList(writer.getAttributes().getMulticastLocatorList());
+	wpd.setUnicastLocatorList(writer.getAttributes().getUnicastLocatorList());
+	wpd.setRTPSParticipantKey(m_RTPSParticipant.getGuid());
+	wpd.setTopicName(att.getTopicName());
+	wpd.setTypeName(att.getTopicDataType());
+	wpd.setTopicKind(att.getTopicKind());
+	wpd.setTypeMaxSerialized(writer.getTypeMaxSerialized());
+	wpd.setQos(wqos);
+	wpd.setUserDefinedId(writer.getAttributes().getUserDefinedID());
+	//ADD IT TO THE LIST OF READERPROXYDATA
+	if(!this.m_PDP.addWriterProxyData(wpd)) {
+		return false;
+	}
+	//DO SOME PROCESSING DEPENDING ON THE IMPLEMENTATION (SIMPLE OR STATIC)
+	processLocalWriterProxyData(wpd);
+	//PAIRING
+	pairingWriterProxy(wpd);
+	pairingWriter(writer);
+	return true;
     }
 
     public boolean updatedLocalWriter(RTPSWriter writer, WriterQos wqos) {
@@ -146,7 +179,17 @@ public class EDP {
         return false;
     }
 
+    public boolean pairingWriterProxy(WriterProxyData wdata) {
+        // TODO implement
+        return false;
+    }
+
     public boolean pairingReader(RTPSReader R) {
+        // TODO implement
+        return false;
+    }
+
+    public boolean pairingWriter(RTPSWriter W) {
         // TODO implement
         return false;
     }

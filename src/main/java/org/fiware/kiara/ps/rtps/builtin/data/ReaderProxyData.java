@@ -1,6 +1,7 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import org.fiware.kiara.ps.qos.ReaderQos;
+import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
@@ -9,7 +10,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 
 public class ReaderProxyData {
 
-    private GUID m_guid;
+    private final GUID m_guid;
     private boolean m_expectsInlineQos;
     /**
      * Unicast locator list
@@ -42,7 +43,7 @@ public class ReaderProxyData {
     /**
      * Reader Qos
      */
-    private ReaderQos m_qos;
+    private final ReaderQos m_qos;
     /**
      * Field to indicate if the Reader is Alive.
      */
@@ -54,7 +55,12 @@ public class ReaderProxyData {
     /**
      * Parameter list
      */
-    private ParameterList m_parameterList;
+    private final ParameterList m_parameterList;
+
+    /**
+     * Remote Attributes associated with this proxy data.
+     */
+    private final RemoteReaderAttributes m_remoteAtt;
 
     public ReaderProxyData() {
         this.m_guid = new GUID();
@@ -64,6 +70,7 @@ public class ReaderProxyData {
         m_RTPSParticipantKey = new InstanceHandle();
         m_qos = new ReaderQos();
         m_parameterList = new ParameterList();
+        m_remoteAtt = new RemoteReaderAttributes();
     }
 
     public GUID getGUID() {
