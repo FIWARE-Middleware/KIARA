@@ -1,6 +1,7 @@
 package org.fiware.kiara.ps.subscriber;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -20,8 +21,6 @@ import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SubscriberHistory extends ReaderHistoryCache {
     
