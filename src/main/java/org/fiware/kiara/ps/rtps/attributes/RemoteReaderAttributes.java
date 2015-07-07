@@ -39,4 +39,8 @@ public class RemoteReaderAttributes {
         this.expectsInlineQos = false;
     }
 
+    public void setGUID(GUID other) {
+        this.guid.copy(other);
+    }
+
 }

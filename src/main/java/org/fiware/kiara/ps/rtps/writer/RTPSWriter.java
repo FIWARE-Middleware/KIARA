@@ -144,4 +144,8 @@ public abstract class RTPSWriter extends Endpoint {
     public boolean getLivelinessAsserted() {
         return this.m_livelinessAsserted;
     }
+
+    public WriterListener getListener() {
+        return m_listener;
+    }
 }

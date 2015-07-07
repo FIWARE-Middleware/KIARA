@@ -23,4 +23,8 @@ public class RemoteWriterAttributes {
         this.ownershipStrength = 0;
     }
 
+    public void setGUID(GUID other) {
+        this.guid.copy(other);
+    }
+
 }

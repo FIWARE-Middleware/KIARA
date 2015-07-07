@@ -131,6 +131,7 @@ public abstract class RTPSReader extends Endpoint {
         return this.m_history;
     }
 
-    
-
+    public ReaderListener getListener() {
+        return m_listener;
+    }
 }

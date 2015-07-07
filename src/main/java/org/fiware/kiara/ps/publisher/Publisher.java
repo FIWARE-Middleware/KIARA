@@ -57,7 +57,7 @@ public class Publisher<T> {
         }
 
         @Override
-        public void onWriterMatcher(RTPSWriter writer, MatchingInfo info) {
+        public void onWriterMatched(RTPSWriter writer, MatchingInfo info) {
             if (this.m_publisher.m_listener != null) {
                 this.m_publisher.m_listener.onPublicationMatched(this.m_publisher, info);
             }

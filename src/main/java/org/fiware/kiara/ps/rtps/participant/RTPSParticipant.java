@@ -675,6 +675,9 @@ public class RTPSParticipant {
         return this.m_userReaderList;
     }
 
-    
+    public List<RTPSWriter> getUserWriters() {
+        return this.m_userWriterList;
+    }
+
 
 }
