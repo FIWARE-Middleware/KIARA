@@ -17,7 +17,7 @@
  */
 package org.fiware.kiara.ps.qos;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
+import java.util.Arrays;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicyKind;

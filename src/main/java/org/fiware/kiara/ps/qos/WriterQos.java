@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.qos;
 
+import java.util.Arrays;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicyKind;
@@ -108,63 +109,63 @@ public class WriterQos {
 
     public void setQos(WriterQos qos, boolean firstTime) {
         if(firstTime) {
-                durability = qos.durability;
+                durability.copy(qos.durability);
                 durability.parent.hasChanged = true;
         }
         if(firstTime || deadline.period != qos.deadline.period) {
-                deadline = qos.deadline;
+                deadline.copy(qos.deadline);
                 deadline.parent.hasChanged = true;
         }
         if(latencyBudget.duration != qos.latencyBudget.duration) {
-                latencyBudget = qos.latencyBudget;
+                latencyBudget.copy(qos.latencyBudget);
                 latencyBudget.parent.hasChanged = true;
         }
         if(!liveliness.leaseDuration.equals(qos.liveliness.leaseDuration)) {
-                liveliness.leaseDuration = qos.liveliness.leaseDuration;
+                liveliness.leaseDuration.copy(qos.liveliness.leaseDuration);
                 liveliness.parent.hasChanged = true;
         }
         if(firstTime) {
-                liveliness = qos.liveliness;
+                liveliness.copy(qos.liveliness);
                 liveliness.parent.hasChanged = true;
         }
         if(firstTime) {
-                reliability = qos.reliability;
+                reliability.copy(qos.reliability);
                 reliability.parent.hasChanged = true;
         }
         if(firstTime) {
-                ownership = qos.ownership;
+                ownership.copy(qos.ownership);
                 ownership.parent.hasChanged = true;
         }
         if(destinationOrder.kind != qos.destinationOrder.kind ) {
-                destinationOrder = qos.destinationOrder;
+                destinationOrder.copy(qos.destinationOrder);
                 destinationOrder.parent.hasChanged = true;
         }
-        if (!userData.getDataBuf().equals(qos.userData.getDataBuf())) {
-                userData = qos.userData;
+        if (!Arrays.equals(userData.getDataBuf(), qos.userData.getDataBuf())) {
+                userData.copy(qos.userData);
                 userData.parent.hasChanged = true;
         }
         if(firstTime || !timeBasedFilter.minimumSeparation.equals(qos.timeBasedFilter.minimumSeparation)) {
-                timeBasedFilter = qos.timeBasedFilter;
+                timeBasedFilter.copy(qos.timeBasedFilter);
                 timeBasedFilter.parent.hasChanged = true;
         }
         if(firstTime || presentation.accessScope != qos.presentation.accessScope ||
                         presentation.coherentAccess != qos.presentation.coherentAccess ||
                         presentation.orderedAccess != qos.presentation.orderedAccess
         ) {
-                presentation = qos.presentation;
+                presentation.copy(qos.presentation);
                 presentation.parent.hasChanged = true;
         }
         if(qos.partition.getNames().size() > 0) {
-                partition = qos.partition;
+                partition.copy(qos.partition);
                 partition.parent.hasChanged = true;
         }
 
         if (!topicData.getValue().equals(qos.topicData.getValue())) {
-                topicData = qos.topicData;
+                topicData.copy(qos.topicData);
                 topicData.parent.hasChanged = true;
         }
         if (!groupData.getValue().equals(qos.groupData.getValue())) {
-                groupData = qos.groupData;
+                groupData.copy(qos.groupData);
                 groupData.parent.hasChanged = true;
         }
         if(firstTime || durabilityService.kind != qos.durabilityService.kind ||
@@ -174,15 +175,15 @@ public class WriterQos {
                         durabilityService.maxSamplesPerInstance != qos.durabilityService.maxSamplesPerInstance ||
                         durabilityService.serviceCleanupDelay != qos.durabilityService.serviceCleanupDelay
         ) {
-                durabilityService = qos.durabilityService;
+                durabilityService.copy(qos.durabilityService);
                 durabilityService.parent.hasChanged = true;
         }
         if(lifespan.duration != qos.lifespan.duration ) {
-                lifespan = qos.lifespan;
+                lifespan.copy(qos.lifespan);
                 lifespan.parent.hasChanged = true;
         }
         if(qos.ownershipStrength.value !=ownershipStrength.value) {
-                ownershipStrength = qos.ownershipStrength;
+                ownershipStrength.copy(qos.ownershipStrength);
                 ownershipStrength.parent.hasChanged = true;
         }
     }
@@ -238,6 +239,25 @@ public class WriterQos {
             logger.warn("Destination order Kind cannot be changed after the creation of a publisher.");
         }
         return updatable;
+    }
+
+    public void copy(WriterQos qos) {
+        this.durability.copy(qos.durability);
+        this.durabilityService.copy(qos.durabilityService);
+        this.deadline.copy(qos.deadline);
+        this.latencyBudget.copy(qos.latencyBudget);
+        this.liveliness.copy(qos.liveliness);
+        this.reliability.copy(qos.reliability);
+        this.lifespan.copy(qos.lifespan);
+        this.userData.copy(qos.userData);
+        this.timeBasedFilter.copy(qos.timeBasedFilter);
+        this.ownership.copy(qos.ownership);
+        this.ownershipStrength.copy(qos.ownershipStrength);
+        this.destinationOrder.copy(qos.destinationOrder);
+        this.presentation.copy(qos.presentation);
+        this.partition.copy(qos.partition);
+        this.topicData.copy(qos.topicData);
+        this.groupData.copy(qos.groupData);
     }
 
 }
