@@ -114,12 +114,12 @@ public class Participant {
     }
     
     public Publisher createPublisher(PublisherAttributes att, PublisherListener listener) {
-        TopicDataType<?> type = getRegisteredType(att.topic.topicDataType);
+        TopicDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
         logger.info("Creating Publisher in Topic: " + att.topic.topicName);
         
         if (type == null) {
-            logger.error("Type : " + att.topic.topicDataType + " Not Registered");
+            logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
             return null;
         }
         
@@ -189,10 +189,10 @@ public class Participant {
         
         logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
         
-        TopicDataType type = getRegisteredType(att.topic.topicDataType);
+        TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
         
         if (type == null) {
-            logger.error("Type : " + att.topic.topicDataType + " Not Registered");
+            logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
             return null;
         }
         
@@ -300,7 +300,7 @@ public class Participant {
         return true;
     }
     
-    private TopicDataType getRegisteredType(String typeName) {
+    public TopicDataType getRegisteredType(String typeName) {
         
         for (TopicDataType type : this.m_types) {
             if (type.getName().equals(typeName)) {
@@ -309,7 +309,6 @@ public class Participant {
         }
         
         return null;
-        
     }
     
     public GUID getGuid() {

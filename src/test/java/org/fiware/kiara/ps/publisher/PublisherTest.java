@@ -59,7 +59,7 @@ public class PublisherTest {
         // Create publisher
         PublisherAttributes pubAtt = new PublisherAttributes();
         pubAtt.topic.topicKind = TopicKind.NO_KEY;
-        pubAtt.topic.topicDataType = "HelloWorld";
+        pubAtt.topic.topicDataTypeName = "HelloWorld";
         pubAtt.topic.topicName = "HelloWorldTopic";
         pubAtt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
         pubAtt.topic.historyQos.depth = 30;

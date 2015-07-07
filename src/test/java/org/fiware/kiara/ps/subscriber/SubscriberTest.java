@@ -48,7 +48,7 @@ public class SubscriberTest {
         
         SubscriberAttributes satt = new SubscriberAttributes();
         satt.topic.topicKind = TopicKind.NO_KEY;
-        satt.topic.topicDataType = "HelloWorld";
+        satt.topic.topicDataTypeName = "HelloWorld";
         satt.topic.topicName = "HelloWorldTopic";
         satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
         satt.topic.historyQos.depth = 30;
