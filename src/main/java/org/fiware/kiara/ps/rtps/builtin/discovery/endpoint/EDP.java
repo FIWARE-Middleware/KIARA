@@ -1,9 +1,14 @@
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
+import java.util.Objects;
 import java.util.concurrent.locks.Lock;
 import org.fiware.kiara.ps.attributes.TopicAttributes;
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
+import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
+import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
+import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
@@ -16,6 +21,7 @@ import org.fiware.kiara.ps.rtps.common.MatchingStatus;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.utils.StringMatching;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,9 +31,9 @@ import org.slf4j.LoggerFactory;
  * methods used by the two EDP implemented (EDPSimple and EDPStatic), as well as
  * abstract methods definitions required by the specific implementations.
  *
- * 
+ *
  */
-public class EDP {
+public abstract class EDP {
 
     /**
      * Pointer to the PDPSimple object that contains the endpoint discovery
@@ -52,10 +58,13 @@ public class EDP {
         m_RTPSParticipant = part;
     }
 
-    public void initEDP(BuiltinAttributes m_discovery) {
-        // TODO Auto-generated method stub
-        // FIXME abstract method
-    }
+    /**
+     * Abstract method to initialize the EDP.
+     *
+     * @param attributes DiscoveryAttributes structure.
+     * @return True if correct.
+     */
+    public abstract boolean initEDP(BuiltinAttributes m_discovery);
 
     /**
      * Abstract method that assigns remote endpoints when a new
@@ -63,9 +72,31 @@ public class EDP {
      *
      * @param pdata Discovered ParticipantProxyData
      */
-    public void assignRemoteEndpoints(ParticipantProxyData pdata) {
-        // FIXME abstract method
+    public abstract void assignRemoteEndpoints(ParticipantProxyData pdata);
+
+    /**
+     * Remove remote endpoints from the endpoint discovery protocol
+     *
+     * @param pdata Pointer to the ParticipantProxyData to remove
+     */
+    public void removeRemoteEndpoints(ParticipantProxyData pdata) {
     }
+
+    /**
+     * Abstract method that removes a local Reader from the discovery method
+     *
+     * @param R Pointer to the Reader to remove.
+     * @return True if correctly removed.
+     */
+    public abstract boolean removeLocalReader(RTPSReader R);
+
+    /**
+     * Abstract method that removes a local Writer from the discovery method
+     *
+     * @param W Pointer to the Writer to remove.
+     * @return True if correctly removed.
+     */
+    public abstract boolean removeLocalWriter(RTPSWriter W);
 
     /**
      * After a new local ReaderProxyData has been created some processing is
@@ -74,10 +105,7 @@ public class EDP {
      * @param rdata Pointer to the ReaderProxyData object.
      * @return True if correct.
      */
-    public boolean processLocalReaderProxyData(ReaderProxyData rdata) {
-        // FIXME abstract method
-        return false;
-    }
+    public abstract boolean processLocalReaderProxyData(ReaderProxyData rdata);
 
     /**
      * After a new local WriterProxyData has been created some processing is
@@ -86,10 +114,7 @@ public class EDP {
      * @param wdata Pointer to the Writer ProxyData object.
      * @return True if correct.
      */
-    public boolean processLocalWriterProxyData(WriterProxyData wdata) {
-        // FIXME abstract method
-        return false;
-    }
+    public abstract boolean processLocalWriterProxyData(WriterProxyData wdata);
 
     public boolean newLocalReaderProxyData(RTPSReader reader,
             TopicAttributes att, ReaderQos rqos) {
@@ -246,19 +271,84 @@ public class EDP {
         }
     }
 
-    public boolean removeLocalWriter(RTPSWriter writer) {
-        // TODO Auto-generated method stub
-        return false;
-    }
+    /**
+     * Check the validity of a matching between a RTPSWriter and a
+     * ReaderProxyData object.
+     *
+     * @param wdata Pointer to the WriterProxyData object.
+     * @param rdata Pointer to the ReaderProxyData object.
+     * @return True if the two can be matched.
+     */
+    public boolean validMatching(WriterProxyData wdata, ReaderProxyData rdata) {
+        if (!Objects.equals(wdata.getTopicName(), rdata.getTopicName())) {
+            return false;
+        }
+        if (!Objects.equals(wdata.getTypeName(), rdata.getTypeName())) {
+            return false;
+        }
+        if (wdata.getTopicKind() != rdata.getTopicKind()) {
+            logger.warn("RTPS EDP: INCOMPATIBLE QOS:Remote Reader {} is publishing in topic {} (keyed:{}), local writer publishes as keyed: {}",
+                    rdata.getGUID(), rdata.getTopicName(), rdata.getTopicKind(), wdata.getTopicKind());
+        }
+        if (!rdata.getIsAlive()) { //Matching
+            logger.warn("RTPS EDP: ReaderProxyData object is NOT alive");
+            return false;
+        }
+        if (wdata.getQos().reliability.kind == BEST_EFFORT_RELIABILITY_QOS
+                && rdata.getQos().reliability.kind == RELIABLE_RELIABILITY_QOS) //Means our writer is BE but the reader wants RE
+        {
+            logger.warn("RTPS EDP: INCOMPATIBLE QOS (topic: {}):Remote Reader {} is Reliable and local writer is BE ",
+                    rdata.getTopicName(), rdata.getGUID());
+            return false;
+        }
+        if (wdata.getQos().durability.kind == VOLATILE_DURABILITY_QOS
+                && rdata.getQos().durability.kind == TRANSIENT_LOCAL_DURABILITY_QOS) {
+            logger.warn("RTPS EDP: INCOMPATIBLE QOS (topic: {}):RemoteReader has TRANSIENT_LOCAL DURABILITY and we offer VOLATILE",
+                    rdata.getTopicName(), rdata.getGUID());
+            return false;
+        }
+        if (wdata.getQos().ownership.kind != rdata.getQos().ownership.kind) {
+            logger.warn("RTPS EDP: INCOMPATIBLE QOS (topic: {}):Remote reader {} has different Ownership Kind",
+                    rdata.getTopicName(), rdata.getGUID());
+            return false;
+        }
+        //Partition check:
+        boolean matched = false;
+        if (wdata.getQos().partition.getNames().isEmpty() && rdata.getQos().partition.getNames().isEmpty()) {
+            matched = true;
+        } else if (wdata.getQos().partition.getNames().isEmpty() && rdata.getQos().partition.getNames().size() > 0) {
+            for (String rnameit : rdata.getQos().partition.getNames()) {
+                if (rnameit.length() == 0) {
+                    matched = true;
+                    break;
+                }
+            }
+        } else if (wdata.getQos().partition.getNames().size() > 0 && rdata.getQos().partition.getNames().isEmpty()) {
+            for (String wnameit : wdata.getQos().partition.getNames()) {
+                if (wnameit.length() == 0) {
+                    matched = true;
+                    break;
+                }
 
-    public boolean removeLocalReader(RTPSReader reader) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public void removeRemoteEndpoints(ParticipantProxyData pdata) {
-        // TODO Auto-generated method stub
-
+            }
+        } else {
+            for (String wnameit : wdata.getQos().partition.getNames()) {
+                for (String rnameit : rdata.getQos().partition.getNames()) {
+                    if (StringMatching.matchString(wnameit, rnameit)) {
+                        matched = true;
+                        break;
+                    }
+                }
+                if (matched) {
+                    break;
+                }
+            }
+        }
+        if (!matched) //Different partitions
+        {
+            logger.warn("RTPS EDP: INCOMPATIBLE QOS (topic: {}): Different Partitions", rdata.getTopicName());
+        }
+        return matched;
     }
 
     public boolean pairingReaderProxy(ReaderProxyData rdata) {
