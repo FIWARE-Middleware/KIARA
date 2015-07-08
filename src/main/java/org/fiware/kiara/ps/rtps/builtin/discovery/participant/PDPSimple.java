@@ -634,6 +634,11 @@ public class PDPSimple {
         return this.m_builtin;
     }
 
-    
+    public Lock getMutex() {
+        return m_mutex;
+    }
 
+    public List<ParticipantProxyData> getParticipantProxies() {
+        return m_participantProxies;
+    }
 }

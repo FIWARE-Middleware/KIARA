@@ -1,8 +1,15 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import org.fiware.kiara.ps.qos.ReaderQos;
+import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
+import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
+import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
+import static org.fiware.kiara.ps.rtps.common.DurabilityKind.VOLATILE;
+import static org.fiware.kiara.ps.rtps.common.EndpointKind.READER;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
+import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
+import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
@@ -176,6 +183,22 @@ public class ReaderProxyData {
     public void copy(ReaderProxyData rit) {
         // TODO Implement
 
+    }
+
+    /**
+    * Convert the ProxyData information to RemoteReaderAttributes object.
+    * @return Reference to the RemoteReaderAttributes object.
+    */
+    public RemoteReaderAttributes toRemoteReaderAttributes() {
+        m_remoteAtt.setGUID(m_guid);
+        m_remoteAtt.expectsInlineQos = this.m_expectsInlineQos;
+        m_remoteAtt.endpoint.durabilityKind = m_qos.durability.kind == TRANSIENT_LOCAL_DURABILITY_QOS ? TRANSIENT_LOCAL : VOLATILE;
+        m_remoteAtt.endpoint.endpointKind = READER;
+        m_remoteAtt.endpoint.topicKind = m_topicKind;
+        m_remoteAtt.endpoint.reliabilityKind = m_qos.reliability.kind == RELIABLE_RELIABILITY_QOS ? RELIABLE : BEST_EFFORT;
+        m_remoteAtt.endpoint.unicastLocatorList.copy(this.m_unicastLocatorList);
+        m_remoteAtt.endpoint.multicastLocatorList.copy(this.m_multicastLocatorList);
+        return m_remoteAtt;
     }
 
 }
