@@ -56,4 +56,8 @@ public class Endpoint {
 	    return this.m_participant;
 	}
 
+        public Lock getMutex() {
+            return m_mutex;
+        }
+
 }
