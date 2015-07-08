@@ -108,6 +108,12 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		}
 	}
 	
+	public void addParameters(ParameterList paramList) {
+	    for (Parameter param : paramList.getParameters()) {
+	        this.m_parameterList.addParameter(param);
+	    }
+	}
+	
 	public void setData(Serializable data, short length) {
 		if (this.m_encapsulation == EncapsulationKind.CDR_BE || this.m_encapsulation == EncapsulationKind.CDR_LE) {
 			this.m_appData = data;
@@ -205,6 +211,8 @@ public class SerializedPayload extends RTPSSubmessageElement {
         }
         return true;
     }
+
+    
 
     
 

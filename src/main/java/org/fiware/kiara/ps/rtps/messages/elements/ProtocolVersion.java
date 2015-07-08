@@ -134,4 +134,9 @@ public class ProtocolVersion extends RTPSSubmessageElement {
 		}
 	}
 
+    public void copy(ProtocolVersion protocolVersion) {
+        this.m_minor = protocolVersion.m_minor;
+        this.m_major = protocolVersion.m_major;
+    }
+
 }

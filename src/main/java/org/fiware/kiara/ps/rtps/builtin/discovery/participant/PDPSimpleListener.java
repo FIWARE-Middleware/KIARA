@@ -14,13 +14,13 @@ public class PDPSimpleListener extends ReaderListener {
     @Override
     public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
         // TODO Auto-generated method stub
-        
+        System.out.println("PDPSimpleListener: READER MATCHED");
     }
 
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
         // TODO Auto-generated method stub
-        
+        System.out.println("PDPSimpleListener: NEW CHANGE ADDED");
     }
 
 }

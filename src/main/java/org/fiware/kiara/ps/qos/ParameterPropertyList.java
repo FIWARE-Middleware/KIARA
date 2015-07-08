@@ -1,6 +1,7 @@
 package org.fiware.kiara.ps.qos;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
@@ -17,6 +18,7 @@ public class ParameterPropertyList extends Parameter {
     
     public ParameterPropertyList() {
         super(ParameterId.PID_PROPERTY_LIST, (short) 0);
+        this.m_properties = new ArrayList<Pair<String, String>>();
     }
     
     public ParameterPropertyList(ParameterId pid, short inLength) {
@@ -28,10 +30,14 @@ public class ParameterPropertyList extends Parameter {
     }
 
     @Override
-    public void deserializeContent(SerializerImpl impl,
-            BinaryInputStream message, String name) throws IOException {
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // TODO Auto-generated method stub
         
+    }
+
+    public void copy(ParameterPropertyList other) {
+        this.m_properties.clear();
+        this.m_properties.addAll(other.m_properties);
     }
 
 }
