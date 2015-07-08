@@ -29,7 +29,7 @@ public class ResendParticipantProxyDataPeriod extends TimedEvent {
             logger.info("Resend Discovery Data Period");
             this.m_PDP.getLocalParticipantProxyData().increaseManualLivelinessCount();
             this.m_PDP.announceParticipantState(false);
-            this.restartTimer();
+            //this.restartTimer();
         } else if (code == EventCode.EVENT_ABORT) {
             logger.info("Response Data Period aborted");
             this.stopSemaphorePost();

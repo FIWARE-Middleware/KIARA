@@ -44,6 +44,7 @@ public class ReaderTest {
         
         RTPSParticipantAttributes pparam = new RTPSParticipantAttributes();
         pparam.builtinAtt.useSimplePDP = true;
+        pparam.builtinAtt.useStaticEDP = true;
         pparam.builtinAtt.useWriterLP = false;
         
         RTPSParticipant participant = RTPSDomain.createParticipant(pparam, null);

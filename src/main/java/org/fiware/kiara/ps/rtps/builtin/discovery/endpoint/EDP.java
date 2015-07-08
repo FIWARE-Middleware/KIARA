@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * methods used by the two EDP implemented (EDPSimple and EDPStatic), as well as
  * abstract methods definitions required by the specific implementations.
  *
- * @ingroup DISCOVERY_MODULE
+ * 
  */
 public class EDP {
 

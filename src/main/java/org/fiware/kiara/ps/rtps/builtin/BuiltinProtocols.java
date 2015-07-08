@@ -107,7 +107,9 @@ public class BuiltinProtocols {
         
         if (this.m_att.useSimplePDP) {
             this.m_PDP = new PDPSimple(this);
-            this.m_PDP.initPDP(this.m_participant);
+            if (!this.m_PDP.initPDP(this.m_participant)) {
+                return false;
+            }
             if (this.m_att.useWriterLP) {
                 // TODO Implement WLP (simulated for now)
                 this.m_WLP = new WLP(this);

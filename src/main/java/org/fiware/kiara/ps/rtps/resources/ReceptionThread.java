@@ -131,7 +131,7 @@ public class ReceptionThread implements Runnable {
 
             this.m_listenResource.getMessageReceiver().processCDRMessage(this.m_listenResource.getRTPSParticipant().getGUID().getGUIDPrefix(), this.m_listenResource.getSenderLocator(), msg);
             
-            System.out.println("");
+            //System.out.println("");
 
         }
     }
