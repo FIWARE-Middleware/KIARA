@@ -24,7 +24,7 @@ public class MyListener extends ReaderListener {
 
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
-        System.out.println("RECEIVED (" + this.m_received + "): " + change.getSerializedPayload().getBuffer());
+        System.out.println("RECEIVED (" + this.m_received + "): "/* + change.getSerializedPayload().getBuffer()*/);
         HelloWorldType type = new HelloWorldType();
         HelloWorld obj = type.createData();
         change.getSerializedPayload().setData(obj);
@@ -36,6 +36,10 @@ public class MyListener extends ReaderListener {
         }
         reader.getHistory().removeChange(change);
         this.m_received++;
+        
+        System.out.println("Data:");
+        System.out.println("\tLongAtt: " + obj.getInnerLongAtt());
+        System.out.println("\tStringAtt: " + obj.getInnerStringAtt());
     }
     
 }
