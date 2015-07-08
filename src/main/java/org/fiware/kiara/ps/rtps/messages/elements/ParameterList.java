@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -33,7 +34,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
 */
 public class ParameterList extends RTPSSubmessageElement {
 	
-	private ArrayList<Parameter> m_parameters;
+	private List<Parameter> m_parameters;
 	private boolean m_hasChanged;
 	private int m_totalBytes;
 	
@@ -52,12 +53,20 @@ public class ParameterList extends RTPSSubmessageElement {
 		return this.m_hasChanged;
 	}
 	
+	public void setHasChanged(boolean hasChanged) {
+            this.m_hasChanged = hasChanged;
+	}
+	
 	public int getListSize() {
 		return this.m_totalBytes;
 	}
 	
 	public void addParameter(Parameter parameter) {
 		this.m_parameters.add(parameter);
+	}
+	
+	public List<Parameter> getParameters() {
+	        return this.m_parameters;
 	}
 
 	/*@Override
@@ -122,5 +131,7 @@ public class ParameterList extends RTPSSubmessageElement {
         this.m_parameters.clear();
         this.m_hasChanged = true;
     }
+
+    
 
 }

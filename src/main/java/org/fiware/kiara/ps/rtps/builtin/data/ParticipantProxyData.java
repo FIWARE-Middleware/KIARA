@@ -5,20 +5,26 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.qos.ParameterPropertyList;
 import org.fiware.kiara.ps.qos.QosList;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.QosPolicy;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
+import org.fiware.kiara.ps.rtps.builtin.discovery.participant.timedevent.RemoteParticipantLeaseDuration;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 
 public class ParticipantProxyData {
     
@@ -67,11 +73,17 @@ public class ParticipantProxyData {
     
     private Timestamp m_leaseDuration;
     
+    private RemoteParticipantLeaseDuration m_leaseDurationTimer;
+    
     private boolean m_isAlive;
     
     private boolean m_hasChanged;
     
     private QosList m_QosList;
+    
+    private List<Byte> m_userData;
+    
+    private ParameterPropertyList m_properties;
     
     private List<ReaderProxyData> m_readers;
     
@@ -101,9 +113,11 @@ public class ParticipantProxyData {
         this.m_builtinReaders = new ArrayList<RemoteReaderAttributes>();
         this.m_builtinWriters = new ArrayList<RemoteWriterAttributes>();
         this.m_key = new InstanceHandle();
+        this.m_properties = new ParameterPropertyList();
+        this.m_userData = new ArrayList<Byte>();
     }
 
-    public void initializeData(RTPSParticipant participant, PDPSimple pdpSimple) {
+    public boolean initializeData(RTPSParticipant participant, PDPSimple pdpSimple) {
         this.m_leaseDuration = participant.getAttributes().builtinAtt.leaseDuration;
         this.m_vendorId = new VendorId().setVendoreProsima();
         
@@ -133,7 +147,7 @@ public class ParticipantProxyData {
         for (int i = 0; i < 16; ++i) {
             if (i < 12) {
                 this.m_key.setValue(i, this.m_guid.getGUIDPrefix().getValue(i));
-            } /*else  if (i >= 16) {
+            } /*else  if (i >= 16) { // TODO Check this
                 this.m_key.setValue(i, this.m_guid.getEntityId().getValue(i));
             }*/
         }
@@ -142,21 +156,127 @@ public class ParticipantProxyData {
         this.m_metatrafficUnicastLocatorList = pdpSimple.getBuiltinProtocols().getMetatrafficUnicastLocatorList();
         
         this.m_participantName = participant.getAttributes().getName();
-        //participant.getAttributes().
-        // TODO User Data
+
+        this.m_userData = participant.getAttributes().userData;
+        
+        return true;
         
     }
 
-    public boolean toParameterList() {
+    public ParameterList toParameterList() {
         if (this.m_hasChanged) {
             this.m_QosList.getAllQos().deleteParams();
             this.m_QosList.getAllQos().resetList();
             this.m_QosList.getInlineQos().deleteParams();
             this.m_QosList.getInlineQos().resetList();
             
-            boolean valid = this.m_QosList.addQos(ParameterId.PID_PROTOCOL_VERSION, this.m_protocolVersion);
+            boolean valid = true;
+            
+            valid &= this.m_QosList.addQos(ParameterId.PID_PROTOCOL_VERSION, this.m_protocolVersion);
+            valid &= this.m_QosList.addQos(ParameterId.PID_VENDORID,this.m_vendorId);
+            
+            if (this.m_expectsInlineQos) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_EXPECTS_INLINE_QOS, this.m_expectsInlineQos);
+            }
+            
+            valid &= this.m_QosList.addQos(ParameterId.PID_VENDORID, this.m_vendorId);
+            
+            for (Locator lit : this.m_metatrafficMulticastLocatorList.getLocators()) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_MULTICAST_LOCATOR, lit);
+            }
+            
+            for (Locator lit : this.m_metatrafficUnicastLocatorList.getLocators()) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_UNICAST_LOCATOR, lit);
+            }
+            
+            for (Locator lit : this.m_defaultUnicastLocatorList.getLocators()) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_UNICAST_LOCATOR, lit);
+            }
+            
+            for (Locator lit : this.m_defaultMulticastLocatorList.getLocators()) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR, lit);
+            }
+            
+            valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_LEASE_DURATION, this.m_leaseDuration);
+            valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
+            valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);
+            
+            if (this.m_properties.m_properties.size() > 0) {
+                valid &= this.m_QosList.addQos(ParameterId.PID_PROPERTY_LIST, this.m_properties);
+            }
+            
+            if (valid) {
+                this.m_hasChanged = false;
+            }
+            
+            return this.m_QosList.getAllQos();
+            
+        }
+        return null;
+    }
+    
+    public void clear() {
+        this.m_protocolVersion = new ProtocolVersion();
+        this.m_guid = new GUID();
+        this.m_vendorId = new VendorId().setVendorUnknown();
+        this.m_expectsInlineQos = false;
+        this.m_availableBuiltinEndpoints = 0;
+        this.m_metatrafficMulticastLocatorList.clear();
+        this.m_metatrafficUnicastLocatorList.clear();
+        this.m_defaultMulticastLocatorList.clear();
+        this.m_defaultUnicastLocatorList.clear();
+        this.m_manualLivelinessCount = new Count(0);
+        this.m_participantName = "";
+        this.m_key = new InstanceHandle();
+        this.m_leaseDuration = new Timestamp();
+        this.m_isAlive = true;
+        this.m_QosList.getAllQos().deleteParams();
+        this.m_QosList.getAllQos().resetList();
+        this.m_QosList.getInlineQos().resetList();
+        this.m_properties.m_properties.clear();
+        this.m_userData.clear();
+    }
+
+    public void copy(ParticipantProxyData pdata) {
+        this.m_protocolVersion.copy(pdata.m_protocolVersion);
+        this.m_guid.copy(pdata.m_guid);
+        this.m_vendorId.copy(pdata.m_vendorId);
+        this.m_availableBuiltinEndpoints = pdata.m_availableBuiltinEndpoints;
+        this.m_metatrafficUnicastLocatorList.copy(pdata.m_metatrafficUnicastLocatorList);
+        this.m_metatrafficMulticastLocatorList.copy(pdata.m_metatrafficMulticastLocatorList);
+        this.m_defaultMulticastLocatorList.copy(pdata.m_defaultMulticastLocatorList);
+        this.m_defaultUnicastLocatorList.copy(pdata.m_defaultUnicastLocatorList);
+        this.m_manualLivelinessCount = pdata.m_manualLivelinessCount;
+        this.m_participantName = pdata.m_participantName;
+        this.m_leaseDuration.copy(pdata.m_leaseDuration);
+        this.m_key.copy(pdata.m_key);
+        this.m_isAlive = pdata.m_isAlive;
+        this.m_properties.copy(pdata.m_properties);
+        this.m_userData.clear();
+        this.m_userData.addAll(pdata.m_userData);
+    }
+    
+    public boolean updateData(ParticipantProxyData pdata) {
+        this.m_metatrafficUnicastLocatorList.copy(pdata.m_metatrafficUnicastLocatorList);
+        this.m_metatrafficMulticastLocatorList.copy(pdata.m_metatrafficMulticastLocatorList);
+        this.m_defaultMulticastLocatorList.copy(pdata.m_defaultMulticastLocatorList);
+        this.m_defaultUnicastLocatorList.copy(pdata.m_defaultUnicastLocatorList);
+        this.m_manualLivelinessCount = pdata.m_manualLivelinessCount;
+        this.m_properties.copy(pdata.m_properties);
+        this.m_leaseDuration.copy(pdata.m_leaseDuration);
+        this.m_userData.clear();
+        this.m_userData.addAll(pdata.m_userData);
+        this.m_isAlive = true;
+        if (this.m_leaseDurationTimer != null && this.m_leaseDurationTimer.isWaiting()) {
+            this.m_leaseDurationTimer.stopTimer();
+            this.m_leaseDurationTimer.updateIntervalMillisec(this.m_leaseDuration.toMilliSecondsDouble());
+            this.m_leaseDurationTimer.restartTimer();
         }
         return true;
+    }
+
+    public int getAvailableBuiltinEndpoints() {
+        return this.m_availableBuiltinEndpoints;
     }
 
     public void increaseManualLivelinessCount() {
@@ -181,16 +301,6 @@ public class ParticipantProxyData {
     
     public GUID getGUID() {
         return this.m_guid;
-    }
-
-    public void copy(ParticipantProxyData pit) {
-        // TODO Implement
-        
-    }
-
-    public int getAvailableBuiltinEndpoints() {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
     public LocatorList getMetatrafficUnicastLocatorList() {

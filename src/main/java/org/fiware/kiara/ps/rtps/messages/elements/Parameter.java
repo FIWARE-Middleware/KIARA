@@ -69,5 +69,10 @@ public abstract class Parameter extends RTPSSubmessageElement {
     public ParameterId getParameterId() {
         return this.m_parameterId;
     }
+    
+    public void copy(Parameter other) {
+        this.m_parameterId = other.m_parameterId;
+        this.m_length = other.m_length;
+    }
 
 }

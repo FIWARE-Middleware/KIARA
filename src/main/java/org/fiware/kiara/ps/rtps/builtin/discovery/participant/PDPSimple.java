@@ -54,6 +54,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
+import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
@@ -176,10 +177,10 @@ public class PDPSimple {
                 this.m_SPDPWriterHistory.removeMinChange();
             }
             change = this.m_SPDPWriter.newChange(ChangeKind.ALIVE, getLocalParticipantProxyData().getKey());
-            if (getLocalParticipantProxyData().toParameterList()) {
+            ParameterList paramList = getLocalParticipantProxyData().toParameterList();
+            if (paramList != null) {
                 change.getSerializedPayload().setEncapsulationKind(InfoEndianness.checkMachineEndianness() == RTPSEndian.BIG_ENDIAN ? EncapsulationKind.PL_CDR_BE : EncapsulationKind.PL_CDR_LE);
-                //change.getSerializedPayload().setLength(getLocalParticipantProxyData().getQosList().getAllQos().); // TODO Check length
-                // TODO COpiar serializedPayload.data
+                change.getSerializedPayload().addParameters(paramList);
                 this.m_SPDPWriterHistory.addChange(change);
             }
             this.m_hasChangedLocalPDP = false;
