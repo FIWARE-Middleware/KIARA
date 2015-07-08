@@ -100,6 +100,7 @@ public class ParticipantProxyData {
         this.m_writers = new ArrayList<WriterProxyData>();
         this.m_builtinReaders = new ArrayList<RemoteReaderAttributes>();
         this.m_builtinWriters = new ArrayList<RemoteWriterAttributes>();
+        this.m_key = new InstanceHandle();
     }
 
     public void initializeData(RTPSParticipant participant, PDPSimple pdpSimple) {
@@ -132,9 +133,9 @@ public class ParticipantProxyData {
         for (int i = 0; i < 16; ++i) {
             if (i < 12) {
                 this.m_key.setValue(i, this.m_guid.getGUIDPrefix().getValue(i));
-            } else  if (i <= 16) {
+            } /*else  if (i >= 16) {
                 this.m_key.setValue(i, this.m_guid.getEntityId().getValue(i));
-            }
+            }*/
         }
         
         this.m_metatrafficMulticastLocatorList = pdpSimple.getBuiltinProtocols().getMetatrafficMulticastLocatorList();

@@ -133,10 +133,10 @@ public class PDPSimple {
             this.m_participantProxies.add(new ParticipantProxyData());
             this.m_participantProxies.get(0).initializeData(this.m_RTPSParticipant, this);
             
-            // Init EDP
+            // Init EDP 
             if (this.m_discovery.useStaticEDP) {
-                this.m_EDP = new EDPStatic(this, this.m_RTPSParticipant);
-                this.m_EDP.initEDP(this.m_discovery);
+                //this.m_EDP = new EDPStatic(this, this.m_RTPSParticipant);// TODO Uncomment
+                //this.m_EDP.initEDP(this.m_discovery);
             } else if (this.m_discovery.useSimpleEDP) {
                 this.m_EDP = new EDPSimple(this, this.m_RTPSParticipant);
                 this.m_EDP.initEDP(this.m_discovery);

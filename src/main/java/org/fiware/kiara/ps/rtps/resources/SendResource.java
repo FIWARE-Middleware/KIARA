@@ -104,11 +104,11 @@ public class SendResource {
     /**
      * Initialize the sending socket.
      *
-     * @param pimpl
+     * @param participant
      * @param loc Locator of the address from where to start the sending socket.
-     * @param sendsockBuffer
-     * @param useIP4 Booleand telling whether to use IPv4
-     * @param useIP6 Booleand telling whether to use IPv6
+     * @param sendSockBuffer
+     * @param useIPv4 Boolean telling whether to use IPv4
+     * @param useIPv6 Boolean telling whether to use IPv6
      * @return true on success
      */
     public boolean initSend(RTPSParticipant participant, Locator loc, int sendSockBuffer, boolean useIPv4, boolean useIPv6) {

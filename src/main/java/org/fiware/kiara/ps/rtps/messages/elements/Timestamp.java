@@ -134,7 +134,7 @@ public class Timestamp extends RTPSSubmessageElement {
     }
 
     public double toMilliSecondsDouble() {
-        return ((double) this.m_fraction / Math.pow(2.0,32) * Math.pow(10.0,6)) + (double) this.m_seconds*Math.pow(10.0,6);
+        return ((double) this.m_fraction / Math.pow(2.0, 32) * Math.pow(10.0, 3)) + (double) this.m_seconds*Math.pow(10.0, 3);
     }
 
 }
