@@ -64,7 +64,7 @@ public abstract class EDP {
      * @param attributes DiscoveryAttributes structure.
      * @return True if correct.
      */
-    public abstract boolean initEDP(BuiltinAttributes m_discovery);
+    public abstract boolean initEDP(BuiltinAttributes attributes);
 
     /**
      * Abstract method that assigns remote endpoints when a new
@@ -116,6 +116,14 @@ public abstract class EDP {
      */
     public abstract boolean processLocalWriterProxyData(WriterProxyData wdata);
 
+    /**
+     * Create a new ReaderPD for a local Reader.
+     *
+     * @param reader Pointer to the RTPSReader.
+     * @param att
+     * @param rqos
+     * @return True if correct.
+     */
     public boolean newLocalReaderProxyData(RTPSReader reader,
             TopicAttributes att, ReaderQos rqos) {
 
@@ -147,6 +155,14 @@ public abstract class EDP {
         return true;
     }
 
+    /**
+     * Create a new ReaderPD for a local Writer.
+     *
+     * @param writer Pointer to the RTPSWriter.
+     * @param att
+     * @param wqos
+     * @return True if correct.
+     */
     public boolean newLocalWriterProxyData(RTPSWriter writer,
             TopicAttributes att, WriterQos wqos) {
         logger.info("Adding {} in topic {}", writer.getGuid().getEntityId(), att.topicName);
@@ -176,6 +192,13 @@ public abstract class EDP {
         return true;
     }
 
+    /**
+     * A previously created Reader has been updated
+     *
+     * @param reader Pointer to the reader;
+     * @param rqos
+     * @return True if correctly updated
+     */
     public boolean updatedLocalReader(RTPSReader reader, ReaderQos rqos) {
         ReaderProxyData rdata = this.m_PDP.lookupReaderProxyData(reader.getGuid());
         if (rdata != null) {
@@ -190,6 +213,13 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * A previously created Writer has been updated
+     *
+     * @param writer Pointer to the Writer
+     * @param wqos
+     * @return True if correctly updated
+     */
     public boolean updatedLocalWriter(RTPSWriter writer, WriterQos wqos) {
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(writer.getGuid());
         if (wdata != null) {
@@ -203,6 +233,12 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * Remove a WriterProxyDataObject based on its GUID_t.
+     *
+     * @param writer Reference to the writer GUID.
+     * @return True if correct.
+     */
     public boolean removeWriterProxy(GUID writer) {
         logger.info("RTPS EDP {}", writer);
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(writer);
@@ -215,6 +251,12 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * Remove a ReaderProxyDataObject based on its GUID.
+     *
+     * @param reader Reference to the reader GUID.
+     * @return True if correct.
+     */
     public boolean removeReaderProxy(GUID reader) {
         logger.info("RTPS EDP {}", reader);
         ReaderProxyData rdata = this.m_PDP.lookupReaderProxyData(reader);
@@ -227,6 +269,12 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * Unpair a WriterProxyData object from all local readers.
+     *
+     * @param wdata Pointer to the WriterProxyData object.
+     * @return True if correct.
+     */
     public boolean unpairWriterProxy(WriterProxyData wdata) {
         logger.info("RTPS_EDP {}  in topic: {}", wdata.getGUID(), wdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
@@ -249,6 +297,12 @@ public abstract class EDP {
         }
     }
 
+    /**
+     * Unpair a ReaderProxyData object from all local writers.
+     *
+     * @param rdata Pointer to the ReaderProxyData object.
+     * @return True if correct.
+     */
     public boolean unpairReaderProxy(ReaderProxyData rdata) {
         logger.info("RTPS_EDP {} in topic: {}", rdata.getGUID(), rdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
@@ -477,6 +531,12 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * Try to pair/unpair a local Writer against all possible readerProxy Data.
+     *
+     * @param W Pointer to the Writer
+     * @return True
+     */
     public boolean pairingWriter(RTPSWriter W) {
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(W.getGuid());
         if (wdata != null) {
@@ -523,14 +583,97 @@ public abstract class EDP {
         return false;
     }
 
+    /**
+     * Try to pair/unpair ReaderProxyData.
+     *
+     * @param rdata Pointer to the ReaderProxyData object.
+     * @return True.
+     */
     public boolean pairingReaderProxy(ReaderProxyData rdata) {
-        // TODO implement
-        return false;
+        logger.info("RTPS EDP: {} in topic: \"{}\"", rdata.getGUID(), rdata.getTopicName());
+        final Lock mutex = m_RTPSParticipant.getParticipantMutex();
+        mutex.lock();
+        try {
+            for (RTPSWriter wit : m_RTPSParticipant.getUserWriters()) {
+                final Lock mutexW = wit.getMutex();
+                mutexW.lock();
+                try {
+                    WriterProxyData wdata = m_PDP.lookupWriterProxyData(wit.getGuid());
+                    if (wdata != null) {
+                        if (validMatching(wdata, rdata)) {
+                            logger.info("RTPS EDP: Valid Matching to local writer: {}", wit.getGuid().getEntityId());
+                            if (wit.matchedReaderAdd(rdata.toRemoteReaderAttributes())) {
+                                //MATCHED AND ADDED CORRECTLY:
+                                if (wit.getListener() != null) {
+                                    MatchingInfo info = new MatchingInfo(MatchingStatus.MATCHED_MATHING, rdata.getGUID());
+                                    wit.getListener().onWriterMatched(wit, info);
+                                }
+                            }
+                        } else {
+                            if (wit.matchedReaderIsMatched(rdata.toRemoteReaderAttributes())
+                                    && wit.matchedReaderRemove(rdata.toRemoteReaderAttributes())) {
+                                //MATCHED AND ADDED CORRECTLY:
+                                if (wit.getListener() != null) {
+                                    MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, rdata.getGUID());
+                                    wit.getListener().onWriterMatched(wit, info);
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                    mutexW.unlock();
+                }
+            }
+        } finally {
+            mutex.unlock();
+        }
+        return true;
     }
 
+    /**
+     * Try to pair/unpair WriterProxyData.
+     *
+     * @param wdata Pointer to the WriterProxyData.
+     * @return True.
+     */
     public boolean pairingWriterProxy(WriterProxyData wdata) {
-        // TODO implement
-        return false;
+        logger.info("RTPS EDP: {} in topic: \"{}\"", wdata.getGUID(), wdata.getTopicName());
+        final Lock mutex = m_RTPSParticipant.getParticipantMutex();
+        mutex.lock();
+        try {
+            for (RTPSReader rit : m_RTPSParticipant.getUserReaders()) {
+                final Lock mutexR = rit.getMutex();
+                try {
+                    ReaderProxyData rdata = m_PDP.lookupReaderProxyData(rit.getGuid());
+                    if (rdata != null) {
+                        if (validMatching(rdata, wdata)) {
+                            logger.info("RTPS EDP: Valid Matching to local reader: {}", rit.getGuid().getEntityId());
+                            if (rit.matchedWriterAdd(wdata.toRemoteWriterAttributes())) {
+                                //MATCHED AND ADDED CORRECTLY:
+                                if (rit.getListener() != null) {
+                                    MatchingInfo info = new MatchingInfo(MatchingStatus.MATCHED_MATHING, wdata.getGUID());
+                                    rit.getListener().onReaderMatched(rit, info);
+                                }
+                            }
+                        } else {
+                            if (rit.matchedWriterIsMatched(wdata.toRemoteWriterAttributes())
+                                    && rit.matchedWriterRemove(wdata.toRemoteWriterAttributes())) {
+                                //MATCHED AND ADDED CORRECTLY:
+                                if (rit.getListener() != null) {
+                                    MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, wdata.getGUID());
+                                    rit.getListener().onReaderMatched(rit, info);
+                                }
+                            }
+                        }
+                    }
+                } finally {
+                    mutexR.unlock();
+                }
+            }
+        } finally {
+            mutex.unlock();
+        }
+        return true;
     }
 
 }
