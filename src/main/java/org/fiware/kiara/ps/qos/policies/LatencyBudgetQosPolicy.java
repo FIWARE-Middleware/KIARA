@@ -17,20 +17,26 @@
  */
 package org.fiware.kiara.ps.qos.policies;
 
+import java.io.IOException;
+import org.fiware.kiara.ps.qos.parameter.ParameterId;
+import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class LatencyBudgetQosPolicy {
+public class LatencyBudgetQosPolicy extends Parameter {
     // TODO
-    
+
     public QosPolicy parent;
-    
+
     public Timestamp duration;
-    
+
     public LatencyBudgetQosPolicy() {
+        super(ParameterId.PID_LATENCY_BUDGET, Parameter.PARAMETER_TIME_LENGTH);
         this.parent = new QosPolicy(true);
         this.duration = new Timestamp().timeZero();
     }
@@ -38,6 +44,11 @@ public class LatencyBudgetQosPolicy {
     public void copy(LatencyBudgetQosPolicy value) {
         parent.copy(value.parent);
         duration.copy(value.duration);
+    }
+
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
