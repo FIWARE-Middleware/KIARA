@@ -15,7 +15,22 @@ public class ParameterPort extends Parameter {
     public ParameterPort(ParameterId pid) {
         super(pid, Parameter.PARAMETER_PORT_LENGTH);
     }
-    
+
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterPort(ParameterId pid, short length) {
+        super(pid, length);
+        m_port = 0;
+    }
+
+    public ParameterPort(ParameterId pid, short length, int po) {
+        super(pid, length);
+        m_port = po;
+    }
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);

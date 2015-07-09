@@ -11,31 +11,42 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 public class ParameterLocator extends Parameter {
-    
-    private Locator m_loc;
+
+    private final Locator m_loc;
 
     public ParameterLocator(ParameterId pid) {
         super(pid, Parameter.PARAMETER_LOCATOR_LENGTH);
+        m_loc = new Locator();
     }
-    
+
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterLocator(ParameterId pid, short length) {
+        super(pid, length);
+        m_loc = new Locator();
+    }
+
+    public ParameterLocator(ParameterId pid, short length, Locator loc) {
+        super(pid, length);
+        m_loc = new Locator(loc);
+    }
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-        if (this.m_loc != null) {
-            super.serialize(impl, message, name);
-            impl.serializeI32(message, name, this.m_loc.getKind().getValue());
-            impl.serializeUI32(message, name, this.m_loc.getPort());
-            for (int i=0; i < this.m_loc.getAddress().length; ++i) {
-                impl.serializeByte(message, name, this.m_loc.getAddress()[i]);
-            }
+        super.serialize(impl, message, name);
+        impl.serializeI32(message, name, this.m_loc.getKind().getValue());
+        impl.serializeUI32(message, name, this.m_loc.getPort());
+        for (int i=0; i < this.m_loc.getAddress().length; ++i) {
+            impl.serializeByte(message, name, this.m_loc.getAddress()[i]);
         }
     }
-    
+
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
-        if (this.m_loc == null) {
-            this.m_loc = new Locator();
-        }
         this.m_loc.setKind(LocatorKind.values()[impl.deserializeI32(message, name)]);
         this.m_loc.setPort(impl.deserializeUI32(message, name));
         byte[] addr = new byte[16];
@@ -51,7 +62,7 @@ public class ParameterLocator extends Parameter {
     }
 
     public void setLocator(Locator loc) {
-        this.m_loc = loc;
+        this.m_loc.copy(loc);
     }
 
 }
