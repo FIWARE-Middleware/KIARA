@@ -137,7 +137,11 @@ public class Locator {
 		}*/
 		return new String((this.m_address[12] & 0xFF) + "." + (this.m_address[13] & 0xFF) + "." + (this.m_address[14] & 0xFF) + "." + (this.m_address[15] & 0xFF));
 	}
-	
-	
+
+	public void copy(Locator locator) {
+            m_kind = locator.m_kind;
+            m_port = locator.m_port;
+            System.arraycopy(locator.m_address, 0, this.m_address, 0, locator.m_address.length);
+        }
 
 }
