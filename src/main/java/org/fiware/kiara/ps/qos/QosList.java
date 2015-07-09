@@ -18,10 +18,13 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuiltinEndpointSet;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterCount;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterIPv4Address;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPort;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPropertyList;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
@@ -129,14 +132,53 @@ public class QosList {
         return false;
     }
 
-    public boolean addQos(ParameterId pid, VendorId vendor) {
-        // TODO Implement
-        return true;
+    public boolean addQos(ParameterId pid, VendorId vendorId) {
+        if(pid == ParameterId.PID_VENDORID) {
+            ParameterVendorId param = (ParameterVendorId) ParameterBuilder.createParameter(pid, (short) 0);
+            param.setVendorId(vendorId);
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
+            return true;
+        }
+        return false;
     }
 
     public boolean addQos(ParameterId pid, byte o1, byte o2, byte o3, byte o4) {
-        // TODO Implement
-        return true;
+        if(pid == ParameterId.PID_METATRAFFIC_MULTICAST_IPADDRESS || pid == ParameterId.PID_DEFAULT_UNICAST_IPADDRESS ||
+                pid == ParameterId.PID_METATRAFFIC_UNICAST_IPADDRESS || pid == ParameterId.PID_MULTICAST_IPADDRESS)
+        {
+            ParameterIPv4Address param = (ParameterIPv4Address) ParameterBuilder.createParameter(pid, (short) 0);
+            param.setIpV4Address(o1, o2, o3, o4);
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addQos(ParameterId pid, String str1, String str2) {
+        if(pid == ParameterId.PID_PROPERTY_LIST) {
+            ParameterPropertyList param = null;
+            boolean found = false;
+            for (Parameter it : this.m_allQos.getParameters()) {
+                if (it.getParameterId() == ParameterId.PID_PROPERTY_LIST) {
+                    param = (ParameterPropertyList) it;
+                    found = true;
+                    break;
+                }
+            }
+            if(!found) {
+                param = (ParameterPropertyList) ParameterBuilder.createParameter(pid, (short) 0);
+            }
+            //param.
+            /*p->Pid = PID_PROPERTY_LIST;
+            p->properties.push_back(std::pair<std::string,std::string>(str1,str2));
+            qos->allQos.m_hasChanged = true;
+            if(!found)
+                qos->allQos.m_parameters.push_back((Parameter_t*)p);
+                return true;*/
+        }
+        return false;
     }
 
     public boolean addQos(ParameterId pid, EntityId entityId) {
@@ -145,11 +187,6 @@ public class QosList {
     }
 
     public boolean addQos(ParameterId pid, Timestamp timestamp) {
-        // TODO Implement
-        return true;
-    }
-
-    public boolean addQos(ParameterId pid, String str1, String str2) {
         // TODO Implement
         return true;
     }

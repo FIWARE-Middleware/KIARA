@@ -26,33 +26,33 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ParameterSentinel extends Parameter {
-	
-	public ParameterSentinel() {
-		super(ParameterId.PID_SENTINEL, (short) 0);
-	}
-	
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		super.serialize(impl, message, name);
-	}
-	
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		super.deserialize(impl, message, name);
-	}
-	
-	@Override
-	public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		// Do nothing
-	}
-	
-	@Override
-	public short getSerializedSize() {
-		return (short) (super.getSerializedSize() + this.m_length);
-	} 
+
+    public ParameterSentinel() {
+        super(ParameterId.PID_SENTINEL, (short) 0);
+    }
+
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        super.serialize(impl, message, name);
+    }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        super.deserialize(impl, message, name);
+    }
+
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        // Do nothing
+    }
+
+    @Override
+    public short getSerializedSize() {
+        return (short) (super.getSerializedSize() + this.m_length);
+    } 
 
 }

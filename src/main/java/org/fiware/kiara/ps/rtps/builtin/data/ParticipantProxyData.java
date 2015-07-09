@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.qos.ParameterPropertyList;
 import org.fiware.kiara.ps.qos.QosList;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.QosPolicy;
@@ -22,6 +21,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPropertyList;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
 public class ParticipantProxyData {
@@ -199,7 +199,7 @@ public class ParticipantProxyData {
             valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
             valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);
             
-            if (this.m_properties.m_properties.size() > 0) {
+            if (this.m_properties.getProperties().size() > 0) {
                 valid &= this.m_QosList.addQos(ParameterId.PID_PROPERTY_LIST, this.m_properties);
             }
             
@@ -231,7 +231,7 @@ public class ParticipantProxyData {
         this.m_QosList.getAllQos().deleteParams();
         this.m_QosList.getAllQos().resetList();
         this.m_QosList.getInlineQos().resetList();
-        this.m_properties.m_properties.clear();
+        this.m_properties.getProperties().clear();
         this.m_userData.clear();
     }
 

@@ -41,6 +41,8 @@ public abstract class Parameter extends RTPSSubmessageElement {
     public static short PARAMETER_BOOL_LENGTH = 4;
     public static short PARAMETER_GUID_LENGTH = 16;
     public static short PARAMETER_PROTOCOL_LENGTH = 4;
+    public static short PARAMETER_VENDOR_LENGTH = 4;
+    public static short PARAMETER_IP4_LENGTH = 4;
     
     protected ParameterId m_parameterId;
     protected short m_length;
