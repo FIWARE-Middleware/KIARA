@@ -63,6 +63,8 @@ public class ParameterBuilder {
             param = new ParameterProtocolVersion();
             break;
         case PID_VENDORID:
+            param = new ParameterVendorId();
+            break;
         case PID_UNICAST_LOCATOR:
             param = new ParameterLocator(ParameterId.PID_UNICAST_LOCATOR);
             break;
@@ -91,9 +93,17 @@ public class ParameterBuilder {
             param = new ParameterPort(ParameterId.PID_METATRAFFIC_MULTICAST_PORT);
             break;
         case PID_MULTICAST_IPADDRESS:
+            param = new ParameterIPv4Address(ParameterId.PID_MULTICAST_IPADDRESS);
+            break;
         case PID_DEFAULT_UNICAST_IPADDRESS:
+            param = new ParameterIPv4Address(ParameterId.PID_DEFAULT_UNICAST_IPADDRESS);
+            break;
         case PID_METATRAFFIC_UNICAST_IPADDRESS:
+            param = new ParameterIPv4Address(ParameterId.PID_METATRAFFIC_UNICAST_IPADDRESS);
+            break;
         case PID_METATRAFFIC_MULTICAST_IPADDRESS:
+            param = new ParameterIPv4Address(ParameterId.PID_METATRAFFIC_MULTICAST_IPADDRESS);
+            break;
         case PID_EXPECTS_INLINE_QOS:
             param = new ParameterBool();
             break;
@@ -115,6 +125,8 @@ public class ParameterBuilder {
             param = new ParameterBuiltinEndpointSet();
             break;
         case PID_PROPERTY_LIST:
+            param = new ParameterPropertyList();
+            break;
         case PID_TYPE_MAX_SIZE_SERIALIZED:
         case PID_ENTITY_NAME:
         case PID_KEY_HASH:
