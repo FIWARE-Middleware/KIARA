@@ -62,28 +62,56 @@ public class ParameterBuilder {
         case PID_PROTOCOL_VERSION:
         case PID_VENDORID:
         case PID_UNICAST_LOCATOR:
+            param = new ParameterLocator(ParameterId.PID_UNICAST_LOCATOR);
+            break;
         case PID_MULTICAST_LOCATOR:
-        case PID_MULTICAST_IPADDRESS:
+            param = new ParameterLocator(ParameterId.PID_MULTICAST_LOCATOR);
+            break;
         case PID_DEFAULT_UNICAST_LOCATOR:
+            param = new ParameterLocator(ParameterId.PID_DEFAULT_UNICAST_LOCATOR);
+            break;
         case PID_DEFAULT_MULTICAST_LOCATOR:
+            param = new ParameterLocator(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR);
+            break;
         case PID_METATRAFFIC_UNICAST_LOCATOR:
+            param = new ParameterLocator(ParameterId.PID_METATRAFFIC_UNICAST_LOCATOR);
+            break;
         case PID_METATRAFFIC_MULTICAST_LOCATOR:
-        case PID_DEFAULT_UNICAST_IPADDRESS:
+            param = new ParameterLocator(ParameterId.PID_METATRAFFIC_MULTICAST_LOCATOR);
+            break;
         case PID_DEFAULT_UNICAST_PORT:
-        case PID_METATRAFFIC_UNICAST_IPADDRESS:
+            param = new ParameterPort(ParameterId.PID_DEFAULT_UNICAST_PORT);
+            break;
         case PID_METATRAFFIC_UNICAST_PORT:
-        case PID_METATRAFFIC_MULTICAST_IPADDRESS:
+            param = new ParameterPort(ParameterId.PID_METATRAFFIC_UNICAST_PORT);
+            break;
         case PID_METATRAFFIC_MULTICAST_PORT:
+            param = new ParameterPort(ParameterId.PID_METATRAFFIC_MULTICAST_PORT);
+            break;
+        case PID_MULTICAST_IPADDRESS:
+        case PID_DEFAULT_UNICAST_IPADDRESS:
+        case PID_METATRAFFIC_UNICAST_IPADDRESS:
+        case PID_METATRAFFIC_MULTICAST_IPADDRESS:
         case PID_EXPECTS_INLINE_QOS:
+            param = new ParameterBool();
+            break;
         case PID_PARTICIPANT_MANUAL_LIVELINESS_COUNT:
+            param = new ParameterCount();
+            break;
         case PID_PARTICIPANT_BUILTIN_ENDPOINTS:
         case PID_PARTICIPANT_LEASE_DURATION:
         case PID_CONTENT_FILTER_PROPERTY:
         case PID_PARTICIPANT_GUID:
-        case PID_PARTICIPANT_ENTITYID:
+            param = new ParameterGuid(ParameterId.PID_PARTICIPANT_GUID);
+            break;
         case PID_GROUP_GUID:
+            param = new ParameterGuid(ParameterId.PID_GROUP_GUID);
+            break;
+        case PID_PARTICIPANT_ENTITYID:
         case PID_GROUP_ENTITYID:
         case PID_BUILTIN_ENDPOINT_SET:
+            param = new ParameterBuiltinEndpointSet();
+            break;
         case PID_PROPERTY_LIST:
         case PID_TYPE_MAX_SIZE_SERIALIZED:
         case PID_ENTITY_NAME:
