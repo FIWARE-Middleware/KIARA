@@ -18,14 +18,14 @@
 package org.fiware.kiara.ps.rtps.common;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class LocatorList {
+public class LocatorList implements Iterable<Locator> {
 
     private List<Locator> m_locators;
 
@@ -120,6 +120,11 @@ public class LocatorList {
             }
         }
         return true;
+    }
+
+    @Override
+    public Iterator<Locator> iterator() {
+        return m_locators.iterator();
     }
 
 }
