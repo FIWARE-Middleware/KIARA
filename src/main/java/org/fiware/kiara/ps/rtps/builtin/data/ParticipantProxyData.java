@@ -24,8 +24,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
-
 public class ParticipantProxyData {
     
     public static final int DISCOVERY_PARTICIPANT_DATA_MAX_SIZE = 5000;
