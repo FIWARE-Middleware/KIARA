@@ -1,12 +1,39 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import org.fiware.kiara.ps.qos.WriterQos;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_ENDPOINT_GUID;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_KEY_HASH;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_MULTICAST_LOCATOR;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_PARTICIPANT_GUID;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_PROTOCOL_VERSION;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_TOPIC_NAME;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_TYPE_MAX_SIZE_SERIALIZED;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_TYPE_NAME;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_UNICAST_LOCATOR;
+import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_VENDORID;
+import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
+import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
+import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicy;
 import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
+import org.fiware.kiara.ps.qos.policies.DurabilityServiceQosPolicy;
+import org.fiware.kiara.ps.qos.policies.GroupDataQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LatencyBudgetQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LifespanQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicy;
+import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicy;
+import org.fiware.kiara.ps.qos.policies.OwnershipStrengthQosPolicy;
+import org.fiware.kiara.ps.qos.policies.PartitionQosPolicy;
+import org.fiware.kiara.ps.qos.policies.PresentationQosPolicy;
+import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicy;
 import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+import org.fiware.kiara.ps.qos.policies.TimeBasedFilterQosPolicy;
+import org.fiware.kiara.ps.qos.policies.TopicDataQosPolicy;
+import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
 import static org.fiware.kiara.ps.rtps.common.DurabilityKind.VOLATILE;
 import static org.fiware.kiara.ps.rtps.common.EndpointKind.WRITER;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
@@ -14,7 +41,18 @@ import org.fiware.kiara.ps.rtps.common.TopicKind;
 import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUID_LENGTH;
+import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPort;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WriterProxyData {
 
@@ -73,6 +111,8 @@ public class WriterProxyData {
      */
     private RemoteWriterAttributes m_remoteAtt;
 
+    private static final Logger logger = LoggerFactory.getLogger(WriterProxyData.class);
+
     public WriterProxyData() {
         this.m_guid = new GUID();
         m_unicastLocatorList = new LocatorList();
@@ -107,32 +147,163 @@ public class WriterProxyData {
 
     /**
      * Update certain parameters from another object.
+     *
      * @param wdata
      */
     public void update(WriterProxyData wdata) {
         m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
-	m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
-	m_qos.setQos(wdata.m_qos, false);
-	m_isAlive = wdata.m_isAlive;
+        m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
+        m_qos.setQos(wdata.m_qos, false);
+        m_isAlive = wdata.m_isAlive;
     }
 
     /**
      * Copy all information from another object.
+     *
      * @param wdata
      */
     public void copy(WriterProxyData wdata) {
-	m_guid.copy(wdata.m_guid);
-	m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
-	m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
-	m_key.copy(wdata.m_key);
-	m_RTPSParticipantKey.copy(wdata.m_RTPSParticipantKey);
-	m_typeName = wdata.m_typeName;
-	m_topicName = wdata.m_topicName;
-	m_userDefinedId = wdata.m_userDefinedId;
-	m_qos.copy(wdata.m_qos);
-	m_typeMaxSerialized = wdata.m_typeMaxSerialized;
-	m_isAlive = wdata.m_isAlive;
-	m_topicKind = wdata.m_topicKind;
+        m_guid.copy(wdata.m_guid);
+        m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
+        m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
+        m_key.copy(wdata.m_key);
+        m_RTPSParticipantKey.copy(wdata.m_RTPSParticipantKey);
+        m_typeName = wdata.m_typeName;
+        m_topicName = wdata.m_topicName;
+        m_userDefinedId = wdata.m_userDefinedId;
+        m_qos.copy(wdata.m_qos);
+        m_typeMaxSerialized = wdata.m_typeMaxSerialized;
+        m_isAlive = wdata.m_isAlive;
+        m_topicKind = wdata.m_topicKind;
+    }
+
+    /**
+     * Convert the information to a parameter list to be send in a CDRMessage.
+     */
+    public boolean toParameterList() {
+        m_parameterList.deleteParams();
+        for (Locator lit : m_unicastLocatorList) {
+            ParameterLocator p = new ParameterLocator(PID_UNICAST_LOCATOR, PARAMETER_LOCATOR_LENGTH, lit);
+            m_parameterList.addParameter(p);
+        }
+        for (Locator lit : m_multicastLocatorList) {
+            ParameterLocator p = new ParameterLocator(PID_MULTICAST_LOCATOR, PARAMETER_LOCATOR_LENGTH, lit);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterGuid p = new ParameterGuid(PID_PARTICIPANT_GUID, PARAMETER_GUID_LENGTH, m_RTPSParticipantKey);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterString p = new ParameterString(PID_TOPIC_NAME, (short) 0, m_topicName);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterString p = new ParameterString(PID_TYPE_NAME, (short) 0, m_typeName);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterKey p = new ParameterKey(PID_KEY_HASH, (short) 16, m_key);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterGuid p = new ParameterGuid(PID_ENDPOINT_GUID, (short) 16, m_guid);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterPort p = new ParameterPort(PID_TYPE_MAX_SIZE_SERIALIZED, (short) 4, m_typeMaxSerialized);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterProtocolVersion p = new ParameterProtocolVersion(PID_PROTOCOL_VERSION, (short) 4);
+            m_parameterList.addParameter(p);
+        }
+        {
+            ParameterVendorId p = new ParameterVendorId(PID_VENDORID, (short)4);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.durability.parent.getSendAlways() || m_qos.durability.parent.hasChanged) {
+            DurabilityQosPolicy p = new DurabilityQosPolicy();
+            p.copy(m_qos.durability);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.durabilityService.parent.getSendAlways() || m_qos.durabilityService.parent.hasChanged) {
+            DurabilityServiceQosPolicy p = new DurabilityServiceQosPolicy();
+            p.copy(m_qos.durabilityService);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.deadline.parent.getSendAlways() || m_qos.deadline.parent.hasChanged) {
+            DeadLineQosPolicy p = new DeadLineQosPolicy();
+            p.copy(m_qos.deadline);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.latencyBudget.parent.getSendAlways() || m_qos.latencyBudget.parent.hasChanged) {
+            LatencyBudgetQosPolicy p = new LatencyBudgetQosPolicy();
+            p.copy(m_qos.latencyBudget);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.durability.parent.getSendAlways() || m_qos.liveliness.parent.hasChanged) {
+            LivelinessQosPolicy p = new LivelinessQosPolicy();
+            p.copy(m_qos.liveliness);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.reliability.parent.getSendAlways() || m_qos.reliability.parent.hasChanged) {
+            ReliabilityQosPolicy p = new ReliabilityQosPolicy();
+            p.copy(m_qos.reliability);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.lifespan.parent.getSendAlways() || m_qos.lifespan.parent.hasChanged) {
+            LifespanQosPolicy p = new LifespanQosPolicy();
+            p.copy(m_qos.lifespan);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.userData.parent.getSendAlways() || m_qos.userData.parent.hasChanged) {
+            UserDataQosPolicy p = new UserDataQosPolicy();
+            p.copy(m_qos.userData);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.timeBasedFilter.parent.getSendAlways() || m_qos.timeBasedFilter.parent.hasChanged) {
+            TimeBasedFilterQosPolicy p = new TimeBasedFilterQosPolicy();
+            p.copy(m_qos.timeBasedFilter);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.ownership.parent.getSendAlways() || m_qos.ownership.parent.hasChanged) {
+            OwnershipQosPolicy p = new OwnershipQosPolicy();
+            p.copy(m_qos.ownership);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.durability.parent.getSendAlways() || m_qos.ownershipStrength.parent.hasChanged) {
+            OwnershipStrengthQosPolicy p = new OwnershipStrengthQosPolicy();
+            p.copy(m_qos.ownershipStrength);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.destinationOrder.parent.getSendAlways() || m_qos.destinationOrder.parent.hasChanged) {
+            DestinationOrderQosPolicy p = new DestinationOrderQosPolicy();
+            p.copy(m_qos.destinationOrder);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.presentation.parent.getSendAlways() || m_qos.presentation.parent.hasChanged) {
+            PresentationQosPolicy p = new PresentationQosPolicy();
+            p.copy(m_qos.presentation);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.partition.parent.getSendAlways() || m_qos.partition.parent.hasChanged) {
+            PartitionQosPolicy p = new PartitionQosPolicy();
+            p.copy(m_qos.partition);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.topicData.parent.getSendAlways() || m_qos.topicData.parent.hasChanged) {
+            TopicDataQosPolicy p = new TopicDataQosPolicy();
+            p.copy(m_qos.topicData);
+            m_parameterList.addParameter(p);
+        }
+        if (m_qos.groupData.parent.getSendAlways() || m_qos.groupData.parent.hasChanged) {
+            GroupDataQosPolicy p = new GroupDataQosPolicy();
+            p.copy(m_qos.groupData);
+            m_parameterList.addParameter(p);
+        }
+        logger.info("RTPS_PROXY_DATA: with {} parameters", m_parameterList.getParameters().size());
+        return true;
     }
 
     public GUID getGUID() {
