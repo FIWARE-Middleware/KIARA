@@ -13,8 +13,8 @@ public class ParameterProtocolVersion extends Parameter {
     
     private ProtocolVersion m_protocolVersion;
 
-    public ParameterProtocolVersion(ParameterId pid, short length) {
-        super(pid, length);
+    public ParameterProtocolVersion() {
+        super(ParameterId.PID_PROTOCOL_VERSION, Parameter.PARAMETER_PROTOCOL_LENGTH);
     }
     
     public void setProtocolVersion(ProtocolVersion protocolVersion) {

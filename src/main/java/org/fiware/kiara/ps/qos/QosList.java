@@ -20,6 +20,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterCount;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPort;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
@@ -117,15 +118,12 @@ public class QosList {
         return false;
     }
 
-    public boolean addQos(ParameterId pid, ProtocolVersion protocol) {
-        if(pid == PID_PROTOCOL_VERSION)
-        {
-            ParameterProtocolVersion_t* p = new ParameterProtocolVersion_t();
-            p->Pid = pid;
-            p->length = PARAMETER_PROTOCOL_LENGTH;
-            p->protocolVersion = protocol;
-            qos->allQos.m_parameters.push_back((Parameter_t*)p);
-            qos->allQos.m_hasChanged = true;
+    public boolean addQos(ParameterId pid, ProtocolVersion protocolVersion) {
+        if(pid == ParameterId.PID_PROTOCOL_VERSION) {
+            ParameterProtocolVersion param = (ParameterProtocolVersion) ParameterBuilder.createParameter(pid, (short) 0);
+            param.setProtocolVersion(protocolVersion);
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
             return true;
         }
         return false;
