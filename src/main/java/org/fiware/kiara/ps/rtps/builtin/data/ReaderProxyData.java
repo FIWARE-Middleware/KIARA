@@ -11,6 +11,7 @@ import org.fiware.kiara.ps.rtps.common.LocatorList;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
@@ -75,7 +76,12 @@ public class ReaderProxyData {
         m_multicastLocatorList = new LocatorList();
         m_key = new InstanceHandle();
         m_RTPSParticipantKey = new InstanceHandle();
+        m_typeName = "";
+        m_topicName = "";
+        m_userDefinedId = 0;
         m_qos = new ReaderQos();
+        m_isAlive = false;
+        m_topicKind = TopicKind.NO_KEY;
         m_parameterList = new ParameterList();
         m_remoteAtt = new RemoteReaderAttributes();
     }
@@ -180,15 +186,66 @@ public class ReaderProxyData {
         m_userDefinedId = value;
     }
 
-    public void copy(ReaderProxyData rit) {
-        // TODO Implement
+    /**
+     * Clear (put to default) the information.
+     */
+    public void clear() {
+        m_expectsInlineQos = false;
+        m_guid.copy(new GUID());
+        m_unicastLocatorList.clear();
+        m_multicastLocatorList.clear();
+        m_key.copy(new InstanceHandle());
+        m_RTPSParticipantKey.copy(new InstanceHandle());
+        m_typeName = "";
+        m_topicName = "";
+        m_userDefinedId = 0;
+        m_qos.copy(new ReaderQos());
+        m_isAlive = true;
+        m_topicKind = NO_KEY;
 
+        m_parameterList.deleteParams();
+        m_parameterList.resetList();
     }
 
     /**
-    * Convert the ProxyData information to RemoteReaderAttributes object.
-    * @return Reference to the RemoteReaderAttributes object.
-    */
+     * Update the information (only certain fields can be updated).
+     *
+     * @param rdata Poitner to the object from which we are going to update.
+     */
+    public void update(ReaderProxyData rdata) {
+        m_unicastLocatorList.copy(rdata.m_unicastLocatorList);
+        m_multicastLocatorList.copy(rdata.m_multicastLocatorList);
+        m_qos.setQos(rdata.getQos(), false);
+        m_isAlive = rdata.getIsAlive();
+    }
+
+    /**
+     * Copy ALL the information from another object.
+     *
+     * @param rdata Pointer to the object from where the information must be
+     * copied.
+     */
+    public void copy(ReaderProxyData rdata) {
+        m_guid.copy(rdata.m_guid);
+        m_unicastLocatorList.copy(rdata.m_unicastLocatorList);
+        m_multicastLocatorList.copy(rdata.m_multicastLocatorList);
+        m_key.copy(rdata.m_key);
+        m_RTPSParticipantKey.copy(rdata.m_RTPSParticipantKey);
+        m_typeName = rdata.m_typeName;
+        m_topicName = rdata.m_topicName;
+        m_userDefinedId = rdata.m_userDefinedId;
+        m_qos.copy(rdata.m_qos);
+        //cout << "COPYING DATA: expects inlineQOS : " << rdata->m_expectsInlineQos << endl;
+        m_expectsInlineQos = rdata.m_expectsInlineQos;
+        m_isAlive = rdata.m_isAlive;
+        m_topicKind = rdata.m_topicKind;
+    }
+
+    /**
+     * Convert the ProxyData information to RemoteReaderAttributes object.
+     *
+     * @return Reference to the RemoteReaderAttributes object.
+     */
     public RemoteReaderAttributes toRemoteReaderAttributes() {
         m_remoteAtt.setGUID(m_guid);
         m_remoteAtt.expectsInlineQos = this.m_expectsInlineQos;

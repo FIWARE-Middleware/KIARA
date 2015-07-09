@@ -11,6 +11,7 @@ import org.fiware.kiara.ps.rtps.common.LocatorList;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
 import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
@@ -83,9 +84,55 @@ public class WriterProxyData {
         m_remoteAtt = new RemoteWriterAttributes();
     }
 
-    public void copy(WriterProxyData rit) {
-        // TODO Implement
+    /**
+     * Clear the information and return the object to the default state.
+     */
+    public void clear() {
+        m_guid.copy(new GUID());
+        m_unicastLocatorList.clear();
+        m_multicastLocatorList.clear();
+        m_key.copy(new InstanceHandle());
+        m_RTPSParticipantKey.copy(new InstanceHandle());
+        m_typeName = "";
+        m_topicName = "";
+        m_userDefinedId = 0;
+        m_qos.copy(new WriterQos());
+        m_typeMaxSerialized = 0;
+        m_isAlive = true;
+        m_topicKind = NO_KEY;
 
+        m_parameterList.deleteParams();
+        m_parameterList.resetList();
+    }
+
+    /**
+     * Update certain parameters from another object.
+     * @param wdata
+     */
+    public void update(WriterProxyData wdata) {
+        m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
+	m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
+	m_qos.setQos(wdata.m_qos, false);
+	m_isAlive = wdata.m_isAlive;
+    }
+
+    /**
+     * Copy all information from another object.
+     * @param wdata
+     */
+    public void copy(WriterProxyData wdata) {
+	m_guid.copy(wdata.m_guid);
+	m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
+	m_multicastLocatorList.copy(wdata.m_multicastLocatorList);
+	m_key.copy(wdata.m_key);
+	m_RTPSParticipantKey.copy(wdata.m_RTPSParticipantKey);
+	m_typeName = wdata.m_typeName;
+	m_topicName = wdata.m_topicName;
+	m_userDefinedId = wdata.m_userDefinedId;
+	m_qos.copy(wdata.m_qos);
+	m_typeMaxSerialized = wdata.m_typeMaxSerialized;
+	m_isAlive = wdata.m_isAlive;
+	m_topicKind = wdata.m_topicKind;
     }
 
     public GUID getGUID() {
@@ -209,13 +256,14 @@ public class WriterProxyData {
     }
 
     /**
-    * Convert the ProxyData information to RemoteWriterAttributes object.
-    * @return Reference to the RemoteWriterAttributes object.
-    */
+     * Convert the ProxyData information to RemoteWriterAttributes object.
+     *
+     * @return Reference to the RemoteWriterAttributes object.
+     */
     public RemoteWriterAttributes toRemoteWriterAttributes() {
         m_remoteAtt.setGUID(m_guid);
         m_remoteAtt.livelinessLeaseDuration.copy(m_qos.liveliness.leaseDuration);
-        m_remoteAtt.ownershipStrength = (short)m_qos.ownershipStrength.value;
+        m_remoteAtt.ownershipStrength = (short) m_qos.ownershipStrength.value;
         m_remoteAtt.endpoint.durabilityKind = m_qos.durability.kind == TRANSIENT_LOCAL_DURABILITY_QOS ? TRANSIENT_LOCAL : VOLATILE;
         m_remoteAtt.endpoint.endpointKind = WRITER;
         m_remoteAtt.endpoint.topicKind = m_topicKind;
