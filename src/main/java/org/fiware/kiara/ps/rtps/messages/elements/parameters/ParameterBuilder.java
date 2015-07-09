@@ -60,6 +60,8 @@ public class ParameterBuilder {
         case PID_TIME_BASED_FILTER:
         case PID_TRANSPORT_PRIORITY:
         case PID_PROTOCOL_VERSION:
+            param = new ParameterProtocolVersion();
+            break;
         case PID_VENDORID:
         case PID_UNICAST_LOCATOR:
             param = new ParameterLocator(ParameterId.PID_UNICAST_LOCATOR);
