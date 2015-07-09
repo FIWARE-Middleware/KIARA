@@ -17,12 +17,19 @@
  */
 package org.fiware.kiara.ps.rtps.messages.elements;
 
+import java.io.IOException;
+
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.Serializable;
+import org.fiware.kiara.serialization.impl.SerializerImpl;
+
 
 /**
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
-public class GUID {
+public class GUID implements Serializable {
 
     private GUIDPrefix m_guidPrefix;
 
@@ -70,6 +77,18 @@ public class GUID {
     @Override
     public String toString() {
         return this.m_guidPrefix.toString() + "-" + this.m_entityId.toString();
+    }
+    
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        this.m_guidPrefix.serialize(impl, message, name);
+        this.m_entityId.serialize(impl, message, name);
+    }
+    
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_guidPrefix.deserialize(impl, message, name);
+        this.m_entityId.deserialize(impl, message, name);
     }
 
 }
