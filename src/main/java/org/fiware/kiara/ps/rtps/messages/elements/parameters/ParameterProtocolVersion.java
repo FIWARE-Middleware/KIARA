@@ -10,30 +10,36 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 public class ParameterProtocolVersion extends Parameter {
-    
-    private ProtocolVersion m_protocolVersion;
+
+    private final ProtocolVersion m_protocolVersion;
 
     public ParameterProtocolVersion() {
         super(ParameterId.PID_PROTOCOL_VERSION, Parameter.PARAMETER_PROTOCOL_LENGTH);
+        m_protocolVersion = new ProtocolVersion();
     }
-    
+
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterProtocolVersion(ParameterId pid, short length) {
+        super(pid, length);
+        m_protocolVersion = new ProtocolVersion();
+    }
+
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
-        this.m_protocolVersion = protocolVersion;
+        this.m_protocolVersion.copy(protocolVersion);
     }
 
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-        if (this.m_protocolVersion != null) {
-            super.serialize(impl, message, name);
-            this.m_protocolVersion.serialize(impl, message, name);
-        }
+        super.serialize(impl, message, name);
+        this.m_protocolVersion.serialize(impl, message, name);
     }
 
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        if (this.m_protocolVersion == null) {
-            this.m_protocolVersion = new ProtocolVersion();
-        }
         super.deserialize(impl, message, name);
         this.m_protocolVersion.deserialize(impl, message, name);
     }

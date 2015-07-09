@@ -16,6 +16,21 @@ public class ParameterBool extends Parameter {
         super(ParameterId.PID_EXPECTS_INLINE_QOS, Parameter.PARAMETER_BOOL_LENGTH);
     }
 
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterBool(ParameterId pid, short length) {
+        super(pid, length);
+        m_bool = false;
+    }
+
+    public ParameterBool(ParameterId pid, short length, boolean inbool) {
+        super(pid,length);
+        m_bool = inbool;
+    }
+
     public void setBool(boolean bool) {
         this.m_bool = bool;
     }

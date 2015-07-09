@@ -31,14 +31,30 @@ import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class ParameterKey extends Parameter {
-	
-	private InstanceHandle m_instanceHandle;
+
+	private final InstanceHandle m_instanceHandle;
 
 	public ParameterKey(InstanceHandle instanceHandle) {
 		super(ParameterId.PID_KEY_HASH, instanceHandle.getSerializedSize());
 		this.m_instanceHandle = instanceHandle;
 	}
-	
+
+        /**
+	 * Constructor using a parameter PID and the parameter length
+	 * @param pid Pid of the parameter
+	 * @param length Its associated length
+	 */
+	public ParameterKey(ParameterId pid, short length) {
+            super(pid, length);
+            m_instanceHandle = new InstanceHandle();
+        }
+
+        public ParameterKey(ParameterId pid, short length, InstanceHandle ke) {
+            super(pid, length);
+            m_instanceHandle = new InstanceHandle();
+            m_instanceHandle.copy(ke);
+        }
+
 	@Override
 	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
 		super.serialize(impl, message, name);

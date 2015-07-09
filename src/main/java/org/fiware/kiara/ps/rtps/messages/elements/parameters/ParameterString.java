@@ -15,7 +15,21 @@ public class ParameterString extends Parameter {
     public ParameterString(ParameterId pid) {
         super(pid, (short) 4);
     }
-    
+
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterString(ParameterId pid, short length) {
+        super(pid, length);
+    }
+
+    public ParameterString(ParameterId pid, short length, String str) {
+        super(pid, length);
+        m_content = str;
+    }
+
     public void setContent(String content) {
         this.m_content = content;
         super.m_length = (short) (4 + this.m_content.length());
