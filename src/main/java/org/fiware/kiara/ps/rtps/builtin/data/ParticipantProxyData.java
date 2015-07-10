@@ -308,7 +308,15 @@ public class ParticipantProxyData {
     public LocatorList getMetatrafficMulticastLocatorList() {
         return this.m_metatrafficMulticastLocatorList;
     }
-    
+
+    public LocatorList getDefaultUnicastLocatorList() {
+        return m_defaultUnicastLocatorList;
+    }
+
+    public LocatorList getDefaultMulticastLocatorList() {
+        return m_defaultMulticastLocatorList;
+    }
+
     public List<RemoteReaderAttributes> getBuiltinReaders() {
         return this.m_builtinReaders;
     }

@@ -21,33 +21,33 @@ import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class BuiltinAttributes {
-    
+
     public boolean useSimplePDP; // SimpleParticipantDiscoveryProtocol
-    
+
     public boolean useWriterLP; // WriterLivelinessProtocol
-    
+
     public boolean useSimpleEDP; // SimpleEndpointDiscoveryProtocol
-    
+
     public boolean useStaticEDP; // StaticEndpointDiscoveryProtocol
-    
+
     public int domainID;
-    
+
     public Timestamp leaseDuration;
-    
+
     public Timestamp leaseDurationAnnouncementPeriod;
-    
+
     public SimpleEDPAttributes simpleEDP;
-    
+
     public LocatorList metatrafficUnicastLocatorList;
-    
+
     public LocatorList metatrafficMulticastLocatorList;
-    
+
     private String m_staticEndpointXMLFilename;
-    
+
     public BuiltinAttributes() {
         this.useSimplePDP = true;
         this.useWriterLP = true;
@@ -61,13 +61,27 @@ public class BuiltinAttributes {
         this.metatrafficMulticastLocatorList = new LocatorList();
         this.metatrafficUnicastLocatorList = new LocatorList();
     }
-    
+
     public String getStaticEndpointXMLFilename() {
         return this.m_staticEndpointXMLFilename;
     }
-    
+
     public void setStaticEndpointXMLFilename(String filename) {
         this.m_staticEndpointXMLFilename = filename;
+    }
+
+    public void copy(BuiltinAttributes other) {
+        useSimplePDP = other.useSimplePDP;
+        useWriterLP = other.useWriterLP;
+        useSimpleEDP = other.useSimpleEDP;
+        useStaticEDP = other.useStaticEDP;
+        domainID = other.domainID;
+        leaseDuration.copy(other.leaseDuration);
+        leaseDurationAnnouncementPeriod.copy(other.leaseDurationAnnouncementPeriod);
+        simpleEDP.copy(other.simpleEDP);
+        metatrafficUnicastLocatorList.copy(metatrafficUnicastLocatorList);
+        metatrafficMulticastLocatorList.copy(metatrafficMulticastLocatorList);
+        m_staticEndpointXMLFilename = other.m_staticEndpointXMLFilename;
     }
 
 }

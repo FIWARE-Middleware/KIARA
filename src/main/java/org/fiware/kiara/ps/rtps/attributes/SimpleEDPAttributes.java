@@ -32,4 +32,9 @@ public class SimpleEDPAttributes {
         this.usePulicationWriterAndSubscriptionReader = true;
     }
 
+    public void copy(SimpleEDPAttributes other) {
+        usePulicationWriterAndSubscriptionReader = other.usePulicationWriterAndSubscriptionReader;
+        usePulicationReaderAndSubscriptionWriter = other.usePulicationReaderAndSubscriptionWriter;
+    }
+
 }

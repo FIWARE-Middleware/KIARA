@@ -19,6 +19,9 @@ import org.slf4j.LoggerFactory;
 
 public class EDPStatic extends EDP {
 
+    private EDPStaticXML m_edpXML;
+    private final BuiltinAttributes m_attributes;
+
     private static final Logger logger = LoggerFactory.getLogger(EDPStatic.class);
 
     /**
@@ -29,6 +32,8 @@ public class EDPStatic extends EDP {
      */
     public EDPStatic(PDPSimple p, RTPSParticipant part) {
         super(p, part);
+        m_edpXML = null;
+        m_attributes = new BuiltinAttributes();
     }
 
     /**
@@ -39,7 +44,11 @@ public class EDPStatic extends EDP {
      */
     @Override
     public boolean initEDP(BuiltinAttributes attributes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        logger.info("RTPS EDP: Beginning STATIC EndpointDiscoveryProtocol");
+        m_attributes.copy(attributes);
+        m_edpXML = new EDPStaticXML();
+        String filename = attributes.getStaticEndpointXMLFilename();
+        return m_edpXML.loadXMLFile(filename);
     }
 
     /**
@@ -201,7 +210,33 @@ public class EDPStatic extends EDP {
      * @return true if correct.
      */
     public boolean newRemoteReader(ParticipantProxyData pdata, short userId, EntityId entId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        ReaderProxyData rpd = m_edpXML.lookforReader(pdata.getParticipantName(), userId);
+        if (rpd != null) {
+            logger.info("RTPS EDP: Activating: {} in topic {}", rpd.getGUID().getEntityId(), rpd.getTopicName());
+            ReaderProxyData newRPD = new ReaderProxyData();
+            newRPD.copy(rpd);
+            newRPD.getGUID().setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
+            if (!entId.equals(new EntityId())) {
+                newRPD.getGUID().setEntityId(entId);
+            }
+            if (!checkEntityId(newRPD)) {
+                logger.error("RTPS EDP: The provided entityId for Reader with ID: {} does not match the topic Kind", newRPD.getUserDefinedId());
+                return false;
+            }
+            newRPD.setKey(newRPD.getGUID());
+            newRPD.setRTPSParticipantKey(pdata.getGUID());
+            if (m_PDP.addReaderProxyData(newRPD, false)) {
+                //CHECK the locators:
+                if (newRPD.getUnicastLocatorList().isEmpty() && newRPD.getMulticastLocatorList().isEmpty()) {
+                    newRPD.setUnicastLocatorList(pdata.getDefaultUnicastLocatorList());
+                    newRPD.setMulticastLocatorList(pdata.getDefaultMulticastLocatorList());
+                }
+                newRPD.setIsAlive(true);
+                pairingReaderProxy(newRPD);
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
