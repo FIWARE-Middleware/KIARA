@@ -6,10 +6,14 @@ import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.WITH_KEY;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
+import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
+import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,34 +31,24 @@ public class EDPStatic extends EDP {
         super(p, part);
     }
 
-    public boolean newRemoteWriter(ParticipantProxyData pdata, short userId, EntityId entId) {
-        return true;
-    }
-
-    public boolean newRemoteReader(ParticipantProxyData pdata, short userId, EntityId entId) {
-        return true;
-    }
-
+    /**
+     * Abstract method to initialize the EDP.
+     *
+     * @param attributes DiscoveryAttributes structure.
+     * @return True if correct.
+     */
     @Override
-    public boolean initEDP(BuiltinAttributes m_discovery) {
+    public boolean initEDP(BuiltinAttributes attributes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    @Override
-    public void assignRemoteEndpoints(ParticipantProxyData pdata) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeLocalReader(RTPSReader R) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public boolean removeLocalWriter(RTPSWriter W) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    /**
+     * After a new local ReaderProxyData has been created some processing is
+     * needed (depends on the implementation).
+     *
+     * @param rdata Pointer to the ReaderProxyData object.
+     * @return True if correct.
+     */
     @Override
     public boolean processLocalReaderProxyData(ReaderProxyData rdata) {
         logger.info("RTPS EDP: {} in topic: {}", rdata.getGUID().getEntityId(), rdata.getTopicName());
@@ -72,6 +66,13 @@ public class EDPStatic extends EDP {
         return true;
     }
 
+    /**
+     * After a new local WriterProxyData has been created some processing is
+     * needed (depends on the implementation).
+     *
+     * @param wdata Pointer to the Writer ProxyData object.
+     * @return True if correct.
+     */
     @Override
     public boolean processLocalWriterProxyData(WriterProxyData wdata) {
         logger.info("RTPS EDP: {} in topic: {}", wdata.getGUID().getEntityId(), wdata.getTopicName());
@@ -88,6 +89,168 @@ public class EDPStatic extends EDP {
             mutex.unlock();
         }
         return true;
+    }
+
+    /**
+     * Abstract method that removes a local Reader from the discovery method
+     *
+     * @param R Pointer to the Reader to remove.
+     * @return True if correctly removed.
+     */
+    @Override
+    public boolean removeLocalReader(RTPSReader R) {
+        ParticipantProxyData localpdata = m_PDP.getLocalParticipantProxyData();
+        final Lock mutex = localpdata.getMutex();
+        try {
+            for (Pair<String, String> pit : localpdata.getProperties().getProperties()) {
+                EDPStaticProperty staticproperty = new EDPStaticProperty();
+                if (staticproperty.fromProperty(pit)) {
+                    if (staticproperty.entityId.equals(R.getGuid().getEntityId())) {
+                        pit.copy(EDPStaticProperty.toProperty("Reader", "ENDED", R.getAttributes().getUserDefinedID(),
+                                R.getGuid().getEntityId()));
+                    }
+                }
+            }
+            return false;
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+    /**
+     * Abstract method that removes a local Writer from the discovery method
+     *
+     * @param W Pointer to the Writer to remove.
+     * @return True if correctly removed.
+     */
+    @Override
+    public boolean removeLocalWriter(RTPSWriter W) {
+        ParticipantProxyData localpdata = m_PDP.getLocalParticipantProxyData();
+        final Lock mutex = localpdata.getMutex();
+        mutex.lock();
+        try {
+            for (Pair<String, String> pit : localpdata.getProperties().getProperties()) {
+                EDPStaticProperty staticproperty = new EDPStaticProperty();
+                if (staticproperty.fromProperty(pit)) {
+                    if (staticproperty.entityId.equals(W.getGuid().getEntityId())) {
+                        pit.copy(EDPStaticProperty.toProperty("Writer", "ENDED", W.getAttributes().getUserDefinedID(),
+                                W.getGuid().getEntityId()));
+                    }
+                }
+            }
+            return false;
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+    /**
+     * Abstract method that assigns remote endpoints when a new
+     * RTPSParticipantProxyData is discovered.
+     *
+     * @param pdata Pointer to the ParticipantProxyData.
+     */
+    @Override
+    public void assignRemoteEndpoints(ParticipantProxyData pdata) {
+        final Lock mutex = pdata.getMutex();
+        mutex.lock();
+        try {
+            for (Pair<String, String> pit : pdata.getProperties().getProperties()) {
+                //cout << "STATIC EDP READING PROPERTY " << pit->first << "// " << pit->second << endl;
+                EDPStaticProperty staticproperty = new EDPStaticProperty();
+                if (staticproperty.fromProperty(pit)) {
+                    if ("Reader".equals(staticproperty.endpointType) && "ALIVE".equals(staticproperty.status)) {
+                        GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
+                        ReaderProxyData rdata = m_PDP.lookupReaderProxyData(guid);
+
+                        if (rdata != null) { //IF NOT FOUND, we CREATE AND PAIR IT
+                            newRemoteReader(pdata, staticproperty.userId, staticproperty.entityId);
+                        }
+                    } else if ("Writer".equals(staticproperty.endpointType) && "ALIVE".equals(staticproperty.status)) {
+
+                        GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
+                        WriterProxyData wdata = m_PDP.lookupWriterProxyData(guid);
+                        if (wdata != null) { //IF NOT FOUND, we CREATE AND PAIR IT
+                            newRemoteWriter(pdata, staticproperty.userId, staticproperty.entityId);
+                        }
+                    } else if ("Reader".equals(staticproperty.endpointType) && "ENDED".equals(staticproperty.status)) {
+                        GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
+                        removeReaderProxy(guid);
+                    } else if ("Writer".equals(staticproperty.endpointType) && "ENDED".equals(staticproperty.status)) {
+                        GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
+                        removeWriterProxy(guid);
+                    } else {
+                        logger.warn("RTPS EDP: Property with type: {} and status {} not recognized", staticproperty.endpointType, staticproperty.status);
+                    }
+                } else {
+
+                }
+            }
+        } finally {
+            mutex.unlock();
+        }
+    }
+
+    /**
+     * New Remote Reader has been found and this method process it and calls the
+     * pairing methods.
+     *
+     * @param pdata Pointer to the RTPSParticipantProxyData object.
+     * @param userId UserId.
+     * @param entId EntityId.
+     * @return true if correct.
+     */
+    public boolean newRemoteReader(ParticipantProxyData pdata, short userId, EntityId entId) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * New Remote Writer has been found and this method process it and calls the
+     * pairing methods.
+     *
+     * @param pdata Pointer to the RTPSParticipantProxyData object.
+     * @param userId UserId.
+     * @param entId EntityId.
+     * @return True if correct.
+     */
+    public boolean newRemoteWriter(ParticipantProxyData pdata, short userId, EntityId entId) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
+    /**
+     * This method checks the provided entityId against the topic type to see if
+     * it matches
+     *
+     * @param rdata Pointer to the readerProxyData
+     * @return True if its correct.
+     *
+     */
+    public boolean checkEntityId(ReaderProxyData rdata) {
+        if (rdata.getTopicKind() == WITH_KEY && rdata.getGUID().getEntityId().getValue(3) == 0x07) {
+            return true;
+        }
+        if (rdata.getTopicKind() == NO_KEY && rdata.getGUID().getEntityId().getValue(3) == 0x04) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * This method checks the provided entityId against the topic type to see if
+     * it matches
+     *
+     * @param wdata Pointer to the writerProxyData
+     * @return True if its correct.
+     *
+     */
+    public boolean checkEntityId(WriterProxyData wdata) {
+        if (wdata.getTopicKind() == WITH_KEY && wdata.getGUID().getEntityId().getValue(3) == 0x02) {
+            return true;
+        }
+        if (wdata.getTopicKind() == NO_KEY && wdata.getGUID().getEntityId().getValue(3) == 0x03) {
+            return true;
+        }
+        return false;
     }
 
 }
