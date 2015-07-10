@@ -31,9 +31,9 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class GUID implements Serializable {
 
-    private GUIDPrefix m_guidPrefix;
+    private final GUIDPrefix m_guidPrefix;
 
-    private EntityId m_entityId;
+    private final EntityId m_entityId;
 
     public GUID() {
         this.m_guidPrefix = new GUIDPrefix();
@@ -50,7 +50,7 @@ public class GUID implements Serializable {
     }
 
     public void setGUIDPrefix(GUIDPrefix guidPrefix) {
-        this.m_guidPrefix = guidPrefix;
+        this.m_guidPrefix.copy(guidPrefix);
     }
 
     public EntityId getEntityId() {
@@ -58,7 +58,7 @@ public class GUID implements Serializable {
     }
 
     public void setEntityId(EntityId id) {
-        this.m_entityId = id;
+        this.m_entityId.copy(id);
     }
 
     public void copy(GUID value) {
