@@ -39,11 +39,11 @@ public abstract class EDP {
      * Pointer to the PDPSimple object that contains the endpoint discovery
      * protocol.
      */
-    private PDPSimple m_PDP;
+    protected PDPSimple m_PDP;
     /**
      * Pointer to the RTPSParticipant.
      */
-    private RTPSParticipant m_RTPSParticipant;
+    protected RTPSParticipant m_RTPSParticipant;
 
     private static final Logger logger = LoggerFactory.getLogger(EDP.class);
 

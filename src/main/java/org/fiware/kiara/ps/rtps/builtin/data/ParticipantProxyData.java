@@ -333,4 +333,15 @@ public class ParticipantProxyData {
         return this.m_participantName;
     }
 
+    public boolean getHasChanged() {
+        return m_hasChanged;
+    }
+
+    public void setHasChanged(boolean value) {
+        m_hasChanged = value;
+    }
+
+    public ParameterPropertyList getProperties() {
+        return m_properties;
+    }
 }
