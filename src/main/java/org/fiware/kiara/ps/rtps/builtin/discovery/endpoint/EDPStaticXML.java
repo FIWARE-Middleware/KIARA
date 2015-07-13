@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Set;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config.StaticDiscovery;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class EDPStaticXML used to parse the XML file that contains information about
@@ -37,6 +39,8 @@ public class EDPStaticXML {
     private final Set<Short> m_endpointIds;
     private final Set<Integer> m_entityIds;
     private final List<StaticRTPSParticipantInfo> m_RTPSParticipants;
+
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
 
     public EDPStaticXML() {
         this.m_endpointIds = new HashSet<>();
@@ -91,7 +95,13 @@ public class EDPStaticXML {
      * @return True if correct.
      */
     public boolean loadXMLFile(String filename) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            StaticDiscovery config = StaticDiscovery.fromXML(filename);
+        } catch (Exception ex) {
+            logger.error("RTPS EDP: Error reading xml file ({})", ex);
+            return false;
+        }
+        return true;
     }
 
 }
