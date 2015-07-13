@@ -390,6 +390,10 @@ public class PDPSimple {
         return addWriterProxyData(wdata, false, null, null);
     }
 
+    public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData) {
+        return addWriterProxyData(wdata, copyData, null, null);
+    }
+
     public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData, WriterProxyData returnWriterProxyData, ParticipantProxyData pdata) {
         logger.info("Adding WriterProxyData: " + wdata.getGUID());
         this.m_mutex.lock();
