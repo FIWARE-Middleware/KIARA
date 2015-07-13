@@ -22,6 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
+import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 
 /**
  * Class EDPStaticXML used to parse the XML file that contains information about
@@ -48,7 +49,7 @@ public class EDPStaticXML {
      *
      * @param partname RTPSParticipant name
      * @param id Id of the reader
-     * @return Pointer to pointer to return the information.
+     * @return Pointer to return the information.
      */
     public ReaderProxyData lookforReader(String partname, short id) {
         for (StaticRTPSParticipantInfo pit : m_RTPSParticipants) {
@@ -63,7 +64,33 @@ public class EDPStaticXML {
         return null;
     }
 
-    boolean loadXMLFile(String filename) {
+    /**
+     * Look for a writer in the previously loaded endpoints.
+     *
+     * @param partname RTPSParticipant name
+     * @param id Id of the writer
+     * @return Pointer to return the information.
+     */
+    public WriterProxyData lookforWriter(String partname, short id) {
+        for (StaticRTPSParticipantInfo pit : m_RTPSParticipants) {
+            if (pit.participantName.equals(partname) || true) { //it doenst matter the name fo the RTPSParticipant, only for organizational purposes
+                for (WriterProxyData wit : pit.writers) {
+                    if (wit.getUserDefinedId() == id) {
+                        return wit;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Load the XML file
+     *
+     * @param filename Name of the file to load and parse.
+     * @return True if correct.
+     */
+    public boolean loadXMLFile(String filename) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

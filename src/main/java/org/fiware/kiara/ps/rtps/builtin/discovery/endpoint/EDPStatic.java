@@ -249,7 +249,33 @@ public class EDPStatic extends EDP {
      * @return True if correct.
      */
     public boolean newRemoteWriter(ParticipantProxyData pdata, short userId, EntityId entId) {
-        throw new UnsupportedOperationException("Not implemented yet");
+	WriterProxyData wpd = m_edpXML.lookforWriter(pdata.getParticipantName(), userId);
+	if (wpd != null) {
+		logger.info("RTPS EDP: Activating: {} in topic {}", wpd.getGUID().getEntityId(), wpd.getTopicName());
+		WriterProxyData newWPD = new WriterProxyData();
+		newWPD.copy(wpd);
+		newWPD.getGUID().setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
+		if(!entId.equals(new EntityId()))
+			newWPD.getGUID().setEntityId(entId);
+		if(!checkEntityId(newWPD))
+		{
+			logger.error("RTPS EDP: The provided entityId for Writer with User ID: {} does not match the topic Kind", newWPD.getUserDefinedId());
+			return false;
+		}
+		newWPD.setKey(newWPD.getGUID());
+		newWPD.setRTPSParticipantKey(pdata.getGUID());
+		if (m_PDP.addWriterProxyData(newWPD, false)) {
+			//CHECK the locators:
+			if (newWPD.getUnicastLocatorList().isEmpty() && newWPD.getMulticastLocatorList().isEmpty()) {
+				newWPD.setUnicastLocatorList(pdata.getDefaultUnicastLocatorList());
+				newWPD.setMulticastLocatorList(pdata.getDefaultMulticastLocatorList());
+			}
+			newWPD.setIsAlive(true);
+			pairingWriterProxy(newWPD);
+			return true;
+		}
+	}
+	return false;
     }
 
     /**
