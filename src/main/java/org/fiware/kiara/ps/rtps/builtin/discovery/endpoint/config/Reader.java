@@ -19,8 +19,10 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
 import java.nio.ByteBuffer;
 import java.util.Set;
-import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
-import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind;
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
+import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicyKind;
+import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.StaticRTPSParticipantInfo;
@@ -45,14 +47,24 @@ public class Reader extends Endpoint {
         }
         rdata.setUserDefinedId(userId);
 
-        if (entityId <= 0 || entityIds.add(entityId) == false) {
-            logger.error("RTPS EDP: Repeated or negative entityId in XML file");
-            return false;
+        if (entityId != null) {
+            int id;
+            try {
+                id = Integer.parseInt(entityId);
+            } catch (NumberFormatException ex) {
+                logger.error("RTPS EDP: entityId is not an integer: {}", entityId);
+                return false;
+            }
+            if (id <= 0 || entityIds.add(id) == false) {
+                logger.error("RTPS EDP: Repeated or negative entityId in XML file");
+                return false;
+            }
+
+            byte[] c = ByteBuffer.allocate(4).putInt(id).array();
+            rdata.getGUID().getEntityId().setValue(2, c[0]);
+            rdata.getGUID().getEntityId().setValue(1, c[1]);
+            rdata.getGUID().getEntityId().setValue(0, c[2]);
         }
-        byte[] c = ByteBuffer.allocate(4).putInt(entityId).array();
-        rdata.getGUID().getEntityId().setValue(2, c[0]);
-        rdata.getGUID().getEntityId().setValue(1, c[1]);
-        rdata.getGUID().getEntityId().setValue(0, c[2]);
 
         rdata.setExpectsInlineQos(expectsInlineQos);
         if (topicName != null) {
@@ -65,13 +77,15 @@ public class Reader extends Endpoint {
             rdata.setTopicKind(topicKind);
         }
 
-        if ("RELIABLE_RELIABILITY_QOS".equals(reliabilityQos)) {
-            rdata.getQos().reliability.kind = RELIABLE_RELIABILITY_QOS;
-        } else if ("BEST_EFFORT_RELIABILITY_QOS".equals(reliabilityQos)) {
-            rdata.getQos().reliability.kind = BEST_EFFORT_RELIABILITY_QOS;
-        } else {
-            logger.error("RTPS EDP: Bad XML file, endpoint of stateKind: {} is not valid", reliabilityQos);
-            return false;
+        if (reliabilityQos != null) {
+            if ("RELIABLE_RELIABILITY_QOS".equals(reliabilityQos)) {
+                rdata.getQos().reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+            } else if ("BEST_EFFORT_RELIABILITY_QOS".equals(reliabilityQos)) {
+                rdata.getQos().reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+            } else {
+                logger.error("RTPS EDP: Bad XML file, endpoint of stateKind: {} is not valid", reliabilityQos);
+                return false;
+            }
         }
 
         for (Locator cfgLoc : unicastLocators) {
@@ -91,22 +105,70 @@ public class Reader extends Endpoint {
         }
 
         if (topic != null) {
-            if (topic.name != null)
+            if (topic.name != null) {
                 rdata.setTopicName(topic.name);
-            if (topic.dataType != null)
+            }
+            if (topic.dataType != null) {
                 rdata.setTypeName(topic.dataType);
-            if (topic.kind != null)
+            }
+            if (topic.kind != null) {
                 rdata.setTopicKind(topic.kind);
+            }
 
             if ("EPROSIMA_UNKNOWN_STRING".equals(rdata.getTopicName()) || "EPROSIMA_UNKNOWN_STRING".equals(rdata.getTypeName())) {
-				logger.error("RTPS EDP: Bad XML file, topic: {} or typeName: {} undefined", rdata.getTopicName(), rdata.getTopicName());
-				return false;
+                logger.error("RTPS EDP: Bad XML file, topic: {} or typeName: {} undefined", rdata.getTopicName(), rdata.getTopicName());
+                return false;
             }
         }
-        // TODO durabilityQos
-        // TODO ownershipQos
-        // TODO partitionQos
-        // TODO livelinessQos
+
+        if (durabilityQos != null) {
+            if ("TRANSIENT_LOCAL_DURABILITY_QOS".equals(durabilityQos)) {
+                rdata.getQos().durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
+            } else if ("VOLATILE_DURABILITY_QOS".equals(durabilityQos)) {
+                rdata.getQos().durability.kind = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
+            } else {
+                logger.error("RTPS EDP: Bad XML file, durability of kind: {} is not valid", durabilityQos);
+                return false;
+            }
+        }
+
+        if (ownershipQos != null) {
+            if ("SHARED_OWNERSHIP_QOS".equals(ownershipQos.kind)) {
+                rdata.getQos().ownership.kind = OwnershipQosPolicyKind.SHARED_OWNERSHIP_QOS;
+            } else if ("EXCLUSIVE_OWNERSHIP_QOS".equals(ownershipQos.kind)) {
+                rdata.getQos().ownership.kind = OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS;
+            } else {
+                logger.error("RTPS EDP: Bad XML file, ownership of kind: {} is not valid", ownershipQos.kind);
+                return false;
+            }
+        }
+        for (String elem : partitionQos) {
+            rdata.getQos().partition.pushBack(elem);
+        }
+        if (livelinessQos != null) {
+            if ("AUTOMATIC_LIVELINESS_QOS".equals(livelinessQos.kind)) {
+                rdata.getQos().liveliness.kind = LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
+            } else if ("MANUAL_BY_PARTICIPANT_LIVELINESS_QOS".equals(livelinessQos.kind)) {
+                rdata.getQos().liveliness.kind = LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
+            } else if ("MANUAL_BY_TOPIC_LIVELINESS_QOS".equals(livelinessQos.kind)) {
+                rdata.getQos().liveliness.kind = LivelinessQosPolicyKind.MANUAL_BY_TOPIC_LIVELINESS_QOS;
+            } else {
+                logger.error("RTPS EDP: Bad XML file, liveliness of kind: {} is not valid", livelinessQos.kind);
+                return false;
+            }
+            if ("INF".equals(livelinessQos.leaseDuration_ms)) {
+                rdata.getQos().liveliness.leaseDuration.timeInfinite();
+            } else {
+                if (livelinessQos.leaseDuration_ms != null) {
+                    try {
+                        rdata.getQos().liveliness.leaseDuration.setMilliSecondsDouble(Long.parseLong(livelinessQos.leaseDuration_ms));
+                    } catch (NumberFormatException ex) {
+                        logger.warn("RTPS EDP: BAD XML:livelinessQos leaseDuration is a bad number: {} setting to INF", livelinessQos.leaseDuration_ms);
+                        rdata.getQos().liveliness.leaseDuration.timeInfinite();
+                    }
+                }
+            }
+        }
         if (rdata.getUserDefinedId() == 0) {
             logger.error("Reader XML endpoint with NO ID defined");
             return false;

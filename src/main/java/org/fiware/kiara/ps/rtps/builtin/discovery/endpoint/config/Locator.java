@@ -25,7 +25,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 public class Locator {
     @JacksonXmlProperty(localName="address", isAttribute = true)
-    public String address;
+    public String address = "";
     @JacksonXmlProperty(localName="port", isAttribute = true)
-    public int port;
+    public int port = 0;
 }

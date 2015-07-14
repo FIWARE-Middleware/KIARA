@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
 import java.io.File;
 import java.io.IOException;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 
 /**
  *
@@ -27,7 +28,12 @@ import java.io.IOException;
 public class XMLLoader {
 
     public static void main(String[] args) throws IOException {
+
         StaticDiscovery d = StaticDiscovery.fromXML(new File("/home/rubinste/proj_de3/fi-core/KIARA/Config.xml"));
         d.toXML(new File("/home/rubinste/proj_de3/fi-core/KIARA/ConfigOut.xml"));
+
+        EDPStaticXML esx = new EDPStaticXML();
+        esx.loadXMLFile("/home/rubinste/proj_de3/fi-core/KIARA/Config.xml");
+        System.out.println(esx);
     }
 }

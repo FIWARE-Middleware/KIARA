@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
+import static java.lang.Math.pow;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -135,6 +136,11 @@ public class Timestamp extends RTPSSubmessageElement {
 
     public double toMilliSecondsDouble() {
         return ((double) this.m_fraction / Math.pow(2.0, 32) * Math.pow(10.0, 3)) + (double) this.m_seconds*Math.pow(10.0, 3);
+    }
+
+    public void setMilliSecondsDouble(double millisec) {
+        m_seconds = (int)(millisec/pow(10.0,3));
+	m_fraction = (int)((millisec-(double)m_seconds*pow(10.0,3))/pow(10.0,3)*pow(2.0,32));
     }
 
 }
