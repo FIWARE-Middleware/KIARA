@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.StaticRTPSParticipantInfo;
+import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -68,16 +70,23 @@ public class StaticDiscovery {
         xmlWriter.writeValue(xmlFile, this);
     }
 
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
+
     public boolean process(List<StaticRTPSParticipantInfo> participants, Set<Short> endpointIds, Set<Integer> entityIds) {
-        StaticRTPSParticipantInfo pdata= new StaticRTPSParticipantInfo();
         for (Participant cfgParticipant : this.participants) {
+            StaticRTPSParticipantInfo pdata= new StaticRTPSParticipantInfo();
             pdata.participantName = cfgParticipant.name;
             for (Reader cfgReader : cfgParticipant.readers) {
-                cfgReader.process(pdata, endpointIds, entityIds);
+                if (!cfgReader.process(pdata, endpointIds, entityIds)) {
+                    logger.error("RTPS EDP: Reader Endpoint has error, ignoring");
+                }
             }
             for (Writer cfgWriter : cfgParticipant.writers) {
-                cfgWriter.process(pdata, endpointIds, entityIds);
+                if (!cfgWriter.process(pdata, endpointIds, entityIds)) {
+                    logger.error("RTPS EDP: Writer Endpoint has error, ignoring");
+                }
             }
+            participants.add(pdata);
         }
         return true;
     }

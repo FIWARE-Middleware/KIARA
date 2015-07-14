@@ -28,7 +28,7 @@ import org.fiware.kiara.ps.rtps.common.TopicKind;
  */
 public class Endpoint {
     public short userId = 0;
-    public int entityId;
+    public String entityId;
     public String topicName;
     public String topicDataType;
     public TopicKind topicKind;

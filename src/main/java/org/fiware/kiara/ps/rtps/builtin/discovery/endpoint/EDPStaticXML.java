@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -96,7 +97,8 @@ public class EDPStaticXML {
      */
     public boolean loadXMLFile(String filename) {
         try {
-            StaticDiscovery config = StaticDiscovery.fromXML(filename);
+            StaticDiscovery config = StaticDiscovery.fromXML(new File(filename));
+            config.process(m_RTPSParticipants, m_endpointIds, m_entityIds);
         } catch (Exception ex) {
             logger.error("RTPS EDP: Error reading xml file ({})", ex);
             return false;
