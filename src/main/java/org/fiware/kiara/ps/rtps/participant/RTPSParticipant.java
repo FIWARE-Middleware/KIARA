@@ -25,6 +25,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.attributes.TopicAttributes;
+import org.fiware.kiara.ps.participant.ParticipantListener;
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.Endpoint;
@@ -92,7 +93,12 @@ public class RTPSParticipant {
     
     private final Lock m_mutex;
     
+    private RTPSParticipantListener m_participantListener; 
+    
+    private RTPSParticipant m_userParticipant;
+    
     private final Semaphore m_resourceSemaphore;
+    
     //private final Object m_resourceSemaphore;
     
     private int m_threadID;
@@ -100,7 +106,8 @@ public class RTPSParticipant {
     public RTPSParticipant(
             RTPSParticipantAttributes participantAtt, 
             GUIDPrefix guidPrefix,
-            RTPSParticipantListener partListener
+            //RTPSParticipant par,
+            RTPSParticipantListener participantListener
             ) {
 
         this.m_guid = new GUID(guidPrefix, new EntityId(EntityIdEnum.ENTITYID_RTPSPARTICIPANT));
@@ -114,6 +121,10 @@ public class RTPSParticipant {
         this.m_allReaderList = new ArrayList<RTPSReader>();
         
         this.m_listenResourceList = new ArrayList<ListenResource>();
+        
+        this.m_participantListener = participantListener;
+        //this.m_userParticipant = par;
+        //this.m_userParticipant.m
         
         //this.m_resourceSemaphore = new Semaphore(0, true);
         this.m_resourceSemaphore = new Semaphore(0, false);
@@ -147,6 +158,7 @@ public class RTPSParticipant {
             LocatorList defCopy = new LocatorList(this.m_att.defaultUnicastLocatorList);
             this.m_att.defaultUnicastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
+                System.out.println("Creating listener for locator:  " + lit);
                 ListenResource lr = new ListenResource(this, ++this.m_threadID, true);
                 if (lr.initThread(this,  lit,  this.m_att.listenSocketBufferSize, false, false)) {
                     this.m_att.defaultUnicastLocatorList = lr.getListenLocators();
@@ -161,6 +173,7 @@ public class RTPSParticipant {
             defCopy = new LocatorList(this.m_att.defaultMulticastLocatorList);
             this.m_att.defaultMulticastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
+                System.out.println("Creating listener for locator:  " + lit);
                 ListenResource lr = new ListenResource(this,  ++this.m_threadID, true);
                 if (lr.initThread(this, lit, this.m_att.listenSocketBufferSize, true, false)) {
                     this.m_att.defaultMulticastLocatorList = lr.getListenLocators();
@@ -677,6 +690,15 @@ public class RTPSParticipant {
 
     public List<RTPSWriter> getUserWriters() {
         return this.m_userWriterList;
+    }
+
+    public RTPSParticipantListener getListener() {
+        return this.m_participantListener;
+    }
+
+    public RTPSParticipant getUserRTPSParticipant() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 

@@ -96,7 +96,11 @@ public class GUIDPrefix extends RTPSSubmessageElement {
 
     @Override
     public String toString() {
-        return new String(this.m_value);
+        StringBuffer sb = new StringBuffer("");
+        for (Byte b : this.m_value) {
+            sb.append(b);
+        }
+        return sb.toString();
     }
 
     public byte getValueAt(byte i) {

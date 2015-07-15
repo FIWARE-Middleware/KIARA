@@ -21,8 +21,10 @@ import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
@@ -156,6 +158,16 @@ public class IPFinder {
         }
         return null;
     }
+    
+    public static Inet4Address addressIPv4() {
+        try {
+            return (Inet4Address) InetAddress.getByName("0.0.0.0");
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public static Inet4Address getFirstIPv4Adress() {
         return getFirstIPv4Address();
@@ -180,6 +192,16 @@ public class IPFinder {
 
     public static Inet6Address getFirstIPv6Adress() {
         return getFirstIPv6Address();
+    }
+    
+    public static Inet6Address addressIPv6() {
+        try {
+            return (Inet6Address) InetAddress.getByName("::");
+        } catch (UnknownHostException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public static LocatorList getAllIPAdress() {
@@ -290,5 +312,7 @@ public class IPFinder {
 
         return true;
     }
+
+    
 
 }

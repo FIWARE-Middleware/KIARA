@@ -85,7 +85,6 @@ public class SendResource {
     private static final Logger logger = LoggerFactory.getLogger(RTPSParticipant.class);
 
     public SendResource() {
-
         this.m_sendLocatorIPv4 = new ArrayList<>();
         this.m_sendLocatorIPv6 = new ArrayList<>();
         this.m_sendSocketIPv4 = new ArrayList<>();
@@ -113,6 +112,7 @@ public class SendResource {
      */
     public boolean initSend(RTPSParticipant participant, Locator loc, int sendSockBuffer, boolean useIPv4, boolean useIPv6) {
 
+        System.out.println("INIT SENDRESOURCE THREAD: " + Thread.currentThread().getId());
         this.m_useIPv4 = useIPv4;
         this.m_useIPv6 = useIPv6;
 
@@ -254,6 +254,7 @@ public class SendResource {
      */
     public void sendSync(RTPSMessage msg, Locator loc) {
         m_mutex.lock();
+        System.out.println("-----THREAD " + Thread.currentThread().getId() + " sendSync");
         try {
             if (loc.getPort() == 0) {
                 return;

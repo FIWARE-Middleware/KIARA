@@ -301,9 +301,11 @@ public class RTPSMessageBuilder {
 		boolean dataFlag = false;
 		boolean keyFlag = false;
 		boolean inlineQosFlag = false;
-		if (change.getKind() == ChangeKind.ALIVE && change.getSerializedPayload().getLength() > 0 && change.getSerializedPayload().getData() != null) {
+		boolean isDataOrParamList = (change.getSerializedPayload().getLength() > 0 || change.getSerializedPayload().getParameterListLength() > 0);
+		boolean existsDataOrParamList = (change.getSerializedPayload().getData() != null || change.getSerializedPayload().getParameterList() != null);
+		if (change.getKind() == ChangeKind.ALIVE && isDataOrParamList && existsDataOrParamList) {
 			dataFlag = true;
-			keyFlag = true;
+			keyFlag = false;
 		} else {
 			dataFlag = false;
 			keyFlag = true;

@@ -86,28 +86,35 @@ public class StatelessWriter extends RTPSWriter {
     }
     
     public void unsentChangeAddedToHistory(CacheChange change) {
-        List<CacheChange> changes = new ArrayList<CacheChange>();
-        changes.add(change);
-        
-        LocatorList locList = new LocatorList();
-        LocatorList locList2 = new LocatorList();
-        
-        this.setLivelinessAsserted(true);
-        
-        if (!this.m_readerLocator.isEmpty()) {
+        this.m_mutex.lock();
+        try {
+            List<CacheChange> changes = new ArrayList<CacheChange>();
+            changes.add(change);
             
-            for (ReaderLocator it : this.m_readerLocator) {
-                locList.pushBack(it.getLocator());
-            }
+            LocatorList locList = new LocatorList();
+            LocatorList locList2 = new LocatorList();
             
-            if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
-                RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
+            this.setLivelinessAsserted(true);
+            
+            if (!this.m_readerLocator.isEmpty()) {
+                
+                for (ReaderLocator it : this.m_readerLocator) {
+                    locList.pushBack(it.getLocator());
+                }
+                System.out.println("---- WRITER ID: " + this.m_guid);
+                if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
+                    System.out.println("-----Thread " + Thread.currentThread().getId() + " BUILTIN ------");
+                    RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
+                } else {
+                    System.out.println("-----Thread " + Thread.currentThread().getId() + " UNKNOWN ------");
+                    RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
+                }
+                
             } else {
-                RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
+                logger.warn("No reader locator to send change");
             }
-            
-        } else {
-            logger.warn("No reader locator to send change");
+        } finally {
+            this.m_mutex.unlock();
         }
         
     }

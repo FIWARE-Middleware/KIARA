@@ -27,6 +27,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 
 /**
 *
@@ -61,12 +62,22 @@ public class ParameterList extends RTPSSubmessageElement {
 		return this.m_totalBytes;
 	}
 	
+	public int getListLength() {
+	    return this.m_parameters.size();
+	}
+	
 	public void addParameter(Parameter parameter) {
 		this.m_parameters.add(parameter);
 	}
 	
 	public List<Parameter> getParameters() {
 	        return this.m_parameters;
+	}
+	
+	public boolean addSentinel() {
+	    this.m_parameters.add(new ParameterSentinel());
+	    this.m_hasChanged = false;
+	    return true;
 	}
 
 	/*@Override
@@ -86,6 +97,7 @@ public class ParameterList extends RTPSSubmessageElement {
 	@Override
 	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
 		for (Parameter p : this.m_parameters) {
+		    if (p!= null)
 			p.serialize(impl, message, name);
 		}
 	}
@@ -103,7 +115,10 @@ public class ParameterList extends RTPSSubmessageElement {
 			short length = impl.deserializeI16(message, name);
 			
 			Parameter param = ParameterBuilder.createParameter(pid, length);
+			//param.deserializeContent(impl, message, name);
 			param.deserializeContent(impl, message, name);
+			int bytesToSkip = 4 - (message.getPosition() % 4);
+			message.skipBytes(bytesToSkip);
 			
 			if (param.getParameterId() == ParameterId.PID_SENTINEL) {
 				isSentinel = true;
@@ -131,6 +146,8 @@ public class ParameterList extends RTPSSubmessageElement {
         this.m_parameters.clear();
         this.m_hasChanged = true;
     }
+
+    
 
     
 

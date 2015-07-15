@@ -53,7 +53,7 @@ public class ReaderTest {
             return;
         }
         
-        HistoryCacheAttributes hatt = new HistoryCacheAttributes();
+       /* HistoryCacheAttributes hatt = new HistoryCacheAttributes();
         hatt.payloadMaxSize = 500;
         
         ReaderHistoryCache rhist = new ReaderHistoryCache(hatt);
@@ -71,7 +71,7 @@ public class ReaderTest {
         if (reader == null) {
             System.out.println("ERROR creating reader");
             return;
-        }
+        }*/
         
     }
     

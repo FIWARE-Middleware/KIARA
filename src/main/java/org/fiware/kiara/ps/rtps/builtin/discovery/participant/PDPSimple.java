@@ -139,8 +139,8 @@ public class PDPSimple {
                 //this.m_EDP = new EDPStatic(this, this.m_RTPSParticipant);// TODO Uncomment
                 //this.m_EDP.initEDP(this.m_discovery);
             } else if (this.m_discovery.useSimpleEDP) {
-                this.m_EDP = new EDPSimple(this, this.m_RTPSParticipant);
-                this.m_EDP.initEDP(this.m_discovery);
+                //this.m_EDP = new EDPSimple(this, this.m_RTPSParticipant);
+                //this.m_EDP.initEDP(this.m_discovery);
             } else {
                 logger.warn("No EndpointDiscoveryProtocol has been defined");
                 return false;
@@ -168,21 +168,25 @@ public class PDPSimple {
     }
 
     public void announceParticipantState(boolean newChange) {
+        System.out.println("-----Thread " + Thread.currentThread().getId() + " ANNOUNCING---" + this.m_SPDPWriter.getGuid());
         logger.info("Announcing RTPSParticipant State (new change : " + newChange + ")");
         CacheChange change = null;
         
         if (newChange || this.m_hasChangedLocalPDP) {
+            System.out.println("-----Thread " + Thread.currentThread().getId() + " ----SENDING----");
             this.getLocalParticipantProxyData().increaseManualLivelinessCount();
             if (this.m_SPDPWriterHistory.getHistorySize() > 0) {
                 this.m_SPDPWriterHistory.removeMinChange();
             }
             change = this.m_SPDPWriter.newChange(ChangeKind.ALIVE, getLocalParticipantProxyData().getKey());
+            System.out.println("-----Thread " + Thread.currentThread().getId() + " ABOUT TO GET PARAM SIZE");
             ParameterList paramList = getLocalParticipantProxyData().toParameterList();
             if (paramList != null) {
+                System.out.println("-----Thread " + Thread.currentThread().getId() + "ParameterList size: " + paramList.getListLength());
                 change.getSerializedPayload().setEncapsulationKind(InfoEndianness.checkMachineEndianness() == RTPSEndian.BIG_ENDIAN ? EncapsulationKind.PL_CDR_BE : EncapsulationKind.PL_CDR_LE);
                 change.getSerializedPayload().addParameters(paramList);
                 this.m_SPDPWriterHistory.addChange(change);
-            }
+            } 
             this.m_hasChangedLocalPDP = false;
         } else {
             this.m_SPDPWriter.unsentChangesReset();
@@ -306,6 +310,7 @@ public class PDPSimple {
             if (this.m_builtin.getUseMandaory()) {
                 this.m_SPDPWriter.addLocator(ratt, this.m_builtin.getMandatoryMulticastLocator());
             }
+            logger.info("SimplePDP writer created: " + this.m_SPDPWriter.getGuid());
         } else {
             logger.error("SimplePDP Writer creation failed");
             this.m_SPDPWriterHistory = null;
@@ -320,8 +325,9 @@ public class PDPSimple {
         this.m_SPDPReaderHistory = new ReaderHistoryCache(rhatt);
         
         ReaderAttributes ratt = new ReaderAttributes();
-        ratt.endpointAtt.multicastLocatorList = this.m_builtin.getMetatrafficMulticastLocatorList();
-        ratt.endpointAtt.unicastLocatorList = this.m_builtin.getMetatrafficUnicastLocatorList();
+        ratt.endpointAtt.multicastLocatorList.copy(this.m_builtin.getMetatrafficMulticastLocatorList());
+        ratt.endpointAtt.unicastLocatorList.copy(this.m_builtin.getMetatrafficUnicastLocatorList());
+        //this.m_builtin.getMetatrafficMulticastLocatorList().getLocators().get(0).setPort(5555);
         ratt.endpointAtt.topicKind = TopicKind.WITH_KEY;
         ratt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
         ratt.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
@@ -649,5 +655,13 @@ public class PDPSimple {
 
     public List<ParticipantProxyData> getParticipantProxies() {
         return m_participantProxies;
+    }
+
+    public ReaderHistoryCache getSPDPReaderHistory() {
+        return this.m_SPDPReaderHistory;
+    }
+
+    public RTPSParticipant getRTPSParticipant() {
+        return this.m_RTPSParticipant;
     }
 }
