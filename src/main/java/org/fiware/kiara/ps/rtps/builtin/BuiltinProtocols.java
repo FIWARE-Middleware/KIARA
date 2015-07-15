@@ -69,7 +69,7 @@ public class BuiltinProtocols {
     }
 
     public boolean initBuiltinProtocols(RTPSParticipant rtpsParticipant, BuiltinAttributes builtinAtt) {
-        
+        System.out.println("STARTING BUILTIN_ENDPOINTS");
         this.m_participant = rtpsParticipant;
         this.m_att = builtinAtt;
         
@@ -110,11 +110,11 @@ public class BuiltinProtocols {
             if (!this.m_PDP.initPDP(this.m_participant)) {
                 return false;
             }
-            if (this.m_att.useWriterLP) {
+            /*if (this.m_att.useWriterLP) {
                 // TODO Implement WLP (simulated for now)
                 this.m_WLP = new WLP(this);
                 this.m_WLP.initWL(this.m_participant);
-            }
+            }*/
             this.m_PDP.announceParticipantState(true);
             this.m_PDP.resetParticipantAnnouncement();
         }

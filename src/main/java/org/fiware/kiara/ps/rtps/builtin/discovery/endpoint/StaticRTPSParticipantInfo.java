@@ -26,7 +26,7 @@ import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
  * Class StaticRTPSParticipantInfo, contains the information of writers and
  * readers loaded from the XML file.
  *
- * @ingroup DISCOVERY_MODULE
+ * 
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */

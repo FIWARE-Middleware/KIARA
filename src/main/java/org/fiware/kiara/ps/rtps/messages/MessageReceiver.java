@@ -413,7 +413,7 @@ public class MessageReceiver {
 				// Data MSG contains inline QOS
 				ParameterList paramList = new ParameterList();
 				paramList.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-				inlineQosSize = paramList.getListSize();
+				inlineQosSize = paramList.getListSize(); // TODO Check this
 				
 				if (inlineQosSize <= 0) {
 					System.out.println("SubMessage Data ERROR, Inline Qos ParameterList error");

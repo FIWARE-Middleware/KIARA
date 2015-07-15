@@ -54,10 +54,14 @@ public class ParameterPropertyList extends Parameter {
             }
         }
     }
+    
+    public void copy(ParameterPropertyList other) {
+        this.m_properties.clear();
+        this.m_properties.addAll(other.m_properties);
+    }
 
     @Override
-    public void deserializeContent(SerializerImpl impl,
-            BinaryInputStream message, String name) throws IOException {
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 

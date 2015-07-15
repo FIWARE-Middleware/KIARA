@@ -67,6 +67,7 @@ public class WriterHistoryCache extends HistoryCache {
             this.m_changes.add(change);
             logger.info("Change " + change.getSequenceNumber().toLong() + " added with " + change.getSerializedPayload().getSerializedSize() + " bytes");
             updateMaxMinSeqNum();
+            System.out.println("-----Thread " + Thread.currentThread().getId() + " Adding CacheChange------------");
             this.m_writer.unsentChangeAddedToHistory(change);
         } finally {
             this.m_mutex.unlock();

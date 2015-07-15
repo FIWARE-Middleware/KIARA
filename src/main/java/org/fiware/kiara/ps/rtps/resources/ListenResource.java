@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.resources;
 
 import org.fiware.kiara.netty.NioDatagramChannelFactory;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ChannelFactory;
 import io.netty.channel.Channel;
@@ -58,6 +59,8 @@ import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.transport.impl.Global;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.net.InetAddresses;
 
 /**
  *
@@ -312,15 +315,16 @@ public class ListenResource {
         if (isMulticast) {
             multicastAddress = this.m_listenEndpoint.address;
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
-                //this.m_listenSocket.setOption(SocketOptions., value)
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
+                //this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
+                this.m_listenEndpoint.address = IPFinder.addressIPv4();
             } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
+                //this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
+                this.m_listenEndpoint.address = IPFinder.addressIPv6();
             }
         }
 
+        InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
         if (isFixed) {
-            InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port);
             try {
                 this.m_listenChannel.socket().bind(sockAddr);
             } catch (IOException e) {
@@ -335,7 +339,7 @@ public class ListenResource {
 
             for (int i=0; i < 1000; ++i) {
                 this.m_listenEndpoint.port += 1;
-                InetSocketAddress sockAddr = new InetSocketAddress(/*this.m_listenEndpoint.address, */this.m_listenEndpoint.port); // TODO: Delete addr
+                //InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port); // TODO: Delete addr
                 try {
                     this.m_listenChannel.socket().bind(sockAddr);
                     binded = true;
@@ -345,7 +349,6 @@ public class ListenResource {
                     e.printStackTrace();
                     Thread.currentThread().interrupt();
                 }
-
             }
 
             if (!binded) {
@@ -359,9 +362,15 @@ public class ListenResource {
         }
 
         if (isMulticast && multicastAddress != null) {
-            joinMulticastGroup(multicastAddress);
+            joinMulticastGroup(multicastAddress/*, this.m_listenEndpoint.port++*/);
         }
 
+        try {
+            System.out.println("Starting in" + this.m_listenChannel.getLocalAddress().toString());
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         ReceptionThread runnable = new ReceptionThread(this.m_listenChannel, this);
         this.m_thread = new Thread(runnable, "");
         this.m_thread.start();
@@ -372,7 +381,7 @@ public class ListenResource {
 
     }
 
-    private void joinMulticastGroup(InetAddress multicastAddress) {
+    private void joinMulticastGroup(InetAddress multicastAddress/*, int port*/) {
 
         LocatorList loclist = new LocatorList();
 
@@ -380,12 +389,13 @@ public class ListenResource {
             loclist = IPFinder.getIPv4Adress();
             for (Locator it : loclist.getLocators()) {
                 try {
-                    InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, 0);
+                    //InetSocketAddress sockAddr = new InetSocketAddress(multicastAddress, port);
                     NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
                     this.m_listenChannel.setOption(StandardSocketOptions.IP_MULTICAST_IF, netInt);
                     MembershipKey key = this.m_listenChannel.join(multicastAddress, netInt);
+                   // MembershipKey key = this.m_listenChannel.join(sockAddr.getAddress(), netInt);
 
-                    System.err.printf("MulticastJoin: Address: %s, NetIf: %s, Key: %s%n", multicastAddress, netInt, key);
+                    System.err.printf("MulticastJoin: Address: %s, NetIf: %s, Key: %s%n", multicastAddress.toString(), netInt, key);
                     if (!key.isValid()) {
                         System.err.println("Invalid membership key: "+key);
                     }

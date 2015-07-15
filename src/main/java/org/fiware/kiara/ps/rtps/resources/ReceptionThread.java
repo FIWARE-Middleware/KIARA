@@ -69,26 +69,30 @@ public class ReceptionThread implements Runnable {
 
             DatagramPacket dp = new DatagramPacket(buf.array(), this.m_channel.socket().getReceiveBufferSize());
             //System.out.println(this.m_channel.socket().getLocalPort());
-            
+
+            System.out.println("---");
             logger.info("Thread " + Thread.currentThread().getId() + " listening in IP " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
+            System.out.println("---");
             
             while(true) {
             
                 this.m_channel.socket().receive(dp);
+                
+                System.out.println("Message received");
                 
                 this.m_listenResource.getSenderEndpoint().port = dp.getPort();
                 this.m_listenResource.getSenderEndpoint().address = dp.getAddress();
     
                 RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
     
-                System.out.println("Message created");
+                //System.out.println("Message created");
     
                 msg.setBuffer(buf.array(), dp.getLength());
                 msg.initBinaryOutputStream();
     
                 this.newRTPSMessage(msg);
             
-                System.out.println("Buffer set");
+                //System.out.println("Buffer set");
             
             }
 

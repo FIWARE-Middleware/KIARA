@@ -41,6 +41,11 @@ public class ParameterBuilder {
             param = new ParameterString(ParameterId.PID_TOPIC_NAME);
             break;
         case PID_TYPE_NAME:
+            param = new ParameterString(ParameterId.PID_TYPE_NAME);
+            break;
+        case PID_ENTITY_NAME:
+            param = new ParameterString(ParameterId.PID_ENTITY_NAME);
+            break;
         case PID_GROUP_DATA:
         case PID_TOPIC_DATA:
         case PID_DURABILITY:
@@ -112,6 +117,8 @@ public class ParameterBuilder {
             break;
         case PID_PARTICIPANT_BUILTIN_ENDPOINTS:
         case PID_PARTICIPANT_LEASE_DURATION:
+            param = new ParameterTime();
+            break;
         case PID_CONTENT_FILTER_PROPERTY:
         case PID_PARTICIPANT_GUID:
             param = new ParameterGuid(ParameterId.PID_PARTICIPANT_GUID);
@@ -119,8 +126,11 @@ public class ParameterBuilder {
         case PID_GROUP_GUID:
             param = new ParameterGuid(ParameterId.PID_GROUP_GUID);
             break;
+        case PID_ENDPOINT_GUID:
         case PID_PARTICIPANT_ENTITYID:
         case PID_GROUP_ENTITYID:
+            param = new ParameterEntityId(ParameterId.PID_GROUP_ENTITYID);
+            break;
         case PID_BUILTIN_ENDPOINT_SET:
             param = new ParameterBuiltinEndpointSet();
             break;
@@ -128,12 +138,10 @@ public class ParameterBuilder {
             param = new ParameterPropertyList();
             break;
         case PID_TYPE_MAX_SIZE_SERIALIZED:
-        case PID_ENTITY_NAME:
         case PID_KEY_HASH:
             param = new ParameterKey(new InstanceHandle());
             break;
         case PID_STATUS_INFO:
-        case PID_ENDPOINT_GUID:
         }
 
         return param;

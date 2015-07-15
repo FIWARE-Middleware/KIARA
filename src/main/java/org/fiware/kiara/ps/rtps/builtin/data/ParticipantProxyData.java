@@ -1,5 +1,6 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -14,15 +15,19 @@ import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.timedevent.RemoteParticipantLeaseDuration;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
+import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPropertyList;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 
 public class ParticipantProxyData {
     
@@ -162,55 +167,79 @@ public class ParticipantProxyData {
     }
 
     public ParameterList toParameterList() {
-        if (this.m_hasChanged) {
-            this.m_QosList.getAllQos().deleteParams();
-            this.m_QosList.getAllQos().resetList();
-            this.m_QosList.getInlineQos().deleteParams();
-            this.m_QosList.getInlineQos().resetList();
-            
-            boolean valid = true;
-            
-            valid &= this.m_QosList.addQos(ParameterId.PID_PROTOCOL_VERSION, this.m_protocolVersion);
-            valid &= this.m_QosList.addQos(ParameterId.PID_VENDORID,this.m_vendorId);
-            
-            if (this.m_expectsInlineQos) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_EXPECTS_INLINE_QOS, this.m_expectsInlineQos);
+        this.m_mutex.lock();
+        try {
+            if (this.m_hasChanged) {
+                this.m_QosList.getAllQos().deleteParams();
+                this.m_QosList.getAllQos().resetList();
+                this.m_QosList.getInlineQos().deleteParams();
+                this.m_QosList.getInlineQos().resetList();
+                
+                boolean valid = true;
+                
+                valid &= this.m_QosList.addQos(ParameterId.PID_PROTOCOL_VERSION, this.m_protocolVersion);
+                valid &= this.m_QosList.addQos(ParameterId.PID_VENDORID,this.m_vendorId);
+                
+                if (this.m_expectsInlineQos) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_EXPECTS_INLINE_QOS, this.m_expectsInlineQos);
+                }
+                
+                valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_GUID, this.m_guid);
+                
+                for (Locator lit : this.m_metatrafficMulticastLocatorList.getLocators()) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_MULTICAST_LOCATOR, lit);
+                }
+                
+                for (Locator lit : this.m_metatrafficUnicastLocatorList.getLocators()) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_UNICAST_LOCATOR, lit);
+                }
+                
+                for (Locator lit : this.m_defaultUnicastLocatorList.getLocators()) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_UNICAST_LOCATOR, lit);
+                }
+                
+                for (Locator lit : this.m_defaultMulticastLocatorList.getLocators()) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR, lit);
+                }
+                
+                System.out.println("Adding QosListFrom " + Thread.currentThread().getId());
+                valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_LEASE_DURATION, this.m_leaseDuration);
+                valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
+                valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);
+                
+                if (this.m_properties.getProperties().size() > 0) {
+                    valid &= this.m_QosList.addQos(ParameterId.PID_PROPERTY_LIST, this.m_properties);
+                }
+                
+                this.m_QosList.getAllQos().addSentinel();
+                
+                if (valid) {
+                    this.m_hasChanged = false;
+                }
+                
+                return this.m_QosList.getAllQos();
+                
             }
-            
-            valid &= this.m_QosList.addQos(ParameterId.PID_VENDORID, this.m_vendorId);
-            
-            for (Locator lit : this.m_metatrafficMulticastLocatorList.getLocators()) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_MULTICAST_LOCATOR, lit);
-            }
-            
-            for (Locator lit : this.m_metatrafficUnicastLocatorList.getLocators()) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_METATRAFFIC_UNICAST_LOCATOR, lit);
-            }
-            
-            for (Locator lit : this.m_defaultUnicastLocatorList.getLocators()) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_UNICAST_LOCATOR, lit);
-            }
-            
-            for (Locator lit : this.m_defaultMulticastLocatorList.getLocators()) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR, lit);
-            }
-            
-            valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_LEASE_DURATION, this.m_leaseDuration);
-            valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
-            valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);
-            
-            if (this.m_properties.getProperties().size() > 0) {
-                valid &= this.m_QosList.addQos(ParameterId.PID_PROPERTY_LIST, this.m_properties);
-            }
-            
-            if (valid) {
-                this.m_hasChanged = false;
-            }
-            
-            return this.m_QosList.getAllQos();
-            
+            return null;
+        } finally {
+            this.m_mutex.unlock();
         }
-        return null;
+    }
+    
+    public boolean readFromCDRMessage(CacheChange change) {
+        try {
+            SerializedPayload payload = change.getSerializedPayload();
+            payload.updateSerializer();
+            BinaryInputStream bis = new BinaryInputStream(payload.getBuffer());
+            ParameterList parameterList = new ParameterList();
+            parameterList.deserialize(payload.getSerializer(), bis, "");
+            
+            
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return false;
     }
     
     public void clear() {

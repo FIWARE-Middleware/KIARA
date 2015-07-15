@@ -63,6 +63,17 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	public short getLength() {
 		return this.m_length;
 	}
+	
+	public int getParameterListLength() {
+	    if (this.m_parameterList != null) {
+	        return this.m_parameterList.getListLength();
+	    }
+	    return 0;
+	}
+	
+	public ParameterList getParameterList() {
+	    return this.m_parameterList;
+	}
 
 	public void setLength(short length) {
 		this.m_length = length;
@@ -109,6 +120,9 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	}
 	
 	public void addParameters(ParameterList paramList) {
+	    if (this.m_parameterList == null) {
+                this.m_parameterList = new ParameterList();
+            }
 	    for (Parameter param : paramList.getParameters()) {
 	        this.m_parameterList.addParameter(param);
 	    }
@@ -172,7 +186,8 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		message.skipBytes(2); // Encapsulation options
 		
 		this.m_buffer = new byte[this.m_length];
-                message.readFully(m_buffer);
+                //message.readFully(m_buffer, 4, this.m_length-4);
+		message.readFully(m_buffer);
 	}
 	
 	public void deserializeData(/*SerializerImpl impl, String name*/) throws IOException {
@@ -212,7 +227,9 @@ public class SerializedPayload extends RTPSSubmessageElement {
         return true;
     }
 
-    
+    public void updateSerializer() {
+        this.m_ownSerializer.setEndianness(checkEndianness()); // true = LE, false = BE
+    }
 
     
 

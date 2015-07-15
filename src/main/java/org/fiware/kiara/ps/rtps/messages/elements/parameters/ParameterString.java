@@ -32,7 +32,9 @@ public class ParameterString extends Parameter {
 
     public void setContent(String content) {
         this.m_content = content;
-        super.m_length = (short) (4 + this.m_content.length());
+        int size = (4 + this.m_content.length());
+        int pad = (4 - (size % 4));
+        super.m_length = (short) (size + pad);
     }
 
     @Override
@@ -40,6 +42,11 @@ public class ParameterString extends Parameter {
         super.serialize(impl, message, name);
         if (this.m_content != null) {
             impl.serializeString(message, name, this.m_content);
+            int size = (4 + this.m_content.length());
+            int pad = (4 - (size % 4));
+            for (byte i=0; i < pad; ++i) {
+                impl.serializeByte(message, name, (byte) 0);
+            }
         }
     }
     
@@ -47,6 +54,9 @@ public class ParameterString extends Parameter {
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.m_content = impl.deserializeString(message, name);
+        int size = (4 + this.m_content.length());
+        int pad = (4 - (size % 4));
+        message.skipBytes(pad);
     }
     
     @Override

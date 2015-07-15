@@ -17,6 +17,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBool;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuiltinEndpointSet;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterCount;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterEntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterIPv4Address;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
@@ -24,9 +25,11 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPort;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPropertyList;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterTime;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.util.Pair;
 
 public class QosList {
 
@@ -170,33 +173,53 @@ public class QosList {
             if(!found) {
                 param = (ParameterPropertyList) ParameterBuilder.createParameter(pid, (short) 0);
             }
-            //param.
-            /*p->Pid = PID_PROPERTY_LIST;
-            p->properties.push_back(std::pair<std::string,std::string>(str1,str2));
-            qos->allQos.m_hasChanged = true;
-            if(!found)
-                qos->allQos.m_parameters.push_back((Parameter_t*)p);
-                return true;*/
+            param.getProperties().add(new Pair<String, String>(str1, str2));
+            this.m_allQos.setHasChanged(true);
+            if(!found) {
+                this.m_allQos.addParameter(param);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean addQos(ParameterId pid, ParameterPropertyList list) {
+        if(pid == ParameterId.PID_PROPERTY_LIST) {
+            ParameterPropertyList param = (ParameterPropertyList) ParameterBuilder.createParameter(pid, (short) 0);
+            for (Pair<String,String> pair : list.getProperties()) {
+                param.addProperty(pair);
+            }
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
+            return true;
         }
         return false;
     }
 
     public boolean addQos(ParameterId pid, EntityId entityId) {
-        // TODO Implement
-        return true;
+        if(pid == ParameterId.PID_GROUP_ENTITYID) {
+            ParameterEntityId param = (ParameterEntityId) ParameterBuilder.createParameter(pid, (short) 0);
+            param.setEntityId(entityId);
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
+            return true;
+        }
+        return false;
     }
 
     public boolean addQos(ParameterId pid, Timestamp timestamp) {
-        // TODO Implement
-        return true;
+        if(pid == ParameterId.PID_PARTICIPANT_LEASE_DURATION)
+        {
+            ParameterTime param = (ParameterTime) ParameterBuilder.createParameter(pid, (short) 0);
+            param.setTimestamp(timestamp);
+            this.m_allQos.addParameter(param);
+            this.m_allQos.setHasChanged(true);
+            return true;
+        }
+        return false;
     }
 
     public boolean addQos(ParameterId pid, List<Byte> ocVec) {
-        // TODO Implement
-        return true;
-    }
-
-    public boolean addQos(ParameterId pid, ParameterPropertyList list) {
         // TODO Implement
         return true;
     }

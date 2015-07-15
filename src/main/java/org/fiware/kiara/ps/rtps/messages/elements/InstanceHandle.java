@@ -77,36 +77,52 @@ public class InstanceHandle extends RTPSSubmessageElement {
     }
 
     @Override
-    public boolean equals(Object other) {
-        if (other instanceof InstanceHandle) {
-            return this.m_value.equals(((InstanceHandle) other).m_value);
-        }
-        return false;
-    }
+	public boolean equals(Object other) {
+	    if (other instanceof InstanceHandle) {
+	        boolean equals = true;
+	        if (this.m_value.length != ((InstanceHandle) other).m_value.length) {
+	            return false;
+	        }
+	        for (int i=0; i < this.m_value.length; ++i) {
+	            equals &= this.m_value[i] == ((InstanceHandle) other).m_value[i];
+	        }
+	        return equals;
+	    }
+	    return false;
+	}
 
-    public void setGuid(GUID guid) {
-        for (int i = 0; i < 16; i++) {
-            if (i<12)
-                m_value[i] = guid.getGUIDPrefix().getValue(i);
-            else
-                m_value[i] = guid.getEntityId().getValue(i-12);
-        }
-    }
+	public void setGuid(GUID guid) {
+		for (int i = 0; i < 16; i++) {
+			if (i<12)
+				m_value[i] = guid.getGUIDPrefix().getValue(i);
+			else
+				m_value[i] = guid.getEntityId().getValue(i-12);
+		}
+	}
 
-    public void copy(InstanceHandle ihandle) {
-        System.arraycopy(ihandle.m_value, 0, m_value, 0, 16);
-    }
+	public void copy(InstanceHandle ihandle) {
+		System.arraycopy(ihandle.m_value, 0, m_value, 0, 16);
+	}
 
-    public boolean isDefined() {
-        for (Byte b : this.m_value) {
-            if (b != 0) {
-                return true;
+	public boolean isDefined() {
+	    for (Byte b : this.m_value) {
+	        if (b != 0) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+
+    public GUID toGUID() {
+        GUID guid = new GUID();
+        for (byte i = 0; i < 16; ++i) {
+            if (i < 12) {
+                guid.getGUIDPrefix().setValue(i, this.m_value[i]);
+            } else {
+                guid.getEntityId().setValue(i, this.m_value[i]);
             }
         }
-        return false;
+        return guid;
     }
-
-
-
 
 }

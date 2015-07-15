@@ -64,8 +64,7 @@ public class ParameterGuid extends Parameter {
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
-
+        this.m_guid.deserialize(impl, message, name);
     }
 
 }

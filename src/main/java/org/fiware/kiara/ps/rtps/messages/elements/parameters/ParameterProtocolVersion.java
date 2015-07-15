@@ -45,10 +45,8 @@ public class ParameterProtocolVersion extends Parameter {
     }
 
     @Override
-    public void deserializeContent(SerializerImpl impl,
-            BinaryInputStream message, String name) throws IOException {
-        // TODO Auto-generated method stub
-
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_protocolVersion.deserialize(impl, message, name);
     }
 
 }

@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Class EDPStaticXML used to parse the XML file that contains information about
  * remote endpoints.
  *
- * @ingroup DISCVOERYMODULE
+ * 
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
