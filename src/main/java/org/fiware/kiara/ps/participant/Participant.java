@@ -44,7 +44,9 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
+import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +54,7 @@ import org.slf4j.LoggerFactory;
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class Participant {
+public class Participant/*<T extends Serializable>*/ {
     
     private static final Logger logger = LoggerFactory.getLogger(Participant.class);
     
@@ -68,7 +70,7 @@ public class Participant {
     
     private List<Subscriber> m_subscribers;
     
-    private List<TopicDataType> m_types;
+    private List<SerializableDataType> m_types;
     
     public class MyRTPSParticipantListener extends RTPSParticipantListener {
         
@@ -97,7 +99,7 @@ public class Participant {
         
         this.m_publishers = new ArrayList<Publisher>();
         this.m_subscribers = new ArrayList<Subscriber>();
-        this.m_types = new ArrayList<TopicDataType>();
+        this.m_types = new ArrayList<SerializableDataType>();
         
         this.m_rtpsListener = new MyRTPSParticipantListener(this);
     }
@@ -114,7 +116,7 @@ public class Participant {
     }
     
     public Publisher createPublisher(PublisherAttributes att, PublisherListener listener) {
-        TopicDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
         logger.info("Creating Publisher in Topic: " + att.topic.topicName);
         
@@ -189,7 +191,8 @@ public class Participant {
         
         logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
         
-        TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
+        //TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
+        SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
         if (type == null) {
             logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
@@ -267,11 +270,18 @@ public class Participant {
     }
     
     public boolean removeSubscriber(Subscriber sub) {
-        // TODO Auto-generated method stub
+        for (int i=0; i < this.m_subscribers.size(); ++i) {
+            Subscriber it = this.m_subscribers.get(i);
+            if (it.getGuid().equals(sub.getGuid())) {
+                it.destroy();
+                this.m_subscribers.remove(it);
+                return true;
+            }
+        }
         return true;
     }
     
-    public boolean registerType(TopicDataType<?> type) {
+    public boolean registerType(SerializableDataType<?> type) {
         
         if (type.getTypeSize() <= 0) {
             logger.error("Registered Type must have maximum byte size > 0");
@@ -300,7 +310,7 @@ public class Participant {
         return true;
     }
     
-    public TopicDataType getRegisteredType(String typeName) {
+    /*public TopicDataType getRegisteredType(String typeName) {
         
         for (TopicDataType type : this.m_types) {
             if (type.getName().equals(typeName)) {
@@ -309,7 +319,19 @@ public class Participant {
         }
         
         return null;
+    }*/
+    
+    public <T extends Serializable> SerializableDataType<T> getRegisteredType(String typeName) {
+        
+        for (SerializableDataType<T> type : this.m_types) {
+            if (type.getName().equals(typeName)) {
+                return type;
+            }
+        }
+        
+        return null;
     }
+    
     
     public GUID getGuid() {
          return this.m_rtpsParticipant.getGUID();

@@ -24,8 +24,10 @@ public class WriterTest {
     public static void main(String [] args) {
         
         RTPSParticipantAttributes pparam = new RTPSParticipantAttributes();
-        pparam.builtinAtt.useSimplePDP = false;
+        pparam.builtinAtt.useSimplePDP = true;
+        pparam.builtinAtt.useStaticEDP = true;
         pparam.builtinAtt.useWriterLP = false;
+        pparam.builtinAtt.setStaticEndpointXMLFilename("WRITER_ENDPOINTS.xml");
         
         RTPSParticipant participant = RTPSDomain.createParticipant(pparam, null);
         if (participant == null) {
@@ -47,27 +49,24 @@ public class WriterTest {
             return;
         }
         
-        RemoteReaderAttributes ratt = new RemoteReaderAttributes();
+        /*RemoteReaderAttributes ratt = new RemoteReaderAttributes();
         Locator loc = new Locator();
-        //loc.setIPv4Address("192.168.1.133");
         loc.setIPv4Address("239.255.0.1");
         loc.setPort(7400);
         
         ratt.endpoint.multicastLocatorList.pushBack(loc);
-        writer.matchedReaderAdd(ratt);
+        writer.matchedReaderAdd(ratt);*/
         
         CacheChange change = writer.newChange(ChangeKind.ALIVE, new InstanceHandle());
         
-        //SerializedPayload sp = new SerializedPayload();
         HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         hw.setInnerLongAtt(10);
         hw.setInnerStringAtt("Hello World");
-        //sp.setData(hw);
+
         change.getSerializedPayload().setData((Serializable) hw); 
         change.getSerializedPayload().setLength((short) type.getTypeSize());
-       // change.
-        //change.getSerializedPayload().serialize(impl, message, name);
+
         w_history.addChange(change);
         
         

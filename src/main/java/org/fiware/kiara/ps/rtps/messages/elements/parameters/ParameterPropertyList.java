@@ -65,4 +65,12 @@ public class ParameterPropertyList extends Parameter {
         // Do nothing
     }
 
+    public ParameterPropertyList getPropertyList() {
+        ParameterPropertyList pProp = new ParameterPropertyList();
+        for (Pair<String, String> pair : this.m_properties) {
+            pProp.addProperty(pair);
+        }
+        return null;
+    }
+
 }

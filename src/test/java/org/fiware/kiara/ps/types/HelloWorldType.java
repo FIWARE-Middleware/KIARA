@@ -13,28 +13,6 @@ public class HelloWorldType extends SerializableDataType<HelloWorld> {
         super(HelloWorld.class, "HelloWorld", HelloWorld.getMaxSize(), false);
     }
 
-    /*@Override
-    public boolean serialize(HelloWorld data, SerializedPayload payload) {
-        CDRSerializer ser = new CDRSerializer();
-        
-        BinaryOutputStream bos = new BinaryOutputStream();
-        payload.setData(data);
-        try {
-            payload.serialize(ser, bos, getName());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        return true;
-    }*/
-    
-   /*@Override
-    public boolean deserialize(SerializedPayload payload, HelloWorld data) {
-        // TODO Auto-generated method stub
-        return false;
-    }*/
-
     @Override
     public HelloWorld createData() {
         return new HelloWorld();

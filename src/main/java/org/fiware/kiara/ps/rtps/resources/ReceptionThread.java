@@ -39,16 +39,18 @@ import org.slf4j.Marker;
 import com.eprosima.log.Log;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ReceptionThread implements Runnable {
 
     private DatagramChannel m_channel;
 
     private ListenResource m_listenResource;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(ReceptionThread.class);
+    
+    private volatile boolean running = true;
 
     //private final Lock m_mutex = new ReentrantLock(true);
 
@@ -61,51 +63,42 @@ public class ReceptionThread implements Runnable {
     public void run() {
 
         this.m_listenResource.getRTPSParticipant().resourceSemaphorePost();
-        
-        ByteBuffer buf;
+
+        byte[] buf;
         try {
-            //System.out.println("Size: " + this.m_channel.socket().getReceiveBufferSize());
-            buf = ByteBuffer.allocate(this.m_channel.socket().getReceiveBufferSize());
 
-            DatagramPacket dp = new DatagramPacket(buf.array(), this.m_channel.socket().getReceiveBufferSize());
-            //System.out.println(this.m_channel.socket().getLocalPort());
+            buf = new byte[this.m_channel.socket().getReceiveBufferSize()];
+            DatagramPacket dp = new DatagramPacket(buf, buf.length);
 
-            System.out.println("---");
-            logger.info("Thread " + Thread.currentThread().getId() + " listening in IP " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
-            System.out.println("---");
-            
-            while(true) {
-            
+            logger.info("Thread {} listening in IP {}:{}", Thread.currentThread().getId(), this.m_channel.socket().getLocalAddress().getHostAddress(), this.m_channel.socket().getLocalPort());
+
+            while(running) {
+                
+                dp.setLength(buf.length);
                 this.m_channel.socket().receive(dp);
-                
-                System.out.println("Message received");
-                
+
                 this.m_listenResource.getSenderEndpoint().port = dp.getPort();
                 this.m_listenResource.getSenderEndpoint().address = dp.getAddress();
-    
+
                 RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
-    
-                //System.out.println("Message created");
-    
-                msg.setBuffer(buf.array(), dp.getLength());
+
+                msg.setBuffer(buf, dp.getLength());
                 msg.initBinaryOutputStream();
-    
+
                 this.newRTPSMessage(msg);
-            
-                //System.out.println("Buffer set");
-            
+
             }
-
-
+            
         } catch (java.nio.channels.AsynchronousCloseException ace) {
             // DO Nothing
             
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
-            System.out.println("");
+            logger.error(e.toString());
             e.printStackTrace();
-        }
-
+        } 
+        
     }
 
     private void newRTPSMessage(RTPSMessage msg) {
@@ -134,10 +127,11 @@ public class ReceptionThread implements Runnable {
             }
 
             this.m_listenResource.getMessageReceiver().processCDRMessage(this.m_listenResource.getRTPSParticipant().getGUID().getGUIDPrefix(), this.m_listenResource.getSenderLocator(), msg);
-            
-            //System.out.println("");
 
         }
     }
-
+    
+    public void terminate() {
+        this.running = false;
+    }
 }

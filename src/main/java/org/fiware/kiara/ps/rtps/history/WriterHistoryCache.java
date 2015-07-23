@@ -67,7 +67,6 @@ public class WriterHistoryCache extends HistoryCache {
             this.m_changes.add(change);
             logger.info("Change " + change.getSequenceNumber().toLong() + " added with " + change.getSerializedPayload().getSerializedSize() + " bytes");
             updateMaxMinSeqNum();
-            System.out.println("-----Thread " + Thread.currentThread().getId() + " Adding CacheChange------------");
             this.m_writer.unsentChangeAddedToHistory(change);
         } finally {
             this.m_mutex.unlock();
@@ -81,13 +80,11 @@ public class WriterHistoryCache extends HistoryCache {
         try {
             if (change == null) {
                 logger.error("CacheChange object is null"); 
-                this.m_mutex.unlock();
                 return false;
             }
     
             if (!change.getWriterGUID().equals(this.m_writer.getGuid())) {
                 logger.error("Change writerGUID " + change.getWriterGUID() + " different than Writer GUID " + this.m_writer.getGuid()); 
-                this.m_mutex.unlock();
                 return false;
             }
     
@@ -96,7 +93,6 @@ public class WriterHistoryCache extends HistoryCache {
                     this.m_writer.changeRemovedByHistory(change);
                     this.m_changePool.releaseCache(change);
                     this.m_changes.remove(current);
-                    this.m_mutex.unlock();
                     return true;
                 }
             }
@@ -112,7 +108,7 @@ public class WriterHistoryCache extends HistoryCache {
         try {
             if (this.m_changes.size() > 0 && removeChange(this.m_minSeqCacheChange)) {
                 updateMaxMinSeqNum();
-                this.m_mutex.unlock(); 
+                //this.m_mutex.unlock(); 
                 return true;
             }
         } finally {

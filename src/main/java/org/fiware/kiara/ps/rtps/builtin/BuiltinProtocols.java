@@ -69,7 +69,7 @@ public class BuiltinProtocols {
     }
 
     public boolean initBuiltinProtocols(RTPSParticipant rtpsParticipant, BuiltinAttributes builtinAtt) {
-        System.out.println("STARTING BUILTIN_ENDPOINTS");
+        logger.info("Starting builtin endpoints");
         this.m_participant = rtpsParticipant;
         this.m_att = builtinAtt;
         

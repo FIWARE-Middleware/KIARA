@@ -135,10 +135,15 @@ public class RTPSDomain {
             guidP.setValue(8+i, bytesID[i]);
         }
         
-        RTPSParticipant participant = new RTPSParticipant(att, guidP, listener);
-        m_maxRTPSParticipantID = participant.getRTPSParticipantID();
+        RTPSParticipant participant = null;
+        try {
+            participant = new RTPSParticipant(att, guidP, listener);
+            m_maxRTPSParticipantID = participant.getRTPSParticipantID();
+            m_rtpsParticipants.add(participant);
+        } catch (Exception e) {
+            logger.error(e.toString());
+        }
         
-        m_rtpsParticipants.add(participant);
         
         return participant;
     }

@@ -84,16 +84,10 @@ public class ListenResource {
 
     private boolean m_isDefaultListenResource;
 
-    //private java.net.Socket m_listenEndpoint;
     private AsioEndpoint m_listenEndpoint;
 
     private AsioEndpoint m_senderEndpoint;
 
-    //private java.net.DatagramSocket m_listenSocket;
-
-    //private DatagramChannel m_listenChannel;
-
-    //private io.netty.channel.socket.DatagramChannel m_listenChannel;
     private java.nio.channels.DatagramChannel m_listenChannel;
 
     private io.netty.channel.socket.DatagramChannel m_listenChannelNetty;
@@ -101,10 +95,8 @@ public class ListenResource {
     private final Lock m_mutex = new ReentrantLock(true);
 
     private Thread m_thread;
-
-    //0private java.nio.channels.AsynchronousDatagramChannel channel = DatagramChannel.open().r
-
-    //DatagramChannel channel = DatagramChannel.open().
+    
+    private ReceptionThread m_receptionThread;
 
     private static final Logger logger = LoggerFactory.getLogger(ListenResource.class);
 
@@ -133,6 +125,7 @@ public class ListenResource {
             }
             logger.info("Joining with thread");
             try {
+                this.m_receptionThread.terminate();
                 this.m_thread.join();
             } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
@@ -206,7 +199,6 @@ public class ListenResource {
                     RTPSWriter it = this.m_assocWriters.get(i);
                     if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_assocWriters.remove(endpoint);
-                        this.m_mutex.unlock();
                         i--;
                         return true;
                     }
@@ -216,7 +208,6 @@ public class ListenResource {
                     RTPSReader it = this.m_assocReaders.get(i);
                     if (it.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
                         this.m_assocReaders.remove(endpoint);
-                        this.m_mutex.unlock();
                         i--;
                         return true;
                     }
@@ -365,14 +356,8 @@ public class ListenResource {
             joinMulticastGroup(multicastAddress/*, this.m_listenEndpoint.port++*/);
         }
 
-        try {
-            System.out.println("Starting in" + this.m_listenChannel.getLocalAddress().toString());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        ReceptionThread runnable = new ReceptionThread(this.m_listenChannel, this);
-        this.m_thread = new Thread(runnable, "");
+        this.m_receptionThread =  new ReceptionThread(this.m_listenChannel, this);
+        this.m_thread = new Thread(m_receptionThread, "");
         this.m_thread.start();
 
         this.m_RTPSParticipant.resourceSemaphoreWait();
@@ -393,7 +378,7 @@ public class ListenResource {
                     NetworkInterface netInt = NetworkInterface.getByInetAddress(InetAddress.getByName(it.toIPv4String()));
                     this.m_listenChannel.setOption(StandardSocketOptions.IP_MULTICAST_IF, netInt);
                     MembershipKey key = this.m_listenChannel.join(multicastAddress, netInt);
-                   // MembershipKey key = this.m_listenChannel.join(sockAddr.getAddress(), netInt);
+                    // MembershipKey key = this.m_listenChannel.join(sockAddr.getAddress(), netInt);
 
                     System.err.printf("MulticastJoin: Address: %s, NetIf: %s, Key: %s%n", multicastAddress.toString(), netInt, key);
                     if (!key.isValid()) {
@@ -459,15 +444,6 @@ public class ListenResource {
         .option(ChannelOption.SO_RCVBUF, listenSocketSize)
         .option(ChannelOption.SO_REUSEADDR, true);
 
-
-        /*try {
-                    //System.out.println(this.m_listenSocket.getLocalAddress().toString());
-            } catch (IOException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
-            }*/
-        //java.net.ServerSocket recvSocket = new ServerSocket();
-        //recvSocket.
         if (isMulticast) {
             multicastAddress = this.m_listenEndpoint.address;
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {

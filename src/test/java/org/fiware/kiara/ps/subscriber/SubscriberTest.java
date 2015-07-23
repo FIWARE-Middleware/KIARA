@@ -3,6 +3,7 @@ package org.fiware.kiara.ps.subscriber;
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.SubscriberAttributes;
+import org.fiware.kiara.ps.common.PartListener;
 import org.fiware.kiara.ps.common.SubListener;
 import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
@@ -25,10 +26,10 @@ public class SubscriberTest {
         
         // Create participant
         ParticipantAttributes pParam = new ParticipantAttributes();
-        pParam.rtps.builtinAtt.useSimplePDP = false;
+        pParam.rtps.builtinAtt.useSimplePDP = true;
         pParam.rtps.builtinAtt.useWriterLP = false;
-        pParam.rtps.defaultSendPort = 10043;
         pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.defaultSendPort = 10043;
         pParam.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
         pParam.rtps.builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader = true;
         pParam.rtps.builtinAtt.domainID = 80;
@@ -37,7 +38,7 @@ public class SubscriberTest {
         pParam.rtps.listenSocketBufferSize = 17424;
         pParam.rtps.setName("ParticipantSub");
         
-        Participant participant = Domain.createParticipant(pParam, null);
+        Participant participant = Domain.createParticipant(pParam, new PartListener());
         if (participant == null) {
             System.out.println("Error when creating participant");
             return;
@@ -64,7 +65,10 @@ public class SubscriberTest {
             return;
         }
         
+        System.out.println("Shutting down");
+        Domain.removeParticipant(participant);
         
+        System.out.println("");
         
     }
 

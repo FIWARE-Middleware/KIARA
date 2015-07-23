@@ -136,7 +136,7 @@ public abstract class EDP {
         rpd.setKey(rpd.getGUID());
         rpd.setMulticastLocatorList(reader.getAttributes().getMulticastLocatorList());
         rpd.setUnicastLocatorList(reader.getAttributes().getUnicastLocatorList());
-        rpd.setRTPSParticipantKey(m_RTPSParticipant.getGuid());
+        rpd.setRTPSParticipantKey(m_RTPSParticipant.getGUID());
         rpd.setTopicName(att.getTopicName());
         rpd.setTypeName(att.getTopicDataType());
         rpd.setTopicKind(att.getTopicKind());
@@ -173,7 +173,7 @@ public abstract class EDP {
         wpd.setKey(wpd.getGUID());
         wpd.setMulticastLocatorList(writer.getAttributes().getMulticastLocatorList());
         wpd.setUnicastLocatorList(writer.getAttributes().getUnicastLocatorList());
-        wpd.setRTPSParticipantKey(m_RTPSParticipant.getGuid());
+        wpd.setRTPSParticipantKey(m_RTPSParticipant.getGUID());
         wpd.setTopicName(att.getTopicName());
         wpd.setTypeName(att.getTopicDataType());
         wpd.setTopicKind(att.getTopicKind());

@@ -103,12 +103,12 @@ public class RTPSParticipant {
     
     private int m_threadID;
     
-    public RTPSParticipant(
+    public RTPSParticipant (
             RTPSParticipantAttributes participantAtt, 
             GUIDPrefix guidPrefix,
             //RTPSParticipant par,
             RTPSParticipantListener participantListener
-            ) {
+            ) throws Exception {
 
         this.m_guid = new GUID(guidPrefix, new EntityId(EntityIdEnum.ENTITYID_RTPSPARTICIPANT));
         
@@ -139,8 +139,8 @@ public class RTPSParticipant {
             
             this.m_sendResource = new SendResource();
             this.m_sendResource.initSend(this, loc, this.m_att.sendSocketBufferSize, this.m_att.useIPv4ToSend, this.m_att.useIPv6ToSend);
-            this.m_eventResource = new EventResource();
-            this.m_eventResource.initThread(this);
+            //this.m_eventResource = new EventResource();
+            //this.m_eventResource.initThread(this);
             boolean hasLocatorsDefined = true;
             if (this.m_att.defaultUnicastLocatorList.isEmpty() && this.m_att.defaultMulticastLocatorList.isEmpty()) {
                 hasLocatorsDefined = false;
@@ -158,7 +158,7 @@ public class RTPSParticipant {
             LocatorList defCopy = new LocatorList(this.m_att.defaultUnicastLocatorList);
             this.m_att.defaultUnicastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
-                System.out.println("Creating listener for locator:  " + lit);
+                logger.info("Creating listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this, ++this.m_threadID, true);
                 if (lr.initThread(this,  lit,  this.m_att.listenSocketBufferSize, false, false)) {
                     this.m_att.defaultUnicastLocatorList = lr.getListenLocators();
@@ -173,7 +173,7 @@ public class RTPSParticipant {
             defCopy = new LocatorList(this.m_att.defaultMulticastLocatorList);
             this.m_att.defaultMulticastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
-                System.out.println("Creating listener for locator:  " + lit);
+                logger.info("Creating listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this,  ++this.m_threadID, true);
                 if (lr.initThread(this, lit, this.m_att.listenSocketBufferSize, true, false)) {
                     this.m_att.defaultMulticastLocatorList = lr.getListenLocators();
@@ -184,17 +184,14 @@ public class RTPSParticipant {
             logger.info("RTPSParticipant with guidPrefix " + this.m_guid.getGUIDPrefix());
             this.m_builtinProtocols = new BuiltinProtocols();
             if (!this.m_builtinProtocols.initBuiltinProtocols(this, this.m_att.builtinAtt)) {
-                logger.warn("The builtin protocols were not corecctly initialized");
+                logger.warn("The builtin protocols were not corecctly initialized"); // TODO Check if this should be logger.error
+                throw new Exception("The builtin protocols were not corecctly initialized");
             }
             
         } finally {
             this.m_mutex.unlock();
         }
 
-    }
-
-    public GUID getGuid() {
-        return m_guid;
     }
 
     public void destroy() {
@@ -211,6 +208,10 @@ public class RTPSParticipant {
         // Destroy threads
         for (ListenResource it : this.m_listenResourceList) {
             it.destroy();
+        }
+        
+        if (this.m_sendResource != null) {
+            this.m_sendResource.destroy();
         }
         
     }
@@ -569,10 +570,12 @@ public class RTPSParticipant {
         }
         
         // Remove from builtin protocols
-        if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
-            this.m_builtinProtocols.removeLocalWriter((RTPSWriter) endpoint);
-        } else {
-            this.m_builtinProtocols.removeLocalReader((RTPSReader) endpoint);
+        if (this.m_builtinProtocols != null) {
+            if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
+                this.m_builtinProtocols.removeLocalWriter((RTPSWriter) endpoint);
+            } else {
+                this.m_builtinProtocols.removeLocalReader((RTPSReader) endpoint);
+            }
         }
         
         // Remove from threadListenList

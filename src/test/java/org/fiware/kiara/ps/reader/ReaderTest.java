@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.fiware.kiara.ps.Domain;
+import org.fiware.kiara.ps.common.RTPSPartListener;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
@@ -47,7 +48,10 @@ public class ReaderTest {
         pparam.builtinAtt.useStaticEDP = true;
         pparam.builtinAtt.useWriterLP = false;
         
-        RTPSParticipant participant = RTPSDomain.createParticipant(pparam, null);
+        pparam.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        //RTPSParticipant participant = RTPSDomain.createParticipant(pparam, null);
+        RTPSParticipant participant = RTPSDomain.createParticipant(pparam, new RTPSPartListener());
         if (participant == null) {
             System.out.println("ERROR creating participant");
             return;

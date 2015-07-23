@@ -61,22 +61,22 @@ public class StatelessWriter extends RTPSWriter {
         //this.m_mutex = new ReentrantLock(true);
         this.m_readerLocator = new ArrayList<ReaderLocator>();
         this.m_matchedReaders = new ArrayList<RemoteReaderAttributes>();
-        
+        /*
         // TODO Remove this:
-        //RemoteReaderAttributes rratt = new RemoteReaderAttributes();
+        RemoteReaderAttributes rratt = new RemoteReaderAttributes();
         //rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
         
-        /*Locator l = new Locator();
+        Locator l = new Locator();
         try {
             byte [] addr = new byte[16];
             //byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
-            byte [] obtainedAddr = InetAddress.getByName("192.168.1.133").getAddress();
+            byte [] obtainedAddr = InetAddress.getByName("192.168.1.151").getAddress();
             addr[12] = obtainedAddr[0];
             addr[13] = obtainedAddr[1];
             addr[14] = obtainedAddr[2];
             addr[15] = obtainedAddr[3];
             l.setAddress(addr);
-            l.setPort(27414);
+            l.setPort(27413);
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -101,12 +101,10 @@ public class StatelessWriter extends RTPSWriter {
                 for (ReaderLocator it : this.m_readerLocator) {
                     locList.pushBack(it.getLocator());
                 }
-                System.out.println("---- WRITER ID: " + this.m_guid);
+                
                 if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
-                    System.out.println("-----Thread " + Thread.currentThread().getId() + " BUILTIN ------");
                     RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
                 } else {
-                    System.out.println("-----Thread " + Thread.currentThread().getId() + " UNKNOWN ------");
                     RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, changes, locList, locList2, false, new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
                 }
                 
@@ -131,8 +129,8 @@ public class StatelessWriter extends RTPSWriter {
             for (ReaderLocator it : this.m_readerLocator) {
                 if (!it.getUnsentChanges().isEmpty()) {
                     if (this.m_pushMode) {
-                        if (this.m_guid.getEntityId() == new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER)) {
-                            RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, it.getUnsentChanges(), it.getLocator(), it.getExpectsInlineQos(), new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
+                        if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
+                            RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, it.getUnsentChanges(), it.getLocator(), it.getExpectsInlineQos(), new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
                         } else {
                             RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, it.getUnsentChanges(), it.getLocator(), it.getExpectsInlineQos(), new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
                         }

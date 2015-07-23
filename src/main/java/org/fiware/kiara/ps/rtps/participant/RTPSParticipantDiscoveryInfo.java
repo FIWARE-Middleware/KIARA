@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.util.Pair;
 
 /**
 *
@@ -32,7 +33,7 @@ public class RTPSParticipantDiscoveryInfo {
     
     public GUID guid;
     
-    public List<Entry<String, String>> propertyList;
+    public List<Pair<String, String>> propertyList;
     
     public List<Byte> userData;
     

@@ -82,6 +82,9 @@ public class IPFinder {
                             if (!loopback) {
                                 byte[] addr = new byte[16];
                                 final byte[] ipAddress = currentIPv4.getAddress();
+                                /*if (ipAddress[2] == 56) {
+                                    continue; // TODO Delete this
+                                }*/
 
                                 addr[12] = ipAddress[0];
                                 addr[13] = ipAddress[1];

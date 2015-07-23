@@ -31,6 +31,10 @@ public class ParameterProtocolVersion extends Parameter {
     public void setProtocolVersion(ProtocolVersion protocolVersion) {
         this.m_protocolVersion.copy(protocolVersion);
     }
+    
+    public ProtocolVersion getProtocolVersion() {
+        return this.m_protocolVersion;
+    }
 
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
@@ -48,5 +52,7 @@ public class ParameterProtocolVersion extends Parameter {
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.m_protocolVersion.deserialize(impl, message, name);
     }
+
+    
 
 }

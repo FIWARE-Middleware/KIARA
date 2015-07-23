@@ -61,6 +61,7 @@ public class Domain {
                     // Found
                     current.destroy();
                     m_participants.remove(current);
+                    logger.info("Participant successfully removed"); // TODO Not in C++ implementation. Log every removal.
                     return true;
                 }
             }

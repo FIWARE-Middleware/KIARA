@@ -36,7 +36,11 @@ public class ParameterTime extends Parameter {
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.m_timestamp.deserialize(impl, message, name);
+    }
+
+    public Timestamp getTime() {
+        return this.m_timestamp;
     }
 
 }

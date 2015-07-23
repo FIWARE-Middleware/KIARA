@@ -67,4 +67,17 @@ public class ParameterGuid extends Parameter {
         this.m_guid.deserialize(impl, message, name);
     }
 
+    public GUID getGUID() {
+        return this.m_guid;
+    }
+    
+    /*public InstanceHandle toInstanceHandle() {
+        
+    }*/
+
+    /*public InstanceHandle getKey() {
+        // TODO Auto-generated method stub
+        return null;
+    }*/
+
 }

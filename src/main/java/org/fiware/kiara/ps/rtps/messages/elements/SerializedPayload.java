@@ -28,6 +28,8 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 *
@@ -46,6 +48,8 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	public static final int PAYLOAD_MAX_SIZE = 64000;
 	
 	private byte[] m_buffer;
+	
+	private static final Logger logger = LoggerFactory.getLogger(SerializedPayload.class);
 	
 	public SerializedPayload() {
 		this.m_length = 0;
@@ -186,13 +190,12 @@ public class SerializedPayload extends RTPSSubmessageElement {
 		message.skipBytes(2); // Encapsulation options
 		
 		this.m_buffer = new byte[this.m_length];
-                //message.readFully(m_buffer, 4, this.m_length-4);
-		message.readFully(m_buffer);
+                message.readFully(this.m_buffer);
 	}
 	
 	public void deserializeData(/*SerializerImpl impl, String name*/) throws IOException {
 		if (this.m_appData == null) {
-			System.out.println("Type not specified in SerializedPayload object."); // TODO Log this
+			logger.error("Type not specified in SerializedPayload object.");
 			return;
 		}
 		
@@ -229,6 +232,12 @@ public class SerializedPayload extends RTPSSubmessageElement {
 
     public void updateSerializer() {
         this.m_ownSerializer.setEndianness(checkEndianness()); // true = LE, false = BE
+    }
+
+    public void deleteParameters() {
+        if (this.m_parameterList != null) {
+            this.m_parameterList.deleteParams();
+        }
     }
 
     

@@ -100,19 +100,19 @@ public class ReaderQos {
     
     public boolean checkQos() {
         if(durability.kind == DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS) {
-            System.out.println("TRANSIENT Durability not supported"); // TODO Log this
+            logger.error("TRANSIENT Durability not supported"); 
             return false;
         }
         if(durability.kind == DurabilityQosPolicyKind.PERSISTENT_DURABILITY_QOS) {
-            System.out.println("PERSISTENT Durability not supported"); // TODO Log this
+            logger.error("PERSISTENT Durability not supported"); 
             return false;
         }
         if(destinationOrder.kind == DestinationOrderQosPolicyKind.BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS) {
-            System.out.println("BY SOURCE TIMESTAMP DestinationOrder not supported"); // TODO Log this
+            logger.error("BY SOURCE TIMESTAMP DestinationOrder not supported");
             return false;
         }
         if(reliability.kind == ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS && ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-            System.out.println("BEST_EFFORT incompatible with EXCLUSIVE ownership"); // TODO Log this
+            logger.error("BEST_EFFORT incompatible with EXCLUSIVE ownership");
             return false;
         }
         return true;
@@ -151,7 +151,7 @@ public class ReaderQos {
             destinationOrder.copy(qos.destinationOrder);
             destinationOrder.parent.hasChanged = true;
         }
-        if (!Arrays.equals(userData.getDataBuf(), qos.userData.getDataBuf())) {
+        if (!userData.getDataBuf().equals(qos.userData.getDataBuf())) {
             userData.copy(qos.userData);
             userData.parent.hasChanged = true;
         }

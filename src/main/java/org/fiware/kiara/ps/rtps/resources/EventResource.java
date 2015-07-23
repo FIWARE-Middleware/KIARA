@@ -43,7 +43,6 @@ public class EventResource {
     }
     
     public void announceThread() {
-        System.out.println("Executing announceThread");
         this.m_participant.resourceSemaphorePost();
     }
     

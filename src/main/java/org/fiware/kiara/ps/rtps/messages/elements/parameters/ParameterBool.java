@@ -52,4 +52,8 @@ public class ParameterBool extends Parameter {
         // Do nothing
     }
 
+    public boolean getBool() {
+        return this.m_bool;
+    }
+
 }

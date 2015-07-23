@@ -123,7 +123,7 @@ public class StatelessReader extends RTPSReader {
                 if (this.m_listener != null) {
                     this.m_mutex.unlock();
                     this.m_listener.onNewCacheChangeAdded(this, change);
-                }
+                } 
                 this.m_mutex.lock();
                 this.m_history.postChange();
                 return true;
@@ -191,7 +191,10 @@ public class StatelessReader extends RTPSReader {
     public boolean nextUntakenCache(CacheChange change, WriterProxy proxy) {
         this.m_mutex.lock();
         try {
+            /*CacheChange retChange = new CacheChange();
+            retChange.copy(this.m_history.getMinChange(change))*/
             return this.m_history.getMinChange(change);
+            //return retChange;
         } finally {
             this.m_mutex.unlock();
         }

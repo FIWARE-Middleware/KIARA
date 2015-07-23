@@ -58,11 +58,21 @@ public class ParameterLocator extends Parameter {
     
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.m_loc.setKind(LocatorKind.values()[impl.deserializeI32(message, name)]);
+        this.m_loc.setPort(impl.deserializeUI32(message, name));
+        byte[] addr = new byte[16];
+        for (int i=0; i < addr.length; ++i) {
+            addr[i] = impl.deserializeByte(message, name);
+        }
+        this.m_loc.setAddress(addr);
     }
 
     public void setLocator(Locator loc) {
         this.m_loc.copy(loc);
+    }
+
+    public Locator getLocator() {
+        return this.m_loc;
     }
 
 }

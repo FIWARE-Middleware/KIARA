@@ -351,7 +351,7 @@ public class RTPSMessageBuilder {
 		submessageData.addSubmessageElement(change.getSequenceNumber());
 		
 		if (inlineQosFlag) {
-			// TODO Insertar por este orden: InstanceHandle, Status, inlineQos, Sentinel
+			// TODO Insert in the following order: InstanceHandle, Status, inlineQos, Sentinel
 			if (inlineQos != null) {
 				if (inlineQos.getHasChanged()) {
 					submessageData.addSubmessageElement(inlineQos);
