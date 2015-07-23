@@ -6,6 +6,8 @@ import java.util.List;
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
+import org.fiware.kiara.ps.common.PartListener;
+import org.fiware.kiara.ps.common.RTPSPartListener;
 import org.fiware.kiara.ps.common.PubListener;
 import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.publisher.Publisher;
@@ -13,6 +15,7 @@ import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.MatchingStatus;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
@@ -42,9 +45,9 @@ public class PublisherTest {
         pAtt.rtps.builtinAtt.leaseDuration = new Timestamp().timeInfinite();
         pAtt.rtps.sendSocketBufferSize = 8712;
         pAtt.rtps.listenSocketBufferSize = 17424;
-        pAtt.rtps.setName("Participant_pub");
+        pAtt.rtps.setName("ParticipantPub");
         
-        Participant participant = Domain.createParticipant(pAtt, null);
+        Participant participant = Domain.createParticipant(pAtt, new PartListener());
         
         if (participant == null) {
             System.out.println("Error when creating participant");
@@ -81,6 +84,8 @@ public class PublisherTest {
         publisher.write(hw);
         
         Domain.removeParticipant(participant);
+        
+        System.out.println("FPublisher finished");
         
         
     }

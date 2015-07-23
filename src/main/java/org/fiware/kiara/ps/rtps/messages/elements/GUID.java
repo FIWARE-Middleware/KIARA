@@ -90,5 +90,11 @@ public class GUID implements Serializable {
         this.m_guidPrefix.deserialize(impl, message, name);
         this.m_entityId.deserialize(impl, message, name);
     }
+    
+    public InstanceHandle toInstanceHandle() {
+        InstanceHandle retVal = new InstanceHandle();
+        retVal.setGuid(this);
+        return retVal;
+    }
 
 }

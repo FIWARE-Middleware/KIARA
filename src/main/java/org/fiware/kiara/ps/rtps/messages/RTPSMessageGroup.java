@@ -51,8 +51,11 @@ public class RTPSMessageGroup {
              
         }
         
+        msg.serialize();
+        
         if (added) {
             for (Locator unicastLoc : unicastLocatorList.getLocators()) {
+                //System.out.println("\n " + i + "--------------------LOC: " + unicastLoc.toIPv4String() + "\n");
                 rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
             }
             for (Locator multicastLoc : multicastLocatorList.getLocators()) {
@@ -90,6 +93,8 @@ public class RTPSMessageGroup {
             added = true;
              
         }
+        
+        msg.serialize();
         
         if (added) {
             rtpsWriter.getRTPSParticipant().sendSync(msg, locator);

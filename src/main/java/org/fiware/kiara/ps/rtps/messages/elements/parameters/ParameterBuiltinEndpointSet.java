@@ -34,7 +34,11 @@ public class ParameterBuiltinEndpointSet extends Parameter {
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.m_builtinEndpointSet = impl.deserializeUI32(message, name);
+    }
+
+    public int getEndpointSet() {
+        return this.m_builtinEndpointSet;
     }
 
 }

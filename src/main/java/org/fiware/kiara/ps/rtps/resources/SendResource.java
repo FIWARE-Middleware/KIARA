@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.rtps.resources;
 
+import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -32,8 +33,8 @@ import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.rtps.utils.IPTYPE;
 
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import org.fiware.kiara.netty.NioDatagramChannelFactory;
 
+import org.fiware.kiara.netty.NioDatagramChannelFactory;
 import org.fiware.kiara.ps.rtps.utils.InfoIP;
 import org.fiware.kiara.transport.impl.Global;
 import org.slf4j.Logger;
@@ -46,9 +47,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.InternetProtocolFamily;
+
 import java.net.Inet4Address;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 
 /**
@@ -112,7 +115,6 @@ public class SendResource {
      */
     public boolean initSend(RTPSParticipant participant, Locator loc, int sendSockBuffer, boolean useIPv4, boolean useIPv6) {
 
-        System.out.println("INIT SENDRESOURCE THREAD: " + Thread.currentThread().getId());
         this.m_useIPv4 = useIPv4;
         this.m_useIPv6 = useIPv6;
 
@@ -227,16 +229,16 @@ public class SendResource {
                     assert sendSocketV6 != null;
                     try {
                         int size = sendSocketV6.config().getOption(ChannelOption.SO_SNDBUF);
-                        logger.info("UDPv6: " + sendSocketV6.localAddress() + " || State: " + sendSocketV6.isOpen() + " || Buffer size: " + size);
+                        logger.info("UDPv6: {} || State: {} || Buffer size: {}", sendSocketV6.localAddress(), sendSocketV6.isOpen(), size);
                         this.m_sendLocatorIPv6.add(sendLocV6);
                         m_sendSocketIPv6.add(sendSocketV6);
                         initialized = true;
                     } catch (Exception e) {
-                        logger.error("UDPv6: Maxmimum Number of tries while binding in this endpoint: " + sendEndpoint.toString(), e);
+                        logger.error("UDPv6: Maxmimum Number of tries while binding in this endpoint: {}", sendEndpoint.toString(), e);
                         return false;
                     }
                 } else {
-                    logger.warn("UDPv6: Maxmimum Number of tries while binding in this interface: " + sendEndpoint.toString());
+                    logger.warn("UDPv6: Maxmimum Number of tries while binding in this interface: {}", sendEndpoint.toString());
                 }
 
                 notBind = true;
@@ -252,16 +254,16 @@ public class SendResource {
      * @param msg Pointer to the message.
      * @param loc Locator where to send the message.
      */
-    public void sendSync(RTPSMessage msg, Locator loc) {
+    public synchronized void sendSync(RTPSMessage msg, Locator loc) {
         m_mutex.lock();
-        System.out.println("-----THREAD " + Thread.currentThread().getId() + " sendSync");
+
         try {
             if (loc.getPort() == 0) {
                 return;
             }
 
             // Should we call this or the caller ?
-            msg.serialize(); //??? FIXME
+            //msg.serialize(); //??? FIXME
 
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4 && m_useIPv4) {
                 byte[] srcAddr = loc.getAddress();
@@ -272,13 +274,16 @@ public class SendResource {
                 }
 
                 try {
-                    m_sendEndpointV4 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
+                    if (this.m_sendEndpointV4 == null) {
+                        m_sendEndpointV4 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
+                    }
                 } catch (UnknownHostException e) {
-                    logger.error("UDPv4 Error obtaining address: " + Arrays.toString(addr), e);
+                    logger.error("UDPv4 Error obtaining address: {}", Arrays.toString(addr));
                     return;
                 }
 
                 for (DatagramChannel sockit : m_sendSocketIPv4) {
+                    //System.out.println("");
                     logger.info("UDPv4: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV4, sockit.localAddress());
                     if (m_sendEndpointV4.getPort() > 0) {
                         m_bytesSent = 0;
@@ -286,17 +291,18 @@ public class SendResource {
                             try {
                                 sockit.writeAndFlush(new DatagramPacket(
                                         Unpooled.wrappedBuffer(msg.getBuffer()),
-                                        m_sendEndpointV4)).sync();
-
+                                        m_sendEndpointV4)).syncUninterruptibly();
+                                
                             } catch (Exception error) {
                                 // Should print the actual error message
-                                logger.error("Error ", error);
+                                logger.error(error.toString());
+                               // error.printStackTrace();
                             }
 
                         } else {
                             m_sendNext = true;
                         }
-                        logger.info("SENT {}", m_bytesSent);
+                        logger.info("SENT {}", msg.getBuffer().length);
                     } else if (m_sendEndpointV4.getPort() <= 0) {
                         logger.warn("Port invalid: {}", m_sendEndpointV4.getPort());
                     } else {
@@ -312,7 +318,9 @@ public class SendResource {
                 }
 
                 try {
-                    m_sendEndpointV6 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
+                    if (this.m_sendEndpointV6 == null) {
+                        m_sendEndpointV6 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
+                    }
                 } catch (UnknownHostException e) {
                     logger.error("UDPv6 Error obtaining address: " + Arrays.toString(addr), e);
                     return;
@@ -331,13 +339,13 @@ public class SendResource {
 
                             } catch (Exception error) {
                                 // Should print the actual error message
-                                logger.error("Error ", error);
+                                logger.error("Thread V6: " + Thread.currentThread().getId() + " - " + error.toString());
                             }
 
                         } else {
                             m_sendNext = true;
                         }
-                        logger.info("SENT {}", m_bytesSent);
+                        logger.info("SENT {}", msg.getBuffer().length);
                     } else if (m_sendEndpointV6.getPort() <= 0) {
                         logger.warn("Port invalid: {}", m_sendEndpointV6.getPort());
                     } else {
@@ -361,6 +369,23 @@ public class SendResource {
 
     public Lock getMutex() {
         return m_mutex;
+    }
+
+    public void destroy() {
+        this.m_mutex.lock();
+        try {
+            for (DatagramChannel channel : this.m_sendSocketIPv4) {
+                channel.eventLoop().shutdownGracefully();
+                channel.disconnect();
+                channel.close();
+            }
+            for (DatagramChannel channel : this.m_sendSocketIPv6) {
+                channel.disconnect();
+                channel.close();
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
 }

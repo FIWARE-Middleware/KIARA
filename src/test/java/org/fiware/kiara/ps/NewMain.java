@@ -43,7 +43,7 @@ public class NewMain {
 
 		//IPFinder.getIPs();
 		RTPSParticipantAttributes pa = new RTPSParticipantAttributes();
-		ListenResource lr = new ListenResource(new RTPSParticipant(pa, null, null), 1, true);
+		//ListenResource lr = new ListenResource(new RTPSParticipant(pa, null, null), 1, true);
 
 		byte[] addr = new byte[16];
 		addr[12] = (byte) 239;
@@ -58,7 +58,7 @@ public class NewMain {
 		loc.setAddress(addr);
 		loc.setPort(7400);
 
-		lr.initThread(new RTPSParticipant(pa, new GUIDPrefix(), null), loc, 1024, true, false);
+		//lr.initThread(new RTPSParticipant(pa, new GUIDPrefix(), null), loc, 1024, true, false);
 		//lr.initThread(new RTPSParticipant(null, null, null), loc, 1024, false, false);
 
 	}

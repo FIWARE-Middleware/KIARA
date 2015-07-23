@@ -65,6 +65,7 @@ public abstract class RTPSWriter extends Endpoint {
         this.m_livelinessAsserted = false;
         this.m_history = history;
         this.m_history.m_writer = this;
+        this.m_pushMode = true;
         this.m_listener = listener;
         this.initHeader();
         logger.info("RTPSWriter created");

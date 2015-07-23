@@ -39,15 +39,15 @@ public class InstanceHandle extends RTPSSubmessageElement {
         }
     }
 
-    /*@Override
-	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
-		try {
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
+    public InstanceHandle(GUID guid) {
+        for (int i=0; i < 16; ++i) {
+            if (i < 12) {
+                this.m_value[i] = guid.getGUIDPrefix().getValue(i);
+            } else {
+                this.m_value[i] = guid.getEntityId().getValue(i-12);
+            }
+        }
+    }
 
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
@@ -72,8 +72,9 @@ public class InstanceHandle extends RTPSSubmessageElement {
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message,
             String name) throws IOException {
-        // TODO Auto-generated method stub
-
+        for (int i=0; i < 16; ++i) {
+            this.m_value[i] = impl.deserializeByte(message, "");
+        }
     }
 
     @Override

@@ -26,7 +26,7 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
 
     @Override
     public void event(EventCode code, String msg) {
-        if (code == EventCode.EVENT_SUCCESS) {
+        /*if (code == EventCode.EVENT_SUCCESS) {
             logger.info("Checking RTPSParticipant: " + this.m_participantProxyData.getParticipantName() + " with GUID: " + this.m_participantProxyData.getGUID().getGUIDPrefix());
             if (this.m_participantProxyData.getIsAlive()) {
                 this.m_participantProxyData.setIsAlive(false);
@@ -41,7 +41,7 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
             this.stopSemaphorePost();
         } else {
             logger.info("MSG: " + msg);
-        }
+        }*/
     }
 
 }

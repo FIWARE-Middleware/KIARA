@@ -33,6 +33,10 @@ public class ParameterVendorId extends Parameter {
     public void setVendorId(VendorId vendorId) {
         this.m_vendorId.copy(vendorId);
     }
+    
+    public VendorId getVendorId() {
+        return this.m_vendorId;
+    }
 
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {

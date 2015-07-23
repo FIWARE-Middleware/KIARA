@@ -54,14 +54,21 @@ public class ParameterString extends Parameter {
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.m_content = impl.deserializeString(message, name);
-        int size = (4 + this.m_content.length());
+        /*int size = (4 + this.m_content.length());
         int pad = (4 - (size % 4));
-        message.skipBytes(pad);
+        message.skipBytes(pad);*/
     }
     
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.m_content = impl.deserializeString(message, name);
+        /*int size = (4 + this.m_content.length());
+        int pad = (4 - (size % 4));
+        message.skipBytes(pad);*/
+    }
+
+    public String getString() {
+        return this.m_content;
     }
 
 }

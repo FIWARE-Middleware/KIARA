@@ -1,6 +1,7 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import java.io.IOException;
+import java.rmi.dgc.Lease;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -9,6 +10,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fiware.kiara.ps.qos.QosList;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.QosPolicy;
+import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
@@ -19,13 +21,23 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBool;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuiltinEndpointSet;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPropertyList;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterTime;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 
@@ -118,6 +130,7 @@ public class ParticipantProxyData {
         this.m_key = new InstanceHandle();
         this.m_properties = new ParameterPropertyList();
         this.m_userData = new ArrayList<Byte>();
+        this.m_leaseDuration = new Timestamp();
     }
 
     public boolean initializeData(RTPSParticipant participant, PDPSimple pdpSimple) {
@@ -202,7 +215,7 @@ public class ParticipantProxyData {
                     valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR, lit);
                 }
                 
-                System.out.println("Adding QosListFrom " + Thread.currentThread().getId());
+                //System.out.println("Adding QosListFrom " + Thread.currentThread().getId());
                 valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_LEASE_DURATION, this.m_leaseDuration);
                 valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
                 valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);
@@ -233,8 +246,75 @@ public class ParticipantProxyData {
             BinaryInputStream bis = new BinaryInputStream(payload.getBuffer());
             ParameterList parameterList = new ParameterList();
             parameterList.deserialize(payload.getSerializer(), bis, "");
-            
-            
+            for (Parameter param : parameterList.getParameters()) {
+                switch (param.getParameterId()) {
+                case PID_KEY_HASH:
+                    ParameterKey pKey = (ParameterKey) param;
+                    GUID guid = pKey.getKey().toGUID();
+                    this.m_guid = guid;
+                    this.m_key = pKey.getKey();
+                    break;
+                case PID_PROTOCOL_VERSION:
+                    ParameterProtocolVersion pVersion = (ParameterProtocolVersion) param;
+                    if (pVersion.getProtocolVersion().getMajor() < new ProtocolVersion().getMajor()) {
+                        return false;
+                    }
+                    this.m_protocolVersion = pVersion.getProtocolVersion();
+                    break;
+                case PID_VENDORID:
+                    ParameterVendorId pVendorId = (ParameterVendorId) param;
+                    this.m_vendorId = pVendorId.getVendorId();
+                    break;
+                case PID_EXPECTS_INLINE_QOS:
+                    ParameterBool pBool = (ParameterBool) param;
+                    this.m_expectsInlineQos = pBool.getBool();
+                    break;
+                case PID_PARTICIPANT_GUID:
+                    ParameterGuid pGuid = (ParameterGuid) param;
+                    this.m_guid = pGuid.getGUID();
+                    this.m_key = pGuid.getGUID().toInstanceHandle();
+                    break;
+                case PID_METATRAFFIC_MULTICAST_LOCATOR:
+                    ParameterLocator pMetaMulticastLoc = (ParameterLocator) param;
+                    this.m_metatrafficMulticastLocatorList.pushBack(pMetaMulticastLoc.getLocator());
+                    break;
+                case PID_METATRAFFIC_UNICAST_LOCATOR:
+                    ParameterLocator pMetaUnicastLoc = (ParameterLocator) param;
+                    this.m_metatrafficUnicastLocatorList.pushBack(pMetaUnicastLoc.getLocator());
+                    break;
+                case PID_DEFAULT_MULTICAST_LOCATOR:
+                    ParameterLocator pDefaultUnicastLoc = (ParameterLocator) param;
+                    this.m_defaultUnicastLocatorList.pushBack(pDefaultUnicastLoc.getLocator());
+                    break;
+                case PID_DEFAULT_UNICAST_LOCATOR:
+                    ParameterLocator pDefaultMulticastLoc = (ParameterLocator) param;
+                    this.m_defaultUnicastLocatorList.pushBack(pDefaultMulticastLoc.getLocator());
+                    break;
+                case PID_PARTICIPANT_LEASE_DURATION:
+                    ParameterTime pTime = (ParameterTime) param;
+                    this.m_leaseDuration = pTime.getTime();
+                    break;
+                case PID_BUILTIN_ENDPOINT_SET:
+                    ParameterBuiltinEndpointSet pBuiltin = (ParameterBuiltinEndpointSet) param;
+                    this.m_availableBuiltinEndpoints = pBuiltin.getEndpointSet();
+                    break;
+                case PID_ENTITY_NAME:
+                    ParameterString pStr = (ParameterString) param;
+                    this.m_participantName = pStr.getString();
+                    break;
+                case PID_PROPERTY_LIST:
+                    ParameterPropertyList pPropList = (ParameterPropertyList) param;
+                    this.m_properties = pPropList.getPropertyList();
+                    break;
+                case PID_USER_DATA:
+                    UserDataQosPolicy pQosPolicy = (UserDataQosPolicy) param;
+                    this.m_userData = pQosPolicy.getDataBuf();
+                    break;
+                default:
+                    break;
+                }
+            }
+            return true;
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -380,5 +460,25 @@ public class ParticipantProxyData {
 
     public ParameterPropertyList getProperties() {
         return m_properties;
+    }
+    
+    public List<Byte> getUserData() {
+        return this.m_userData;
+    }
+    
+    public RemoteParticipantLeaseDuration getLeaseDurationTimer() {
+        return this.m_leaseDurationTimer;
+    }
+    
+    public void setLeaseDurationTimer(RemoteParticipantLeaseDuration leaseDurationTimer) {
+        this.m_leaseDurationTimer = leaseDurationTimer;
+    }
+
+    public Timestamp getLeaseDuration() {
+        return this.m_leaseDuration;
+    }
+    
+    public void setLeaseDuration(Timestamp leaseDuration) {
+        this.m_leaseDuration = leaseDuration;
     }
 }

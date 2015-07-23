@@ -76,6 +76,10 @@ public class ParameterKey extends Parameter {
 	public short getSerializedSize() {
 		return (short) (super.getSerializedSize() + this.m_length);
 	}
+	
+	public InstanceHandle getKey() {
+	    return this.m_instanceHandle;
+	}
 
 	 
 

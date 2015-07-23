@@ -10,7 +10,7 @@ public class NettyServerTest {
     public static void main(String[] args) {
 
 		//IPFinder.getIPs();
-        ListenResource lr = new ListenResource(new RTPSParticipant(null, null, null), 1, true);
+        //ListenResource lr = new ListenResource(new RTPSParticipant(null, null, null), 1, true);
 
         byte[] addr = new byte[16];
         addr[12] = (byte) 239;
@@ -21,7 +21,7 @@ public class NettyServerTest {
         loc.setAddress(addr);
         loc.setPort(7400);
 
-        lr.initThreadNetty(new RTPSParticipant(null, new GUIDPrefix(), null), loc, 1024, true, false);
+        //lr.initThreadNetty(new RTPSParticipant(null, new GUIDPrefix(), null), loc, 1024, true, false);
 
     }
 

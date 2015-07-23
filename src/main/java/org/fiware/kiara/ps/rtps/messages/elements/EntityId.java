@@ -138,7 +138,11 @@ public class EntityId extends RTPSSubmessageElement {
 
     @Override
     public String toString() {
-        return new String(this.m_value);
+        StringBuffer sb = new StringBuffer("");
+        for (int i=0; i < this.m_value.length; ++i) {
+            sb.append(this.m_value[i]);
+        }
+        return sb.toString();
     }
 
     

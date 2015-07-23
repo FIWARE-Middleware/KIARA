@@ -70,6 +70,14 @@ public class ProtocolVersion extends RTPSSubmessageElement {
 		return 2;
 	}
 	
+	public byte getMajor() {
+	    return this.m_major;
+	}
+	
+	public byte getMinor() {
+	    return this.m_minor;
+	}
+	
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof ProtocolVersion) {

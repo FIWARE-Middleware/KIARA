@@ -126,6 +126,7 @@ public class CacheChange implements Comparable<CacheChange> {
         this.m_writerGUID = ch.m_writerGUID;
         this.m_instanceHandle = ch.m_instanceHandle;
         this.m_sourceTimestamp = ch.m_sourceTimestamp;
+        this.m_sequenceNumber = ch.m_sequenceNumber;
         return this.m_payload.copy(ch.getSerializedPayload());
     }
 

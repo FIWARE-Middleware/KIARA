@@ -1,5 +1,6 @@
 package org.fiware.kiara.ps.subscriber;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,9 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,7 +265,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
         return this.m_unreadCacheCount;
     }
 
-    public <T> TopicDataType<T> readNextData(SampleInfo info) {
+    public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
             
@@ -298,7 +301,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     }
                     info.handle = change.getInstanceHandle();
                 }
-                return this.m_subscriber.getType();
+                //return this.m_subscriber.getType();
             }
             return null;
             
@@ -306,9 +309,103 @@ public class SubscriberHistory extends ReaderHistoryCache {
             this.m_mutex.unlock();
         }
     }
+    
+    public Serializable takeNextData(SampleInfo info) {
+        this.m_mutex.lock();
+        try {
+            Serializable retVal = null;
+            CacheChange change = new CacheChange();
+            WriterProxy wp = new WriterProxy();
+            if (this.m_reader.nextUntakenCache(change, wp)) {
+                if (!change.isRead()) {
+                    this.decreadeUnreadCount();
+                }
+                change.setRead(true);
+                logger.info("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
+                if (change.getKind() == ChangeKind.ALIVE) {
+                    try {
+                        retVal = this.m_subscriber.getType().deserialize(change.getSerializedPayload());
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                   /* change.getSerializedPayload().setData(retVal);
+                    try {
+                        change.getSerializedPayload().deserializeData();
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }*/
+                }
+                if (info != null) {
+                    info.sampleKind = change.getKind();
+                    info.writerGUID = change.getWriterGUID();
+                    info.sourceTimestamp = change.getSourceTimestamp();
+                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
+                        info.ownershipStrength = wp.att.ownershipStrength;
+                    }
+                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
+                            change.getInstanceHandle().equals(new InstanceHandle()) && 
+                            change.getKind() == ChangeKind.ALIVE) {
+                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
+                    }
+                    info.handle = change.getInstanceHandle();
+                }
+                this.removeChangeSub(change, null);
+                return retVal;
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+        return null;
+    }
 
-    public <T> TopicDataType<T> takeNextData(SampleInfo info) {
-        // TODO Auto-generated method stub
+    public <T> TopicDataType<T> takeNextData_old(SampleInfo info) {
+        this.m_mutex.lock();
+        try {
+            TopicDataType<T> retVal = null;
+            CacheChange change = new CacheChange();
+            WriterProxy wp = new WriterProxy();
+            if (this.m_reader.nextUntakenCache(change, wp)) {
+                if (!change.isRead()) {
+                    this.decreadeUnreadCount();
+                }
+                change.setRead(true);
+                logger.info("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
+                if (change.getKind() == ChangeKind.ALIVE) {
+                    /*Serializable instance = (Serializable) this.m_subscriber.getType().createData();
+                    change.getSerializedPayload().setData(instance);
+                    try {
+                        change.getSerializedPayload().deserializeData();
+                        retVal = (T) instance;
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }*/
+                    
+                    //retVal = change.getSerializedPayload().get
+                    
+                }
+                if (info != null) {
+                    info.sampleKind = change.getKind();
+                    info.writerGUID = change.getWriterGUID();
+                    info.sourceTimestamp = change.getSourceTimestamp();
+                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
+                        info.ownershipStrength = wp.att.ownershipStrength;
+                    }
+                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
+                            change.getInstanceHandle().equals(new InstanceHandle()) && 
+                            change.getKind() == ChangeKind.ALIVE) {
+                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
+                    }
+                    info.handle = change.getInstanceHandle();
+                }
+                this.removeChangeSub(change, null);
+                return retVal;
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
         return null;
     }
 

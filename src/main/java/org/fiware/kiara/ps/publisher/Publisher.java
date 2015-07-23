@@ -105,7 +105,7 @@ public class Publisher<T> {
         }*/
     }
     
-    public  boolean write(T data) {
+    public boolean write(T data) {
         logger.info("Writing new data");
         return this.createNewChange(ChangeKind.ALIVE, data);
     }

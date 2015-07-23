@@ -26,6 +26,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
 *
@@ -41,6 +43,8 @@ public class CacheChangePool {
     private List<CacheChange> m_allChanges;
 
     private final Lock m_mutex = new ReentrantLock(true);
+    
+    private static final Logger logger = LoggerFactory.getLogger(CacheChangePool.class);
 
     public CacheChangePool(int poolSize, int payloadSize, int maxPoolSize) {
         this.m_mutex.lock();
@@ -88,8 +92,7 @@ public class CacheChangePool {
         }
 
         if (!added) {
-            // TODO Log here
-            System.out.println("Maximum number of allowed reserved caches reached");
+            logger.warn("Maximum number of allowed reserved caches reached");
         }
 
         return added;

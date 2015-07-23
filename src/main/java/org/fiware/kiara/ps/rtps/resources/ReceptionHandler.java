@@ -50,15 +50,11 @@ public class ReceptionHandler extends SimpleChannelInboundHandler<DatagramPacket
     public void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
 
         System.out.println(((InetSocketAddress) ctx.channel().localAddress()).getPort());
-        System.out.println("Received");
-
+        
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
 
-        System.out.println("Message created");
-
         msg.setBuffer(Buffers.toByteArray(packet.content()));
-        System.out.println("Buffer set");
-
+        
         newRTPSMessage(msg);
     }
 
@@ -78,8 +74,6 @@ public class ReceptionHandler extends SimpleChannelInboundHandler<DatagramPacket
             if (msg.getSize() == 0) {
                 return;
             }
-
-            System.out.println(""); // TODO Log this
 
             this.m_listenResource.getSenderLocator().setPort(this.m_listenResource.getSenderEndpoint().port);
 

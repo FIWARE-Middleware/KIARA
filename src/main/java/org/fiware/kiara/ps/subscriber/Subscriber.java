@@ -20,6 +20,7 @@ package org.fiware.kiara.ps.subscriber;
 import org.fiware.kiara.ps.attributes.SubscriberAttributes;
 import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
+import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -28,7 +29,9 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
+import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +42,7 @@ import com.eprosima.log.Log;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  * @param <T>
  */
-public class Subscriber<T> {
+public class Subscriber<T extends Serializable> {
 
     private class SubscriberReaderListener extends ReaderListener {
 
@@ -68,7 +71,9 @@ public class Subscriber<T> {
 
     private Participant m_participant;
 
-    private TopicDataType<T> m_type;
+    private TopicDataType<T> m_type_old;
+    
+    private SerializableDataType<T> m_type;
 
     private SubscriberAttributes m_att;
 
@@ -86,7 +91,7 @@ public class Subscriber<T> {
 
     //private Subscriber m_userSubscriber;
 
-    public Subscriber(Participant p, TopicDataType type, SubscriberAttributes att, SubscriberListener listener) {
+    public Subscriber(Participant p, SerializableDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
         this.m_participant = p;
         this.m_readerListener = null;
         this.m_type = type;
@@ -110,11 +115,19 @@ public class Subscriber<T> {
         }
     }
 
-    public TopicDataType<T> readNextData(SampleInfo info) {
+    /*public TopicDataType<T> readNextData(SampleInfo info) {
         return this.m_history.readNextData(info);
     }
 
     public TopicDataType<T> takeNextData(SampleInfo info) {
+        return this.m_history.takeNextData(info);
+    }*/
+    
+    public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
+        return this.m_history.readNextData(info);
+    }
+
+    public Serializable takeNextData(SampleInfo info) {
         return this.m_history.takeNextData(info);
     }
     
@@ -176,10 +189,14 @@ public class Subscriber<T> {
     }
 
     public GUID getGuid() {
-        return null;
+        return this.m_reader.getGuid();
     }
 
-    public TopicDataType<T> getType() {
+    public TopicDataType<T> getType_old() {
+        return this.m_type;
+    }
+    
+    public SerializableDataType<T> getType() {
         return this.m_type;
     }
     
@@ -201,6 +218,11 @@ public class Subscriber<T> {
 
     public void setReader(RTPSReader reader) {
         this.m_reader = reader;
+    }
+
+    public void destroy() {
+        logger.info("Publisher destruction");
+        RTPSDomain.removeRTPSReader(this.m_reader);
     }
 
 }
