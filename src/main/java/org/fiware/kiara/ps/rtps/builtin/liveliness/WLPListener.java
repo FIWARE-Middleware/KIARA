@@ -129,13 +129,13 @@ public class WLPListener extends ReaderListener {
     }
 
     /**
-     * Compute the key from a CacheChange_t
+     * Compute the key from a CacheChange
      *
      * @param change
      * @return
      */
     public boolean computeKey(CacheChange change) {
-        return false;
+        return true;
     }
 
     @Override
