@@ -172,14 +172,14 @@ public class EDPStatic extends EDP {
                         GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
                         ReaderProxyData rdata = m_PDP.lookupReaderProxyData(guid);
 
-                        if (rdata != null) { //IF NOT FOUND, we CREATE AND PAIR IT
+                        if (rdata == null) { //IF NOT FOUND, we CREATE AND PAIR IT
                             newRemoteReader(pdata, staticproperty.userId, staticproperty.entityId);
                         }
                     } else if ("Writer".equals(staticproperty.endpointType) && "ALIVE".equals(staticproperty.status)) {
 
                         GUID guid = new GUID(pdata.getGUID().getGUIDPrefix(), staticproperty.entityId);
                         WriterProxyData wdata = m_PDP.lookupWriterProxyData(guid);
-                        if (wdata != null) { //IF NOT FOUND, we CREATE AND PAIR IT
+                        if (wdata == null) { //IF NOT FOUND, we CREATE AND PAIR IT
                             newRemoteWriter(pdata, staticproperty.userId, staticproperty.entityId);
                         }
                     } else if ("Reader".equals(staticproperty.endpointType) && "ENDED".equals(staticproperty.status)) {

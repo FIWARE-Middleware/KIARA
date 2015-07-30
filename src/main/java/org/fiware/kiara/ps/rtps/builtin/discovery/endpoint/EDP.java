@@ -643,6 +643,7 @@ public abstract class EDP {
         try {
             for (RTPSReader rit : m_RTPSParticipant.getUserReaders()) {
                 final Lock mutexR = rit.getMutex();
+                mutexR.lock();
                 try {
                     ReaderProxyData rdata = m_PDP.lookupReaderProxyData(rit.getGuid());
                     if (rdata != null) {
@@ -674,6 +675,10 @@ public abstract class EDP {
             mutex.unlock();
         }
         return true;
+    }
+
+    public void destroy() {
+        
     }
 
 }

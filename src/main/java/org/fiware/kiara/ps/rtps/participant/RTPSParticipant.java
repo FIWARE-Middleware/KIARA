@@ -195,7 +195,7 @@ public class RTPSParticipant {
     }
 
     public void destroy() {
-        logger.info("Removing RTPSParticipant: " + this.getGUID().toString());
+        logger.info("Removing RTPSParticipant: {}", this.getGUID().toString());
 
         while (this.m_userReaderList.size() > 0) {
             RTPSDomain.removeRTPSReader(this.m_userReaderList.get(0));
@@ -206,12 +206,27 @@ public class RTPSParticipant {
         }
         
         // Destroy threads
-        for (ListenResource it : this.m_listenResourceList) {
+        for (int i=0; i < this.m_listenResourceList.size(); ++i) {
+            ListenResource it = this.m_listenResourceList.get(i);
             it.destroy();
+            this.m_listenResourceList.remove(it);
+            --i;
+        }
+        
+        if (this.m_builtinProtocols != null) {
+            this.m_builtinProtocols.destroy();
+        }
+        
+        if (this.m_userParticipant != null) {
+            this.m_userParticipant.destroy();
         }
         
         if (this.m_sendResource != null) {
             this.m_sendResource.destroy();
+        }
+        
+        if (this.m_eventResource != null) {
+            this.m_eventResource.destroy();
         }
         
     }
@@ -515,6 +530,7 @@ public class RTPSParticipant {
                     lr.addAssociatedEndpoint(endp);
                     LocatorList locList = lr.getListenLocators();
                     finalList.pushBack(locList);
+                    this.m_listenResourceList.add(lr);
                     added = true;
                 } else {
                     valid &= false;
@@ -592,6 +608,7 @@ public class RTPSParticipant {
                 for (int i=0; i < this.m_listenResourceList.size(); ++i) {
                     ListenResource lrit = this.m_listenResourceList.get(i);
                     if (lrit.hasAssociatedEndpoints() && !lrit.isDefaultListenResource()) {
+                        lrit.destroy();
                         this.m_listenResourceList.remove(lrit);
                         continueRemoving = true;
                         i--;

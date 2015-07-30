@@ -60,7 +60,7 @@ public class PublisherAttributes {
         return this.m_userDefinedId;
     }
     
-    public void setUserDefinedId(short userDefinedId) {
+    public void setUserDefinedID(short userDefinedId) {
         this.m_userDefinedId = userDefinedId;
     }
     

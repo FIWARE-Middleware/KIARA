@@ -124,6 +124,9 @@ public class ParameterList extends RTPSSubmessageElement {
             short length = impl.deserializeI16(message, name);
 
             Parameter param = ParameterBuilder.createParameter(pid, length);
+            if (param.getParameterId() == ParameterId.PID_PROPERTY_LIST) {
+                System.out.println("");
+            }
             //param.deserializeContent(impl, message, name);
             int initialPos = message.getPosition();
             param.deserializeContent(impl, message, name);

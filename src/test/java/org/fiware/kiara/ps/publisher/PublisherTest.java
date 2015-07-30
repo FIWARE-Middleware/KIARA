@@ -38,14 +38,17 @@ public class PublisherTest {
         pAtt.rtps.defaultSendPort = 11511;
         pAtt.rtps.useIPv4ToSend = true;
         pAtt.rtps.builtinAtt.useSimplePDP = true;
+        pAtt.rtps.builtinAtt.useWriterLP = false;
         pAtt.rtps.builtinAtt.useSimpleEDP = true;
-        pAtt.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
+        pAtt.rtps.builtinAtt.useStaticEDP = true;
+        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("WRITER_ENDPOINTS.xml");
+        /*pAtt.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
         pAtt.rtps.builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader = true;
         pAtt.rtps.builtinAtt.domainID = 80;
         pAtt.rtps.builtinAtt.leaseDuration = new Timestamp().timeInfinite();
         pAtt.rtps.sendSocketBufferSize = 8712;
         pAtt.rtps.listenSocketBufferSize = 17424;
-        pAtt.rtps.setName("ParticipantPub");
+        pAtt.rtps.setName("ParticipantPub");*/
         
         Participant participant = Domain.createParticipant(pAtt, new PartListener());
         
@@ -61,6 +64,7 @@ public class PublisherTest {
         
         // Create publisher
         PublisherAttributes pubAtt = new PublisherAttributes();
+        pubAtt.setUserDefinedID((short) 1);
         pubAtt.topic.topicKind = TopicKind.NO_KEY;
         pubAtt.topic.topicDataTypeName = "HelloWorld";
         pubAtt.topic.topicName = "HelloWorldTopic";
@@ -78,14 +82,22 @@ public class PublisherTest {
         
         if (publisher == null) {
             System.out.println("Error creating publisher");
+            Domain.removeParticipant(participant);
             return;
+        }
+        
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
         
         publisher.write(hw);
         
         Domain.removeParticipant(participant);
         
-        System.out.println("FPublisher finished");
+        System.out.println("Publisher finished");
         
         
     }
