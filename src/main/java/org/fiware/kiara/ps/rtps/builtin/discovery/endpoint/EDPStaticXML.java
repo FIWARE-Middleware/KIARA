@@ -58,7 +58,7 @@ public class EDPStaticXML {
      */
     public ReaderProxyData lookforReader(String partname, short id) {
         for (StaticRTPSParticipantInfo pit : m_RTPSParticipants) {
-            if (pit.participantName.equals(partname) || true) {// it doenst matter the name fo the RTPSParticipant, only for organizational purposes
+            if (pit.participantName.equals(partname) || true) {// it does not matter the name for the RTPSParticipant, only for organizational purposes
                 for (ReaderProxyData rit : pit.readers) {
                     if (rit.getUserDefinedId() == id) {
                         return rit;

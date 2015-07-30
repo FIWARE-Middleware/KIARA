@@ -50,7 +50,8 @@ public class PDPSimpleListener extends ReaderListener {
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change_in) {
         // TODO Auto-generated method stub
-        //System.out.println("PDPSimpleListener: NEW CHANGE ADDED");
+        try {
+        System.out.println(" Thread : " + Thread.currentThread().getId() + "  - PDPSimpleListener: NEW CHANGE ADDED");
         CacheChange change = change_in;
         logger.info("SPDP Message Received");
         
@@ -58,6 +59,7 @@ public class PDPSimpleListener extends ReaderListener {
             if (!this.getKey(change)) {
                 logger.warn("Problem getting the key of the change, removing.");
                 this.m_SPDP.getSPDPReaderHistory().removeChange(change);
+                System.out.println("PDPSimpleListener: FINISH 1");
                 return;
             }
         }
@@ -72,6 +74,7 @@ public class PDPSimpleListener extends ReaderListener {
                 if (this.m_participantProxyData.getGUID().equals(this.m_SPDP.getRTPSParticipant().getGUID())) {
                     logger.info("Message from own RTPSParticipant, removing");
                     this.m_SPDP.getSPDPReaderHistory().removeChange(change);
+                    System.out.println("PDPSimpleListener: FINISH 2");
                     return;
                 }
                 
@@ -117,10 +120,11 @@ public class PDPSimpleListener extends ReaderListener {
                             pData.copy(this.m_participantProxyData);
                             pData.setIsAlive(true);
                             this.m_SPDP.getParticipantProxies().add(pData);
-                            pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
-                            pData.getLeaseDurationTimer().restartTimer();
+                            // TODO Uncomment this and handle RejectException
+                           // pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
+                           // pData.getLeaseDurationTimer().restartTimer();
                             this.m_SPDP.assignRemoteEndpoints(pData);
-                            this.m_SPDP.announceParticipantState(false); // TODO Change to true
+                            this.m_SPDP.announceParticipantState(false); 
                         } finally {
                             pData.getMutex().unlock();
                         }
@@ -162,7 +166,15 @@ public class PDPSimpleListener extends ReaderListener {
             }
         }
         
+        System.out.println("PDPSimpleListener: FINISH");
         return;
+        } catch (java.util.concurrent.RejectedExecutionException e){
+            System.out.println("PREMIO!!");
+            e.printStackTrace();
+        } catch (Exception e2) {
+            System.out.println("EOOO");
+            e2.printStackTrace();
+        }
     }
     
     private boolean getKey(CacheChange change) {
@@ -195,5 +207,7 @@ public class PDPSimpleListener extends ReaderListener {
         }
         return false;
     }
+
+    
 
 }

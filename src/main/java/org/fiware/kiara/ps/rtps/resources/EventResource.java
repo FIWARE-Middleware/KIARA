@@ -49,6 +49,11 @@ public class EventResource {
     public void startDatagramChannel() {
         // TODO Implement. Equivalent to start_io_service
     }
+
+    public void destroy() {
+        // TODO Auto-generated method stub
+        
+    }
     
     
 

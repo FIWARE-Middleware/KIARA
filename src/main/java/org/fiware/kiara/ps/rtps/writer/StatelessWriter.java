@@ -155,7 +155,7 @@ public class StatelessWriter extends RTPSWriter {
         this.m_mutex.lock();
         try {
             
-            if (ratt.guid.equals(new GUID())) {
+            if (!ratt.guid.equals(new GUID())) {
                 for (RemoteReaderAttributes it : this.m_matchedReaders) {
                     if (it.guid.equals(ratt.guid)) {
                         logger.warn("Attempting to add existing reader");
@@ -174,8 +174,10 @@ public class StatelessWriter extends RTPSWriter {
             }
             
             if (unsentChangesNotEmpty) {
+                System.out.println("NOT EMPTY");
                 this.m_unsentChangesNotEmpty = new UnsentChangesNotEmptyEvent(this, 1000);
                 this.m_unsentChangesNotEmpty.restartTimer();
+                System.out.println("---------------NULL");
                 this.m_unsentChangesNotEmpty = null;
             }
             
@@ -191,14 +193,15 @@ public class StatelessWriter extends RTPSWriter {
     public boolean addLocator(RemoteReaderAttributes ratt, Locator loc) {
         logger.info("Adding Locator: " + loc.toString() + " to StatelessWriter");
         boolean found = false;
+        ReaderLocator end = null;
         for (ReaderLocator it: this.m_readerLocator) {
             if (it.getLocator().equals(loc)) {
                 it.increaseUsed();
                 found = true;
+                end = it;
                 break;
             }
         }
-        ReaderLocator end = null;
         if (!found) {
             ReaderLocator rl = new ReaderLocator();
             rl.setExpectsInlineQos(ratt.expectsInlineQos);

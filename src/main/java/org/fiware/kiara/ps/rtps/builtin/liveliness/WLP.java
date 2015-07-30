@@ -42,4 +42,9 @@ public class WLP {
         
     }
 
+    public void destroy() {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
+import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
@@ -116,6 +117,39 @@ public class PDPSimple {
         this.m_guardR = new Object();*/
         this.m_participantProxies = new ArrayList<ParticipantProxyData>();
         // TODO Create objects properly
+    }
+    
+    public void destroy() {
+        this.m_mutex.lock();
+        try {
+            
+            if (this.m_EDP != null) {
+                this.m_EDP.destroy();
+            }
+            
+            if (this.m_resendParticipantTimer != null) {
+                this.m_resendParticipantTimer.delete();
+            }
+            
+            if (this.m_SPDPReader != null) {
+                RTPSDomain.removeRTPSReader(this.m_SPDPReader);
+            }
+            
+            if (this.m_SPDPWriter != null) {
+                RTPSDomain.removeRTPSWriter(this.m_SPDPWriter);
+            }
+            
+            /*if (this.m_listener != null) {
+                this.m_listener.destroy();
+            }*/
+            
+            while (this.m_participantProxies.size() > 0) {
+                this.m_participantProxies.get(0).destroy();
+                this.m_participantProxies.remove(0);
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
     public boolean initPDP(RTPSParticipant participant) {
@@ -485,7 +519,7 @@ public void assignRemoteEndpoints(ParticipantProxyData pdata) {
             watt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
             watt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
             pdata.getBuiltinWriters().add(watt);
-            this.m_SPDPReader.matchedWriterIsMatched(watt);
+            this.m_SPDPReader.matchedWriterAdd(watt);
         }
         auxEndp = endp;
         auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
@@ -701,4 +735,8 @@ public RTPSParticipant getRTPSParticipant() {
 public BuiltinAttributes getDiscovery() {
     return this.m_discovery;
 }
+
+
+
+
 }

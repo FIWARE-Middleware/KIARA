@@ -274,9 +274,9 @@ public class SendResource {
                 }
 
                 try {
-                    if (this.m_sendEndpointV4 == null) {
+                    //if (this.m_sendEndpointV4 == null) {
                         m_sendEndpointV4 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
-                    }
+                    //}
                 } catch (UnknownHostException e) {
                     logger.error("UDPv4 Error obtaining address: {}", Arrays.toString(addr));
                     return;
@@ -289,13 +289,14 @@ public class SendResource {
                         m_bytesSent = 0;
                         if (m_sendNext) {
                             try {
-                                sockit.writeAndFlush(new DatagramPacket(
-                                        Unpooled.wrappedBuffer(msg.getBuffer()),
-                                        m_sendEndpointV4)).syncUninterruptibly();
-                                
+                                if (!this.m_sendEndpointV4.getAddress().equals(InetAddress.getByAddress(new byte[] {0,0,0,0}))) { // TODO Fix 0.0.0.0 case
+                                    sockit.writeAndFlush(new DatagramPacket(
+                                            Unpooled.wrappedBuffer(msg.getBuffer()),
+                                            m_sendEndpointV4)).syncUninterruptibly();
+                                }
                             } catch (Exception error) {
                                 // Should print the actual error message
-                                logger.error(error.toString());
+                                logger.warn(error.toString());
                                // error.printStackTrace();
                             }
 
@@ -380,6 +381,7 @@ public class SendResource {
                 channel.close();
             }
             for (DatagramChannel channel : this.m_sendSocketIPv6) {
+                channel.eventLoop().shutdownGracefully();
                 channel.disconnect();
                 channel.close();
             }

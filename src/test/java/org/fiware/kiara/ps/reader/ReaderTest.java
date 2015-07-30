@@ -57,25 +57,37 @@ public class ReaderTest {
             return;
         }
         
-       /* HistoryCacheAttributes hatt = new HistoryCacheAttributes();
+        
+        HistoryCacheAttributes hatt = new HistoryCacheAttributes();
         hatt.payloadMaxSize = 500;
         
         ReaderHistoryCache rhist = new ReaderHistoryCache(hatt);
         
         ReaderAttributes ratt = new ReaderAttributes();
-        
+        /*
         Locator loc = new Locator();
         loc.setIPv4Address("239.255.0.1");
         loc.setPort(7400);
         
-        ratt.endpointAtt.multicastLocatorList.pushBack(loc);
+        ratt.endpointAtt.multicastLocatorList.pushBack(loc);*/
         
-        RTPSReader reader = RTPSDomain.createRTPSReader(participant, ratt, rhist, new MyListener());
+        /*RTPSReader reader = RTPSDomain.createRTPSReader(participant, ratt, rhist, new MyListener());
         
         if (reader == null) {
             System.out.println("ERROR creating reader");
             return;
-        }*/
+        }
+        
+        System.out.println("Reader created");*/
+        
+       /* try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        RTPSDomain.removeRTPSParticipant(participant);*/
         
     }
     

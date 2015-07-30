@@ -67,6 +67,15 @@ public class BuiltinProtocols {
         this.m_metatrafficMulticastLocatorList = new LocatorList();
         this.m_metatrafficUnicastLocatorList = new LocatorList();
     }
+    
+    public void destroy() {
+        if (this.m_WLP != null) {
+            this.m_WLP.destroy();
+        }
+        if (this.m_PDP != null) {
+            this.m_PDP.destroy();
+        }
+    }
 
     public boolean initBuiltinProtocols(RTPSParticipant rtpsParticipant, BuiltinAttributes builtinAtt) {
         logger.info("Starting builtin endpoints");
@@ -246,6 +255,8 @@ public class BuiltinProtocols {
     public WLP getWLP() {
         return this.m_WLP;
     }
+
+    
 
     
     

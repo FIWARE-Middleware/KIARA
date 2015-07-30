@@ -29,14 +29,19 @@ public class SubscriberTest {
         pParam.rtps.builtinAtt.useSimplePDP = true;
         pParam.rtps.builtinAtt.useWriterLP = false;
         pParam.rtps.builtinAtt.useSimpleEDP = true;
-        pParam.rtps.defaultSendPort = 10043;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        /*pParam.rtps.defaultSendPort = 10043;
         pParam.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
         pParam.rtps.builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader = true;
         pParam.rtps.builtinAtt.domainID = 80;
         pParam.rtps.builtinAtt.leaseDuration = new Timestamp().timeInfinite();
         pParam.rtps.sendSocketBufferSize = 8712;
         pParam.rtps.listenSocketBufferSize = 17424;
-        pParam.rtps.setName("ParticipantSub");
+        pParam.rtps.setName("ParticipantSub");*/
+        
+        //pParam.rtps.builtinAtt.domainID = 80;
         
         Participant participant = Domain.createParticipant(pParam, new PartListener());
         if (participant == null) {
@@ -48,6 +53,7 @@ public class SubscriberTest {
         Domain.registerType(participant, type);
         
         SubscriberAttributes satt = new SubscriberAttributes();
+        satt.setUserDefinedID((short) 2);
         satt.topic.topicKind = TopicKind.NO_KEY;
         satt.topic.topicDataTypeName = "HelloWorld";
         satt.topic.topicName = "HelloWorldTopic";
@@ -65,10 +71,17 @@ public class SubscriberTest {
             return;
         }
         
-        System.out.println("Shutting down");
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        /*System.out.println("Shutting down");
         Domain.removeParticipant(participant);
         
-        System.out.println("");
+        System.out.println("");*/
         
     }
 

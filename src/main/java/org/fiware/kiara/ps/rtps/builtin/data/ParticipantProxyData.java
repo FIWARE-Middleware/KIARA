@@ -304,7 +304,9 @@ public class ParticipantProxyData {
                     break;
                 case PID_PROPERTY_LIST:
                     ParameterPropertyList pPropList = (ParameterPropertyList) param;
-                    this.m_properties = pPropList.getPropertyList();
+                    if (pPropList.getPropertyList() != null) {
+                        this.m_properties = pPropList.getPropertyList();
+                    }
                     break;
                 case PID_USER_DATA:
                     UserDataQosPolicy pQosPolicy = (UserDataQosPolicy) param;
@@ -480,5 +482,11 @@ public class ParticipantProxyData {
     
     public void setLeaseDuration(Timestamp leaseDuration) {
         this.m_leaseDuration = leaseDuration;
+    }
+
+    public void destroy() {
+        if (this.m_leaseDurationTimer != null) {
+            this.m_leaseDurationTimer.delete();
+        }
     }
 }

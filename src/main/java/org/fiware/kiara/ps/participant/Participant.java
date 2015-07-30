@@ -105,6 +105,8 @@ public class Participant/*<T extends Serializable>*/ {
     }
     
     public void destroy() {
+        this.m_rtpsParticipant.destroy();
+        
         while (this.m_publishers.size() > 0) {
             this.removePublisher(this.m_publishers.get(0));
         }
@@ -115,7 +117,7 @@ public class Participant/*<T extends Serializable>*/ {
         RTPSDomain.removeRTPSParticipant(this.m_rtpsParticipant);
     }
     
-    public Publisher createPublisher(PublisherAttributes att, PublisherListener listener) {
+    public Publisher<?> createPublisher(PublisherAttributes att, PublisherListener listener) {
         SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
         logger.info("Creating Publisher in Topic: " + att.topic.topicName);
@@ -183,6 +185,8 @@ public class Participant/*<T extends Serializable>*/ {
         publisher.setWriter(writer);
         
         this.m_publishers.add(publisher);
+        
+        this.m_rtpsParticipant.registerWriter(writer, att.topic, att.qos);
         
         return publisher;
     }
@@ -253,6 +257,8 @@ public class Participant/*<T extends Serializable>*/ {
         subscriber.setReader(reader);
         
         this.m_subscribers.add(subscriber);
+        
+        this.m_rtpsParticipant.registerReader(reader, att.topic, att.qos);
         
         return subscriber;
     }

@@ -30,10 +30,14 @@ public class ParameterPropertyList extends Parameter {
 
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        this.m_length = 0;
         for (Pair<String, String> pair : this.m_properties) {
-            this.m_length += (4 + pair.getFirst().length());
+            this.m_length += (4 + pair.getFirst().length() + 4 + pair.getSecond().length());
         }
+        int offset = (this.m_length % 4 == 0) ? (0) : (4 - this.m_length % 4);
+        this.m_length += offset + 4;
         super.serialize(impl, message, name);
+        impl.serializeUI32(message, name, this.m_properties.size());
         for (Pair<String, String> pair : this.m_properties) {
             impl.serializeString(message, name, pair.getFirst());
             impl.serializeString(message, name, pair.getSecond());
@@ -43,16 +47,42 @@ public class ParameterPropertyList extends Parameter {
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
+        int length = impl.deserializeUI32(message, name);
         if (this.m_length > 0) {
-            int readBytes = 0;
+            for (int i=0; i < length; ++i) {
+                String first = impl.deserializeString(message, name);
+                String second = impl.deserializeString(message, name);
+                this.m_properties.add(new Pair<String, String>(first, second));
+            }
+            /*int readBytes = 0;
             while (readBytes < this.m_length) {
                 String first = impl.deserializeString(message, name);
                 String second = impl.deserializeString(message, name);
                 readBytes += (4 + first.length());
                 readBytes += (4 + second.length());
                 this.m_properties.add(new Pair<String, String>(first, second));
-            }
+            }*/
         }
+    }
+    
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        int length = impl.deserializeUI32(message, name);
+        //if (this.m_length > 0) {
+            for (int i=0; i < length; ++i) {
+                String first = impl.deserializeString(message, name);
+                String second = impl.deserializeString(message, name);
+                this.m_properties.add(new Pair<String, String>(first, second));
+            }
+            /*int readBytes = 0;
+            while (readBytes < this.m_length) {
+                String first = impl.deserializeString(message, name);
+                String second = impl.deserializeString(message, name);
+                readBytes += (4 + first.length());
+                readBytes += (4 + second.length());
+                this.m_properties.add(new Pair<String, String>(first, second));
+            }*/
+        //}
     }
     
     public void copy(ParameterPropertyList other) {
@@ -60,17 +90,12 @@ public class ParameterPropertyList extends Parameter {
         this.m_properties.addAll(other.m_properties);
     }
 
-    @Override
-    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
-    }
-
     public ParameterPropertyList getPropertyList() {
         ParameterPropertyList pProp = new ParameterPropertyList();
         for (Pair<String, String> pair : this.m_properties) {
             pProp.addProperty(pair);
         }
-        return null;
+        return pProp;
     }
 
 }
