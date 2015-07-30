@@ -17,6 +17,8 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.liveliness.timedevent;
 
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
+import org.fiware.kiara.ps.rtps.builtin.liveliness.WLP;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
 
 /**
@@ -29,8 +31,9 @@ import org.fiware.kiara.ps.rtps.resources.TimedEvent;
  */
 public class WLivelinessPeriodicAssertion extends TimedEvent {
 
-    public WLivelinessPeriodicAssertion() {
+    public WLivelinessPeriodicAssertion(WLP pwlp, LivelinessQosPolicyKind kind) {
         super(0);
+        throw new UnsupportedOperationException("Not implemented yet.");
     }
 
     @Override
