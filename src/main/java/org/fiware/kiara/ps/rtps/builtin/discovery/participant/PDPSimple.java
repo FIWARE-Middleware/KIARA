@@ -356,7 +356,7 @@ private boolean createSPDPEndpoints() {
 
     HistoryCacheAttributes whatt = new HistoryCacheAttributes();
     whatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
-    whatt.initialeservedCaches = 20;
+    whatt.initialReservedCaches = 20;
     whatt.maximumReservedCaches = 100;
 
     this.m_SPDPWriterHistory = new WriterHistoryCache(whatt);
@@ -386,7 +386,7 @@ private boolean createSPDPEndpoints() {
 
     HistoryCacheAttributes rhatt = new HistoryCacheAttributes();
     rhatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
-    rhatt.initialeservedCaches = 250;
+    rhatt.initialReservedCaches = 250;
     rhatt.maximumReservedCaches = 5000;
 
     this.m_SPDPReaderHistory = new ReaderHistoryCache(rhatt);

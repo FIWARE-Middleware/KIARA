@@ -58,12 +58,12 @@ public abstract class HistoryCache {
         this.m_attributes = att;
         this.m_isHistoryFull = false;
         //this.m_invalidChange = null;
-        this.m_changePool = new CacheChangePool(att.initialeservedCaches, att.payloadMaxSize, att.maximumReservedCaches);
+        this.m_changePool = new CacheChangePool(att.initialReservedCaches, att.payloadMaxSize, att.maximumReservedCaches);
         //this.m_minSeqCacheChange = null;
         //this.m_maxSeqCacheChange = null;
         this.m_mutex = new ReentrantLock(true);
 
-        this.m_changes = new ArrayList<CacheChange>(att.initialeservedCaches);
+        this.m_changes = new ArrayList<CacheChange>(att.initialReservedCaches);
         this.m_invalidChange = this.m_changePool.reserveCache();
         this.m_invalidChange.setWriterGUID(new GUID());
         this.m_invalidChange.setSequenceNumber(new SequenceNumber());
