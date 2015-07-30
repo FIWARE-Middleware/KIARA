@@ -32,7 +32,16 @@ public enum LivelinessQosPolicyKind {
         this.m_value = value;
     }
     
-    public byte geValue() {
+    public byte getValue() {
         return this.m_value;
+    }
+
+    public static LivelinessQosPolicyKind fromValue(byte value) {
+        switch (value) {
+            case 0: return AUTOMATIC_LIVELINESS_QOS;
+            case 1: return MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
+            case 2: return MANUAL_BY_TOPIC_LIVELINESS_QOS;
+            default: return null;
+        }
     }
 }

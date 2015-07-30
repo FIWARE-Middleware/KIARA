@@ -642,7 +642,7 @@ public class Main {
     public static void testHistoryCacheCreation() {
         HistoryCacheAttributes attr = new HistoryCacheAttributes();
         attr.payloadMaxSize = 50;
-        attr.initialeservedCaches = 100;
+        attr.initialReservedCaches = 100;
         attr.maximumReservedCaches = 500;
         HistoryCache hCache = new ReaderHistoryCache(attr);
         System.out.println("HistorySize: " + hCache.getHistorySize());
@@ -652,7 +652,7 @@ public class Main {
     public static void testHistoryCacheReserveAndRelease() {
         HistoryCacheAttributes attr = new HistoryCacheAttributes();
         attr.payloadMaxSize = 50;
-        attr.initialeservedCaches = 100;
+        attr.initialReservedCaches = 100;
         attr.maximumReservedCaches = 500;
         HistoryCache history = new WriterHistoryCache(attr);
         CacheChange change = history.reserveCache();
