@@ -70,6 +70,8 @@ public class RTPSMessageBuilder {
 		
 		RTPSMessageHeader header = new RTPSMessageHeader();
 		
+		header.m_guidPrefix = prefix;
+		
 		message.setHeader(header);
 		
 		return true;

@@ -110,6 +110,7 @@ public class EDPStatic extends EDP {
     public boolean removeLocalReader(RTPSReader R) {
         ParticipantProxyData localpdata = m_PDP.getLocalParticipantProxyData();
         final Lock mutex = localpdata.getMutex();
+        mutex.lock();
         try {
             for (Pair<String, String> pit : localpdata.getProperties().getProperties()) {
                 EDPStaticProperty staticproperty = new EDPStaticProperty();

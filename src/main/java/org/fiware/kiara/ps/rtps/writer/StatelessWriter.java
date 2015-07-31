@@ -174,10 +174,8 @@ public class StatelessWriter extends RTPSWriter {
             }
             
             if (unsentChangesNotEmpty) {
-                System.out.println("NOT EMPTY");
                 this.m_unsentChangesNotEmpty = new UnsentChangesNotEmptyEvent(this, 1000);
                 this.m_unsentChangesNotEmpty.restartTimer();
-                System.out.println("---------------NULL");
                 this.m_unsentChangesNotEmpty = null;
             }
             
