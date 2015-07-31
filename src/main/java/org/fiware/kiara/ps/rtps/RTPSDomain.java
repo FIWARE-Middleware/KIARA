@@ -51,19 +51,13 @@ public class RTPSDomain {
     
     private static byte[] vendorId = new byte[] {0x01, 0x0F};
     
-    private static int m_maxRTPSParticipantID;
+    private static int m_maxRTPSParticipantID = -1;
     
     private static List<RTPSParticipant> m_rtpsParticipants = new ArrayList<RTPSParticipant>();;
     
     private static Set<Integer> m_rtpsParticipantsIDs = new HashSet<Integer>();
     
     private static final Logger logger = LoggerFactory.getLogger(RTPSDomain.class);
-    
-    public RTPSDomain() {
-        m_maxRTPSParticipantID = -1;
-        m_rtpsParticipants = new ArrayList<RTPSParticipant>();
-        m_rtpsParticipantsIDs = new HashSet<Integer>();
-    }
     
     public void stopAll() {
         while(m_rtpsParticipants.size() > 0) {

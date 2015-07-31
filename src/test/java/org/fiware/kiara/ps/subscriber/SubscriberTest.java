@@ -66,6 +66,9 @@ public class SubscriberTest {
         
         Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
         
+        System.out.println("^^^^^^^^^^^CREATED SUBSCRIBER: " + System.identityHashCode(subscriber.getReader()));
+        
+        
         if (subscriber == null) {
             System.out.println("Error creating subscriber");
             return;
@@ -77,6 +80,10 @@ public class SubscriberTest {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        
+        System.out.println("");
+        
+        Domain.removeParticipant(participant);
         
         /*System.out.println("Shutting down");
         Domain.removeParticipant(participant);

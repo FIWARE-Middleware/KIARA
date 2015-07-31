@@ -219,6 +219,10 @@ public class Subscriber<T extends Serializable> {
     public void setReader(RTPSReader reader) {
         this.m_reader = reader;
     }
+    
+    public RTPSReader getReader() {
+        return this.m_reader;
+    }
 
     public void destroy() {
         logger.info("Publisher destruction");
