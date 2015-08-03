@@ -17,7 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.liveliness;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -533,6 +532,22 @@ public class WLP {
      */
     public Lock getMutex() {
         return m_mutex;
+    }
+
+    public StatefulWriter getBuiltinWriter() {
+        return m_builtinWriter;
+    }
+
+    public List<RTPSWriter> getLivAutomaticWriters() {
+        return m_livAutomaticWriters;
+    }
+
+    public List<RTPSWriter> getLivManRTPSParticipantWriters() {
+        return m_livManRTPSParticipantWriters;
+    }
+
+    public WriterHistoryCache getBuiltinWriterHistory() {
+        return m_builtinWriterHistory;
     }
 
     public void destroy() {

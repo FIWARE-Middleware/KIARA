@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.rtps.writer;
 
+import java.util.List;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -79,6 +80,14 @@ public class StatefulWriter extends RTPSWriter {
     public boolean changeRemovedByHistory(CacheChange change) {
         // TODO Auto-generated method stub
         return false;
+    }
+
+    /**
+    * Get the number of matched readers
+    * @return Number of the matched readers
+    */
+    public int getMatchedReadersSize() {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
 }
