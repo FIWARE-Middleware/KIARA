@@ -31,7 +31,7 @@ public class UnsentChangesNotEmptyEvent extends TimedEvent {
     private RTPSWriter m_writer;
     
     private static final Logger logger = LoggerFactory.getLogger(UnsentChangesNotEmptyEvent.class);
-
+    
     public UnsentChangesNotEmptyEvent(RTPSWriter writer, double milliseconds) {
         super(milliseconds);
         this.m_writer = writer;

@@ -159,6 +159,7 @@ public class StatelessWriter extends RTPSWriter {
                 for (RemoteReaderAttributes it : this.m_matchedReaders) {
                     if (it.guid.equals(ratt.guid)) {
                         logger.warn("Attempting to add existing reader");
+                        return false;
                     }
                 }
             }

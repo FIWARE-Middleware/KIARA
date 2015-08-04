@@ -50,6 +50,8 @@ public class PublisherTest {
         pAtt.rtps.listenSocketBufferSize = 17424;
         pAtt.rtps.setName("ParticipantPub");*/
         
+        pAtt.rtps.setName("participant1");
+        
         Participant participant = Domain.createParticipant(pAtt, new PartListener());
         
         if (participant == null) {
@@ -86,6 +88,8 @@ public class PublisherTest {
             return;
         }
         
+        System.out.println("??????????? PUB CREATED");
+        
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -95,7 +99,7 @@ public class PublisherTest {
         
         publisher.write(hw);
         
-        Domain.removeParticipant(participant);
+        //Domain.removeParticipant(participant);
         
         System.out.println("Publisher finished");
         

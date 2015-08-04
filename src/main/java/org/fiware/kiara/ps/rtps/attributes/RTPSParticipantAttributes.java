@@ -65,6 +65,10 @@ public class RTPSParticipantAttributes {
         this.portParameters = new PortParameters();
     }
     
+    public void resetParticipantID() {
+        this.participantID = -1;
+    }
+    
     public void setName(String name) {
         this.m_name = name;
     }

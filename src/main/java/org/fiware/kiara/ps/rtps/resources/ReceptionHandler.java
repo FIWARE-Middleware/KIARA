@@ -49,7 +49,7 @@ public class ReceptionHandler extends SimpleChannelInboundHandler<DatagramPacket
     @Override
     public void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
 
-        System.out.println(((InetSocketAddress) ctx.channel().localAddress()).getPort());
+        //System.out.println(((InetSocketAddress) ctx.channel().localAddress()).getPort());
         
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
 

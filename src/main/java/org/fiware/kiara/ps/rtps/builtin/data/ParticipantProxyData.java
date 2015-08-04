@@ -156,8 +156,8 @@ public class ParticipantProxyData {
             }
         }
         
-        this.m_defaultUnicastLocatorList = participant.getAttributes().defaultUnicastLocatorList;
-        this.m_defaultMulticastLocatorList = participant.getAttributes().defaultMulticastLocatorList;
+        this.m_defaultUnicastLocatorList = participant.getDefaultUnicastLocatorList();
+        this.m_defaultMulticastLocatorList = participant.getDefaultMulticastLocatorList();
         this.m_expectsInlineQos = false;
         this.m_guid = participant.getGUID();
         for (int i = 0; i < 16; ++i) {
@@ -215,7 +215,6 @@ public class ParticipantProxyData {
                     valid &= this.m_QosList.addQos(ParameterId.PID_DEFAULT_MULTICAST_LOCATOR, lit);
                 }
                 
-                //System.out.println("Adding QosListFrom " + Thread.currentThread().getId());
                 valid &= this.m_QosList.addQos(ParameterId.PID_PARTICIPANT_LEASE_DURATION, this.m_leaseDuration);
                 valid &= this.m_QosList.addQos(ParameterId.PID_BUILTIN_ENDPOINT_SET, this.m_availableBuiltinEndpoints);
                 valid &= this.m_QosList.addQos(ParameterId.PID_ENTITY_NAME, this.m_participantName);

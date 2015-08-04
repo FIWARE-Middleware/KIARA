@@ -34,6 +34,6 @@ public class XMLLoader {
 
         EDPStaticXML esx = new EDPStaticXML();
         esx.loadXMLFile("/home/rubinste/proj_de3/fi-core/KIARA/Config.xml");
-        System.out.println(esx);
+        //System.out.println(esx);
     }
 }

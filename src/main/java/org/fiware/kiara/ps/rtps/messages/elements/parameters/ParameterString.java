@@ -33,7 +33,7 @@ public class ParameterString extends Parameter {
     public void setContent(String content) {
         this.m_content = content;
         int size = (4 + this.m_content.length());
-        int pad = (4 - (size % 4));
+        int pad = (size % 4 == 0) ? 0 : (4 - (size % 4));
         super.m_length = (short) (size + pad);
     }
 
@@ -42,11 +42,11 @@ public class ParameterString extends Parameter {
         super.serialize(impl, message, name);
         if (this.m_content != null) {
             impl.serializeString(message, name, this.m_content);
-            int size = (4 + this.m_content.length());
-            int pad = (4 - (size % 4));
+            /*int size = (4 + this.m_content.length());
+            int pad = (size % 4 == 0) ? 0 : (4 - (size % 4));
             for (byte i=0; i < pad; ++i) {
                 impl.serializeByte(message, name, (byte) 0);
-            }
+            }*/
         }
     }
     

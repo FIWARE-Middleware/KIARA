@@ -99,6 +99,10 @@ public class RTPSParticipant {
     
     private final Semaphore m_resourceSemaphore;
     
+    private LocatorList m_defaultUnicastLocatorList;
+    
+    private LocatorList m_defaultMulticastLocatorList;
+    
     //private final Object m_resourceSemaphore;
     
     private int m_threadID;
@@ -125,6 +129,9 @@ public class RTPSParticipant {
         this.m_participantListener = participantListener;
         //this.m_userParticipant = par;
         //this.m_userParticipant.m
+        
+        this.m_defaultUnicastLocatorList = new LocatorList();
+        this.m_defaultMulticastLocatorList = new LocatorList();
         
         //this.m_resourceSemaphore = new Semaphore(0, true);
         this.m_resourceSemaphore = new Semaphore(0, false);
@@ -161,7 +168,7 @@ public class RTPSParticipant {
                 logger.info("Creating listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this, ++this.m_threadID, true);
                 if (lr.initThread(this,  lit,  this.m_att.listenSocketBufferSize, false, false)) {
-                    this.m_att.defaultUnicastLocatorList = lr.getListenLocators();
+                    this.m_defaultUnicastLocatorList = lr.getListenLocators();
                     this.m_listenResourceList.add(lr);
                 } 
             }
@@ -176,7 +183,7 @@ public class RTPSParticipant {
                 logger.info("Creating listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this,  ++this.m_threadID, true);
                 if (lr.initThread(this, lit, this.m_att.listenSocketBufferSize, true, false)) {
-                    this.m_att.defaultMulticastLocatorList = lr.getListenLocators();
+                    this.m_defaultMulticastLocatorList = lr.getListenLocators();
                     this.m_listenResourceList.add(lr);
                 }
             }
@@ -463,10 +470,10 @@ public class RTPSParticipant {
         if (unicastEmpty && !isBuiltin && multicastEmpty) {
             String auxStr = endp.getAttributes().endpointKind == EndpointKind.WRITER ? "WRITER" : "READER";
             logger.info("Adding default Locator list to this " + auxStr);
-            valid &= assignEndpointToLocatorList(endp, this.m_att.defaultUnicastLocatorList, false, false);
+            valid &= assignEndpointToLocatorList(endp, this.m_defaultUnicastLocatorList, false, false);
             this.m_mutex.lock();
             try {
-                endp.getAttributes().unicastLocatorList = this.m_att.defaultUnicastLocatorList;
+                endp.getAttributes().unicastLocatorList = this.m_defaultUnicastLocatorList;
             } finally {
                 this.m_mutex.unlock();
             }
@@ -716,9 +723,17 @@ public class RTPSParticipant {
         return this.m_participantListener;
     }
 
-    public RTPSParticipant getUserRTPSParticipant() {
+    /*public RTPSParticipant getUserRTPSParticipant() {
         // TODO Auto-generated method stub
         return null;
+    }*/
+
+    public LocatorList getDefaultUnicastLocatorList() {
+        return this.m_defaultUnicastLocatorList;
+    }
+
+    public LocatorList getDefaultMulticastLocatorList() {
+        return this.m_defaultMulticastLocatorList;
     }
 
 

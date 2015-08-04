@@ -2,13 +2,16 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
+
 import org.fiware.kiara.ps.attributes.TopicAttributes;
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
+
 import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
@@ -644,7 +647,7 @@ public abstract class EDP {
             for (RTPSReader rit : m_RTPSParticipant.getUserReaders()) {
                 final Lock mutexR = rit.getMutex();
                 mutexR.lock();
-                try {
+                 try {
                     ReaderProxyData rdata = m_PDP.lookupReaderProxyData(rit.getGuid());
                     if (rdata != null) {
                         if (validMatching(rdata, wdata)) {

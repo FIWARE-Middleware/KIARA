@@ -30,10 +30,10 @@ public class SubListener extends SubscriberListener {
     public void onSubscriptionMatched(Subscriber sub, MatchingInfo info) {
         if (info.status == MatchingStatus.MATCHED_MATHING) {
             n_matched++;
-            System.out.println("Subscriber Matched. Total : " + this.n_matched);
+            System.out.println("Publisher Matched. Total : " + this.n_matched);
         } else {
             n_matched--;
-            System.out.println("Subscriber Unmatched. Total : " + this.n_matched);
+            System.out.println("Publisher Unmatched. Total : " + this.n_matched);
         }
     }
 

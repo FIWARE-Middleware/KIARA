@@ -79,7 +79,7 @@ public abstract class TimedEvent {
     //!Method to stop the timer.
     public void stopTimer() {
         event.cancel(false);
-        service.shutdown();
+        //service.shutdown();
     }
 
     /**

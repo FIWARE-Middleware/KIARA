@@ -74,6 +74,7 @@ public class StatelessReader extends RTPSReader {
         try {
             for (RemoteWriterAttributes it : this.m_matchedWriters) {
                 if (it.guid.equals(wdata.guid)) {
+                    logger.warn("Attempting to add existing writer");
                     return false;
                 }
             }

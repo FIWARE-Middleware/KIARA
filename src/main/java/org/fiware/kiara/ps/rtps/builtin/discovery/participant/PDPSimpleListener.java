@@ -58,7 +58,6 @@ public class PDPSimpleListener extends ReaderListener {
                 if (!this.getKey(change)) {
                     logger.warn("Problem getting the key of the change, removing.");
                     this.m_SPDP.getSPDPReaderHistory().removeChange(change);
-                    System.out.println("PDPSimpleListener: FINISH 1");
                     return;
                 }
             }

@@ -459,7 +459,7 @@ public class MessageReceiver {
             }
 
             logger.info("FROM Writer " + ch.getWriterGUID() + "; possible RTPSReaders: " + this.m_listenResource.getAssocReaders().size());
-
+            
             for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
                 WriterProxy proxy = new WriterProxy();
                 if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), proxy)) {
@@ -696,8 +696,7 @@ public class MessageReceiver {
             Pad pad = new Pad((short) subMsg.m_submessageHeader.m_octectsToNextHeader);
             pad.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(pad);
-            //System.out.println("");
-
+       
         } catch (IOException e) {
             // TODO Auto-generated catch block
             //e.printStackTrace();

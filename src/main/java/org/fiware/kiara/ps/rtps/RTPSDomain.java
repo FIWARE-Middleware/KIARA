@@ -138,6 +138,8 @@ public class RTPSDomain {
             logger.error(e.toString());
         }
         
+        // Resets Participant ID in case the same parameters are used to create another one
+        att.resetParticipantID();
         
         return participant;
     }
