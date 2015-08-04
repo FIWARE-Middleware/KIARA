@@ -234,10 +234,22 @@ public class ListenResource {
             LocatorList myIP = null;
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
                 myIP = IPFinder.getIPv4Adress();
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
+                //this.m_listenEndpoint.address = IPFinder.getFirstIPv4Adress();
+                try {
+                    this.m_listenEndpoint.address = Inet4Address.getByName("0.0.0.0");
+                } catch (UnknownHostException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
                 myIP = IPFinder.getIPv6Adress();
-                this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
+                //this.m_listenEndpoint.address = IPFinder.getFirstIPv6Adress();
+                try {
+                    this.m_listenEndpoint.address = Inet6Address.getByName("0");
+                } catch (UnknownHostException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             if (myIP != null) {
                 for (Locator locIt : myIP.getLocators()) {
@@ -280,6 +292,11 @@ public class ListenResource {
 
         try {
 
+            /*this.m_listenChannel = DatagramChannelBuilder.getInstance(loc.getKind(), listenSocketSize);
+            if (this.m_listenChannel == null) {
+                Thread.currentThread().interrupt();
+            }*/
+            
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
                 //this.m_listenChannel = DatagramChannel.open(StandardProtocolFamily.INET);
                 this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
@@ -289,8 +306,11 @@ public class ListenResource {
 
             //this.m_listenChannel.configureBlocking(false);
             this.m_listenChannel.setOption(StandardSocketOptions.SO_RCVBUF, listenSocketSize);
-            this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-
+            if (isMulticast) {
+                this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+            }
+            //this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+             
             //this.m_listenSocket = new java.net.MulticastSocket(null this.m_listenEndpoint.port, this.m_listenEndpoint.address);
             //this.m_listenSocket.setReceiveBufferSize(listenSocketSize);
             //this.m_listenSocket.setReuseAddress(true);
@@ -327,19 +347,39 @@ public class ListenResource {
 
         } else {
             boolean binded = false;
-
             for (int i=0; i < 1000; ++i) {
-                this.m_listenEndpoint.port += 1;
-                //InetSocketAddress sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port); // TODO: Delete addr
+                
                 try {
+                    /*if (this.m_listenChannel.socket().isConnected()) {
+                        if (!this.m_listenChannel.socket().getInetAddress().equals(sockAddr)) {
+                            this.m_listenChannel.socket().bind(sockAddr);
+                            binded = true;
+                            break;
+                        }
+                    } else {*/
                     this.m_listenChannel.socket().bind(sockAddr);
                     binded = true;
                     break;
+                   //}
+                    
+                    /*this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
+                    this.m_listenChannel.setOption(StandardSocketOptions.SO_RCVBUF, listenSocketSize);
+                    this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
+                    this.m_listenChannel.socket().bind(sockAddr);*/
+                    
+                    /*if (this.m_listenChannel.socket().isConnected() && !this.m_listenChannel.socket().getInetAddress().equals(sockAddr)) {
+                        this.m_listenChannel.socket().bind(sockAddr);
+                        binded = true;
+                        break;
+                    }*/
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
+                    logger.info("Tried port {}, trying next...", this.m_listenEndpoint.port);
                     e.printStackTrace();
-                    Thread.currentThread().interrupt();
+                    //Thread.currentThread().interrupt();
                 }
+                this.m_listenEndpoint.port += 2;
+                sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port); // TODO: Delete addr
             }
 
             if (!binded) {
@@ -483,7 +523,7 @@ public class ListenResource {
             }
 
             if (!binded) {
-                System.out.println("Tried 1000 ports and none was working, last tried: " + this.m_listenEndpoint.port);
+                logger.error("Tried 1000 ports and none was working, last tried: " + this.m_listenEndpoint.port);
             } else {
                 for (Locator it : this.m_listenLocators.getLocators()) {
                     it.setPort(this.m_listenEndpoint.port);
@@ -495,7 +535,7 @@ public class ListenResource {
             joinMulticastGroupNetty(multicastAddress);
         }
 
-        System.out.println("Finishing ListenResource thread");
+        logger.info("Finishing ListenResource thread");
 
         // TODO Thread stuff
 

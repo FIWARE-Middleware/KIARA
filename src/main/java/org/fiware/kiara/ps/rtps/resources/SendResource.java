@@ -283,7 +283,6 @@ public class SendResource {
                 }
 
                 for (DatagramChannel sockit : m_sendSocketIPv4) {
-                    //System.out.println("");
                     logger.info("UDPv4: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV4, sockit.localAddress());
                     if (m_sendEndpointV4.getPort() > 0) {
                         m_bytesSent = 0;

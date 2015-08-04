@@ -70,8 +70,9 @@ public class ReceptionThread implements Runnable {
             buf = new byte[this.m_channel.socket().getReceiveBufferSize()];
             DatagramPacket dp = new DatagramPacket(buf, buf.length);
 
-            //System.out.println("Thread {} listening in " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
+            //logger.debug("Thread {} listening in " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
             logger.info("Thread {} listening in IP {}:{}", Thread.currentThread().getId(), this.m_channel.socket().getLocalAddress().getHostAddress(), this.m_channel.socket().getLocalPort());
+            //logger.info(String.format("Thread {} listening in IP <blue>%s</blue>", this.m_channel.socket().getLocalAddress().getHostAddress()));
 
             while(running) {
                 

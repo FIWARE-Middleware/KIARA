@@ -25,8 +25,10 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 
 /**
@@ -124,9 +126,6 @@ public class ParameterList extends RTPSSubmessageElement {
             short length = impl.deserializeI16(message, name);
 
             Parameter param = ParameterBuilder.createParameter(pid, length);
-            if (param.getParameterId() == ParameterId.PID_PROPERTY_LIST) {
-                System.out.println("");
-            }
             //param.deserializeContent(impl, message, name);
             int initialPos = message.getPosition();
             param.deserializeContent(impl, message, name);

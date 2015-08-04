@@ -1,5 +1,6 @@
 package org.fiware.kiara.ps.subscriber;
 
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.SubscriberAttributes;
@@ -43,17 +44,27 @@ public class SubscriberTest {
         
         //pParam.rtps.builtinAtt.domainID = 80;
         
+        pParam.rtps.setName("participant1");
+        
         Participant participant = Domain.createParticipant(pParam, new PartListener());
         if (participant == null) {
             System.out.println("Error when creating participant");
             return;
         }
         
+        pParam.rtps.setName("participant2");
+        
+        Participant participant2 = Domain.createParticipant(pParam, new PartListener());
+        if (participant2 == null) {
+            System.out.println("Error when creating participant2");
+            return;
+        }
+        
         // Type registration
         Domain.registerType(participant, type);
+        Domain.registerType(participant2, type);
         
         SubscriberAttributes satt = new SubscriberAttributes();
-        satt.setUserDefinedID((short) 2);
         satt.topic.topicKind = TopicKind.NO_KEY;
         satt.topic.topicDataTypeName = "HelloWorld";
         satt.topic.topicName = "HelloWorldTopic";
@@ -64,18 +75,24 @@ public class SubscriberTest {
         satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
         //satt.
         
+        satt.setUserDefinedID((short) 1);
         Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
-        
-        System.out.println("^^^^^^^^^^^CREATED SUBSCRIBER: " + System.identityHashCode(subscriber.getReader()));
-        
-        
         if (subscriber == null) {
             System.out.println("Error creating subscriber");
             return;
         }
+        System.out.println("Subscriber created");
+        
+        satt.setUserDefinedID((short) 2);
+        Subscriber subscriber2 = Domain.createSubscriber(participant2, satt, new SubListener());
+        if (subscriber2 == null) {
+            System.out.println("Error creating subscriber");
+            return;
+        }
+        System.out.println("Subscriber2 created");
         
         try {
-            Thread.sleep(10000);
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -83,13 +100,12 @@ public class SubscriberTest {
         
         System.out.println("");
         
-        Domain.removeParticipant(participant);
+        //Domain.removeParticipant(participant);
+        //Domain.removeParticipant(participant2);
         
-        /*System.out.println("Shutting down");
-        Domain.removeParticipant(participant);
+        //Kiara.shutdown();
         
-        System.out.println("");*/
-        
+                
     }
 
 }

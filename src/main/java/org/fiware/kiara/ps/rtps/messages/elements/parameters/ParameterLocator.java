@@ -74,5 +74,9 @@ public class ParameterLocator extends Parameter {
     public Locator getLocator() {
         return this.m_loc;
     }
+    
+    public String toString() {
+        return this.m_loc.toString();
+    }
 
 }
