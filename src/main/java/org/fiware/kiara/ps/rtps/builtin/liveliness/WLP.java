@@ -57,8 +57,6 @@ import org.slf4j.LoggerFactory;
  * Class WLP that implements the Writer Liveliness Protocol described in the
  * RTPS specification.
  *
- * @ingroup LIVELINESS_MODULE
- *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class WLP {

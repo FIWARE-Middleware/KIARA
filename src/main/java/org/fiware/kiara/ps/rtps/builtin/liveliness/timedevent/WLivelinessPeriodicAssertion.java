@@ -40,8 +40,6 @@ import org.slf4j.LoggerFactory;
  * Class WLivelinessPeriodicAssertion, used to assert the liveliness of the
  * writers in a RTPSParticipant.
  *
- * @ingroup LIVELINESS_MODULE
- *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class WLivelinessPeriodicAssertion extends TimedEvent {

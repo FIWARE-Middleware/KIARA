@@ -32,8 +32,6 @@ import org.slf4j.LoggerFactory;
  * Class WLPListener that receives the liveliness messages asserting the
  * liveliness of remote endpoints.
  *
- * @ingroup LIVELINESS_MODULE
- *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class WLPListener extends ReaderListener {
