@@ -165,10 +165,16 @@ public class Locator {
         StringBuffer sb = new StringBuffer();
         if (this.m_kind == LocatorKind.LOCATOR_KIND_UDPv4) {
             sb.append(this.toIPv4String());
+            sb.append(":" + this.m_port);
+            sb.append(" (UDPv4)");
         } else if (this.m_kind == LocatorKind.LOCATOR_KIND_UDPv6) {
             sb.append(this.toIPv6String());
+            sb.append(":" + this.m_port);
+            sb.append(" (UDPv6)");
         }
-        return this.m_kind + " - " + sb.toString() + ":"+ this.m_port;
+        //return this.m_kind + " - " + sb.toString() + ":"+ this.m_port;
+        //return sb.toString() + ":"+ this.m_port;
+        return sb.toString();
     }
 
 }

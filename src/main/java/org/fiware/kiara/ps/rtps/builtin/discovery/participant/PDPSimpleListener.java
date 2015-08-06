@@ -49,10 +49,9 @@ public class PDPSimpleListener extends ReaderListener {
 
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change_in) {
-        // TODO Auto-generated method stub
         try {
             CacheChange change = change_in;
-            logger.info("SPDP Message Received");
+            logger.debug("PDP Message Received");
             
             if (change.getInstanceHandle().equals(new InstanceHandle())) {
                 if (!this.getKey(change)) {
@@ -62,6 +61,9 @@ public class PDPSimpleListener extends ReaderListener {
                 }
             }
             
+            final Lock mutex = this.m_participantProxyData.getMutex();
+            mutex.lock();
+            try {
             if (change.getKind() == ChangeKind.ALIVE) {
                 // Load information in temporal RTPSParticipant PROXY DATA
                 this.m_participantProxyData.clear();
@@ -70,7 +72,7 @@ public class PDPSimpleListener extends ReaderListener {
                     // Check if same RTPSParticipant
                     change.setInstanceHandle(this.m_participantProxyData.getKey());
                     if (this.m_participantProxyData.getGUID().equals(this.m_SPDP.getRTPSParticipant().getGUID())) {
-                        logger.info("Message from own RTPSParticipant, removing");
+                        logger.debug("Message from own RTPSParticipant, removing");
                         this.m_SPDP.getSPDPReaderHistory().removeChange(change);
                         return;
                     }
@@ -160,6 +162,9 @@ public class PDPSimpleListener extends ReaderListener {
                 if (this.m_SPDP.getRTPSParticipant().getListener() != null) {
                     this.m_SPDP.getRTPSParticipant().getListener().onRTPSParticipantDiscovery(this.m_SPDP.getRTPSParticipant(), info);
                 }
+            }
+            } finally {
+                mutex.unlock();
             }
             
             return;

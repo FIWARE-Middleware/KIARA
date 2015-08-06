@@ -125,9 +125,11 @@ public class StatelessWriter extends RTPSWriter {
     @Override
     public void unsentChangesNotEmpty() {
         this.m_mutex.lock();
+        int total = 0;
         try {
             for (ReaderLocator it : this.m_readerLocator) {
                 if (!it.getUnsentChanges().isEmpty()) {
+                    total = it.getUnsentChanges().size();
                     if (this.m_pushMode) {
                         if (this.m_guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER))) {
                             RTPSMessageGroup.sendChangesAsData((RTPSWriter) this, it.getUnsentChanges(), it.getLocator(), it.getExpectsInlineQos(), new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
@@ -138,7 +140,7 @@ public class StatelessWriter extends RTPSWriter {
                     }
                 }
             }
-            logger.info("Finished sending unsent changes");
+            logger.debug("Finished sending unsent changes (Total sent: {})", total);
         } finally {
             this.m_mutex.unlock();
         }
@@ -190,7 +192,7 @@ public class StatelessWriter extends RTPSWriter {
     }
     
     public boolean addLocator(RemoteReaderAttributes ratt, Locator loc) {
-        logger.info("Adding Locator: " + loc.toString() + " to StatelessWriter");
+        logger.debug("Adding Locator {} to StatelessWriter with GUID {}", loc.toString(), this.m_guid);
         boolean found = false;
         ReaderLocator end = null;
         for (ReaderLocator it: this.m_readerLocator) {

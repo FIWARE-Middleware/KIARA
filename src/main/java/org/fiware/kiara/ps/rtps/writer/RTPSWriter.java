@@ -68,7 +68,7 @@ public abstract class RTPSWriter extends Endpoint {
         this.m_pushMode = true;
         this.m_listener = listener;
         this.initHeader();
-        logger.info("RTPSWriter created");
+        logger.debug("RTPSWriter created successfully");
     }
     
     private void initHeader() {
@@ -78,7 +78,7 @@ public abstract class RTPSWriter extends Endpoint {
     }
 
     public CacheChange newChange(ChangeKind changeKind, InstanceHandle handle) {
-        logger.info("Creating new change");
+        logger.debug("Creating new change");
         CacheChange ch = this.m_history.reserveCache();
         
         if (ch == null) {

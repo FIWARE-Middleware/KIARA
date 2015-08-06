@@ -51,7 +51,7 @@ public class WriterHistoryCache extends HistoryCache {
             }
     
             if (!change.getWriterGUID().equals(this.m_writer.getGuid())) {
-                logger.error("Change writerGUID " + change.getWriterGUID() + " different than Writer GUID " + this.m_writer.getGuid());
+                logger.error("Change writerGUID {} different from Writer GUID {}", change.getWriterGUID(), this.m_writer.getGuid());
                 this.m_mutex.unlock();
                 return false;
             }
@@ -65,7 +65,7 @@ public class WriterHistoryCache extends HistoryCache {
             this.m_lastCacheChangeSeqNum.increment();
             change.setSequenceNumber(this.m_lastCacheChangeSeqNum);
             this.m_changes.add(change);
-            logger.info("Change " + change.getSequenceNumber().toLong() + " added with " + change.getSerializedPayload().getSerializedSize() + " bytes");
+            logger.debug("Change {} added with {} bytes", change.getSequenceNumber().toLong(), change.getSerializedPayload().getSerializedSize());
             updateMaxMinSeqNum();
             this.m_writer.unsentChangeAddedToHistory(change);
         } finally {

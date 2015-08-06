@@ -66,7 +66,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
             if (change.getSequenceNumber().isLowerThan(this.m_maxSeqCacheChange.getSequenceNumber())) {
                 for (CacheChange it : this.m_changes) {
                     if (it.getSequenceNumber().equals(change.getSequenceNumber()) && it.getWriterGUID().equals(change.getWriterGUID())) {
-                        logger.info("Change (seqNum: " + change.getSequenceNumber().toLong() + ") already in ReaderHistory");
+                        logger.debug("Change (seqNum: {}) already in ReaderHistory", change.getSequenceNumber().toLong());
                         return false;
                     }
                     if (it.getWriterGUID().equals(change.getWriterGUID()) && it.getSequenceNumber().isLowerThan(change.getSequenceNumber())) {
@@ -107,7 +107,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                         if (this.m_changes.size() == this.m_resourceLimitsQos.maxSamples) {
                             this.m_isHistoryFull = true;
                         }
-                        logger.info("Change added from: " + change.getWriterGUID());
+                        logger.debug("Change added from {} ", change.getWriterGUID());
                         return true;
                     }
                 } else {
@@ -116,7 +116,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                 
             } else if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY) { // History with key
                 if (change.getInstanceHandle().isDefined() && this.m_subscriber.getType() != null) {
-                    logger.info("Getting Key of change with no Key transmitted");
+                    logger.debug("Getting Key of change with no Key transmitted");
                     if (!this.m_subscriber.getType().getKey(this.m_getKeyObject, change.getInstanceHandle())) {
                         return false;
                     }
@@ -170,7 +170,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                                 vit.getSecond().add(change);
                                 Collections.sort(vit.getSecond());
                             }
-                            logger.info("Change " + change.getSequenceNumber().toLong() + " added from: " + change.getWriterGUID() + "with kEY: " + change.getInstanceHandle());
+                            logger.debug("Change {} added from {} with key {}", change.getSequenceNumber().toLong(), change.getWriterGUID(), change.getInstanceHandle());
                             return true;
                         }
                     } else {
@@ -321,7 +321,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     this.decreadeUnreadCount();
                 }
                 change.setRead(true);
-                logger.info("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
+                logger.debug("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
                 if (change.getKind() == ChangeKind.ALIVE) {
                     try {
                         retVal = this.m_subscriber.getType().deserialize(change.getSerializedPayload());
@@ -360,56 +360,5 @@ public class SubscriberHistory extends ReaderHistoryCache {
         return null;
     }
 
-    public <T> TopicDataType<T> takeNextData_old(SampleInfo info) {
-        this.m_mutex.lock();
-        try {
-            TopicDataType<T> retVal = null;
-            CacheChange change = new CacheChange();
-            WriterProxy wp = new WriterProxy();
-            if (this.m_reader.nextUntakenCache(change, wp)) {
-                if (!change.isRead()) {
-                    this.decreadeUnreadCount();
-                }
-                change.setRead(true);
-                logger.info("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
-                if (change.getKind() == ChangeKind.ALIVE) {
-                    /*Serializable instance = (Serializable) this.m_subscriber.getType().createData();
-                    change.getSerializedPayload().setData(instance);
-                    try {
-                        change.getSerializedPayload().deserializeData();
-                        retVal = (T) instance;
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }*/
-                    
-                    //retVal = change.getSerializedPayload().get
-                    
-                }
-                if (info != null) {
-                    info.sampleKind = change.getKind();
-                    info.writerGUID = change.getWriterGUID();
-                    info.sourceTimestamp = change.getSourceTimestamp();
-                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = wp.att.ownershipStrength;
-                    }
-                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) && 
-                            change.getKind() == ChangeKind.ALIVE) {
-                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
-                    }
-                    info.handle = change.getInstanceHandle();
-                }
-                this.removeChangeSub(change, null);
-                return retVal;
-            }
-        } finally {
-            this.m_mutex.unlock();
-        }
-        return null;
-    }
-
     
-    
-
 }

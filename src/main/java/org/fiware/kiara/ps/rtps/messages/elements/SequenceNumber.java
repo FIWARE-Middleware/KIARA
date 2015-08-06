@@ -179,4 +179,9 @@ public class SequenceNumber extends RTPSSubmessageElement {
 		}
 	}
 	
+	@Override
+	public String toString() {
+	    return this.toLong() + " (H: " + this.m_high + ", L: " + this.m_low + ")"; 
+	}
+	
 }

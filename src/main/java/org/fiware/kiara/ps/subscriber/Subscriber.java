@@ -225,7 +225,7 @@ public class Subscriber<T extends Serializable> {
     }
 
     public void destroy() {
-        logger.info("Publisher destruction");
+        logger.info("Destroying Subscriber (Reader GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSReader(this.m_reader);
     }
 

@@ -44,7 +44,7 @@ public class EDPStatic extends EDP {
      */
     @Override
     public boolean initEDP(BuiltinAttributes attributes) {
-        logger.info("RTPS EDP: Beginning STATIC EndpointDiscoveryProtocol");
+        logger.debug("Beginning STATIC Endpoint Discovery Protocol (SEDP)");
         m_attributes.copy(attributes);
         m_edpXML = new EDPStaticXML();
         String filename = attributes.getStaticEndpointXMLFilename();
@@ -60,7 +60,7 @@ public class EDPStatic extends EDP {
      */
     @Override
     public boolean processLocalReaderProxyData(ReaderProxyData rdata) {
-        logger.info("RTPS EDP: {} in topic: {}", rdata.getGUID().getEntityId(), rdata.getTopicName());
+        logger.debug("Local Reader proxy data {} in topic {}", rdata.getGUID().getEntityId(), rdata.getTopicName());
         //Add the property list entry to our local pdp
         ParticipantProxyData localpdata = m_PDP.getLocalParticipantProxyData();
         final Lock mutex = localpdata.getMutex();
@@ -84,7 +84,7 @@ public class EDPStatic extends EDP {
      */
     @Override
     public boolean processLocalWriterProxyData(WriterProxyData wdata) {
-        logger.info("RTPS EDP: {} in topic: {}", wdata.getGUID().getEntityId(), wdata.getTopicName());
+        logger.debug("Local Writer proxy data {} in topic {}", wdata.getGUID().getEntityId(), wdata.getTopicName());
         //Add the property list entry to our local pdp
         ParticipantProxyData localpdata = m_PDP.getLocalParticipantProxyData();
         final Lock mutex = localpdata.getMutex();
@@ -213,7 +213,7 @@ public class EDPStatic extends EDP {
     public boolean newRemoteReader(ParticipantProxyData pdata, short userId, EntityId entId) {
         ReaderProxyData rpd = m_edpXML.lookforReader(pdata.getParticipantName(), userId);
         if (rpd != null) {
-            logger.info("RTPS EDP: Activating: {} in topic {}", rpd.getGUID().getEntityId(), rpd.getTopicName());
+            logger.debug("Activating remote Reader {} in topic {}", rpd.getGUID().getEntityId(), rpd.getTopicName());
             ReaderProxyData newRPD = new ReaderProxyData();
             newRPD.copy(rpd);
             newRPD.getGUID().setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
@@ -221,7 +221,7 @@ public class EDPStatic extends EDP {
                 newRPD.getGUID().setEntityId(entId);
             }
             if (!checkEntityId(newRPD)) {
-                logger.error("RTPS EDP: The provided entityId for Reader with ID: {} does not match the topic Kind", newRPD.getUserDefinedId());
+                logger.error("The provided entityId for Reader with ID: {} does not match the topic Kind", newRPD.getUserDefinedId());
                 return false;
             }
             newRPD.setKey(newRPD.getGUID());
@@ -252,7 +252,7 @@ public class EDPStatic extends EDP {
     public boolean newRemoteWriter(ParticipantProxyData pdata, short userId, EntityId entId) {
 	WriterProxyData wpd = m_edpXML.lookforWriter(pdata.getParticipantName(), userId);
 	if (wpd != null) {
-		logger.info("RTPS EDP: Activating: {} in topic {}", wpd.getGUID().getEntityId(), wpd.getTopicName());
+		logger.debug("Activating remote Writer {} in topic {}", wpd.getGUID().getEntityId(), wpd.getTopicName());
 		WriterProxyData newWPD = new WriterProxyData();
 		newWPD.copy(wpd);
 		newWPD.getGUID().setGUIDPrefix(pdata.getGUID().getGUIDPrefix());

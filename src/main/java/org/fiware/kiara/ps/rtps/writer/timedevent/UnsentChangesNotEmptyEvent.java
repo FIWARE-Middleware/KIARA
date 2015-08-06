@@ -39,15 +39,14 @@ public class UnsentChangesNotEmptyEvent extends TimedEvent {
 
     @Override
     public void event(EventCode code, String msg) {
-        logger.info("UnsentChangesNotEmptyEvent risen");
-        
         if (code == EventCode.EVENT_SUCCESS) {
+            logger.debug("Sending unsent changes");
             this.m_writer.unsentChangesNotEmpty();
         } else if (code == EventCode.EVENT_ABORT) {
-            logger.info("UnsentChangesNotEmpty aborted");
+            logger.debug("Aborting automatic change sending");
             this.stopSemaphorePost();
         } else {
-            logger.info("UnsentChangesNotEmpty msg");
+            logger.debug("MSG: {}", msg);
         }
         this.stopTimer();
     }

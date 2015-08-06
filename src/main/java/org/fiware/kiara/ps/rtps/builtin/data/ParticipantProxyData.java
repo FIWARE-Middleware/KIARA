@@ -238,7 +238,7 @@ public class ParticipantProxyData {
         }
     }
     
-    public boolean readFromCDRMessage(CacheChange change) {
+    public synchronized boolean readFromCDRMessage(CacheChange change) {
         try {
             SerializedPayload payload = change.getSerializedPayload();
             payload.updateSerializer();

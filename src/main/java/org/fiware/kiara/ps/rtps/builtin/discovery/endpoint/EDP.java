@@ -127,10 +127,9 @@ public abstract class EDP {
      * @param rqos
      * @return True if correct.
      */
-    public boolean newLocalReaderProxyData(RTPSReader reader,
-            TopicAttributes att, ReaderQos rqos) {
+    public boolean newLocalReaderProxyData(RTPSReader reader, TopicAttributes att, ReaderQos rqos) {
 
-        logger.info("Adding {} in topic {}", reader.getGuid().getEntityId(), att.topicName);
+        logger.debug("Adding Reader {} in topic {}", reader.getGuid().getEntityId(), att.topicName);
 
         ReaderProxyData rpd = new ReaderProxyData();
         rpd.setIsAlive(true);
@@ -146,12 +145,15 @@ public abstract class EDP {
         rpd.setQos(rqos);
         rpd.setUserDefinedId(reader.getAttributes().getUserDefinedID());
         reader.setAcceptMessagesFromUnknownWriters(false);
+        
         //ADD IT TO THE LIST OF READERPROXYDATA
         if (!this.m_PDP.addReaderProxyData(rpd)) {
             return false;
         }
+        
         //DO SOME PROCESSING DEPENDING ON THE IMPLEMENTATION (SIMPLE OR STATIC)
         processLocalReaderProxyData(rpd);
+        
         //PAIRING
         pairingReader(reader);
         pairingReaderProxy(rpd);
@@ -166,9 +168,9 @@ public abstract class EDP {
      * @param wqos
      * @return True if correct.
      */
-    public boolean newLocalWriterProxyData(RTPSWriter writer,
-            TopicAttributes att, WriterQos wqos) {
-        logger.info("Adding {} in topic {}", writer.getGuid().getEntityId(), att.topicName);
+    public boolean newLocalWriterProxyData(RTPSWriter writer, TopicAttributes att, WriterQos wqos) {
+        
+        logger.debug("Adding Writer {} in topic {}", writer.getGuid().getEntityId(), att.topicName);
 
         WriterProxyData wpd = new WriterProxyData();
         wpd.setIsAlive(true);
@@ -183,12 +185,15 @@ public abstract class EDP {
         wpd.setTypeMaxSerialized(writer.getTypeMaxSerialized());
         wpd.setQos(wqos);
         wpd.setUserDefinedId(writer.getAttributes().getUserDefinedID());
+        
         //ADD IT TO THE LIST OF READERPROXYDATA
         if (!this.m_PDP.addWriterProxyData(wpd)) {
             return false;
         }
+        
         //DO SOME PROCESSING DEPENDING ON THE IMPLEMENTATION (SIMPLE OR STATIC)
         processLocalWriterProxyData(wpd);
+        
         //PAIRING
         pairingWriterProxy(wpd);
         pairingWriter(writer);
@@ -492,7 +497,7 @@ public abstract class EDP {
     public boolean pairingReader(RTPSReader R) {
         ReaderProxyData rdata = this.m_PDP.lookupReaderProxyData(R.getGuid());
         if (rdata != null) {
-            logger.info("RTPS EDP: {} in topic: \"{}\"", R.getGuid(), rdata.getTopicName());
+            logger.debug("Pairing Reader {} in topic {}", R.getGuid(), rdata.getTopicName());
             final Lock mutex = m_PDP.getMutex();
             mutex.lock();
             try {
@@ -502,7 +507,7 @@ public abstract class EDP {
                     try {
                         for (WriterProxyData wdatait : pit.getWriters()) {
                             if (validMatching(rdata, wdatait)) {
-                                logger.info("RTPS EDP: Valid Matching to writerProxy: {}", wdatait.getGUID());
+                                logger.debug("Valid Matching to writerProxy: {}", wdatait.getGUID());
                                 if (R.matchedWriterAdd(wdatait.toRemoteWriterAttributes())) {
                                     //MATCHED AND ADDED CORRECTLY:
                                     if (R.getListener() != null) {
@@ -543,7 +548,7 @@ public abstract class EDP {
     public boolean pairingWriter(RTPSWriter W) {
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(W.getGuid());
         if (wdata != null) {
-            logger.info("RTPS EDP: {} in topic: \"{}\"", W.getGuid(), wdata.getTopicName());
+            logger.debug("Pairing Writer {} in topic {}", W.getGuid(), wdata.getTopicName());
             final Lock mutex = m_PDP.getMutex();
             mutex.lock();
             try {
@@ -554,7 +559,7 @@ public abstract class EDP {
                         for (ReaderProxyData rdatait : pit.getReaders()) {
                             if (validMatching(wdata, rdatait)) {
                                 //std::cout << "VALID MATCHING to " <<(*rdatait).m_guid<< std::endl;
-                                logger.info("RTPS EDP: Valid Matching to readerProxy: {}", rdatait.getGUID());
+                                logger.debug("Valid Matching to readerProxy {}", rdatait.getGUID());
                                 if (W.matchedReaderAdd(rdatait.toRemoteReaderAttributes())) {
                                     //MATCHED AND ADDED CORRECTLY:
                                     if (W.getListener() != null) {
@@ -593,7 +598,7 @@ public abstract class EDP {
      * @return True.
      */
     public boolean pairingReaderProxy(ReaderProxyData rdata) {
-        logger.info("RTPS EDP: {} in topic: \"{}\"", rdata.getGUID(), rdata.getTopicName());
+        logger.debug("Pairing Reader Proxy {} in topic: \"{}\"", rdata.getGUID(), rdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
         mutex.lock();
         try {
@@ -604,7 +609,7 @@ public abstract class EDP {
                     WriterProxyData wdata = m_PDP.lookupWriterProxyData(wit.getGuid());
                     if (wdata != null) {
                         if (validMatching(wdata, rdata)) {
-                            logger.info("RTPS EDP: Valid Matching to local writer: {}", wit.getGuid().getEntityId());
+                            logger.debug("Valid Matching to local writer {}", wit.getGuid().getEntityId());
                             if (wit.matchedReaderAdd(rdata.toRemoteReaderAttributes())) {
                                 //MATCHED AND ADDED CORRECTLY:
                                 if (wit.getListener() != null) {
@@ -640,7 +645,7 @@ public abstract class EDP {
      * @return True.
      */
     public boolean pairingWriterProxy(WriterProxyData wdata) {
-        logger.info("RTPS EDP: {} in topic: \"{}\"", wdata.getGUID(), wdata.getTopicName());
+        logger.debug("Pairing Writer Proxy {} in topic: \"{}\"", wdata.getGUID(), wdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
         mutex.lock();
         try {
@@ -651,7 +656,7 @@ public abstract class EDP {
                     ReaderProxyData rdata = m_PDP.lookupReaderProxyData(rit.getGuid());
                     if (rdata != null) {
                         if (validMatching(rdata, wdata)) {
-                            logger.info("RTPS EDP: Valid Matching to local reader: {}", rit.getGuid().getEntityId());
+                            logger.debug("Valid Matching to local reader {}", rit.getGuid().getEntityId());
                             if (rit.matchedWriterAdd(wdata.toRemoteWriterAttributes())) {
                                 //MATCHED AND ADDED CORRECTLY:
                                 if (rit.getListener() != null) {

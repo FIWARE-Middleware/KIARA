@@ -22,6 +22,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.fiware.kiara.Kiara;
+import org.fiware.kiara.RunningService;
+
 /**
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
@@ -33,6 +36,14 @@ public abstract class TimedEvent {
     private final EventTask task;
     private ScheduledFuture<?> event;
     private long intervalMicrosec;
+    
+    static {
+        Kiara.addRunningService(new RunningService() {
+            public void shutdownService() {
+                service.shutdown();
+            }
+        });
+    }
 
     /**
      * Enum representing event statuses
