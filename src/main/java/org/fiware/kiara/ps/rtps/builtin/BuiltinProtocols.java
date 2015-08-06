@@ -119,8 +119,7 @@ public class BuiltinProtocols {
             if (!this.m_PDP.initPDP(this.m_participant)) {
                 return false;
             }
-            /*if (this.m_att.useWriterLP) {
-                // TODO Implement WLP (simulated for now)
+            /*if (this.m_att.useWriterLP) { // TODO Implement statefull readers and writers
                 this.m_WLP = new WLP(this);
                 this.m_WLP.initWL(this.m_participant);
             }*/

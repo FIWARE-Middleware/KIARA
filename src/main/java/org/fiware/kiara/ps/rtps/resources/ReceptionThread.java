@@ -78,7 +78,7 @@ public class ReceptionThread implements Runnable {
                 
                 dp.setLength(buf.length);
                 this.m_channel.socket().receive(dp);
-
+                
                 this.m_listenResource.getSenderEndpoint().port = dp.getPort();
                 this.m_listenResource.getSenderEndpoint().address = dp.getAddress();
 
