@@ -364,7 +364,7 @@ public class SubscriberTest {
         pParam.rtps.builtinAtt.useWriterLP = false;
         pParam.rtps.builtinAtt.useSimpleEDP = true;
         pParam.rtps.builtinAtt.useStaticEDP = true;
-        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("LOCAL_READER_ENDPOINTS.xml");
         
         pParam.rtps.setName("participant1");
         

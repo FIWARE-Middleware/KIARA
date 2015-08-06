@@ -124,9 +124,6 @@ public class RTPSDomain {
             guidP.setValue(3, (byte) 1);
         }
         
-        System.out.println("ID:" + ID);
-        System.out.println("PID:" + pid);
-        
         byte[] bytesPID = ByteBuffer.allocate(4).putInt(pid).array();
         byte[] bytesID = ByteBuffer.allocate(4).putInt(ID).array();
         for (int i=0; i < 4; ++i) {
@@ -134,7 +131,6 @@ public class RTPSDomain {
             guidP.setValue(8+i, bytesID[i]);
         }
         
-        System.out.println("GUIDP:" + guidP);
         RTPSParticipant participant = null;
         try {
             participant = new RTPSParticipant(att, guidP, listener);
