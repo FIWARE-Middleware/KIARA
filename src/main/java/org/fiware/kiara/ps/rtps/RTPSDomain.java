@@ -38,6 +38,7 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipantListener;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
+import org.fiware.kiara.ps.rtps.utils.SystemUtils;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.slf4j.Logger;
@@ -106,7 +107,8 @@ public class RTPSDomain {
         att.participantID = ID;
         
         int pid;
-        pid = (int) Thread.currentThread().getId();
+        //pid = (int) Thread.currentThread().getId();
+        pid = (int) SystemUtils.getPID();
         
         GUIDPrefix guidP = new GUIDPrefix(); 
         LocatorList loc = IPFinder.getIPv4Adress();
@@ -122,6 +124,9 @@ public class RTPSDomain {
             guidP.setValue(3, (byte) 1);
         }
         
+        System.out.println("ID:" + ID);
+        System.out.println("PID:" + pid);
+        
         byte[] bytesPID = ByteBuffer.allocate(4).putInt(pid).array();
         byte[] bytesID = ByteBuffer.allocate(4).putInt(ID).array();
         for (int i=0; i < 4; ++i) {
@@ -129,6 +134,7 @@ public class RTPSDomain {
             guidP.setValue(8+i, bytesID[i]);
         }
         
+        System.out.println("GUIDP:" + guidP);
         RTPSParticipant participant = null;
         try {
             participant = new RTPSParticipant(att, guidP, listener);
