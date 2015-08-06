@@ -17,8 +17,16 @@ import org.fiware.kiara.ps.types.HelloWorldType;
 
 public class SubscriberTest {
     
+    static {
+        System.setProperty("java.util.logging.config.file", "logging.properties");
+    }
+    
     public static void main (String[] args) {
         
+        multipleParticipantTest();                
+    }
+    
+    public static void singleParticipantTest() {
         HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         
@@ -33,17 +41,6 @@ public class SubscriberTest {
         pParam.rtps.builtinAtt.useStaticEDP = true;
         pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
         
-        /*pParam.rtps.defaultSendPort = 10043;
-        pParam.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
-        pParam.rtps.builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader = true;
-        pParam.rtps.builtinAtt.domainID = 80;
-        pParam.rtps.builtinAtt.leaseDuration = new Timestamp().timeInfinite();
-        pParam.rtps.sendSocketBufferSize = 8712;
-        pParam.rtps.listenSocketBufferSize = 17424;
-        pParam.rtps.setName("ParticipantSub");*/
-        
-        //pParam.rtps.builtinAtt.domainID = 80;
-        
         pParam.rtps.setName("participant1");
         
         Participant participant = Domain.createParticipant(pParam, new PartListener());
@@ -52,9 +49,65 @@ public class SubscriberTest {
             return;
         }
         
+        // Type registration
+        Domain.registerType(participant, type);
+        
+        SubscriberAttributes satt = new SubscriberAttributes();
+        satt.topic.topicKind = TopicKind.NO_KEY;
+        satt.topic.topicDataTypeName = "HelloWorld";
+        satt.topic.topicName = "HelloWorldTopic";
+        satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        satt.topic.historyQos.depth = 30;
+        satt.topic.resourceLimitQos.maxSamples = 50;
+        satt.topic.resourceLimitQos.allocatedSamples = 20;
+        satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        //satt.
+        
+        satt.setUserDefinedID((short) 1);
+        Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber == null) {
+            System.out.println("Error creating subscriber");
+            return;
+        }
+        System.out.println("Subscriber created");
+        
+        try {
+            Thread.sleep(20000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        System.out.println("");
+        
+    }
+    
+    public static void multipleParticipantTest() {
+        HelloWorldType type = new HelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        // Create participant
+        ParticipantAttributes pParam = new ParticipantAttributes();
+        pParam.rtps.builtinAtt.useSimplePDP = true;
+        pParam.rtps.builtinAtt.useWriterLP = false;
+        pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        pParam.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pParam, null /*new PartListener()*/);
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
         pParam.rtps.setName("participant2");
         
-        Participant participant2 = Domain.createParticipant(pParam, new PartListener());
+        Participant participant2 = Domain.createParticipant(pParam, null /*new PartListener()*/);
         if (participant2 == null) {
             System.out.println("Error when creating participant2");
             return;
@@ -98,14 +151,202 @@ public class SubscriberTest {
             e.printStackTrace();
         }
         
-        System.out.println("");
+        Domain.removeParticipant(participant);
+        Domain.removeParticipant(participant2);
         
-        //Domain.removeParticipant(participant);
-        //Domain.removeParticipant(participant2);
-        
-        //Kiara.shutdown();
-        
-                
+        Kiara.shutdown();
     }
 
+    public static void singleSubscriberRemovalTest() {
+        HelloWorldType type = new HelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        // Create participant
+        ParticipantAttributes pParam = new ParticipantAttributes();
+        pParam.rtps.builtinAtt.useSimplePDP = true;
+        pParam.rtps.builtinAtt.useWriterLP = false;
+        pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        pParam.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pParam, new PartListener());
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
+        // Type registration
+        Domain.registerType(participant, type);
+        
+        SubscriberAttributes satt = new SubscriberAttributes();
+        satt.topic.topicKind = TopicKind.NO_KEY;
+        satt.topic.topicDataTypeName = "HelloWorld";
+        satt.topic.topicName = "HelloWorldTopic";
+        satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        satt.topic.historyQos.depth = 30;
+        satt.topic.resourceLimitQos.maxSamples = 50;
+        satt.topic.resourceLimitQos.allocatedSamples = 20;
+        satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        //satt.
+        
+        satt.setUserDefinedID((short) 1);
+        Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber == null) {
+            System.out.println("Error creating subscriber");
+            return;
+        }
+        System.out.println("Subscriber created");
+        
+        try {
+            Thread.sleep(8000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        Domain.removeSubscriber(subscriber);
+        
+    }
+    
+    public static void singleSubscriberAndParticipantRemovalTest() {
+        HelloWorldType type = new HelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        // Create participant
+        ParticipantAttributes pParam = new ParticipantAttributes();
+        pParam.rtps.builtinAtt.useSimplePDP = true;
+        pParam.rtps.builtinAtt.useWriterLP = false;
+        pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        pParam.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pParam, new PartListener());
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
+        // Type registration
+        Domain.registerType(participant, type);
+        
+        SubscriberAttributes satt = new SubscriberAttributes();
+        satt.topic.topicKind = TopicKind.NO_KEY;
+        satt.topic.topicDataTypeName = "HelloWorld";
+        satt.topic.topicName = "HelloWorldTopic";
+        satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        satt.topic.historyQos.depth = 30;
+        satt.topic.resourceLimitQos.maxSamples = 50;
+        satt.topic.resourceLimitQos.allocatedSamples = 20;
+        satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        //satt.
+        
+        satt.setUserDefinedID((short) 1);
+        Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber == null) {
+            System.out.println("Error creating subscriber");
+            return;
+        }
+        System.out.println("Subscriber created");
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        Domain.removeSubscriber(subscriber);
+        
+        Domain.removeParticipant(participant);
+        
+        Kiara.shutdown();
+        
+        System.out.println("Finished Subscriber");
+        
+    }
+    
+    public static void multipleSubscriberAndParticipantRemovalTest() {
+        HelloWorldType type = new HelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        // Create participant
+        ParticipantAttributes pParam = new ParticipantAttributes();
+        pParam.rtps.builtinAtt.useSimplePDP = true;
+        pParam.rtps.builtinAtt.useWriterLP = false;
+        pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
+        
+        pParam.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pParam, new PartListener());
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
+        // Type registration
+        Domain.registerType(participant, type);
+        
+        SubscriberAttributes satt = new SubscriberAttributes();
+        satt.topic.topicKind = TopicKind.NO_KEY;
+        satt.topic.topicDataTypeName = "HelloWorld";
+        satt.topic.topicName = "HelloWorldTopic";
+        satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        satt.topic.historyQos.depth = 30;
+        satt.topic.resourceLimitQos.maxSamples = 50;
+        satt.topic.resourceLimitQos.allocatedSamples = 20;
+        satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        //satt.
+        
+        satt.setUserDefinedID((short) 1);
+        Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber == null) {
+            System.out.println("Error creating subscriber");
+            Kiara.shutdown();
+            return;
+        }
+        System.out.println("Subscriber created");
+        
+        satt.setUserDefinedID((short) 2);
+        Subscriber subscriber2 = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber2 == null) {
+            System.out.println("Error creating subscriber2");
+            Kiara.shutdown();
+            return;
+        }
+        System.out.println("Subscriber2 created");
+        
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        Domain.removeSubscriber(subscriber);
+        
+        Domain.removeSubscriber(subscriber2);
+        
+        Domain.removeParticipant(participant);
+        
+        Kiara.shutdown();
+        
+        System.out.println("Finished Subscribers");
+        
+    }
+    
 }

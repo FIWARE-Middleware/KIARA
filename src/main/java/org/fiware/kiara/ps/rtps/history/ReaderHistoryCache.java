@@ -84,7 +84,7 @@ public class ReaderHistoryCache extends HistoryCache {
             if (this.m_historyRecord.get(change.getWriterGUID()).add(change.getSequenceNumber())) {
                 this.m_changes.add(change);
                 this.updateMaxMinSeqNum();
-                logger.info("Change " + change.getSequenceNumber().toLong() + " added with " + change.getSerializedPayload().getSerializedSize() + " bytes"); // TODO Log this
+                logger.debug("Change {} added with {} bytes", change.getSequenceNumber().toLong(), change.getSerializedPayload().getSerializedSize());
                 //this.m_mutex.unlock();
                 return true;
             }
@@ -106,7 +106,7 @@ public class ReaderHistoryCache extends HistoryCache {
             for (int i=0; i < this.m_changes.size(); ++i) {
                 CacheChange it = this.m_changes.get(i);
                 if (it.getSequenceNumber().equals(change.getSequenceNumber()) && it.getWriterGUID().equals(change.getWriterGUID())) {
-                    logger.info("Removing change " + change.getSequenceNumber()); 
+                    logger.debug("Removing change " + change.getSequenceNumber()); 
                     this.m_reader.changeRemovedByHistory(change, null);
                     this.m_changePool.releaseCache(change);
                     this.m_changes.remove(it);

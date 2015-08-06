@@ -118,31 +118,31 @@ public class PDPSimple {
         this.m_participantProxies = new ArrayList<ParticipantProxyData>();
         // TODO Create objects properly
     }
-    
+
     public void destroy() {
         this.m_mutex.lock();
         try {
-            
+
             if (this.m_EDP != null) {
                 this.m_EDP.destroy();
             }
-            
+
             if (this.m_resendParticipantTimer != null) {
                 this.m_resendParticipantTimer.delete();
             }
-            
+
             if (this.m_SPDPReader != null) {
                 RTPSDomain.removeRTPSReader(this.m_SPDPReader);
             }
-            
+
             if (this.m_SPDPWriter != null) {
                 RTPSDomain.removeRTPSWriter(this.m_SPDPWriter);
             }
-            
+
             /*if (this.m_listener != null) {
                 this.m_listener.destroy();
             }*/
-            
+
             while (this.m_participantProxies.size() > 0) {
                 this.m_participantProxies.get(0).destroy();
                 this.m_participantProxies.remove(0);
@@ -153,7 +153,7 @@ public class PDPSimple {
     }
 
     public boolean initPDP(RTPSParticipant participant) {
-        logger.info("Beginning");
+        logger.debug("Starting Participant Discovery Protocol (PDP)");
         this.m_RTPSParticipant = participant;
         this.m_discovery = this.m_RTPSParticipant.getAttributes().builtinAtt;
         this.m_mutex.lock();
@@ -185,7 +185,7 @@ public class PDPSimple {
             this.m_resendParticipantTimer = new ResendParticipantProxyDataPeriod(this, this.m_discovery.leaseDurationAnnouncementPeriod.toMilliSecondsDouble());
 
             return true;
-            
+
         } finally {
             this.m_mutex.unlock();
         }
@@ -207,7 +207,7 @@ public class PDPSimple {
     public void announceParticipantState(boolean newChange) {
         this.m_mutex.lock();
         try {
-            logger.info("Announcing RTPSParticipant State (new change : " + newChange + ")");
+            logger.debug("Announcing RTPSParticipant State (new change: {})", newChange);
             CacheChange change = null;
 
             if (newChange || this.m_hasChangedLocalPDP) {
@@ -235,308 +235,284 @@ public class PDPSimple {
         }
     }
 
-    public void announceParticipantState_old(boolean newChange) {
-        logger.info("Announcing RTPSParticipant State (new change : " + newChange + ")");
-        CacheChange change = null;
-
-        if (newChange || this.m_hasChangedLocalPDP) {
-            this.getLocalParticipantProxyData().increaseManualLivelinessCount();
-            if (this.m_SPDPWriterHistory.getHistorySize() > 0) {
-                this.m_SPDPWriterHistory.removeMinChange();
-            }
-            change = this.m_SPDPWriter.newChange(ChangeKind.ALIVE, getLocalParticipantProxyData().getKey());
-            ParticipantProxyData proxyData = getLocalParticipantProxyData();
-            proxyData.setHasChanged(true);
-            ParameterList paramList = proxyData.toParameterList();
-            if (paramList != null) {
-                change.getSerializedPayload().setEncapsulationKind(InfoEndianness.checkMachineEndianness() == RTPSEndian.BIG_ENDIAN ? EncapsulationKind.PL_CDR_BE : EncapsulationKind.PL_CDR_LE);
-                change.getSerializedPayload().addParameters(paramList);
-                this.m_SPDPWriterHistory.addChange(change);
-            } 
-            this.m_hasChangedLocalPDP = false;
-        } else {
-            this.m_SPDPWriter.unsentChangesReset();
-        }
-    }
-
-
-public ReaderProxyData lookupReaderProxyData(GUID reader) {
-    this.m_mutex.lock();
-    logger.info("Lookup ReaderProxyData: " + reader);
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized (this.m_guardMutex) {
-                for (ReaderProxyData rit : pit.getReaders()) {
-                    if (rit.getGUID().equals(reader)) {
-                        return rit;
-                    }
-                }
-            }
-        }
-        return null;
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public WriterProxyData lookupWriterProxyData(GUID writer) {
-    this.m_mutex.lock();
-    logger.info("Lookup WriterProxyData: " + writer);
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                for (WriterProxyData wit : pit.getWriters()) {
-                    if (wit.getGUID().equals(writer)) {
-                        return wit;
-                    }
-                }
-            }
-        }
-        return null;
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public boolean removeReaderProxyData(ReaderProxyData rdata) {
-    this.m_mutex.lock();
-    logger.info("Removing ReaderProxyData: " + rdata.getGUID());
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                for (ReaderProxyData rit : pit.getReaders()) {
-                    if (rit.getGUID().equals(rdata.getGUID())) {
-                        return pit.getReaders().remove(rdata);
-                    }
-                }
-            }
-        }
-        return false;
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public boolean removeWriterProxyData(WriterProxyData wdata) {
-    this.m_mutex.lock();
-    logger.info("Removing WriterProxyData: " + wdata.getGUID());
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                for (WriterProxyData wit : pit.getWriters()) {
-                    if (wit.getGUID().equals(wdata.getGUID())) {
-                        return pit.getWriters().remove(wdata);
-                    }
-                }
-            }
-        }
-        return false;
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public ParticipantProxyData lookupParticipantProxyData(GUID pguid) {
-    logger.info("Lookup ParticipantProxyData: " + pguid);
-    this.m_mutex.lock();
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            if (pit.getGUID().equals(pguid)) {
-                return pit;
-            }
-        }
-        return null;
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-private boolean createSPDPEndpoints() {
-    logger.info("Beginning SPDPEndpoint creation");
-
-    HistoryCacheAttributes whatt = new HistoryCacheAttributes();
-    whatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
-    whatt.initialReservedCaches = 20;
-    whatt.maximumReservedCaches = 100;
-
-    this.m_SPDPWriterHistory = new WriterHistoryCache(whatt);
-
-    WriterAttributes watt = new WriterAttributes();
-    watt.endpointAtt.endpointKind = EndpointKind.WRITER;
-    watt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-    watt.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
-    watt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-
-    RTPSWriter wout = this.m_RTPSParticipant.createWriter(watt, this.m_SPDPWriterHistory, null, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER), true);
-    if (wout != null) {
-        this.m_SPDPWriter = (StatelessWriter) wout;
-        RemoteReaderAttributes ratt = new RemoteReaderAttributes();
-        for (Locator lit : this.m_builtin.getMetatrafficMulticastLocatorList().getLocators()) {
-            this.m_SPDPWriter.addLocator(ratt, lit);
-        }
-        if (this.m_builtin.getUseMandaory()) {
-            this.m_SPDPWriter.addLocator(ratt, this.m_builtin.getMandatoryMulticastLocator());
-        }
-        logger.info("SimplePDP writer created: " + this.m_SPDPWriter.getGuid());
-    } else {
-        logger.error("SimplePDP Writer creation failed");
-        this.m_SPDPWriterHistory = null;
-        return false;
-    }
-
-    HistoryCacheAttributes rhatt = new HistoryCacheAttributes();
-    rhatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
-    rhatt.initialReservedCaches = 250;
-    rhatt.maximumReservedCaches = 5000;
-
-    this.m_SPDPReaderHistory = new ReaderHistoryCache(rhatt);
-
-    ReaderAttributes ratt = new ReaderAttributes();
-    ratt.endpointAtt.multicastLocatorList.copy(this.m_builtin.getMetatrafficMulticastLocatorList());
-    ratt.endpointAtt.unicastLocatorList.copy(this.m_builtin.getMetatrafficUnicastLocatorList());
-    //this.m_builtin.getMetatrafficMulticastLocatorList().getLocators().get(0).setPort(5555);
-    ratt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-    ratt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-    ratt.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
-
-    this.m_listener = new PDPSimpleListener(this);
-
-    RTPSReader rout = this.m_RTPSParticipant.createReader(ratt, this.m_SPDPReaderHistory, this.m_listener, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER), true);
-    if (rout != null) {
-        this.m_SPDPReader = (StatelessReader) rout;
-    } else {
-        logger.error("SimplePDP Reader creation failed");
-        this.m_SPDPReaderHistory = null;
-        this.m_listener = null;
-        return false;
-    }
-
-    logger.info("SPDP Endpoints creation finished");
-    return true;
-}
-
-public boolean addReaderProxyData(ReaderProxyData rdata) {
-    return addReaderProxyData(rdata, false, null, null);
-}
-
-public boolean addReaderProxyData(ReaderProxyData rdata, boolean copyData) {
-    return addReaderProxyData(rdata, copyData, null, null);
-}
-
-public boolean addReaderProxyData(ReaderProxyData rdata, boolean copyData, ReaderProxyData returnReaderProxyData, ParticipantProxyData pdata) {
-    logger.info("Adding ReaderProxyData: " + rdata.getGUID());
-    this.m_mutex.lock();
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                if (pit.getGUID().getGUIDPrefix().equals(rdata.getGUID().getGUIDPrefix())) {
-                    // Check that it is not already
+    public ReaderProxyData lookupReaderProxyData(GUID reader) {
+        this.m_mutex.lock();
+        logger.debug("Lookup ReaderProxyData: " + reader);
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized (this.m_guardMutex) {
                     for (ReaderProxyData rit : pit.getReaders()) {
-                        if (rit.getGUID().getEntityId().equals(rdata.getGUID().getEntityId())) {
-                            if (copyData) {
-                                returnReaderProxyData.copy(rit);
-                                pdata.copy(pit);
-                            }
-                            return false;
+                        if (rit.getGUID().equals(reader)) {
+                            return rit;
                         }
                     }
-                    if (copyData) {
-                        ReaderProxyData newRPD = new ReaderProxyData();
-                        newRPD.copy(rdata);
-                        pit.getReaders().add(newRPD);
-                        returnReaderProxyData.copy(newRPD);
-                        pdata.copy(pit);
-                    } else {
-                        pit.getReaders().add(rdata);
-                    }
-                    return true;
                 }
             }
+            return null;
+        } finally {
+            this.m_mutex.unlock();
         }
-        return false;
-    } finally {
-        this.m_mutex.unlock();
     }
-}
 
-public boolean addWriterProxyData(WriterProxyData wdata) {
-    return addWriterProxyData(wdata, false, null, null);
-}
-
-public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData) {
-    return addWriterProxyData(wdata, copyData, null, null);
-}
-
-public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData, WriterProxyData returnWriterProxyData, ParticipantProxyData pdata) {
-    logger.info("Adding WriterProxyData: " + wdata.getGUID());
-    this.m_mutex.lock();
-    try {
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                if (pit.getGUID().getGUIDPrefix().equals(wdata.getGUID().getGUIDPrefix())) {
-                    // Check that it is not already
-                    for (WriterProxyData rit : pit.getWriters()) {
-                        if (rit.getGUID().getEntityId().equals(wdata.getGUID().getEntityId())) {
-                            if (copyData) {
-                                returnWriterProxyData.copy(rit);
-                                pdata.copy(pit);
-                            }
-                            return false;
+    public WriterProxyData lookupWriterProxyData(GUID writer) {
+        this.m_mutex.lock();
+        logger.debug("Lookup WriterProxyData " + writer);
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    for (WriterProxyData wit : pit.getWriters()) {
+                        if (wit.getGUID().equals(writer)) {
+                            return wit;
                         }
                     }
-                    if (copyData) {
-                        WriterProxyData newWPD = new WriterProxyData();
-                        newWPD.copy(wdata);
-                        pit.getWriters().add(newWPD);
-                        returnWriterProxyData.copy(newWPD);
-                        pdata.copy(pit);
-                    } else {
-                        pit.getWriters().add(wdata);
-                    }
-                    return true;
                 }
             }
+            return null;
+        } finally {
+            this.m_mutex.unlock();
         }
-        return false;
-    } finally {
-        this.m_mutex.unlock();
     }
-}
 
-public void assignRemoteEndpoints(ParticipantProxyData pdata) {
-    logger.info("For RTPSParticipant: " + pdata.getGUID().getGUIDPrefix());
-    int endp = pdata.getAvailableBuiltinEndpoints();
-    this.m_mutex.lock();
-    try {
-        int auxEndp = endp;
-        auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER;
-        if (auxEndp != 0) {
-            RemoteWriterAttributes watt = new RemoteWriterAttributes();
-            watt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
-            watt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
-            watt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
-            watt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
-            watt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
-            watt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-            pdata.getBuiltinWriters().add(watt);
-            this.m_SPDPReader.matchedWriterAdd(watt);
+    public boolean removeReaderProxyData(ReaderProxyData rdata) {
+        this.m_mutex.lock();
+        logger.info("Removing ReaderProxyData: " + rdata.getGUID());
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    for (ReaderProxyData rit : pit.getReaders()) {
+                        if (rit.getGUID().equals(rdata.getGUID())) {
+                            return pit.getReaders().remove(rdata);
+                        }
+                    }
+                }
+            }
+            return false;
+        } finally {
+            this.m_mutex.unlock();
         }
-        auxEndp = endp;
-        auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
-        if (auxEndp != 0) {
+    }
+
+    public boolean removeWriterProxyData(WriterProxyData wdata) {
+        this.m_mutex.lock();
+        logger.info("Removing WriterProxyData: " + wdata.getGUID());
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    for (WriterProxyData wit : pit.getWriters()) {
+                        if (wit.getGUID().equals(wdata.getGUID())) {
+                            return pit.getWriters().remove(wdata);
+                        }
+                    }
+                }
+            }
+            return false;
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public ParticipantProxyData lookupParticipantProxyData(GUID pguid) {
+        logger.info("Lookup ParticipantProxyData: " + pguid);
+        this.m_mutex.lock();
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                if (pit.getGUID().equals(pguid)) {
+                    return pit;
+                }
+            }
+            return null;
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    private boolean createSPDPEndpoints() {
+        logger.debug("Beginning PDP Builtin Endpoints creation");
+
+        HistoryCacheAttributes whatt = new HistoryCacheAttributes();
+        whatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
+        whatt.initialReservedCaches = 20;
+        whatt.maximumReservedCaches = 100;
+
+        this.m_SPDPWriterHistory = new WriterHistoryCache(whatt);
+
+        WriterAttributes watt = new WriterAttributes();
+        watt.endpointAtt.endpointKind = EndpointKind.WRITER;
+        watt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+        watt.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
+        watt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+
+        RTPSWriter wout = this.m_RTPSParticipant.createWriter(watt, this.m_SPDPWriterHistory, null, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER), true);
+        if (wout != null) {
+            this.m_SPDPWriter = (StatelessWriter) wout;
             RemoteReaderAttributes ratt = new RemoteReaderAttributes();
-            ratt.expectsInlineQos = false;
-            ratt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
-            ratt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
-            ratt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
-            ratt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
-            ratt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
-            ratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-            pdata.getBuiltinReaders().add(ratt);
-            this.m_SPDPWriter.matchedReaderAdd(ratt);
+            for (Locator lit : this.m_builtin.getMetatrafficMulticastLocatorList().getLocators()) {
+                this.m_SPDPWriter.addLocator(ratt, lit);
+            }
+            if (this.m_builtin.getUseMandaory()) {
+                this.m_SPDPWriter.addLocator(ratt, this.m_builtin.getMandatoryMulticastLocator());
+            }
+            logger.debug("Simple PDP Builtin Writer created with GUID {}", this.m_SPDPWriter.getGuid());
+        } else {
+            logger.error("Simple PDP Builtin Writer creation failed");
+            this.m_SPDPWriterHistory = null;
+            return false;
         }
 
-        //Inform EDP of new RTPSParticipant data:
+        HistoryCacheAttributes rhatt = new HistoryCacheAttributes();
+        rhatt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PARTICIPANT_DATA_MAX_SIZE;
+        rhatt.initialReservedCaches = 250;
+        rhatt.maximumReservedCaches = 5000;
+
+        this.m_SPDPReaderHistory = new ReaderHistoryCache(rhatt);
+
+        ReaderAttributes ratt = new ReaderAttributes();
+        ratt.endpointAtt.multicastLocatorList.copy(this.m_builtin.getMetatrafficMulticastLocatorList());
+        ratt.endpointAtt.unicastLocatorList.copy(this.m_builtin.getMetatrafficUnicastLocatorList());
+        //this.m_builtin.getMetatrafficMulticastLocatorList().getLocators().get(0).setPort(5555);
+        ratt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+        ratt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+        ratt.endpointAtt.reliabilityKind = ReliabilityKind.BEST_EFFORT;
+
+        this.m_listener = new PDPSimpleListener(this);
+
+        RTPSReader rout = this.m_RTPSParticipant.createReader(ratt, this.m_SPDPReaderHistory, this.m_listener, new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER), true);
+        if (rout != null) {
+            this.m_SPDPReader = (StatelessReader) rout;
+            logger.debug("Simple PDP Builtin Reader created with GUID {}", this.m_SPDPReader.getGuid());
+        } else {
+            logger.error("Simple PDP builtin Reader creation failed");
+            this.m_SPDPReaderHistory = null;
+            this.m_listener = null;
+            return false;
+        }
+
+        logger.debug("SPDP Builtin Endpoints creation finished");
+        return true;
+    }
+
+    public boolean addReaderProxyData(ReaderProxyData rdata) {
+        return addReaderProxyData(rdata, false, null, null);
+    }
+
+    public boolean addReaderProxyData(ReaderProxyData rdata, boolean copyData) {
+        return addReaderProxyData(rdata, copyData, null, null);
+    }
+
+    public boolean addReaderProxyData(ReaderProxyData rdata, boolean copyData, ReaderProxyData returnReaderProxyData, ParticipantProxyData pdata) {
+        logger.debug("Adding ReaderProxyData: " + rdata.getGUID());
+        this.m_mutex.lock();
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    if (pit.getGUID().getGUIDPrefix().equals(rdata.getGUID().getGUIDPrefix())) {
+                        // Check that it is not already
+                        for (ReaderProxyData rit : pit.getReaders()) {
+                            if (rit.getGUID().getEntityId().equals(rdata.getGUID().getEntityId())) {
+                                if (copyData) {
+                                    returnReaderProxyData.copy(rit);
+                                    pdata.copy(pit);
+                                }
+                                return false;
+                            }
+                        }
+                        if (copyData) {
+                            ReaderProxyData newRPD = new ReaderProxyData();
+                            newRPD.copy(rdata);
+                            pit.getReaders().add(newRPD);
+                            returnReaderProxyData.copy(newRPD);
+                            pdata.copy(pit);
+                        } else {
+                            pit.getReaders().add(rdata);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public boolean addWriterProxyData(WriterProxyData wdata) {
+        return addWriterProxyData(wdata, false, null, null);
+    }
+
+    public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData) {
+        return addWriterProxyData(wdata, copyData, null, null);
+    }
+
+    public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData, WriterProxyData returnWriterProxyData, ParticipantProxyData pdata) {
+        logger.debug("Adding WriterProxyData: " + wdata.getGUID());
+        this.m_mutex.lock();
+        try {
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    if (pit.getGUID().getGUIDPrefix().equals(wdata.getGUID().getGUIDPrefix())) {
+                        // Check that it is not already
+                        for (WriterProxyData rit : pit.getWriters()) {
+                            if (rit.getGUID().getEntityId().equals(wdata.getGUID().getEntityId())) {
+                                if (copyData) {
+                                    returnWriterProxyData.copy(rit);
+                                    pdata.copy(pit);
+                                }
+                                return false;
+                            }
+                        }
+                        if (copyData) {
+                            WriterProxyData newWPD = new WriterProxyData();
+                            newWPD.copy(wdata);
+                            pit.getWriters().add(newWPD);
+                            returnWriterProxyData.copy(newWPD);
+                            pdata.copy(pit);
+                        } else {
+                            pit.getWriters().add(wdata);
+                        }
+                        return true;
+                    }
+                }
+            }
+            return false;
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public void assignRemoteEndpoints(ParticipantProxyData pdata) {
+        logger.debug("Assign remote Endpoints for RTPSParticipant {}", pdata.getGUID().getGUIDPrefix());
+        int endp = pdata.getAvailableBuiltinEndpoints();
+        this.m_mutex.lock();
+        try {
+            int auxEndp = endp;
+            auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER;
+            if (auxEndp != 0) {
+                RemoteWriterAttributes watt = new RemoteWriterAttributes();
+                watt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
+                watt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
+                watt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
+                watt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
+                watt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
+                watt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+                pdata.getBuiltinWriters().add(watt);
+                this.m_SPDPReader.matchedWriterAdd(watt);
+            }
+            auxEndp = endp;
+            auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
+            if (auxEndp != 0) {
+                RemoteReaderAttributes ratt = new RemoteReaderAttributes();
+                ratt.expectsInlineQos = false;
+                ratt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
+                ratt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
+                ratt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
+                ratt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
+                ratt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
+                ratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+                pdata.getBuiltinReaders().add(ratt);
+                this.m_SPDPWriter.matchedReaderAdd(ratt);
+            }
+
+            //Inform EDP of new RTPSParticipant data:
 
             if (this.m_EDP != null) {
                 this.m_EDP.assignRemoteEndpoints(pdata);
@@ -545,196 +521,196 @@ public void assignRemoteEndpoints(ParticipantProxyData pdata) {
             if (this.m_builtin.getWLP() != null) {
                 this.m_builtin.getWLP().assignRemoteEndpoints(pdata);
             }
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public void removeRemoteEndpoints(ParticipantProxyData pdata) {
-    logger.info("For RTPSParticipant: " + pdata.getGUID());
-    this.m_mutex.lock();
-    try {
-        for (RemoteReaderAttributes it : pdata.getBuiltinReaders()) {
-            if (it.guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER)) && this.m_SPDPWriter != null) {
-                this.m_SPDPWriter.matchedReaderRemove(it);
-            }
-        }
-        for (RemoteWriterAttributes it : pdata.getBuiltinWriters()) {
-            if (it.guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER)) && this.m_SPDPReader != null) {
-                this.m_SPDPReader.matchedWriterRemove(it);
-            }
-        }
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public boolean removeRemoteParticipant(GUID partGUID) {
-    logger.info("Removing RemoteParticipant: " + partGUID);
-    synchronized (this.m_guardW) {
-        synchronized (this.m_guardR) {
-            ParticipantProxyData pdata = null;
-            this.m_mutex.lock();
-            try {
-                for (ParticipantProxyData pit : this.m_participantProxies) {
-                    synchronized(this.m_guardMutex) {
-                        if (pit.getGUID().equals(partGUID)) {
-                            pdata = pit;
-                            this.m_participantProxies.remove(pit);
-                            break;
-                        }
-                    }
-                }
-                if (pdata != null) {
-                    pdata.getMutex().lock();
-                    try {
-                        if (this.m_EDP != null) {
-                            for (ReaderProxyData rit : pdata.getReaders()) {
-                                this.m_EDP.unpairReaderProxy(rit);
-                            }
-                            for (WriterProxyData wit : pdata.getWriters()) {
-                                this.m_EDP.unpairWriterProxy(wit);
-                            }
-                        }
-                        if (this.m_builtin.getWLP() != null) {
-                            this.m_builtin.getWLP().removeRemoteEndpoints(pdata);
-                        }
-                        this.m_EDP.removeRemoteEndpoints(pdata);
-                        this.removeRemoteEndpoints(pdata);
-                        for (CacheChange it : this.m_SPDPReaderHistory.getChanges()) {
-                            if (it.getInstanceHandle().equals(pdata.getKey())) {
-                                this.m_SPDPReaderHistory.removeChange(it);
-                                break;
-                            }
-                        }
-                        return true;
-                    } finally {
-                        pdata.getMutex().unlock();
-                    }
-                }
-            } finally {
-                this.m_mutex.unlock();
-            }
+        } finally {
+            this.m_mutex.unlock();
         }
     }
-    return false;
-}
 
-public void assertRemoteParticipantLiveliness(GUIDPrefix guidPrefix) {
-    this.m_mutex.lock();
-    try {
-        for (ParticipantProxyData it : this.m_participantProxies) {
-            synchronized(this.m_guardMutex) {
-                if (it.getGUID().getGUIDPrefix().equals(guidPrefix)) {
-                    logger.info("RTPSParticipant " + it.getGUID() + " is Alive");
-                    it.setIsAlive(true);
-                }
-            }
-        }
-    } finally {
-        this.m_mutex.unlock();
-    }
-}
-
-public void assertLocalWritersLiveliness(LivelinessQosPolicyKind kind) {
-    logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "") + 
-            (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
-    this.m_mutex.lock();
-    try {
-        this.m_participantProxies.get(0).getMutex().lock();
+    public void removeRemoteEndpoints(ParticipantProxyData pdata) {
+        logger.info("For RTPSParticipant: " + pdata.getGUID());
+        this.m_mutex.lock();
         try {
-            for (WriterProxyData wit : this.m_participantProxies.get(0).getWriters()) {
-                if (wit.getQos().liveliness.kind == kind) {
-                    logger.info("Local writer " + wit.getGUID().getEntityId() + " marked as ALIVE");
-                    wit.setIsAlive(true);
+            for (RemoteReaderAttributes it : pdata.getBuiltinReaders()) {
+                if (it.guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER)) && this.m_SPDPWriter != null) {
+                    this.m_SPDPWriter.matchedReaderRemove(it);
+                }
+            }
+            for (RemoteWriterAttributes it : pdata.getBuiltinWriters()) {
+                if (it.guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER)) && this.m_SPDPReader != null) {
+                    this.m_SPDPReader.matchedWriterRemove(it);
                 }
             }
         } finally {
-            this.m_participantProxies.get(0).getMutex().unlock();
+            this.m_mutex.unlock();
         }
-    } finally {
-        this.m_mutex.unlock();
     }
-}
 
-public void assertRemoteWritersLiveliness(GUIDPrefix guidP, LivelinessQosPolicyKind kind) {
-    this.m_mutex.lock();
-    try {
+    public boolean removeRemoteParticipant(GUID partGUID) {
+        logger.info("Removing RemoteParticipant: " + partGUID);
+        synchronized (this.m_guardW) {
+            synchronized (this.m_guardR) {
+                ParticipantProxyData pdata = null;
+                this.m_mutex.lock();
+                try {
+                    for (ParticipantProxyData pit : this.m_participantProxies) {
+                        synchronized(this.m_guardMutex) {
+                            if (pit.getGUID().equals(partGUID)) {
+                                pdata = pit;
+                                this.m_participantProxies.remove(pit);
+                                break;
+                            }
+                        }
+                    }
+                    if (pdata != null) {
+                        pdata.getMutex().lock();
+                        try {
+                            if (this.m_EDP != null) {
+                                for (ReaderProxyData rit : pdata.getReaders()) {
+                                    this.m_EDP.unpairReaderProxy(rit);
+                                }
+                                for (WriterProxyData wit : pdata.getWriters()) {
+                                    this.m_EDP.unpairWriterProxy(wit);
+                                }
+                            }
+                            if (this.m_builtin.getWLP() != null) {
+                                this.m_builtin.getWLP().removeRemoteEndpoints(pdata);
+                            }
+                            this.m_EDP.removeRemoteEndpoints(pdata);
+                            this.removeRemoteEndpoints(pdata);
+                            for (CacheChange it : this.m_SPDPReaderHistory.getChanges()) {
+                                if (it.getInstanceHandle().equals(pdata.getKey())) {
+                                    this.m_SPDPReaderHistory.removeChange(it);
+                                    break;
+                                }
+                            }
+                            return true;
+                        } finally {
+                            pdata.getMutex().unlock();
+                        }
+                    }
+                } finally {
+                    this.m_mutex.unlock();
+                }
+            }
+        }
+        return false;
+    }
+
+    public void assertRemoteParticipantLiveliness(GUIDPrefix guidPrefix) {
+        this.m_mutex.lock();
+        try {
+            for (ParticipantProxyData it : this.m_participantProxies) {
+                synchronized(this.m_guardMutex) {
+                    if (it.getGUID().getGUIDPrefix().equals(guidPrefix)) {
+                        logger.info("RTPSParticipant " + it.getGUID() + " is Alive");
+                        it.setIsAlive(true);
+                    }
+                }
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public void assertLocalWritersLiveliness(LivelinessQosPolicyKind kind) {
         logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "") + 
                 (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
-        for (ParticipantProxyData pit : this.m_participantProxies) {
-            pit.getMutex().lock();
+        this.m_mutex.lock();
+        try {
+            this.m_participantProxies.get(0).getMutex().lock();
             try {
-                for (WriterProxyData wit : pit.getWriters()) {
+                for (WriterProxyData wit : this.m_participantProxies.get(0).getWriters()) {
                     if (wit.getQos().liveliness.kind == kind) {
+                        logger.info("Local writer " + wit.getGUID().getEntityId() + " marked as ALIVE");
                         wit.setIsAlive(true);
-                        this.m_RTPSParticipant.getParticipantMutex().lock();
-                        try {
-                            for (RTPSReader rit : this.m_RTPSParticipant.getUserReaders()) {
-                                if (rit.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
-                                    // Not supported in this version
-                                    /*StatefulReader sfr = (StatefulReader) rit;
+                    }
+                }
+            } finally {
+                this.m_participantProxies.get(0).getMutex().unlock();
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public void assertRemoteWritersLiveliness(GUIDPrefix guidP, LivelinessQosPolicyKind kind) {
+        this.m_mutex.lock();
+        try {
+            logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "") + 
+                    (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
+            for (ParticipantProxyData pit : this.m_participantProxies) {
+                pit.getMutex().lock();
+                try {
+                    for (WriterProxyData wit : pit.getWriters()) {
+                        if (wit.getQos().liveliness.kind == kind) {
+                            wit.setIsAlive(true);
+                            this.m_RTPSParticipant.getParticipantMutex().lock();
+                            try {
+                                for (RTPSReader rit : this.m_RTPSParticipant.getUserReaders()) {
+                                    if (rit.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                                        // Not supported in this version
+                                        /*StatefulReader sfr = (StatefulReader) rit;
                                         WriterProxy wp = new WriterProxy();
                                         if (sfr.matchedWriterLookup(wit.getGUID(), wp)) {
                                             wp.assertLiveliness();
                                             continue;
                                         }*/
+                                    }
                                 }
+                            } finally {
+                                this.m_RTPSParticipant.getParticipantMutex().unlock();
                             }
-                        } finally {
-                            this.m_RTPSParticipant.getParticipantMutex().unlock();
                         }
+                        break;
                     }
-                    break;
+                } finally {
+                    pit.getMutex().unlock();
                 }
-            } finally {
-                pit.getMutex().unlock();
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    public boolean newRemoteEndpointStaticallyDiscovered(GUID pguid, short userDefienedId, EndpointKind kind) {
+        ParticipantProxyData pdata = lookupParticipantProxyData(pguid);
+        if (pdata != null) {
+            if (kind == EndpointKind.WRITER) {
+                ((EDPStatic) this.m_EDP).newRemoteWriter(pdata, userDefienedId, new EntityId());
+            } else {
+                ((EDPStatic) this.m_EDP).newRemoteReader(pdata, userDefienedId, new EntityId());
             }
         }
-    } finally {
-        this.m_mutex.unlock();
+        return false;
     }
-}
 
-public boolean newRemoteEndpointStaticallyDiscovered(GUID pguid, short userDefienedId, EndpointKind kind) {
-    ParticipantProxyData pdata = lookupParticipantProxyData(pguid);
-    if (pdata != null) {
-        if (kind == EndpointKind.WRITER) {
-            ((EDPStatic) this.m_EDP).newRemoteWriter(pdata, userDefienedId, new EntityId());
-        } else {
-            ((EDPStatic) this.m_EDP).newRemoteReader(pdata, userDefienedId, new EntityId());
-        }
+    public EDP getEDP() {
+        return this.m_EDP;
     }
-    return false;
-}
 
-public EDP getEDP() {
-    return this.m_EDP;
-}
+    public BuiltinProtocols getBuiltinProtocols() {
+        return this.m_builtin;
+    }
 
-public BuiltinProtocols getBuiltinProtocols() {
-    return this.m_builtin;
-}
+    public Lock getMutex() {
+        return m_mutex;
+    }
 
-public Lock getMutex() {
-    return m_mutex;
-}
+    public List<ParticipantProxyData> getParticipantProxies() {
+        return m_participantProxies;
+    }
 
-public List<ParticipantProxyData> getParticipantProxies() {
-    return m_participantProxies;
-}
+    public ReaderHistoryCache getSPDPReaderHistory() {
+        return this.m_SPDPReaderHistory;
+    }
 
-public ReaderHistoryCache getSPDPReaderHistory() {
-    return this.m_SPDPReaderHistory;
-}
+    public RTPSParticipant getRTPSParticipant() {
+        return this.m_RTPSParticipant;
+    }
 
-public RTPSParticipant getRTPSParticipant() {
-    return this.m_RTPSParticipant;
-}
-
-public BuiltinAttributes getDiscovery() {
-    return this.m_discovery;
-}
+    public BuiltinAttributes getDiscovery() {
+        return this.m_discovery;
+    }
 
 
 

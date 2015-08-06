@@ -148,7 +148,7 @@ public class MessageReceiver {
 
     public void processCDRMessage(GUIDPrefix RTPSParticipantGuidPrefix, Locator loc, RTPSMessage msg) {
         if (msg.getBuffer().length < RTPSMessageHeader.RTPS_MESSAGE_HEADER_SIZE) {
-            logger.warn("Received message too short, ignoring");
+            logger.warn("Received message is too short, ignoring");
             return;
         }
 
@@ -202,9 +202,9 @@ public class MessageReceiver {
 
             case DATA:
                 if (!this.m_destGuidPrefix.equals(RTPSParticipantGuidPrefix)) {
-                    logger.info("Data Submsg ignored, DST is another RTPSParticipant");
+                    logger.debug("Data Submsg ignored, DST is another RTPSParticipant");
                 } else {
-                    logger.info("Data Submsg received, processing...");
+                    logger.debug("Data Submsg received, processing...");
                     valid = processSubmessageData(msg, subMsg);
                     msg.addSubmessage(subMsg);
                 }
@@ -272,9 +272,9 @@ public class MessageReceiver {
 
             case INFO_TS:
                 if (!this.m_destGuidPrefix.equals(RTPSParticipantGuidPrefix)) {
-                    logger.info("InfoTS Submsg ignored, DST is another RTPSParticipant"); 
+                    logger.debug("InfoTS Submsg ignored, DST is another RTPSParticipant"); 
                 } else {
-                    logger.info("InfoTS Submsg received, processing...");
+                    logger.debug("InfoTS Submsg received, processing...");
                     valid = processSubmessageInfoTs(msg, subMsg);
                     msg.addSubmessage(subMsg);
                 }
@@ -309,7 +309,7 @@ public class MessageReceiver {
         }
 
         if (!header.getProtocolName().equals("RTPS")) {
-            logger.warn("Not RTPS String in header");
+            logger.debug("Message received with no RTPS string in header, ignoring...");
             return false;
         }
 
@@ -429,7 +429,7 @@ public class MessageReceiver {
                 inlineQosSize = paramList.getListSize(); // TODO Check this
 
                 if (inlineQosSize <= 0) {
-                    logger.info("SubMessage Data ERROR, Inline Qos ParameterList error");
+                    logger.error("SubMessage Data ERROR, Inline Qos ParameterList error");
                     return false;
                 }
             }
@@ -454,16 +454,18 @@ public class MessageReceiver {
                     //payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
                 } else if (keyFlag) {
                     // TODO Complete this
+                    logger.error("COMPLETE THIS");
+                    
                 }
 
             }
 
-            logger.info("FROM Writer " + ch.getWriterGUID() + "; possible RTPSReaders: " + this.m_listenResource.getAssocReaders().size());
+            logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
             
             for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
                 WriterProxy proxy = new WriterProxy();
                 if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), proxy)) {
-                    logger.info("Trying to add change " + ch.getSequenceNumber().toLong() + " TO Reader: " + it.getGuid().getEntityId());
+                    logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
                     CacheChange changeToAdd = it.reserveCache();
                     //if (it.reserveCache(changeToAdd)) {
                     if (changeToAdd != null) {
@@ -486,7 +488,7 @@ public class MessageReceiver {
                             this.m_guardWriterMutex.lock();
                             proxy.assertLiveliness();
                             if (!it.changeReceived(changeToAdd, proxy)) {
-                                logger.info("MessageReceiver not adding CacheChange");
+                                logger.debug("MessageReceiver not adding CacheChange");
                                 it.releaseCache(changeToAdd);
                             }
                         } finally {
@@ -494,7 +496,7 @@ public class MessageReceiver {
                         }
                     } else {
                         if (!it.changeReceived(changeToAdd, null)) {
-                            logger.info("MessageReceiver not adding CacheChange");
+                            logger.debug("MessageReceiver not adding CacheChange");
                             it.releaseCache(changeToAdd);
                             if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
                                 this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(this.m_sourceGuidPrefix);

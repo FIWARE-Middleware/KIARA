@@ -98,11 +98,8 @@ public class Publisher<T> {
     }
     
     public void destroy() {
-        logger.info("Publisher destruction");
+        logger.info("Destroying Publisher (Writer GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSWriter(this.m_writer);
-        /*if (this.m_userPublisher != null) {
-            this.m_userPublisher.destroy();
-        }*/
     }
     
     public boolean write(T data) {

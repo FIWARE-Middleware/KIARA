@@ -165,7 +165,7 @@ public class RTPSParticipant {
             LocatorList defCopy = new LocatorList(this.m_att.defaultUnicastLocatorList);
             this.m_att.defaultUnicastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
-                logger.info("Creating listener for locator: {}", lit);
+                logger.debug("Creating USER Unicast Data listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this, ++this.m_threadID, true);
                 if (lr.initThread(this,  lit,  this.m_att.listenSocketBufferSize, false, false)) {
                     this.m_defaultUnicastLocatorList = lr.getListenLocators();
@@ -174,13 +174,13 @@ public class RTPSParticipant {
             }
             
             if (!hasLocatorsDefined) {
-                logger.warn(this.m_att.getName() + " Created with NO default Unicast Locator List, adding Locators:");
+                logger.warn(this.m_att.getName() + " Created with NO default Unicast Locator List, adding Locators: {}", this.m_defaultUnicastLocatorList);
             }
             
             defCopy = new LocatorList(this.m_att.defaultMulticastLocatorList);
             this.m_att.defaultMulticastLocatorList.clear();
             for (Locator lit : defCopy.getLocators()) {
-                logger.info("Creating listener for locator: {}", lit);
+                logger.debug("Creating USER Multicast Data listener for locator: {}", lit);
                 ListenResource lr = new ListenResource(this,  ++this.m_threadID, true);
                 if (lr.initThread(this, lit, this.m_att.listenSocketBufferSize, true, false)) {
                     this.m_defaultMulticastLocatorList = lr.getListenLocators();
@@ -188,11 +188,11 @@ public class RTPSParticipant {
                 }
             }
             
-            logger.info("RTPSParticipant with guidPrefix " + this.m_guid.getGUIDPrefix());
+            logger.info("RTPSParticipant {} with guidPrefix {}", m_att.getName(), this.m_guid.getGUIDPrefix());
             this.m_builtinProtocols = new BuiltinProtocols();
             if (!this.m_builtinProtocols.initBuiltinProtocols(this, this.m_att.builtinAtt)) {
                 logger.warn("The builtin protocols were not corecctly initialized"); // TODO Check if this should be logger.error
-                throw new Exception("The builtin protocols were not corecctly initialized");
+                throw new Exception("The builtin protocols were not correctly initialized");
             }
             
         } finally {
@@ -241,7 +241,12 @@ public class RTPSParticipant {
     public RTPSWriter createWriter(WriterAttributes watt, WriterHistoryCache history, WriterListener listener, EntityId entityId, boolean isBuiltin) {
         
         String type = watt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE ? "RELIABLE" : "BEST_EFFORT";
-        logger.info("Participant of type " + type);
+        
+        if (isBuiltin) {
+            logger.debug("Creating {} Writer", type);
+        } else {
+            logger.info("Creating {} Writer", type);
+        }
         
         EntityId entId = new EntityId();
         if (entityId.equals(new EntityId())) { // Unknown
@@ -260,7 +265,7 @@ public class RTPSParticipant {
             
             byte[] bytes = ByteBuffer.allocate(4).putInt(idnum).array();
             for (int i=0; i < 3; ++i) {
-                entId.setValue(2-i, bytes[i]);
+                entId.setValue(i, bytes[i+1]);
             }
             
             if (this.existsEntityId(entId, EndpointKind.WRITER)) {
@@ -281,13 +286,18 @@ public class RTPSParticipant {
             return null;
         }
         
-        RTPSWriter writer;
+        RTPSWriter writer = null;
         GUID guid = new GUID(this.m_guid.getGUIDPrefix(), entId);
 
         if (watt.endpointAtt.reliabilityKind == ReliabilityKind.BEST_EFFORT) {
             writer = new StatelessWriter(this, guid, watt, history, listener);
-        } else {
+        } else if (watt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE) {
             writer = new StatefulWriter(this, guid, watt, history, listener);
+        }
+        
+        if (writer == null) {
+            logger.error("Error creating Writer");
+            return null;
         }
         
         if (watt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE) {
@@ -306,13 +316,23 @@ public class RTPSParticipant {
             this.m_mutex.unlock();
         }
         
+        if (isBuiltin) {
+            logger.debug("Writer creation finished successfully");
+        } else {
+            logger.info("Writer creation finished successfully");
+        }
+        
         return writer;
     }
     
     public RTPSReader createReader(ReaderAttributes ratt, ReaderHistoryCache history, ReaderListener listener, EntityId entityId, boolean isBuiltin) {
         
         String type = ratt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE ? "RELIABLE" : "BEST_EFFORT";
-        logger.info("Participant of type " + type);
+        if (isBuiltin) {
+            logger.debug("Creating {} Reader", type);
+        } else {
+            logger.info("Creating {} Reader", type);
+        }
         
         EntityId entId = new EntityId();
         
@@ -363,6 +383,7 @@ public class RTPSParticipant {
             reader = new StatefulReader(this, guid, ratt, history, listener);
         }
         if (reader == null) {
+            logger.error("Error creating Reader");
             return null;
         }
         
@@ -383,6 +404,12 @@ public class RTPSParticipant {
             
         } finally {
             this.m_mutex.unlock();
+        }
+        
+        if (isBuiltin) {
+            logger.debug("Reader creation finished successfully");
+        } else {
+            logger.info("Reader creation finished successfully");
         }
         
         return reader;
@@ -556,13 +583,16 @@ public class RTPSParticipant {
     
     public boolean deleteUserEndpoint(Endpoint endpoint) {
         boolean found = false;
+        GUID endpointGUID = null;
         if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
             this.m_mutex.lock();
             try {
                 for (int i=0; i < this.m_userWriterList.size(); ++i) {
                     RTPSWriter wit = this.m_userWriterList.get(i);
                     if (wit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+                        logger.info("Deleting Writer {} from RTPSParticipant", wit.getGuid());
                         this.m_userWriterList.remove(wit);
+                        endpointGUID = wit.getGuid();
                         found = true;
                         i--;
                         break;
@@ -577,7 +607,9 @@ public class RTPSParticipant {
                 for (int i=0; i < this.m_userReaderList.size(); ++i) {
                     RTPSReader rit = this.m_userReaderList.get(i);
                     if (rit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
+                        logger.info("Deleting Reader {} from RTPSParticipant", rit.getGuid());
                         this.m_userReaderList.remove(rit);
+                        endpointGUID = rit.getGuid();
                         found = true;
                         i--;
                         break;
@@ -627,6 +659,8 @@ public class RTPSParticipant {
         } finally {
             this.m_mutex.unlock();
         }
+        
+        logger.info("Endpoint {} successfully deleted from RTPSParticipant", endpointGUID);
         
         return true;
         

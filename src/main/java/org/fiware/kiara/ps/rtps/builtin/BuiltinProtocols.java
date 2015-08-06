@@ -78,7 +78,7 @@ public class BuiltinProtocols {
     }
 
     public boolean initBuiltinProtocols(RTPSParticipant rtpsParticipant, BuiltinAttributes builtinAtt) {
-        logger.info("Starting builtin endpoints");
+        logger.debug("Starting builtin endpoints");
         this.m_participant = rtpsParticipant;
         this.m_att = builtinAtt;
         
@@ -128,7 +128,7 @@ public class BuiltinProtocols {
             this.m_PDP.resetParticipantAnnouncement();
         }
         
-        logger.info("Builtin protocols have been initialized");
+        logger.debug("Builtin protocols have been initialized");
         
         return true;
     }
@@ -195,6 +195,8 @@ public class BuiltinProtocols {
     public boolean removeLocalWriter(RTPSWriter writer) {
         boolean ok = false;
         
+        logger.debug("Removing Writer {} from builtin protocols", writer.getGuid());
+        
         if (this.m_WLP != null) {
             ok |= this.m_WLP.removeLocalWriter(writer);
         }
@@ -203,15 +205,21 @@ public class BuiltinProtocols {
             ok |= this.m_PDP.getEDP().removeLocalWriter(writer);
         }
         
+        logger.debug("Writer {} successfully removed from builtin protocols", writer.getGuid());
+        
         return ok;
     }
 
     public boolean removeLocalReader(RTPSReader reader) {
         boolean ok = false;
         
+        logger.debug("Removing Writer {} from builtin protocol", reader.getGuid());
+        
         if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
             ok |= this.m_PDP.getEDP().removeLocalReader(reader);
         }
+        
+        logger.debug("Reader {} successfully removed from builtin protocols", reader.getGuid());
         
         return ok;
     }

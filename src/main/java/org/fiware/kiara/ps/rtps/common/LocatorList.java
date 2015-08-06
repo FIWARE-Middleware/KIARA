@@ -126,5 +126,15 @@ public class LocatorList implements Iterable<Locator> {
     public Iterator<Locator> iterator() {
         return m_locators.iterator();
     }
+    
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer("");
+        for (Locator loc : this.m_locators) {
+            sb.append(loc.toString());
+            sb.append(", ");
+        }
+        return sb.toString();
+    }
 
 }

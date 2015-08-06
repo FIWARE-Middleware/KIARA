@@ -159,7 +159,7 @@ public class SendResource {
                         sendSocketV4 = (DatagramChannel) b.bind(sendEndpoint).sync().channel();
                         notBind = false;
                     } catch (Exception e) {
-                        logger.info("UDPv4 Error binding endpoint: ({}) error: {}", sendEndpoint.toString(), e);
+                        logger.debug("UDPv4 Error binding endpoint: ({}) error: {}", sendEndpoint.toString(), e);
                         sendLocV4.increasePort();
                     }
 
@@ -170,7 +170,7 @@ public class SendResource {
                     assert sendSocketV4 != null;
                     try {
                         int size = sendSocketV4.config().getOption(ChannelOption.SO_SNDBUF);
-                        logger.info("UDPv4: " + sendSocketV4.localAddress() + " || State: " + sendSocketV4.isOpen() + " || Buffer size: " + size);
+                        logger.debug("UDPv4: {} || State: {} || Buffer size: {}", sendSocketV4.isOpen(), size, sendSocketV4.localAddress());
                         m_sendLocatorIPv4.add(sendLocV4);
                         m_sendSocketIPv4.add(sendSocketV4);
                         initialized = true;
@@ -218,7 +218,7 @@ public class SendResource {
                         sendSocketV6 = (DatagramChannel) b.bind(sendEndpoint).sync().channel();
                         notBind = false;
                     } catch (Exception e) {
-                        logger.info("UDPv6 Error binding endpoint: ({}) error: {}", sendEndpoint.toString(), e);
+                        logger.debug("UDPv6 Error binding endpoint: ({}) error: {}", sendEndpoint.toString(), e);
                         sendLocV6.increasePort();
                     }
 
@@ -229,7 +229,7 @@ public class SendResource {
                     assert sendSocketV6 != null;
                     try {
                         int size = sendSocketV6.config().getOption(ChannelOption.SO_SNDBUF);
-                        logger.info("UDPv6: {} || State: {} || Buffer size: {}", sendSocketV6.localAddress(), sendSocketV6.isOpen(), size);
+                        logger.debug("UDPv6: {} || State: {} || Buffer size: {}", sendSocketV6.localAddress(), sendSocketV6.isOpen(), size);
                         this.m_sendLocatorIPv6.add(sendLocV6);
                         m_sendSocketIPv6.add(sendSocketV6);
                         initialized = true;
@@ -283,7 +283,7 @@ public class SendResource {
                 }
 
                 for (DatagramChannel sockit : m_sendSocketIPv4) {
-                    logger.info("UDPv4: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV4, sockit.localAddress());
+                    logger.debug("UDPv4 Sending {} bytes TO {} FROM {}", msg.getSize(), m_sendEndpointV4, sockit.localAddress());
                     if (m_sendEndpointV4.getPort() > 0) {
                         m_bytesSent = 0;
                         if (m_sendNext) {
@@ -302,7 +302,7 @@ public class SendResource {
                         } else {
                             m_sendNext = true;
                         }
-                        logger.info("SENT {}", msg.getBuffer().length);
+                        logger.debug("UDPv4 Sent {} bytes TO endpoint {}", msg.getBuffer().length, m_sendEndpointV4);
                     } else if (m_sendEndpointV4.getPort() <= 0) {
                         logger.warn("Port invalid: {}", m_sendEndpointV4.getPort());
                     } else {
@@ -327,7 +327,8 @@ public class SendResource {
                 }
 
                 for (DatagramChannel sockit : m_sendSocketIPv6) {
-                    logger.info("UDPv6: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV6, sockit.localAddress());
+                    //logger.debug("UDPv6: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV6, sockit.localAddress());
+                    logger.debug("UDPv6 Sending {} bytes TO {} FROM {}", msg.getSize(), m_sendEndpointV6, sockit.localAddress());
                     if (m_sendEndpointV6.getPort() > 0) {
                         m_bytesSent = 0;
                         if (m_sendNext) {
@@ -345,7 +346,7 @@ public class SendResource {
                         } else {
                             m_sendNext = true;
                         }
-                        logger.info("SENT {}", msg.getBuffer().length);
+                        logger.debug("UDPv6 Sent {} bytes TO endpoint {}", msg.getBuffer().length, m_sendEndpointV6);
                     } else if (m_sendEndpointV6.getPort() <= 0) {
                         logger.warn("Port invalid: {}", m_sendEndpointV6.getPort());
                     } else {
@@ -353,7 +354,7 @@ public class SendResource {
                     }
                 }
             } else {
-                logger.info("Destination {} not valid for this ListenResource", loc);
+                logger.debug("Destination {} not valid for this ListenResource (Use IPv4: {}, Use IPv6: {})", loc, this.m_useIPv4, this.m_useIPv6);
             }
 
         } finally {

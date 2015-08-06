@@ -120,7 +120,7 @@ public class Participant/*<T extends Serializable>*/ {
     public Publisher<?> createPublisher(PublisherAttributes att, PublisherListener listener) {
         SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
-        logger.info("Creating Publisher in Topic: " + att.topic.topicName);
+        logger.info("Creating Publisher in Topic " + att.topic.topicName);
         
         if (type == null) {
             logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
@@ -187,6 +187,8 @@ public class Participant/*<T extends Serializable>*/ {
         this.m_publishers.add(publisher);
         
         this.m_rtpsParticipant.registerWriter(writer, att.topic, att.qos);
+        
+        logger.info("Publisher {} created in topic {}", publisher.getGuid(), att.topic.topicName);
         
         return publisher;
     }

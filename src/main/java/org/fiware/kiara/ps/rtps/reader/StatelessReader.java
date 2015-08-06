@@ -78,7 +78,7 @@ public class StatelessReader extends RTPSReader {
                     return false;
                 }
             }
-            logger.info("Writer " + wdata.guid + " added to " + this.m_guid.getEntityId());
+            logger.debug("Writer {} added to {}", wdata.guid, this.m_guid.getEntityId());
             this.m_matchedWriters.add(wdata);
             this.m_acceptMessagesFromUnknownWriters = false;
             return true;

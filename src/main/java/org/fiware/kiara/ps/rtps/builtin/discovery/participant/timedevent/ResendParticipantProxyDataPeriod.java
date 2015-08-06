@@ -26,14 +26,14 @@ public class ResendParticipantProxyDataPeriod extends TimedEvent {
     @Override
     public void event(EventCode code, String msg) {
         if (code == EventCode.EVENT_SUCCESS) {
-            logger.info("Resend Discovery Data ");
+            logger.debug("Resend Discovery Data ");
             this.m_PDP.getLocalParticipantProxyData().increaseManualLivelinessCount();
             this.m_PDP.announceParticipantState(false);
         } else if (code == EventCode.EVENT_ABORT) {
-            logger.info("Response Data aborted");
+            logger.debug("Response Data aborted");
             this.stopSemaphorePost();
         } else {
-            logger.info("MSG: " + msg);
+            logger.debug("MSG: {}", msg);
         }
     }
 

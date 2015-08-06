@@ -61,7 +61,7 @@ public abstract class RTPSReader extends Endpoint {
         this.m_listener = listener;
         this.m_expectsInlineQos = att.expectsInlineQos;
         
-        logger.info("RTPSReader created correctly");
+        logger.debug("RTPSReader created successfully");
     }
 
     public abstract boolean matchedWriterAdd(RemoteWriterAttributes wdata);

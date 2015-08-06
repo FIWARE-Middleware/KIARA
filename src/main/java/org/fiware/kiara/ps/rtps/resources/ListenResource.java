@@ -114,7 +114,7 @@ public class ListenResource {
 
     public void destroy() {
         if (this.m_thread != null) {
-            logger.info("Removing listening thread " + this.m_thread.getId());
+            logger.debug("Removing listening thread {}", this.m_thread.getId());
             try {
                 this.m_listenChannel.socket().close();
                 this.m_listenChannel.disconnect();
@@ -123,7 +123,7 @@ public class ListenResource {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            logger.info("Joining with thread");
+            logger.debug("Joining thread {}", this.m_thread.getId());
             try {
                 this.m_receptionThread.terminate();
                 this.m_thread.join();
@@ -131,7 +131,7 @@ public class ListenResource {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            logger.info("Listening thread closed successfully");
+            logger.debug("Listening thread {} closed successfully", this.m_thread.getId());
         }
     }
 
@@ -164,7 +164,7 @@ public class ListenResource {
                 }
                 if (!found) {
                     this.m_assocWriters.add((RTPSWriter) endpoint);
-                    logger.info(endpoint.getGuid().getEntityId()+ " added to listen locators list"); 
+                    logger.debug("Endpoint {} added to listen locators list", endpoint.getGuid().getEntityId()); 
                     //this.m_mutex.unlock();
                     return true;
                 }
@@ -177,7 +177,7 @@ public class ListenResource {
                 }
                 if (!found) {
                     this.m_assocReaders.add((RTPSReader) endpoint);
-                    logger.info("Endpoint " + endpoint.getGuid().getEntityId()+ " added to listemn locators list.");
+                    logger.debug("Endpoint {} added to listen locators list", endpoint.getGuid().getEntityId());
                     //this.m_mutex.unlock();
                     return true;
                 }
@@ -230,7 +230,7 @@ public class ListenResource {
 
     public void getLocatorAdresses(Locator loc) {
         if (!loc.isAddressDefined()) { // Listen in all interfaces
-            logger.info("Defined Locastor IP with 0s (listen to all interfaces), listening to all interfaces"); 
+            logger.debug("Defined Locastor IP with 0s (listen to all interfaces), listening to all interfaces"); 
             LocatorList myIP = null;
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
                 myIP = IPFinder.getIPv4Adress();
@@ -274,7 +274,7 @@ public class ListenResource {
     }
 
     public boolean initThread(RTPSParticipant participant, Locator loc, int listenSocketSize, boolean isMulticast, boolean isFixed) {
-        logger.info("Creating ListenResource in " + loc + " with ID " + this.m_ID); 
+        logger.debug("Creating ListenResource in " + loc + " with ID " + this.m_ID); 
 
         this.m_RTPSParticipant = participant;
         if (!loc.isAddressDefined() && isMulticast) {
@@ -286,7 +286,7 @@ public class ListenResource {
 
         this.getLocatorAdresses(loc);
 
-        logger.info("Initializing in : " + this.m_listenLocators); 
+        logger.debug("Initializing in : " + this.m_listenLocators); // TODO SOme toString for ListenLocators
 
         InetAddress multicastAddress = null;
 
@@ -374,7 +374,7 @@ public class ListenResource {
                     }*/
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
-                    logger.info("Tried port {}, trying next...", this.m_listenEndpoint.port);
+                    logger.debug("Tried port {}, trying next...", this.m_listenEndpoint.port);
                     e.printStackTrace();
                     //Thread.currentThread().interrupt();
                 }
@@ -420,9 +420,9 @@ public class ListenResource {
                     MembershipKey key = this.m_listenChannel.join(multicastAddress, netInt);
                     // MembershipKey key = this.m_listenChannel.join(sockAddr.getAddress(), netInt);
 
-                    System.err.printf("MulticastJoin: Address: %s, NetIf: %s, Key: %s%n", multicastAddress.toString(), netInt, key);
+                    logger.debug("MulticastJoin: Address: {}, NetIf: {}, Key: {}", multicastAddress.toString(), netInt, key);
                     if (!key.isValid()) {
-                        System.err.println("Invalid membership key: "+key);
+                        logger.error("Invalid membership key: {}", key);
                     }
                 } catch (UnknownHostException e) {
                     // TODO Auto-generated catch block

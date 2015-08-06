@@ -25,101 +25,101 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class CacheChange implements Comparable<CacheChange> {
-	
-	private ChangeKind m_changeKind;
-	
-	private SerializedPayload m_payload;
-	
-	private GUID m_writerGUID;
-	
-	private SequenceNumber m_sequenceNumber;
-	
-	private InstanceHandle m_instanceHandle;
-	
-	boolean m_isRead = false;
-	
-	Timestamp m_sourceTimestamp;
-	
-	public CacheChange() {
-		this.m_changeKind = ChangeKind.ALIVE;
-		this.m_payload = new SerializedPayload();
-		this.m_writerGUID = new GUID();
-		this.m_sequenceNumber = new SequenceNumber();
-		this.m_instanceHandle = new InstanceHandle();
-		this.m_sourceTimestamp = new Timestamp();
-	}
-	
-	public ChangeKind getKind() {
-		return this.m_changeKind;
-	}
-	
-	public void setKind(ChangeKind changeKind) {
-		this.m_changeKind = changeKind;
-	}
-	
-	public SerializedPayload getSerializedPayload() {
-		return this.m_payload;
-	}
-	
-	public void setSerializedPayload(SerializedPayload payload) {
-		this.m_payload = payload;
-	}
-	
-	public GUID getWriterGUID() {
-		return this.m_writerGUID;
-	}
-	
-	public void setWriterGUID(GUID guid) {
-		this.m_writerGUID = guid;
-	}
-	
-	public SequenceNumber getSequenceNumber() {
-		return this.m_sequenceNumber;
-	}
-	
-	public void setSequenceNumber(SequenceNumber seqNum) {
-		this.m_sequenceNumber = seqNum;
-	}
 
-	public InstanceHandle getInstanceHandle() {
-		return m_instanceHandle;
-	}
+    private ChangeKind m_changeKind;
 
-	public void setInstanceHandle(InstanceHandle m_instanceHandle) {
-		this.m_instanceHandle = m_instanceHandle;
-	}
-	
-	public boolean isRead() {
-		return m_isRead;
-	}
+    private SerializedPayload m_payload;
 
-	public void setRead(boolean isRead) {
-		this.m_isRead = isRead;
-	}
+    private GUID m_writerGUID;
 
-	public Timestamp getSourceTimestamp() {
-		return m_sourceTimestamp;
-	}
+    private SequenceNumber m_sequenceNumber;
 
-	public void setSourceTimestamp(Timestamp m_sourceTimestamp) {
-		this.m_sourceTimestamp = m_sourceTimestamp;
-	}
+    private InstanceHandle m_instanceHandle;
 
-	@Override
-	public int compareTo(CacheChange o) {
-		if (this.m_sequenceNumber.equals(((CacheChange) o).m_sequenceNumber)){
-			return 0;
-		} else if (this.m_sequenceNumber.isGreaterOrEqualThan(((CacheChange) o).m_sequenceNumber)){
-			return 1;
-		} else if (this.m_sequenceNumber.isLowerOrEqualThan(((CacheChange) o).m_sequenceNumber)){
-			return -1;
-		}
-		return 0;
-	}
+    boolean m_isRead = false;
+
+    Timestamp m_sourceTimestamp;
+
+    public CacheChange() {
+        this.m_changeKind = ChangeKind.ALIVE;
+        this.m_payload = new SerializedPayload();
+        this.m_writerGUID = new GUID();
+        this.m_sequenceNumber = new SequenceNumber();
+        this.m_instanceHandle = new InstanceHandle();
+        this.m_sourceTimestamp = new Timestamp();
+    }
+
+    public ChangeKind getKind() {
+        return this.m_changeKind;
+    }
+
+    public void setKind(ChangeKind changeKind) {
+        this.m_changeKind = changeKind;
+    }
+
+    public SerializedPayload getSerializedPayload() {
+        return this.m_payload;
+    }
+
+    public void setSerializedPayload(SerializedPayload payload) {
+        this.m_payload = payload;
+    }
+
+    public GUID getWriterGUID() {
+        return this.m_writerGUID;
+    }
+
+    public void setWriterGUID(GUID guid) {
+        this.m_writerGUID = guid;
+    }
+
+    public SequenceNumber getSequenceNumber() {
+        return this.m_sequenceNumber;
+    }
+
+    public void setSequenceNumber(SequenceNumber seqNum) {
+        this.m_sequenceNumber = seqNum;
+    }
+
+    public InstanceHandle getInstanceHandle() {
+        return m_instanceHandle;
+    }
+
+    public void setInstanceHandle(InstanceHandle m_instanceHandle) {
+        this.m_instanceHandle = m_instanceHandle;
+    }
+
+    public boolean isRead() {
+        return m_isRead;
+    }
+
+    public void setRead(boolean isRead) {
+        this.m_isRead = isRead;
+    }
+
+    public Timestamp getSourceTimestamp() {
+        return m_sourceTimestamp;
+    }
+
+    public void setSourceTimestamp(Timestamp m_sourceTimestamp) {
+        this.m_sourceTimestamp = m_sourceTimestamp;
+    }
+
+    @Override
+    public int compareTo(CacheChange o) {
+        if (this.m_sequenceNumber.equals(((CacheChange) o).m_sequenceNumber)){
+            return 0;
+        } else if (this.m_sequenceNumber.isGreaterOrEqualThan(((CacheChange) o).m_sequenceNumber)){
+            return 1;
+        } else if (this.m_sequenceNumber.isLowerOrEqualThan(((CacheChange) o).m_sequenceNumber)){
+            return -1;
+        }
+        return 0;
+    }
 
     public boolean copy(CacheChange ch) {
         this.m_changeKind = ch.m_changeKind;
@@ -136,6 +136,6 @@ public class CacheChange implements Comparable<CacheChange> {
         return 0;
     }*/
 
-	
+
 
 }
