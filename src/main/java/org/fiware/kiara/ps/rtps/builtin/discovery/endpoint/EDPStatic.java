@@ -47,6 +47,10 @@ public class EDPStatic extends EDP {
         logger.debug("Beginning STATIC Endpoint Discovery Protocol (SEDP)");
         m_attributes.copy(attributes);
         m_edpXML = new EDPStaticXML();
+        String edpXml = attributes.getStaticEndpointXML();
+        if (edpXml != null && !edpXml.isEmpty()) {
+            return m_edpXML.loadXMLString(edpXml);
+        }
         String filename = attributes.getStaticEndpointXMLFilename();
         return m_edpXML.loadXMLFile(filename);
     }

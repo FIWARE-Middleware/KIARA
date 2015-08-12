@@ -48,11 +48,14 @@ public class BuiltinAttributes {
 
     private String m_staticEndpointXMLFilename;
 
+    private String m_staticEndpointXML;
+
     public BuiltinAttributes() {
         this.useSimplePDP = true;
         this.useWriterLP = true;
         this.useSimpleEDP = false;
         this.m_staticEndpointXMLFilename = "";
+        this.m_staticEndpointXML = "";
         this.domainID = 0;
         this.leaseDuration = new Timestamp(500, 0);
         this.leaseDurationAnnouncementPeriod = new Timestamp(10, 0);
@@ -68,6 +71,14 @@ public class BuiltinAttributes {
 
     public void setStaticEndpointXMLFilename(String filename) {
         this.m_staticEndpointXMLFilename = filename;
+    }
+
+    public String getStaticEndpointXML() {
+        return this.m_staticEndpointXML;
+    }
+
+    public void setStaticEndpointXML(String edpXml) {
+        this.m_staticEndpointXML = edpXml;
     }
 
     public void copy(BuiltinAttributes other) {
