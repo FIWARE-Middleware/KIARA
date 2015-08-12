@@ -106,4 +106,15 @@ public class EDPStaticXML {
         return true;
     }
 
+    boolean loadXMLString(String edpXml) {
+        try {
+            StaticDiscovery config = StaticDiscovery.fromXML(edpXml);
+            config.process(m_RTPSParticipants, m_endpointIds, m_entityIds);
+        } catch (Exception ex) {
+            logger.error("RTPS EDP: Error reading xml file ({})", ex);
+            return false;
+        }
+        return true;
+    }
+
 }
