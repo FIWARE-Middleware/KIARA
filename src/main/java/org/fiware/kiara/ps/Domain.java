@@ -48,13 +48,13 @@ public class Domain {
     
     private static final Logger logger = LoggerFactory.getLogger(Domain.class);
     
-    public static void stopAll() {
+    public static synchronized void stopAll() {
         while (m_participants.size() > 0) {
             Domain.removeParticipant(m_participants.get(0));
         }
     }
     
-    public static boolean removeParticipant(Participant part) {
+    public static synchronized boolean removeParticipant(Participant part) {
         if (part != null) {
             for (Participant current : m_participants) {
                 if (current.getGuid().equals(part.getGuid())) {
@@ -69,7 +69,7 @@ public class Domain {
         return false;
     }
     
-    public static boolean removePublisher(Publisher pub) {
+    public static synchronized boolean removePublisher(Publisher pub) {
         if (pub != null) {
             for (Participant it : m_participants) {
                 if (it.getGuid().getGUIDPrefix().equals(pub.getGuid().getGUIDPrefix())) {
@@ -81,7 +81,7 @@ public class Domain {
         return false;
     }
     
-    public static boolean removeSubscriber(Subscriber sub) {
+    public static synchronized boolean removeSubscriber(Subscriber sub) {
         if (sub != null) {
             for (Participant it : m_participants) {
                 if (it.getGuid().getGUIDPrefix().equals(sub.getGuid().getGUIDPrefix())) {
@@ -93,7 +93,7 @@ public class Domain {
         return false;
     }
     
-    public static Participant createParticipant(ParticipantAttributes att, ParticipantListener listener) {
+    public static synchronized Participant createParticipant(ParticipantAttributes att, ParticipantListener listener) {
         Participant pubSubParticipant = new Participant(att, listener);
         
         RTPSParticipant part = RTPSDomain.createParticipant(att.rtps, pubSubParticipant.getListener());
@@ -108,7 +108,7 @@ public class Domain {
         return pubSubParticipant;
     }
     
-    public static Publisher createPublisher(Participant part, PublisherAttributes att, PublisherListener listener) {
+    public static synchronized Publisher createPublisher(Participant part, PublisherAttributes att, PublisherListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.createPublisher(att, listener);
@@ -117,7 +117,7 @@ public class Domain {
         return null;
     }
     
-    public static Subscriber createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
+    public static synchronized Subscriber createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.createSubscriber(att, listener);
@@ -135,7 +135,7 @@ public class Domain {
         return false;
     }*/
     
-    public static <T extends Serializable> boolean registerType(Participant part, SerializableDataType<T> type) {
+    public static synchronized <T extends Serializable> boolean registerType(Participant part, SerializableDataType<T> type) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.registerType(type);
