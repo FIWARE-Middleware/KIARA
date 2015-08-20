@@ -17,6 +17,8 @@
  */
 package org.fiware.kiara.ps.rtps.reader;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
@@ -25,35 +27,62 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class StatefulReader extends RTPSReader {
-    
-    // TODO Implement
+
+    /**
+     * ReaderTimes of the StatefulReader.
+     */
+    private final ReaderTimes m_times;
+
+    /**
+     * Vector containing pointers to the matched writers.
+     */
+    private final List<WriterProxy> matchedWriters;
+
+    private static final Logger logger = LoggerFactory.getLogger(StatefulReader.class);
 
     public StatefulReader(RTPSParticipant participant, GUID guid,
             ReaderAttributes att, ReaderHistoryCache history,
             ReaderListener listener) {
         super(participant, guid, att, history, listener);
-        // TODO Auto-generated constructor stub
-    }
-
-    public void updateTimes(ReaderTimes times) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public boolean acceptMsgFrom(GUID rntityGUID, WriterProxy proxy) {
-        // TODO Auto-generated method stub
-        return false;
+        m_times = new ReaderTimes();
+        m_times.copy(att.times);
+        matchedWriters = new ArrayList<>();
     }
 
     @Override
     public boolean matchedWriterAdd(RemoteWriterAttributes wdata) {
+        m_mutex.lock();
+        try {
+            for (WriterProxy it : matchedWriters) {
+                if (it.att.guid.equals(wdata.guid)) {
+                    logger.info("RTPS READER: Attempting to add existing writer");
+                    return false;
+                }
+            }
+            WriterProxy wp = new WriterProxy(wdata, m_times.heartbeatResponseDelay, this);
+            matchedWriters.add(wp);
+            logger.info("RTPS READER: Writer Proxy {} added to {}", wp.att.guid, m_guid.getEntityId());
+            return true;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    public void updateTimes(ReaderTimes times) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public boolean acceptMsgFrom(GUID rntityGUID, WriterProxy proxy) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -111,5 +140,12 @@ public class StatefulReader extends RTPSReader {
         return false;
     }
 
-    
+    /**
+     *
+     * @return Reference to the ReaderTimes.
+     */
+    public ReaderTimes getTimes() {
+        return m_times;
+    }
+
 }

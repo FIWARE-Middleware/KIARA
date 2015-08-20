@@ -12,13 +12,16 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.timedevent.HeartbeatResponseDelay;
 import org.fiware.kiara.ps.rtps.reader.timedevent.WriterProxyLiveliness;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WriterProxy {
-    
+
     // TODO Implement
-    
+
     public StatefulReader statefulReader;
-    
+
     public RemoteWriterAttributes att;
     
     public List<ChangeFromWriter> changesFromWriter; 
@@ -46,12 +49,30 @@ public class WriterProxy {
     private boolean m_hasMinAvailableSeqNumChanged;
     
     private boolean m_isAlive;
-    
+
     private boolean m_firstReceived;
-    
-    
+
+    private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
+
     private final Lock m_mutex = new ReentrantLock(true);
-    
+
+    public WriterProxy() {
+
+    }
+
+    public WriterProxy(RemoteWriterAttributes watt, Timestamp heartbeatResponse, StatefulReader SR) {
+        statefulReader = SR;
+        att = new RemoteWriterAttributes();
+        att.copy(watt);
+        changesFromWriter.clear();
+	//Create Events
+	writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble());
+	heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble());
+	if(att.livelinessLeaseDuration.isLowerThan(new Timestamp().timeInfinite()))
+		writerProxyLiveliness.restartTimer();
+	logger.info("RTPS READER: Writer Proxy created in reader: {}", statefulReader.getGuid().getEntityId());
+    }
+
     public SequenceNumber getAvailableChangesMax() {
         this.m_mutex.lock();
         SequenceNumber seqNum = new SequenceNumber();

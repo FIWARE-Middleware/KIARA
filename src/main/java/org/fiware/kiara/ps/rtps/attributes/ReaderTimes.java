@@ -31,4 +31,8 @@ public class ReaderTimes {
 		this.heartbeatResponseDelay = new Timestamp(0, 500*1000*1000);
 	}
 
+        public void copy(ReaderTimes value) {
+            heartbeatResponseDelay.copy(value.heartbeatResponseDelay);
+        }
+
 }

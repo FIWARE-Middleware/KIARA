@@ -27,4 +27,11 @@ public class RemoteWriterAttributes {
         this.guid.copy(other);
     }
 
+    public void copy(RemoteWriterAttributes value) {
+        endpoint.copy(value.endpoint);
+        guid.copy(value.guid);
+        livelinessLeaseDuration.copy(value.livelinessLeaseDuration);
+        ownershipStrength = value.ownershipStrength;
+    }
+
 }

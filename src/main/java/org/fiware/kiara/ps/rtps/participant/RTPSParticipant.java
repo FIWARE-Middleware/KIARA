@@ -500,7 +500,7 @@ public class RTPSParticipant {
             valid &= assignEndpointToLocatorList(endp, this.m_defaultUnicastLocatorList, false, false);
             this.m_mutex.lock();
             try {
-                endp.getAttributes().unicastLocatorList = this.m_defaultUnicastLocatorList;
+                endp.getAttributes().unicastLocatorList.copy(this.m_defaultUnicastLocatorList);
             } finally {
                 this.m_mutex.unlock();
             }
@@ -508,7 +508,7 @@ public class RTPSParticipant {
             valid &= assignEndpointToLocatorList(endp, uniList, false, !isBuiltin);
             this.m_mutex.lock();
             try {
-                endp.getAttributes().unicastLocatorList = uniList;
+                endp.getAttributes().unicastLocatorList.copy(uniList);
             } finally {
                 this.m_mutex.unlock();
             }
@@ -520,7 +520,7 @@ public class RTPSParticipant {
             valid &= assignEndpointToLocatorList(endp, this.m_att.defaultMulticastLocatorList, true, false);
             this.m_mutex.lock();
             try {
-                endp.getAttributes().multicastLocatorList = this.m_att.defaultMulticastLocatorList;
+                endp.getAttributes().multicastLocatorList.copy(this.m_att.defaultMulticastLocatorList);
             } finally {
                 this.m_mutex.unlock();
             }
@@ -528,7 +528,7 @@ public class RTPSParticipant {
             valid &= assignEndpointToLocatorList(endp, multiList, true, !isBuiltin);
             this.m_mutex.lock();
             try {
-                endp.getAttributes().multicastLocatorList = multiList;
+                endp.getAttributes().multicastLocatorList.copy(multiList);
             } finally {
                 this.m_mutex.unlock();
             }

@@ -490,8 +490,8 @@ public class PDPSimple {
                 RemoteWriterAttributes watt = new RemoteWriterAttributes();
                 watt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
                 watt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
-                watt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
-                watt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
+                watt.endpoint.unicastLocatorList.copy(pdata.getMetatrafficUnicastLocatorList());
+                watt.endpoint.multicastLocatorList.copy(pdata.getMetatrafficMulticastLocatorList());
                 watt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
                 watt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
                 pdata.getBuiltinWriters().add(watt);
@@ -504,8 +504,8 @@ public class PDPSimple {
                 ratt.expectsInlineQos = false;
                 ratt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
                 ratt.guid.setEntityId(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
-                ratt.endpoint.unicastLocatorList = pdata.getMetatrafficUnicastLocatorList();
-                ratt.endpoint.multicastLocatorList = pdata.getMetatrafficMulticastLocatorList();
+                ratt.endpoint.unicastLocatorList.copy(pdata.getMetatrafficUnicastLocatorList());
+                ratt.endpoint.multicastLocatorList.copy(pdata.getMetatrafficMulticastLocatorList());
                 ratt.endpoint.reliabilityKind = ReliabilityKind.BEST_EFFORT;
                 ratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
                 pdata.getBuiltinReaders().add(ratt);
