@@ -159,14 +159,14 @@ public class Participant/*<T extends Serializable>*/ {
         WriterAttributes writerAtt = new WriterAttributes();
         writerAtt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
         writerAtt.endpointAtt.endpointKind = EndpointKind.WRITER;
-        writerAtt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        writerAtt.endpointAtt.multicastLocatorList.copy(att.multicastLocatorList);
         writerAtt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
         writerAtt.endpointAtt.topicKind = att.topic.topicKind;
-        writerAtt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
-        
+        writerAtt.endpointAtt.unicastLocatorList.copy(att.unicastLocatorList);
+
         if (att.getEntityId() > 0) {
             writerAtt.endpointAtt.setEntityID(att.getEntityId());
-        } 
+        }
         
         if (att.getUserDefinedID() > 0) {
             writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedID());
@@ -237,10 +237,10 @@ public class Participant/*<T extends Serializable>*/ {
         ReaderAttributes ratt = new ReaderAttributes();
         ratt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
         ratt.endpointAtt.endpointKind = EndpointKind.READER;
-        ratt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        ratt.endpointAtt.multicastLocatorList.copy(att.multicastLocatorList);
         ratt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
         ratt.endpointAtt.topicKind = att.topic.topicKind;
-        ratt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
+        ratt.endpointAtt.unicastLocatorList.copy(att.unicastLocatorList);
         ratt.expectsInlineQos = att.expectsInlineQos;
         if (att.getEntityID() > 0) {
             ratt.endpointAtt.setEntityID(att.getEntityID());
