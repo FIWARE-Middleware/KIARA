@@ -30,6 +30,7 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,17 +39,17 @@ import org.slf4j.LoggerFactory;
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class StatelessReader extends RTPSReader {
-    
-    private List<RemoteWriterAttributes> m_matchedWriters;
-    
+
+    private final List<RemoteWriterAttributes> m_matchedWriters;
+
     private static final Logger logger = LoggerFactory.getLogger(StatelessReader.class);
 
     public StatelessReader(RTPSParticipant participant, GUID guid,
             ReaderAttributes att, ReaderHistoryCache history,
             ReaderListener listener) {
         super(participant, guid, att, history, listener);
-        this.m_matchedWriters = new ArrayList<RemoteWriterAttributes>();
-        
+        this.m_matchedWriters = new ArrayList<>();
+
         /*RemoteWriterAttributes test = new RemoteWriterAttributes();
         Locator l = new Locator();
         try {
@@ -68,7 +69,8 @@ public class StatelessReader extends RTPSReader {
         test.endpoint.unicastLocatorList.pushBack(l);
         matchedWriterAdd(test);*/
     }
-    
+
+    @Override
     public boolean matchedWriterAdd(RemoteWriterAttributes wdata) {
         this.m_mutex.lock();
         try {
@@ -86,7 +88,8 @@ public class StatelessReader extends RTPSReader {
             this.m_mutex.unlock();
         }
     }
-    
+
+    @Override
     public boolean matchedWriterRemove(RemoteWriterAttributes wdata) {
         this.m_mutex.lock();
         try {
@@ -102,7 +105,8 @@ public class StatelessReader extends RTPSReader {
             this.m_mutex.unlock();
         }
     }
-    
+
+    @Override
     public boolean matchedWriterIsMatched(RemoteWriterAttributes wdata) {
         this.m_mutex.lock();
         try {
@@ -116,7 +120,8 @@ public class StatelessReader extends RTPSReader {
             this.m_mutex.unlock();
         }
     }
-    
+
+    @Override
     public boolean changeReceived(CacheChange change, WriterProxy proxy) {
         this.m_mutex.lock();
         try {
@@ -165,9 +170,9 @@ public class StatelessReader extends RTPSReader {
     public boolean changeRemovedByHistory(CacheChange change, WriterProxy proxy) {
         return true;
     }
-    
+
     @Override
-    public boolean acceptMsgFrom(GUID writerID, WriterProxy proxy) {
+    public boolean acceptMsgFrom(GUID writerID, ReturnParam<WriterProxy> proxy) {
         this.m_mutex.lock();
         try {
             if (this.m_acceptMessagesFromUnknownWriters) {
@@ -189,7 +194,7 @@ public class StatelessReader extends RTPSReader {
     }
 
     @Override
-    public boolean nextUntakenCache(CacheChange change, WriterProxy proxy) {
+    public boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> proxy) {
         this.m_mutex.lock();
         try {
             /*CacheChange retChange = new CacheChange();
@@ -202,12 +207,12 @@ public class StatelessReader extends RTPSReader {
     }
 
     @Override
-    public boolean nextUnreadCache(CacheChange change, WriterProxy proxy) {
+    public boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy) {
         this.m_mutex.lock();
         try {
             for (CacheChange it : this.m_history.getChanges()) {
                 if (!it.isRead()) {
-                    change = it;
+                    change.value = it;
                     return true;
                 }
             }
