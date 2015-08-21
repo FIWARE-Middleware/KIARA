@@ -42,6 +42,11 @@ public class Timestamp extends RTPSSubmessageElement {
         this.m_fraction =  0;
     }
 
+    public Timestamp(Timestamp timestamp) {
+        this.m_seconds = timestamp.m_seconds;
+        this.m_fraction = timestamp.m_fraction;
+    }
+
     public Timestamp(java.sql.Timestamp timestamp) {
         this.m_seconds = (int) (timestamp.getTime() / 1000);
         this.m_fraction =  (int) ((timestamp.getTime() % 1000) * (Math.pow(10, -6)) * (Math.pow(2, 32)));

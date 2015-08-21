@@ -26,10 +26,14 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 public class ReaderTimes {
 	
 	public Timestamp heartbeatResponseDelay;
-	
+
 	public ReaderTimes() {
-		this.heartbeatResponseDelay = new Timestamp(0, 500*1000*1000);
+            this.heartbeatResponseDelay = new Timestamp(0, 500*1000*1000);
 	}
+
+        public ReaderTimes(ReaderTimes value) {
+            this.heartbeatResponseDelay = new Timestamp(value.heartbeatResponseDelay);
+        }
 
         public void copy(ReaderTimes value) {
             heartbeatResponseDelay.copy(value.heartbeatResponseDelay);

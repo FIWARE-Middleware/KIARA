@@ -49,6 +49,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
+import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -461,10 +462,10 @@ public class MessageReceiver {
             }
 
             logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
-            
+
             for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
-                WriterProxy proxy = new WriterProxy();
-                if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), proxy)) {
+                ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
+                if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), retProxy)) {
                     logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
                     CacheChange changeToAdd = it.reserveCache();
                     //if (it.reserveCache(changeToAdd)) {
@@ -483,11 +484,11 @@ public class MessageReceiver {
                         changeToAdd.setSourceTimestamp(this.m_timestamp);
                     }
 
-                    if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                    if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE && retProxy.value != null) {
+                        this.m_guardWriterMutex.lock();
                         try {
-                            this.m_guardWriterMutex.lock();
-                            proxy.assertLiveliness();
-                            if (!it.changeReceived(changeToAdd, proxy)) {
+                            retProxy.value.assertLiveliness();
+                            if (!it.changeReceived(changeToAdd, retProxy.value)) {
                                 logger.debug("MessageReceiver not adding CacheChange");
                                 it.releaseCache(changeToAdd);
                             }

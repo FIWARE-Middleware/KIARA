@@ -42,7 +42,12 @@ public class SequenceNumber extends RTPSSubmessageElement {
 		this.m_high = high;
 		this.m_low = low;
 	}
-	
+
+        public SequenceNumber(SequenceNumber seq) {
+		this.m_low = seq.m_low;
+		this.m_high = seq.m_high;
+        }
+
 	public SequenceNumber(SequenceNumber seq, long offset) {
 		this.m_low = seq.m_low;
 		this.m_high = seq.m_high;
@@ -91,6 +96,15 @@ public class SequenceNumber extends RTPSSubmessageElement {
 	public void setLow(int m_low) {
 		this.m_low = m_low;
 	}
+
+        public void setUnknown() {
+            this.m_high = -1;
+            this.m_low = 0;
+        }
+
+        public boolean isUnknown() {
+            return this.m_high == -1 && this.m_low == 0;
+        }
 
 	@Override
 	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
@@ -178,10 +192,30 @@ public class SequenceNumber extends RTPSSubmessageElement {
 			this.m_low++;
 		}
 	}
-	
+
+        public SequenceNumber subtract(int inc) {
+                SequenceNumber res = new SequenceNumber(this);
+                if ((long) res.m_low - (long) inc < 0) {
+                    res.m_high--;
+                    res.m_low = (int) (Math.pow(2.0, 32) - (inc - this.m_low));
+                } else {
+                    res.m_low -= (int) inc;
+                }
+                return res;
+        }
+
 	@Override
 	public String toString() {
-	    return this.toLong() + " (H: " + this.m_high + ", L: " + this.m_low + ")"; 
+	    return this.toLong() + " (H: " + this.m_high + ", L: " + this.m_low + ")";
 	}
-	
+
+        /**
+	 * Assignment operator
+	 * @param seq SequenceNumber to copy the data from
+	 */
+        public void copy(SequenceNumber seq) {
+            m_high = seq.m_high;
+            m_low = seq.m_low;
+        }
+
 }

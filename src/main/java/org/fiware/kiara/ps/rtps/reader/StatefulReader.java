@@ -18,15 +18,21 @@
 package org.fiware.kiara.ps.rtps.reader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
+import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.LOST;
+import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.RECEIVED;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,9 +58,16 @@ public class StatefulReader extends RTPSReader {
             ReaderAttributes att, ReaderHistoryCache history,
             ReaderListener listener) {
         super(participant, guid, att, history, listener);
-        m_times = new ReaderTimes();
-        m_times.copy(att.times);
+        m_times = new ReaderTimes(att.times);
         matchedWriters = new ArrayList<>();
+    }
+
+    public void destroy() {
+        logger.info("RTPS READER: StatefulReader destructor.");
+        for (WriterProxy it : matchedWriters) {
+            it.destroy();
+        }
+        matchedWriters.clear();
     }
 
     @Override
@@ -76,39 +89,226 @@ public class StatefulReader extends RTPSReader {
         }
     }
 
-    public void updateTimes(ReaderTimes times) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public boolean acceptMsgFrom(GUID rntityGUID, WriterProxy proxy) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
     @Override
     public boolean matchedWriterRemove(RemoteWriterAttributes wdata) {
-        // TODO Auto-generated method stub
-        return false;
+        m_mutex.lock();
+        try {
+            for (Iterator<WriterProxy> it = matchedWriters.iterator(); it.hasNext();) {
+                final WriterProxy wp = it.next();
+                if (wp.att.guid.equals(wdata.guid)) {
+                    logger.info("RTPS READER: Writer Proxy removed: {}", wp.att.guid);
+                    wp.destroy();
+                    it.remove();
+                    return true;
+                }
+            }
+            logger.info("RTPS READER: Writer Proxy {} doesn't exist in reader {}", wdata.guid, this.getGuid().getEntityId());
+            return false;
+        } finally {
+            m_mutex.unlock();
+        }
     }
 
     @Override
     public boolean matchedWriterIsMatched(RemoteWriterAttributes wdata) {
-        // TODO Auto-generated method stub
+        m_mutex.lock();
+        try {
+
+            for (WriterProxy it : matchedWriters) {
+                if (it.att.guid.equals(wdata.guid)) {
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    public WriterProxy matchedWriterLookup(GUID writerGUID) {
+        m_mutex.lock();
+        try {
+            for (WriterProxy it : matchedWriters) {
+                if (it.att.guid.equals(writerGUID)) {
+                    logger.info("RTPS READER: {} FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
+                    return it;
+                }
+            }
+            logger.info("RTPS READER: {} NOT FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
+            return null;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    @Override
+    public boolean acceptMsgFrom(GUID writerId, ReturnParam<WriterProxy> wp) {
+        if (writerId.getEntityId().equals(this.m_trustedWriterEntityId)) {
+            return true;
+        }
+
+        for (WriterProxy it : matchedWriters) {
+            if (it.att.guid.equals(writerId)) {
+                if (wp != null) {
+                    wp.value = it;
+                }
+                return true;
+            }
+        }
+
         return false;
     }
 
     @Override
-    public boolean changeReceived(CacheChange change, WriterProxy proxy) {
+    public boolean changeRemovedByHistory(CacheChange change, WriterProxy wp) {
+        m_mutex.lock();
+        try {
+            if (wp == null) {
+                wp = matchedWriterLookup(change.getWriterGUID());
+            }
+
+            if (wp != null) {
+                List<Integer> toRemove = new ArrayList<>();
+
+                boolean continuous_removal = true;
+                for (int i = 0; i < wp.changesFromWriter.size(); ++i) {
+                    if (change.getSequenceNumber() == wp.changesFromWriter.get(i).seqNum) {
+                        wp.changesFromWriter.get(i).notValid();
+                        if (continuous_removal) {
+                            wp.lastRemovedSeqNum.copy(wp.changesFromWriter.get(i).seqNum);
+                            toRemove.add(i);
+                        }
+                        break;
+                    }
+                    if (!wp.changesFromWriter.get(i).isValid()
+                            && (wp.changesFromWriter.get(i).status == RECEIVED || wp.changesFromWriter.get(i).status == LOST)
+                            && continuous_removal) {
+                        wp.lastRemovedSeqNum.copy(wp.changesFromWriter.get(i).seqNum);
+                        toRemove.add(i);
+                        continue;
+                    }
+                    continuous_removal = false;
+                }
+
+                ListIterator<Integer> it = toRemove.listIterator();
+                while (it.hasPrevious()) {
+                    wp.changesFromWriter.remove(it.previous().intValue());
+                }
+                return true;
+            } else {
+                logger.error("RTPS READER: You should always find the WP associated with a change, something is very wrong");
+            }
+            return false;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    @Override
+    public boolean changeReceived(CacheChange change, WriterProxy prox) {
+        //First look for WriterProxy in case is not provided
+        m_mutex.lock();
+        try {
+            if (prox == null) {
+                prox = matchedWriterLookup(change.getWriterGUID());
+                if (prox == null) {
+                    {
+                        logger.info("RTPS READER: Writer Proxy {} not matched to this Reader {}", change.getWriterGUID(), m_guid.getEntityId());
+                        return false;
+                    }
+                }
+            }
+            //WITH THE WRITERPROXY FOUND:
+            //Check if we can add it
+            if (change.getSequenceNumber().isLowerOrEqualThan(prox.lastRemovedSeqNum)) {
+                logger.info("RTPS READER: Change {} <= than last Removed Seq Number {}", change.getSequenceNumber(), prox.lastRemovedSeqNum);
+                return false;
+            }
+            SequenceNumber maxSeq = prox.getAvailableChangesMax();
+            if (change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
+                logger.info("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
+                return false;
+            }
+            if (m_history.receivedChange(change)) {
+                if (prox.receivedChangeSet(change)) {
+                    final SequenceNumber maxSeqNumAvailable = prox.getAvailableChangesMax();
+
+                    if (change.getSequenceNumber().isLowerOrEqualThan(maxSeqNumAvailable)) {
+                        if (getListener() != null) {
+                            //cout << "CALLING NEWDATAMESSAGE "<<endl;
+                            getListener().onNewCacheChangeAdded(this, change);
+                            //cout << "FINISH CALLING " <<endl;
+                        }
+                        m_history.postChange();
+                    }
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    @Override
+    public boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> wpout) {
+        m_mutex.lock();
+        try {
+
+            final SequenceNumber minSeqNum = new SequenceNumber();
+            minSeqNum.setUnknown();
+            final SequenceNumber auxSeqNum = new SequenceNumber();
+            WriterProxy wp = null;
+            boolean available = false;
+            logger.info("RTPS READER: {}: looking through: {} WriterProxies", getGuid().getEntityId(), matchedWriters.size());
+            for (WriterProxy it : matchedWriters) {
+                it.getAvailableChangesMax(auxSeqNum);
+
+                if (it.getAvailableChangesMin(auxSeqNum) != null) {
+                    //logUser("AVAILABLE MIN for writer: "<<(*it)->m_att.guid<< " : " << auxSeqNum);
+                    if (auxSeqNum.toLong() > 0 && (minSeqNum.isGreaterThan(auxSeqNum) || minSeqNum.isUnknown())) {
+                        available = true;
+                        minSeqNum.copy(auxSeqNum);
+                        wp = it;
+                    }
+                }
+            }
+
+            if (wp == null) {
+                return false;
+            }
+
+            //cout << "AVAILABLE? "<< available << endl;
+            CacheChange wchange = wp.getChange(minSeqNum);
+            if (available && wchange != null) {
+
+                // FIXME: This is not correct since in original code
+                //        CacheChange is passed by pointer to poiner
+                //        Actually first argument to this method should be
+                //        ReturnParam<CacheChange>, but this require additional
+                //        source code changes
+                change.copy(wchange);
+
+                if (wpout != null) {
+                    wpout.value = wp;
+                }
+                return true;
+            }
+            return false;
+        } finally {
+            m_mutex.unlock();
+        }
+    }
+
+    @Override
+    public boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy) {
         // TODO Auto-generated method stub
         return false;
     }
 
-    @Override
-    public boolean changeRemovedByHistory(CacheChange change, WriterProxy proxy) {
+    public void updateTimes(ReaderTimes times) {
         // TODO Auto-generated method stub
-        return false;
+
     }
 
     @Override
@@ -121,23 +321,6 @@ public class StatefulReader extends RTPSReader {
     public CacheChange nextUnreadCache(WriterProxy proxy) {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public boolean nextUntakenCache(CacheChange change, WriterProxy proxy) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean nextUnreadCache(CacheChange change, WriterProxy proxy) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    public boolean matchedWriterLookup(GUID guid, WriterProxy wp) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     /**

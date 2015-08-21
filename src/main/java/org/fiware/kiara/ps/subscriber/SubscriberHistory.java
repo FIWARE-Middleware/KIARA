@@ -22,6 +22,7 @@ import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.util.Pair;
+import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -268,17 +269,17 @@ public class SubscriberHistory extends ReaderHistoryCache {
     public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
-            
-            CacheChange change = new CacheChange();
-            WriterProxy proxy = new WriterProxy();
-            
+
+            ReturnParam<CacheChange> change = new ReturnParam<>();
+            ReturnParam<WriterProxy> proxy = new ReturnParam<>();
+
             if (this.m_reader.nextUnreadCache(change, proxy)) {
-                change.setRead(true);
+                change.value.setRead(true);
                 this.decreadeUnreadCount();
-                logger.info(this.m_reader.getGuid().getEntityId() + ": reading " + change.getSequenceNumber().toLong());
-                if (change.getKind() == ChangeKind.ALIVE) {
+                logger.info(this.m_reader.getGuid().getEntityId() + ": reading " + change.value.getSequenceNumber().toLong());
+                if (change.value.getKind() == ChangeKind.ALIVE) {
                     try {
-                        this.m_subscriber.getType().deserialize(change.getSerializedPayload());
+                        this.m_subscriber.getType().deserialize(change.value.getSerializedPayload());
                     } catch (InstantiationException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -288,18 +289,18 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     }
                 }
                 if (info != null) {
-                    info.sampleKind = change.getKind();
-                    info.writerGUID = change.getWriterGUID();
-                    info.sourceTimestamp = change.getSourceTimestamp();
+                    info.sampleKind = change.value.getKind();
+                    info.writerGUID = change.value.getWriterGUID();
+                    info.sourceTimestamp = change.value.getSourceTimestamp();
                     if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = proxy.att.ownershipStrength;
+                        info.ownershipStrength = proxy.value.att.ownershipStrength;
                     }
                     if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) &&
-                            change.getKind() == ChangeKind.ALIVE) {
-                        
+                            change.value.getInstanceHandle().equals(new InstanceHandle()) &&
+                            change.value.getKind() == ChangeKind.ALIVE) {
+
                     }
-                    info.handle = change.getInstanceHandle();
+                    info.handle = change.value.getInstanceHandle();
                 }
                 //return this.m_subscriber.getType();
             }
@@ -315,7 +316,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
         try {
             Serializable retVal = null;
             CacheChange change = new CacheChange();
-            WriterProxy wp = new WriterProxy();
+            ReturnParam<WriterProxy> wp = new ReturnParam<>();
             if (this.m_reader.nextUntakenCache(change, wp)) {
                 if (!change.isRead()) {
                     this.decreadeUnreadCount();
@@ -342,10 +343,10 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     info.writerGUID = change.getWriterGUID();
                     info.sourceTimestamp = change.getSourceTimestamp();
                     if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = wp.att.ownershipStrength;
+                        info.ownershipStrength = wp.value.att.ownershipStrength;
                     }
                     if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) && 
+                            change.getInstanceHandle().equals(new InstanceHandle()) &&
                             change.getKind() == ChangeKind.ALIVE) {
                         this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
                     }

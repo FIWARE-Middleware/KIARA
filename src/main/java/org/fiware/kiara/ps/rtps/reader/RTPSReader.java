@@ -27,6 +27,7 @@ import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,12 +78,20 @@ public abstract class RTPSReader extends Endpoint {
     public abstract CacheChange nextUntakenCache(WriterProxy proxy);
     
     public abstract CacheChange nextUnreadCache(WriterProxy proxy);
-    
-    public abstract boolean nextUntakenCache(CacheChange change, WriterProxy proxy);
-    
-    public abstract boolean nextUnreadCache(CacheChange change, WriterProxy proxy);
-    
-    public abstract boolean acceptMsgFrom(GUID rntityGUID, WriterProxy proxy);
+
+    public abstract boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> proxy);
+
+    public abstract boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy);
+
+    /**
+     * Check if the reader accepts messages from a writer with a specific GUID_t.
+     *
+     * @param entityGUID GUID to check
+     * @param proxy Reference of the WriterProxy. Since we already look for it wee return the pointer
+     * so the execution can run faster.
+     * @return true if the reader accepts messages from the writer with GUID_t entityGUID.
+     */
+    public abstract boolean acceptMsgFrom(GUID entityGUID, ReturnParam<WriterProxy> proxy);
 
     public boolean reserveCache(CacheChange change) {
         change = this.m_history.reserveCache();
