@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.RunningService;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
  *
@@ -105,6 +106,10 @@ public abstract class TimedEvent {
     public boolean updateInterval(long inter, TimeUnit timeUnit) {
         intervalMicrosec = TimeUnit.MICROSECONDS.convert(inter, timeUnit);
         return true;
+    }
+
+    public boolean updateInterval(Timestamp inter) {
+        return updateIntervalMillisec(inter.toMilliSecondsDouble());
     }
 
     /**

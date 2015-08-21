@@ -301,14 +301,50 @@ public class StatefulReader extends RTPSReader {
     }
 
     @Override
-    public boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy) {
-        // TODO Auto-generated method stub
-        return false;
+    public boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> wpout) {
+        m_mutex.lock();
+        try {
+            List<CacheChange> toremove = new ArrayList<>();
+
+            boolean readok = false;
+            for (CacheChange it : m_history.getChanges()) {
+                if (it.isRead()) {
+                    continue;
+                }
+                WriterProxy wp = matchedWriterLookup(it.getWriterGUID());
+                if (wp != null) {
+                    SequenceNumber seq = new SequenceNumber();
+                    wp.getAvailableChangesMax(seq);
+                    if (seq.isGreaterOrEqualThan(it.getSequenceNumber())) {
+                        change.value = it;
+                        if (wpout != null) {
+                            wpout.value = wp;
+                        }
+                        return true;
+                    }
+                } else {
+                    toremove.add(it);
+                }
+            }
+
+            for (CacheChange it : toremove) {
+                logger.warn("RTPS READER: Removing change {} from {} because is no longer paired", it.getSequenceNumber().toLong(), it.getWriterGUID());
+                m_history.removeChange(it);
+            }
+            return readok;
+        } finally {
+            m_mutex.unlock();
+        }
     }
 
-    public void updateTimes(ReaderTimes times) {
-        // TODO Auto-generated method stub
-
+    public boolean updateTimes(ReaderTimes ti) {
+        if (!m_times.heartbeatResponseDelay.equals(ti.heartbeatResponseDelay)) {
+            m_times.copy(ti);
+            for (WriterProxy wit : matchedWriters) {
+                wit.heartBeatResponse.updateInterval(m_times.heartbeatResponseDelay);
+            }
+        }
+        return true;
     }
 
     @Override
