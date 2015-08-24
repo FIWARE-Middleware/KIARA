@@ -43,4 +43,10 @@ public class RemoteReaderAttributes {
         this.guid.copy(other);
     }
 
+    public void copy(RemoteReaderAttributes value) {
+        endpoint.copy(value.endpoint);
+        guid.copy(value.guid);
+        expectsInlineQos = value.expectsInlineQos;
+    }
+
 }

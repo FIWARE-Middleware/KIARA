@@ -139,17 +139,7 @@ public class StatelessReader extends RTPSReader {
             this.m_mutex.unlock();
         }
     }
-    
-    @Override
-    public CacheChange nextUntakenCache(WriterProxy proxy) {
-        this.m_mutex.lock();
-        try {
-            return this.m_history.getMinChange();
-        } finally {
-            this.m_mutex.unlock();
-        }
-    }
-    
+
     @Override
     public CacheChange nextUnreadCache(WriterProxy proxy) {
         this.m_mutex.lock();
@@ -188,6 +178,16 @@ public class StatelessReader extends RTPSReader {
                 }
             }
             return false;
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }
+
+    @Override
+    public CacheChange nextUntakenCache(WriterProxy proxy) {
+        this.m_mutex.lock();
+        try {
+            return this.m_history.getMinChange();
         } finally {
             this.m_mutex.unlock();
         }
