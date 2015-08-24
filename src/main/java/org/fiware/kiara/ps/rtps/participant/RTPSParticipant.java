@@ -317,7 +317,7 @@ public class RTPSParticipant {
         }
         
         if (isBuiltin) {
-            logger.debug("Writer creation finished successfully");
+            logger.debug("Builtin Writer creation finished successfully");
         } else {
             logger.info("Writer creation finished successfully");
         }
@@ -407,7 +407,7 @@ public class RTPSParticipant {
         }
         
         if (isBuiltin) {
-            logger.debug("Reader creation finished successfully");
+            logger.debug("Builtin Reader creation finished successfully");
         } else {
             logger.info("Reader creation finished successfully");
         }
@@ -496,7 +496,7 @@ public class RTPSParticipant {
         
         if (unicastEmpty && !isBuiltin && multicastEmpty) {
             String auxStr = endp.getAttributes().endpointKind == EndpointKind.WRITER ? "WRITER" : "READER";
-            logger.info("Adding default Locator list to this " + auxStr);
+            logger.info("Adding default Locator list to this {}",  auxStr);
             valid &= assignEndpointToLocatorList(endp, this.m_defaultUnicastLocatorList, false, false);
             this.m_mutex.lock();
             try {

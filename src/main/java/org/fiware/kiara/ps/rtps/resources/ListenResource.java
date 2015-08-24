@@ -178,6 +178,7 @@ public class ListenResource {
                 if (!found) {
                     this.m_assocReaders.add((RTPSReader) endpoint);
                     logger.debug("Endpoint {} added to listen locators list", endpoint.getGuid().getEntityId());
+                    //System.out.println("Endpoint {} added to listen locators list" + this.m_assocReaders.size());
                     //this.m_mutex.unlock();
                     return true;
                 }
@@ -286,8 +287,8 @@ public class ListenResource {
 
         this.getLocatorAdresses(loc);
 
-        logger.debug("Initializing in : " + this.m_listenLocators); // TODO SOme toString for ListenLocators
-
+        logger.debug("Initializing in : " + this.m_listenLocators); // TODO Some toString for ListenLocators
+        
         InetAddress multicastAddress = null;
 
         try {

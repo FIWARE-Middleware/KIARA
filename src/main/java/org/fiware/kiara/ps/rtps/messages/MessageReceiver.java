@@ -374,7 +374,7 @@ public class MessageReceiver {
             //firstReader = new RTPSReader();
             // TODO: Uncomment this
             if (this.m_listenResource.getAssocReaders().isEmpty()) {
-                logger.warn("Data received in locator: {}, when NO readers are listening", this.m_listenResource.getListenLocators());
+                logger.warn("Data received in locator: {} when NO readers are listening", this.m_listenResource.getListenLocators());
                 return false;
             }
 
