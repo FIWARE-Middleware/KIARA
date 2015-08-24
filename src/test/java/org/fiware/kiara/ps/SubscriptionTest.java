@@ -38,6 +38,7 @@ import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.MatchingStatus;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.subscriber.SampleInfo;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
 import org.fiware.kiara.ps.types.HelloWorld;
@@ -101,6 +102,9 @@ public class SubscriptionTest {
             pParam.rtps.builtinAtt.useSimpleEDP = true;
             pParam.rtps.builtinAtt.useStaticEDP = true;
 
+            final String ipAddr = IPFinder.getFirstIPv4Address().getHostAddress();
+            System.out.println("IP Addr " + ipAddr);
+
             final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                     + "<staticdiscovery>"
                     + "    <participant>"
@@ -111,7 +115,7 @@ public class SubscriptionTest {
                     + "            <topicDataType>HelloWorld</topicDataType>"
                     + "            <topicKind>NO_KEY</topicKind>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
-                    + "			<unicastLocator address=\"127.0.0.1\"></unicastLocator>"
+                    + "			<unicastLocator address=\"" + ipAddr + "\"></unicastLocator>"
                     + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
                     + "        </writer>"
                     + "     </participant>"
@@ -127,10 +131,10 @@ public class SubscriptionTest {
                 return false;
             }
 
-            System.out.println("Subscriber participant SPDP MC Port: "+participant.getSPDPMulticastPort());
-            System.out.println("Subscriber participant SPDP UC Port: "+participant.getSPDPUnicastPort());
-            System.out.println("Subscriber participant User MC Port: "+participant.getUserMulticastPort());
-            System.out.println("Subscriber participant User UC Port: "+participant.getUserUnicastPort());
+            System.out.println("Subscriber participant SPDP MC Port: " + participant.getSPDPMulticastPort());
+            System.out.println("Subscriber participant SPDP UC Port: " + participant.getSPDPUnicastPort());
+            System.out.println("Subscriber participant User MC Port: " + participant.getUserMulticastPort());
+            System.out.println("Subscriber participant User UC Port: " + participant.getUserUnicastPort());
 
             initSignal.countDown();
 
@@ -236,6 +240,8 @@ public class SubscriptionTest {
             pAtt.rtps.builtinAtt.useSimpleEDP = true;
             pAtt.rtps.builtinAtt.useStaticEDP = true;
 
+            final String ipAddr = IPFinder.getFirstIPv4Address().getHostAddress();
+            System.out.println("IP Addr " + ipAddr);
             final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                     + "<staticdiscovery>"
                     + "    <participant>"
@@ -245,7 +251,7 @@ public class SubscriptionTest {
                     + "            <topic name=\"HelloWorldTopic\" dataType=\"HelloWorld\" kind=\"NO_KEY\"></topic>"
                     + "            <expectsInlineQos>false</expectsInlineQos>"
                     + "			<topicKind>NO_KEY</topicKind>"
-                    + "            <unicastLocator address=\"127.0.0.1\" port=\"7411\"></unicastLocator>"
+                    + "            <unicastLocator address=\"" + ipAddr + "\" port=\"7411\"></unicastLocator>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
                     + "        </reader>"
                     + "    </participant>"
@@ -257,10 +263,10 @@ public class SubscriptionTest {
 
             Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
 
-            System.out.println("Publisher participant SPDP MC Port: "+participant.getSPDPMulticastPort());
-            System.out.println("Publisher participant SPDP UC Port: "+participant.getSPDPUnicastPort());
-            System.out.println("Publisher participant User MC Port: "+participant.getUserMulticastPort());
-            System.out.println("Publisher participant User UC Port: "+participant.getUserUnicastPort());
+            System.out.println("Publisher participant SPDP MC Port: " + participant.getSPDPMulticastPort());
+            System.out.println("Publisher participant SPDP UC Port: " + participant.getSPDPUnicastPort());
+            System.out.println("Publisher participant User MC Port: " + participant.getUserMulticastPort());
+            System.out.println("Publisher participant User UC Port: " + participant.getUserUnicastPort());
 
             assertNotNull("Error when creating participant", participant);
 
@@ -343,7 +349,7 @@ public class SubscriptionTest {
 
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
-        
+
         //Kiara.shutdown();
     }
 }
