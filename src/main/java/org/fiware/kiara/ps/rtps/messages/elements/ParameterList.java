@@ -126,22 +126,23 @@ public class ParameterList extends RTPSSubmessageElement {
             short length = impl.deserializeI16(message, name);
 
             Parameter param = ParameterBuilder.createParameter(pid, length);
-            //param.deserializeContent(impl, message, name);
-            int initialPos = message.getPosition();
-            param.deserializeContent(impl, message, name);
-            int finalPos = message.getPosition();
-            int deserializedBytes = finalPos - initialPos;
-            int bytesToSkip = (deserializedBytes % 4 == 0) ? 0 : 4 - (deserializedBytes % 4);/*4 - (message.getPosition() % 4);*/
-            message.skipBytes(bytesToSkip);
-
-            if (param.getParameterId() == ParameterId.PID_SENTINEL) {
-                isSentinel = true;
+            if (param != null) {
+                //param.deserializeContent(impl, message, name);
+                int initialPos = message.getPosition();
+                param.deserializeContent(impl, message, name);
+                int finalPos = message.getPosition();
+                int deserializedBytes = finalPos - initialPos;
+                int bytesToSkip = (deserializedBytes % 4 == 0) ? 0 : 4 - (deserializedBytes % 4);/*4 - (message.getPosition() % 4);*/
+                message.skipBytes(bytesToSkip);
+    
+                if (param.getParameterId() == ParameterId.PID_SENTINEL) {
+                    isSentinel = true;
+                }
+    
+                this.m_parameters.add(param);
+                this.m_totalBytes += param.getSerializedSize();
+                this.m_hasChanged = true;
             }
-
-            this.m_parameters.add(param);
-            this.m_totalBytes += param.getSerializedSize();
-            this.m_hasChanged = true;
-
 
         }
 

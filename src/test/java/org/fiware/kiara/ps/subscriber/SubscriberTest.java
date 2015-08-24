@@ -14,6 +14,7 @@ import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
+import org.fiware.kiara.ps.types.TopicHelloWorldType;
 
 public class SubscriberTest {
     
@@ -23,10 +24,10 @@ public class SubscriberTest {
     
     public static void main (String[] args) {
         
-        subscriptionTest();                
+        newTypesTest();                
     }
     
-    public static void singleParticipantTest() {
+    /*public static void singleParticipantTest() {
         HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         
@@ -99,7 +100,7 @@ public class SubscriberTest {
         
         pParam.rtps.setName("participant1");
         
-        Participant participant = Domain.createParticipant(pParam, null /*new PartListener()*/);
+        Participant participant = Domain.createParticipant(pParam, null);
         if (participant == null) {
             System.out.println("Error when creating participant");
             return;
@@ -107,7 +108,7 @@ public class SubscriberTest {
         
         pParam.rtps.setName("participant2");
         
-        Participant participant2 = Domain.createParticipant(pParam, null /*new PartListener()*/);
+        Participant participant2 = Domain.createParticipant(pParam, null);
         if (participant2 == null) {
             System.out.println("Error when creating participant2");
             return;
@@ -368,7 +369,7 @@ public class SubscriberTest {
         
         pParam.rtps.setName("participant1");
         
-        Participant participant = Domain.createParticipant(pParam, null /*new PartListener()*/);
+        Participant participant = Domain.createParticipant(pParam, null );
         if (participant == null) {
             System.out.println("Error when creating participant");
             return;
@@ -404,6 +405,66 @@ public class SubscriberTest {
         //Domain.removeParticipant(participant);
         
         //Kiara.shutdown();
+        
+        System.out.println("Subscriber finished");
+        
+    }
+    */
+    
+    public static void newTypesTest() {
+        
+        TopicHelloWorldType type = new TopicHelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        // Create participant
+        ParticipantAttributes pParam = new ParticipantAttributes();
+        pParam.rtps.builtinAtt.useSimplePDP = true;
+        pParam.rtps.builtinAtt.useWriterLP = false;
+        pParam.rtps.builtinAtt.useSimpleEDP = true;
+        pParam.rtps.builtinAtt.useStaticEDP = true;
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("LOCAL_READER_ENDPOINTS.xml");
+        
+        pParam.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pParam, null );
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
+        // Type registration
+        Domain.registerType(participant, type);
+        
+        SubscriberAttributes satt = new SubscriberAttributes();
+        satt.topic.topicKind = TopicKind.NO_KEY;
+        satt.topic.topicDataTypeName = "HelloWorld";
+        satt.topic.topicName = "HelloWorldTopic";
+        satt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        satt.topic.historyQos.depth = 30;
+        satt.topic.resourceLimitQos.maxSamples = 50;
+        satt.topic.resourceLimitQos.allocatedSamples = 20;
+        satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        
+        satt.setUserDefinedID((short) 1);
+        Subscriber<HelloWorld> subscriber = Domain.createSubscriber(participant, satt, new SubListener());
+        if (subscriber == null) {
+            System.out.println("Error creating subscriber");
+            return;
+        }
+        
+        try {
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        Domain.removeParticipant(participant);
+        
+        Kiara.shutdown();
         
         System.out.println("Subscriber finished");
         

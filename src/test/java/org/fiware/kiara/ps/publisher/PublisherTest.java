@@ -50,7 +50,7 @@ public class PublisherTest {
         pAtt.rtps.builtinAtt.useWriterLP = false;
         pAtt.rtps.builtinAtt.useSimpleEDP = true;
         pAtt.rtps.builtinAtt.useStaticEDP = true;
-        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("WRITER_ENDPOINTS.xml");
+        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("LOCAL_WRITER_ENDPOINTS.xml");
         /*pAtt.rtps.builtinAtt.simpleEDP.usePulicationReaderAndSubscriptionWriter = true;
         pAtt.rtps.builtinAtt.simpleEDP.usePulicationWriterAndSubscriptionReader = true;
         pAtt.rtps.builtinAtt.domainID = 80;
@@ -89,7 +89,7 @@ public class PublisherTest {
         pubAtt.qos.liveliness.leaseDuration = new Timestamp(5, 1);
         pubAtt.qos.liveliness.announcementPeriod = new Timestamp(5, 0);
         
-        Publisher publisher = Domain.createPublisher(participant, pubAtt, new PubListener()); 
+        Publisher<HelloWorld> publisher = Domain.createPublisher(participant, pubAtt, new PubListener()); 
         
         if (publisher == null) {
             System.out.println("Error creating publisher");
