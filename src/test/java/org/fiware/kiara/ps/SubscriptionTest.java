@@ -111,7 +111,7 @@ public class SubscriptionTest {
                     + "            <topicDataType>HelloWorld</topicDataType>"
                     + "            <topicKind>NO_KEY</topicKind>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
-                    + "			<unicastLocator address=\"192.168.1.142\"></unicastLocator>"
+                    + "			<unicastLocator address=\"127.0.0.1\"></unicastLocator>"
                     + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
                     + "        </writer>"
                     + "     </participant>"
@@ -126,6 +126,11 @@ public class SubscriptionTest {
                 System.out.println("Error when creating participant");
                 return false;
             }
+
+            System.out.println("Subscriber participant SPDP MC Port: "+participant.getSPDPMulticastPort());
+            System.out.println("Subscriber participant SPDP UC Port: "+participant.getSPDPUnicastPort());
+            System.out.println("Subscriber participant User MC Port: "+participant.getUserMulticastPort());
+            System.out.println("Subscriber participant User UC Port: "+participant.getUserUnicastPort());
 
             initSignal.countDown();
 
@@ -240,7 +245,7 @@ public class SubscriptionTest {
                     + "            <topic name=\"HelloWorldTopic\" dataType=\"HelloWorld\" kind=\"NO_KEY\"></topic>"
                     + "            <expectsInlineQos>false</expectsInlineQos>"
                     + "			<topicKind>NO_KEY</topicKind>"
-                    + "            <unicastLocator address=\"192.168.1.142\" port=\"7411\"></unicastLocator>"
+                    + "            <unicastLocator address=\"127.0.0.1\" port=\"7411\"></unicastLocator>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
                     + "        </reader>"
                     + "    </participant>"
@@ -251,6 +256,11 @@ public class SubscriptionTest {
             pAtt.rtps.setName("participant2");
 
             Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
+
+            System.out.println("Publisher participant SPDP MC Port: "+participant.getSPDPMulticastPort());
+            System.out.println("Publisher participant SPDP UC Port: "+participant.getSPDPUnicastPort());
+            System.out.println("Publisher participant User MC Port: "+participant.getUserMulticastPort());
+            System.out.println("Publisher participant User UC Port: "+participant.getUserUnicastPort());
 
             assertNotNull("Error when creating participant", participant);
 
