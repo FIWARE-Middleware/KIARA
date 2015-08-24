@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class Participant/*<T extends Serializable>*/ {
+public class Participant /*<T extends Serializable>*/ {
     
     private static final Logger logger = LoggerFactory.getLogger(Participant.class);
     
@@ -66,11 +66,13 @@ public class Participant/*<T extends Serializable>*/ {
     
     private MyRTPSParticipantListener m_rtpsListener;
     
-    private List<Publisher> m_publishers;
+    private List<Publisher<?>> m_publishers;
     
-    private List<Subscriber> m_subscribers;
+    private List<Subscriber<?>> m_subscribers;
     
-    private List<SerializableDataType> m_types;
+    private List<TopicDataType<?>> m_types;
+    
+    //private List<SerializableDataType> m_types_old;
     
     public class MyRTPSParticipantListener extends RTPSParticipantListener {
         
@@ -97,9 +99,9 @@ public class Participant/*<T extends Serializable>*/ {
         this.m_rtpsParticipant = null;
         this.m_listener = listener;
         
-        this.m_publishers = new ArrayList<Publisher>();
-        this.m_subscribers = new ArrayList<Subscriber>();
-        this.m_types = new ArrayList<SerializableDataType>();
+        this.m_publishers = new ArrayList<Publisher<?>>();
+        this.m_subscribers = new ArrayList<Subscriber<?>>();
+        this.m_types = new ArrayList<TopicDataType<?>>();
         
         this.m_rtpsListener = new MyRTPSParticipantListener(this);
     }
@@ -117,8 +119,17 @@ public class Participant/*<T extends Serializable>*/ {
         RTPSDomain.removeRTPSParticipant(this.m_rtpsParticipant);
     }
     
-    public Publisher<?> createPublisher(PublisherAttributes att, PublisherListener listener) {
-        SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+    @SuppressWarnings("unchecked")
+    public <T> Publisher<T> createPublisher(PublisherAttributes att, PublisherListener listener) {
+        //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        TopicDataType<T> type = null;
+        
+        try {
+            type = (TopicDataType<T>) getRegisteredType(att.topic.topicDataTypeName);
+        } catch (ClassCastException e) {
+            logger.warn("Registered type {} cannot be casted and returned", att.topic.topicDataTypeName);
+            return null;
+        }
         
         logger.info("Creating Publisher in Topic " + att.topic.topicName);
         
@@ -153,7 +164,7 @@ public class Participant/*<T extends Serializable>*/ {
             return null;
         }
         
-        Publisher publisher = new Publisher(this, type, att, listener);
+        Publisher<T> publisher = new Publisher<T>(this, type, att, listener);
         publisher.setRTPSParticipant(this.m_rtpsParticipant);
         
         WriterAttributes writerAtt = new WriterAttributes();
@@ -193,12 +204,11 @@ public class Participant/*<T extends Serializable>*/ {
         return publisher;
     }
     
-    public Subscriber createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
+    public Publisher<?> createPublisher_old(PublisherAttributes att, PublisherListener listener) {
+        //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        /*TopicDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
         
-        logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
-        
-        //TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
-        SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        logger.info("Creating Publisher in Topic " + att.topic.topicName);
         
         if (type == null) {
             logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
@@ -231,7 +241,94 @@ public class Participant/*<T extends Serializable>*/ {
             return null;
         }
         
-        Subscriber subscriber = new Subscriber(this, type, att, listener);
+        Publisher<?> publisher = new Publisher(this, type, att, listener);
+        publisher.setRTPSParticipant(this.m_rtpsParticipant);
+        
+        WriterAttributes writerAtt = new WriterAttributes();
+        writerAtt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
+        writerAtt.endpointAtt.endpointKind = EndpointKind.WRITER;
+        writerAtt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
+        writerAtt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
+        writerAtt.endpointAtt.topicKind = att.topic.topicKind;
+        writerAtt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
+        
+        if (att.getEntityId() > 0) {
+            writerAtt.endpointAtt.setEntityID(att.getEntityId());
+        } 
+        
+        if (att.getUserDefinedID() > 0) {
+            writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedID());
+        }
+        
+        writerAtt.times = att.times;
+        
+        //RTPSWriter writer = RTPSDomain. TODO continue impl
+        
+        RTPSWriter writer = RTPSDomain.createRTPSWriter(this.m_rtpsParticipant, writerAtt, (WriterHistoryCache) publisher.getHistory(), publisher.getWriterListener());
+        if (writer == null) {
+            logger.error("Problem creating associated Writer");
+            return null;
+        }
+        
+        publisher.setWriter(writer);
+        
+        this.m_publishers.add(publisher);
+        
+        this.m_rtpsParticipant.registerWriter(writer, att.topic, att.qos);
+        
+        logger.info("Publisher {} created in topic {}", publisher.getGuid(), att.topic.topicName);
+        
+        return publisher;*/
+        return null;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public <T> Subscriber<T> createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
+        
+        logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
+        
+        //TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
+        //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        TopicDataType<T> type = null;
+        try {
+            type = (TopicDataType<T>) getRegisteredType(att.topic.topicDataTypeName);
+        } catch (ClassCastException e) {
+            logger.warn("Registered type {} cannot be casted and returned", att.topic.topicDataTypeName);
+            return null;
+        }
+        
+        if (type == null) {
+            logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
+            return null;
+        }
+        
+        if (att.topic.topicKind == TopicKind.WITH_KEY && !type.isGetKeyDefined()) {
+            logger.error("Keyed Topic needs getKey function");
+            return null;
+        }
+        
+        if (this.m_att.rtps.builtinAtt.useStaticEDP) {
+            if (att.getUserDefinedID() <= 0) {
+                logger.error("Static EDP requires user defined Id");
+                return null;
+            }
+        }
+        
+        if (!att.unicastLocatorList.isValid()) {
+            logger.error("Unicast Locator List for Publisher contains invalid Locator");
+            return null;
+        }
+        
+        if (!att.multicastLocatorList.isValid()) {
+            logger.error("Multicast Locator List for Publisher contains invalid Locator");
+            return null;
+        }
+        
+        if (!att.qos.checkQos() || !att.topic.checkQos()) {
+            return null;
+        }
+        
+        Subscriber<T> subscriber = new Subscriber<T>(this, type, att, listener);
         subscriber.setRTPSParticipant(this.m_rtpsParticipant);
         
         ReaderAttributes ratt = new ReaderAttributes();
@@ -265,9 +362,9 @@ public class Participant/*<T extends Serializable>*/ {
         return subscriber;
     }
     
-    public boolean removePublisher(Publisher pub) {
+    public boolean removePublisher(Publisher<?> pub) {
         for (int i=0; i < this.m_publishers.size(); ++i) {
-            Publisher it = this.m_publishers.get(i);
+            Publisher<?> it = this.m_publishers.get(i);
             if (it.getGuid().equals(pub.getGuid())) {
                 it.destroy();
                 this.m_publishers.remove(it);
@@ -277,9 +374,9 @@ public class Participant/*<T extends Serializable>*/ {
         return true;
     }
     
-    public boolean removeSubscriber(Subscriber sub) {
+    public boolean removeSubscriber(Subscriber<?> sub) {
         for (int i=0; i < this.m_subscribers.size(); ++i) {
-            Subscriber it = this.m_subscribers.get(i);
+            Subscriber<?> it = this.m_subscribers.get(i);
             if (it.getGuid().equals(sub.getGuid())) {
                 it.destroy();
                 this.m_subscribers.remove(it);
@@ -289,7 +386,7 @@ public class Participant/*<T extends Serializable>*/ {
         return true;
     }
     
-    public boolean registerType(SerializableDataType<?> type) {
+    public boolean registerType(TopicDataType<?> type) {
         
         if (type.getTypeSize() <= 0) {
             logger.error("Registered Type must have maximum byte size > 0");
@@ -318,6 +415,35 @@ public class Participant/*<T extends Serializable>*/ {
         return true;
     }
     
+    public boolean registerType_old(SerializableDataType<?> type) {
+        
+        /*if (type.getTypeSize() <= 0) {
+            logger.error("Registered Type must have maximum byte size > 0");
+            return false;
+        }
+        
+        if (type.getTypeSize() > SerializedPayload.PAYLOAD_MAX_SIZE) {
+            logger.error("Current version only supports types of sizes < " + SerializedPayload.PAYLOAD_MAX_SIZE);
+            return false;
+        }
+        
+        if (type.getName().length() <= 0) {
+            logger.error("Registered Type must have a name");
+            return false;
+        }
+        
+        for (TopicDataType<?> it : this.m_types) {
+            if (it.getName().equals(type.getName())) {
+                logger.error("Type with the same name already exists");
+                return false;
+            }
+        }
+        
+        this.m_types.add(type);
+        logger.info("Type " + type.getName() + " registered");*/
+        return true;
+    }
+    
     /*public TopicDataType getRegisteredType(String typeName) {
         
         for (TopicDataType type : this.m_types) {
@@ -329,13 +455,24 @@ public class Participant/*<T extends Serializable>*/ {
         return null;
     }*/
     
-    public <T extends Serializable> SerializableDataType<T> getRegisteredType(String typeName) {
+    public TopicDataType<?> getRegisteredType(String typeName) {
         
-        for (SerializableDataType<T> type : this.m_types) {
+        for (TopicDataType<?> type : this.m_types) {
             if (type.getName().equals(typeName)) {
                 return type;
             }
         }
+        
+        return null;
+    }
+    
+    public <T extends Serializable> SerializableDataType<T> getRegisteredType_old(String typeName) {
+        
+        /*for (SerializableDataType<T> type : this.m_types) {
+            if (type.getName().equals(typeName)) {
+                return type;
+            }
+        }*/
         
         return null;
     }

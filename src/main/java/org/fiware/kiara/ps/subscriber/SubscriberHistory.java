@@ -265,8 +265,8 @@ public class SubscriberHistory extends ReaderHistoryCache {
     public long getUnreadCount() {
         return this.m_unreadCacheCount;
     }
-
-    public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
+    
+    public <T> T readNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
 
@@ -310,13 +310,101 @@ public class SubscriberHistory extends ReaderHistoryCache {
             this.m_mutex.unlock();
         }
     }
+
+    /*public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
+        this.m_mutex.lock();
+        try {
+            
+            CacheChange change = new CacheChange();
+            WriterProxy proxy = new WriterProxy();
+            
+            if (this.m_reader.nextUnreadCache(change, proxy)) {
+                change.setRead(true);
+                this.decreadeUnreadCount();
+                logger.info(this.m_reader.getGuid().getEntityId() + ": reading " + change.getSequenceNumber().toLong());
+                if (change.getKind() == ChangeKind.ALIVE) {
+                    try {
+                        this.m_subscriber.getType().deserialize(change.getSerializedPayload());
+                    } catch (InstantiationException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+                if (info != null) {
+                    info.sampleKind = change.getKind();
+                    info.writerGUID = change.getWriterGUID();
+                    info.sourceTimestamp = change.getSourceTimestamp();
+                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
+                        info.ownershipStrength = proxy.att.ownershipStrength;
+                    }
+                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
+                            change.getInstanceHandle().equals(new InstanceHandle()) &&
+                            change.getKind() == ChangeKind.ALIVE) {
+                        
+                    }
+                    info.handle = change.getInstanceHandle();
+                }
+                //return this.m_subscriber.getType();
+            }
+            return null;
+            
+        } finally {
+            this.m_mutex.unlock();
+        }
+    }*/
     
-    public Serializable takeNextData(SampleInfo info) {
+    public <T> T takeNextData(SampleInfo info) {
+        this.m_mutex.lock();
+        try {
+            T retVal = null;
+            CacheChange change = new CacheChange();
+            ReturnParam<WriterProxy> wp = new ReturnParam<>();
+            if (this.m_reader.nextUntakenCache(change, wp)) {
+                if (!change.isRead()) {
+                    this.decreadeUnreadCount();
+                }
+                change.setRead(true);
+                logger.debug("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
+                if (change.getKind() == ChangeKind.ALIVE) {
+                    try {
+                        retVal = (T) this.m_subscriber.getType().deserialize(change.getSerializedPayload());
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                 }
+                if (info != null) {
+                    info.sampleKind = change.getKind();
+                    info.writerGUID = change.getWriterGUID();
+                    info.sourceTimestamp = change.getSourceTimestamp();
+                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
+                        info.ownershipStrength = wp.att.ownershipStrength;
+                    }
+                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
+                            change.getInstanceHandle().equals(new InstanceHandle()) && 
+                            change.getKind() == ChangeKind.ALIVE) {
+                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
+                    }
+                    info.handle = change.getInstanceHandle();
+                }
+                this.removeChangeSub(change, null);
+                return retVal;
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+        return null;
+    }
+    
+    /*public Serializable takeNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
             Serializable retVal = null;
             CacheChange change = new CacheChange();
-            ReturnParam<WriterProxy> wp = new ReturnParam<>();
+            WriterProxy wp = new WriterProxy();
             if (this.m_reader.nextUntakenCache(change, wp)) {
                 if (!change.isRead()) {
                     this.decreadeUnreadCount();
@@ -330,14 +418,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
-                   /* change.getSerializedPayload().setData(retVal);
-                    try {
-                        change.getSerializedPayload().deserializeData();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }*/
-                }
+                 }
                 if (info != null) {
                     info.sampleKind = change.getKind();
                     info.writerGUID = change.getWriterGUID();
@@ -359,7 +440,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
             this.m_mutex.unlock();
         }
         return null;
-    }
+    }*/
 
     
 }

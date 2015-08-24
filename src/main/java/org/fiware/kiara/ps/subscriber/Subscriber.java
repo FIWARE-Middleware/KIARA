@@ -42,7 +42,7 @@ import com.eprosima.log.Log;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  * @param <T>
  */
-public class Subscriber<T extends Serializable> {
+public class Subscriber<T> {
 
     private class SubscriberReaderListener extends ReaderListener {
 
@@ -73,7 +73,9 @@ public class Subscriber<T extends Serializable> {
 
     private TopicDataType<T> m_type_old;
     
-    private SerializableDataType<T> m_type;
+    //private SerializableDataType<T> m_type;
+    
+    private TopicDataType<T> m_type;
 
     private SubscriberAttributes m_att;
 
@@ -91,7 +93,7 @@ public class Subscriber<T extends Serializable> {
 
     //private Subscriber m_userSubscriber;
 
-    public Subscriber(Participant p, SerializableDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
+    public Subscriber(Participant p, TopicDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
         this.m_participant = p;
         this.m_readerListener = null;
         this.m_type = type;
@@ -115,21 +117,21 @@ public class Subscriber<T extends Serializable> {
         }
     }
 
-    /*public TopicDataType<T> readNextData(SampleInfo info) {
+    public T readNextData(SampleInfo info) {
         return this.m_history.readNextData(info);
     }
 
-    public TopicDataType<T> takeNextData(SampleInfo info) {
+    public T takeNextData(SampleInfo info) {
         return this.m_history.takeNextData(info);
-    }*/
+    }
     
-    public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
+    /*public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
         return this.m_history.readNextData(info);
     }
 
     public Serializable takeNextData(SampleInfo info) {
         return this.m_history.takeNextData(info);
-    }
+    }*/
     
     public boolean updateAttributes(SubscriberAttributes att) {
         boolean updated = true;
@@ -192,13 +194,13 @@ public class Subscriber<T extends Serializable> {
         return this.m_reader.getGuid();
     }
 
-    public TopicDataType<T> getType_old() {
+    public TopicDataType<T> getType() {
         return this.m_type;
     }
     
-    public SerializableDataType<T> getType() {
+    /*public SerializableDataType<T> getType_old() {
         return this.m_type;
-    }
+    }*/
     
     public SubscriberAttributes getAttributes() {
         return this.m_att;
