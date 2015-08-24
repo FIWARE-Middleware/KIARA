@@ -41,8 +41,8 @@ public abstract class TopicDataTypeAlt<T> {
      * abstract. It is VERY IMPORTANT that the user sets the serializedPaylaod
      * length correctly.
      *
-     * @param[in] data Pointer to the data
-     * @param[out] payload Pointer to the payload
+     * @param data Pointer to the data
+     * @param payload Pointer to the payload
      * @return True if correct.
      */
     public abstract boolean serialize(T data, SerializedPayload payload);
@@ -51,8 +51,8 @@ public abstract class TopicDataTypeAlt<T> {
      * Deserialize method, it should be implemented by the user, since it is
      * abstract.
      *
-     * @param[in] payload Pointer to the payload
-     * @param[out] data Pointer to the data
+     * @param payload Pointer to the payload
+     * @param data Pointer to the data
      * @return True if correct.
      */
     public abstract boolean deserialize(SerializedPayload payload, T data);
@@ -67,8 +67,8 @@ public abstract class TopicDataTypeAlt<T> {
     /**
      * Get the key associated with the data.
      *
-     * @param[in] data Pointer to the data.
-     * @param[out] ihandle Pointer to the Handle.
+     * @param data Pointer to the data.
+     * @param ihandle Pointer to the Handle.
      * @return True if correct.
      */
     public boolean getKey(T data, InstanceHandle ihandle) {
@@ -78,7 +78,7 @@ public abstract class TopicDataTypeAlt<T> {
     /**
      * Set topic data type name
      *
-     * @param nam Topic data type name
+     * @param name Topic data type name
      */
     public void setName(String name) {
         m_topicDataTypeName = name;
