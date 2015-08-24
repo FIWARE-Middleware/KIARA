@@ -78,7 +78,7 @@ public class EntityId extends RTPSSubmessageElement {
     }
 
     public EntityId(EntityIdEnum value) {
-        this.m_value = value.getValue();
+        this.m_value = value.getValue().clone();
     }
 
     public boolean isSPDPReader() {

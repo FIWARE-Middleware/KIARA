@@ -334,6 +334,6 @@ public class SubscriptionTest {
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
         
-        Kiara.shutdown();
+        //Kiara.shutdown();
     }
 }
