@@ -74,10 +74,12 @@ public class SubscriptionTest {
 
     private static class Subscriber implements Callable<Boolean> {
 
+        private final CountDownLatch initSignal;
         private final CountDownLatch startSignal;
         private final CountDownLatch doneSignal;
 
-        public Subscriber(CountDownLatch startSignal, CountDownLatch doneSignal) {
+        public Subscriber(CountDownLatch initSignal, CountDownLatch startSignal, CountDownLatch doneSignal) {
+            this.initSignal = initSignal;
             this.startSignal = startSignal;
             this.doneSignal = doneSignal;
         }
@@ -121,6 +123,8 @@ public class SubscriptionTest {
                 System.out.println("Error when creating participant");
                 return false;
             }
+
+            initSignal.countDown();
 
             // Type registration
             Domain.registerType(participant, hwtype);
@@ -197,16 +201,19 @@ public class SubscriptionTest {
 
     private static class Publisher implements Callable<Boolean> {
 
+        private final CountDownLatch initSignal;
         private final CountDownLatch startSignal;
         private final CountDownLatch doneSignal;
 
-        public Publisher(CountDownLatch startSignal, CountDownLatch doneSignal) {
+        public Publisher(CountDownLatch initSignal, CountDownLatch startSignal, CountDownLatch doneSignal) {
+            this.initSignal = initSignal;
             this.startSignal = startSignal;
             this.doneSignal = doneSignal;
         }
 
         @Override
         public Boolean call() throws Exception {
+            initSignal.await();
 
             HelloWorld hw = hwtype.createData();
 
@@ -315,10 +322,11 @@ public class SubscriptionTest {
     @Test
     public void testSubscribePublish() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
+        CountDownLatch initSignal = new CountDownLatch(1);
         CountDownLatch startSignal = new CountDownLatch(1);
         CountDownLatch doneSignal = new CountDownLatch(1);
-        Future<Boolean> subscriber = es.submit(new Subscriber(startSignal, doneSignal));
-        Future<Boolean> publisher = es.submit(new Publisher(startSignal, doneSignal));
+        Future<Boolean> subscriber = es.submit(new Subscriber(initSignal, startSignal, doneSignal));
+        Future<Boolean> publisher = es.submit(new Publisher(initSignal, startSignal, doneSignal));
 
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
