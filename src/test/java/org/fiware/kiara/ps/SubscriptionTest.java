@@ -24,6 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import org.fiware.kiara.Kiara;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
 import org.fiware.kiara.ps.attributes.SubscriberAttributes;
@@ -56,7 +58,8 @@ public class SubscriptionTest {
 
     static {
         //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
-        System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/nologging.properties");
+        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/nologging.properties");
+        System.setProperty("java.util.logging.config.file", "logging.properties");
     }
 
     public SubscriptionTest() {
@@ -108,7 +111,7 @@ public class SubscriptionTest {
                     + "            <topicDataType>HelloWorld</topicDataType>"
                     + "            <topicKind>NO_KEY</topicKind>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
-                    + "			<unicastLocator address=\"127.0.0.1\"></unicastLocator>"
+                    + "			<unicastLocator address=\"192.168.1.142\"></unicastLocator>"
                     + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
                     + "        </writer>"
                     + "     </participant>"
@@ -237,7 +240,7 @@ public class SubscriptionTest {
                     + "            <topic name=\"HelloWorldTopic\" dataType=\"HelloWorld\" kind=\"NO_KEY\"></topic>"
                     + "            <expectsInlineQos>false</expectsInlineQos>"
                     + "			<topicKind>NO_KEY</topicKind>"
-                    + "            <unicastLocator address=\"127.0.0.1\" port=\"7411\"></unicastLocator>"
+                    + "            <unicastLocator address=\"192.168.1.142\" port=\"7411\"></unicastLocator>"
                     + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
                     + "        </reader>"
                     + "    </participant>"
@@ -245,7 +248,7 @@ public class SubscriptionTest {
 
             pAtt.rtps.builtinAtt.setStaticEndpointXML(edpXml);
 
-            pAtt.rtps.setName("participant1");
+            pAtt.rtps.setName("participant2");
 
             Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
 
@@ -270,7 +273,7 @@ public class SubscriptionTest {
             pubAtt.qos.liveliness.leaseDuration = new Timestamp(5, 1);
             pubAtt.qos.liveliness.announcementPeriod = new Timestamp(5, 0);
 
-            org.fiware.kiara.ps.publisher.Publisher publisher = Domain.createPublisher(participant, pubAtt, new PubListener());
+            org.fiware.kiara.ps.publisher.Publisher<HelloWorld> publisher = Domain.createPublisher(participant, pubAtt, new PubListener());
 
             if (publisher == null) {
                 Domain.removeParticipant(participant);
@@ -330,5 +333,7 @@ public class SubscriptionTest {
 
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
+        
+        Kiara.shutdown();
     }
 }
