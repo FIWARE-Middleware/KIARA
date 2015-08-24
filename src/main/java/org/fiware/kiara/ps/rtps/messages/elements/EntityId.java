@@ -81,6 +81,41 @@ public class EntityId extends RTPSSubmessageElement {
         this.m_value = value.getValue();
     }
 
+    public boolean isSPDPReader() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
+    }
+
+    public boolean isSPDPWriter() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER));
+    }
+
+    public boolean isSEDPPubWriter() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_WRITER));
+    }
+
+    public boolean isSEDPPubReader() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER));
+    }
+
+    public boolean isSEDPSubWriter() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_WRITER));
+    }
+
+    public boolean isSEDPSubReader() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER));
+    }
+
+    public boolean isRTPSParticipant() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_RTPSPARTICIPANT));
+    }
+
+    public boolean isWriterLiveliness() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER));
+    }
+    public boolean isReaderLiveliness() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER));
+    }
+
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
     }

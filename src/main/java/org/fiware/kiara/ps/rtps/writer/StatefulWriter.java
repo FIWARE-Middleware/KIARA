@@ -17,27 +17,74 @@
  */
 package org.fiware.kiara.ps.rtps.writer;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
+import org.fiware.kiara.ps.rtps.attributes.WriterTimes;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
+import org.fiware.kiara.ps.rtps.messages.elements.Count;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.writer.timedevent.PeriodicHeartbeat;
+import org.fiware.kiara.ps.subscriber.ReaderProxy;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class StatefulWriter extends RTPSWriter {
-    
-    // TODO Implement
+
+    /**
+     * Count of the sent heartbeats.
+     */
+    private final Count m_heartbeatCount;
+
+    /**
+     * Timed Event to manage the periodic HB to the Reader.
+     */
+    private PeriodicHeartbeat m_periodicHB;
+
+    private final WriterTimes m_times;
+
+    /**
+     * Vector containing all the associated ReaderProxies.
+     */
+    private final List<ReaderProxy> m_matchedReaders;
+
+    /**
+     * EntityId used to send the HB.(only for builtin types performance)
+     */
+    private final EntityId m_HBReaderEntityId;
 
     public StatefulWriter(RTPSParticipant participant, GUID guid,
             WriterAttributes att, WriterHistoryCache history,
             WriterListener listener) {
         super(participant, guid, att, history, listener);
-        // TODO Auto-generated constructor stub
+        m_heartbeatCount = new Count(0);
+        m_periodicHB = null;
+        m_times = new WriterTimes(att.times);
+        m_matchedReaders = new ArrayList<>();
+        if (guid.getEntityId().isSEDPPubWriter()) {
+            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER);
+        } else if (guid.getEntityId().isSEDPSubWriter()) {
+            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER);
+        } else if (guid.getEntityId().isWriterLiveliness()) {
+            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER);
+        } else {
+            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_UNKNOWN);
+        }
+    }
+
+    public void destroy() {
+
+    }
+
+    public List<ReaderProxy> getMatchedReaders() {
+        return m_matchedReaders;
     }
 
     @Override
@@ -61,19 +108,44 @@ public class StatefulWriter extends RTPSWriter {
     @Override
     public void updateAttributes(WriterAttributes att) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void unsentChangesNotEmpty() {
         // TODO Auto-generated method stub
-        
+
+    }
+
+    /**
+     * Get heartbeat reader entity id
+     *
+     * @return heartbeat reader entity id
+     */
+    public EntityId getHBReaderEntityId() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Get count of heartbeats
+     *
+     * @return count of heartbeats
+     */
+    public Count getHeartbeatCount() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Increment the HB count.
+     */
+    public void incrementHBCount() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void unsentChangeAddedToHistory(CacheChange change) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -83,9 +155,10 @@ public class StatefulWriter extends RTPSWriter {
     }
 
     /**
-    * Get the number of matched readers
-    * @return Number of the matched readers
-    */
+     * Get the number of matched readers
+     *
+     * @return Number of the matched readers
+     */
     public int getMatchedReadersSize() {
         throw new UnsupportedOperationException("Not implemented yet");
     }
