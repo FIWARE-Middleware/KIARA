@@ -51,5 +51,13 @@ public class PortParameters {
     public int getUnicastPort(int domainID, int participantID) {
         return portBase + (domainIDGain * domainID) + offsetd1 + (participantIDGain * participantID);
     }
+    
+    public int getUserMulticastPort(int domainID) {
+        return this.portBase + this.domainIDGain * domainID + this.offsetd2;
+    }
+    
+    public int getUserUnicastPort(int domainID, int participantID) {
+        return this.portBase + this.domainIDGain * domainID + this.offsetd3 + this.participantIDGain * participantID;
+    }
 
 }

@@ -263,9 +263,12 @@ public class BuiltinProtocols {
         return this.m_WLP;
     }
 
-    
+    public int getSPDPUnicastPort() {
+        return this.m_SPDPWellKnownUnicastPort;
+    }
 
-    
-    
+    public int getSPDPMulticastPort() {
+        return this.m_SPDPWellKnownMulticastPort;
+    }
 
 }
