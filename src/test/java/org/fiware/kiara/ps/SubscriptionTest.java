@@ -318,7 +318,7 @@ public class SubscriptionTest {
                 }
             }
 
-            Domain.removeParticipant(participant);
+            //Domain.removeParticipant(participant);
 
             System.out.println("Publisher finished");
 
@@ -350,6 +350,5 @@ public class SubscriptionTest {
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
 
-        //Kiara.shutdown();
     }
 }
