@@ -1,5 +1,9 @@
 package org.fiware.kiara.ps.subscriber;
 
+import java.io.Console;
+import java.io.IOException;
+import java.util.Scanner;
+
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
@@ -485,7 +489,7 @@ public class SubscriberTest {
         pParam.rtps.builtinAtt.useWriterLP = false;
         pParam.rtps.builtinAtt.useSimpleEDP = true;
         pParam.rtps.builtinAtt.useStaticEDP = true;
-        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("LOCAL_READER_ENDPOINTS.xml");
+        pParam.rtps.builtinAtt.setStaticEndpointXMLFilename("READER_ENDPOINTS.xml");
         
         pParam.rtps.setName("participant1");
         
@@ -515,15 +519,33 @@ public class SubscriberTest {
             return;
         }
         
-        try {
-            Thread.sleep(15000);
+        /*try {
+            Thread.sleep(45000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }*/
+        
+        Scanner scan = new Scanner(System.in);
+        String line = null;
+        while (line == null) {
+            System.out.println("Press any key to remove Subscriber...");
+            line = scan.nextLine();
         }
+        
+        Domain.removeSubscriber(subscriber);
+        
+        line = null;
+        while (line == null) {
+            System.out.println("Press any key to remove Participant...");
+            line = scan.nextLine();
+        }
+        
+        scan.close();
         
         Domain.removeParticipant(participant);
         
+
         Kiara.shutdown();
         
         System.out.println("Subscriber finished");

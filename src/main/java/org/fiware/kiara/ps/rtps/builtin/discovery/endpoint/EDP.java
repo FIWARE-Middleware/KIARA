@@ -248,10 +248,10 @@ public abstract class EDP {
      * @return True if correct.
      */
     public boolean removeWriterProxy(GUID writer) {
-        logger.info("RTPS EDP {}", writer);
+        logger.debug("RTPS EDP Trying to remove WRITER {}", writer);
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(writer);
         if (wdata != null) {
-            logger.info("RTPS_EDP: in topic: {}", wdata.getTopicName());
+            logger.debug("RTPS_EDP Found WRITER {} in topic {}", writer, wdata.getTopicName());
             unpairWriterProxy(wdata);
             this.m_PDP.removeWriterProxyData(wdata);
             return true;
@@ -266,10 +266,10 @@ public abstract class EDP {
      * @return True if correct.
      */
     public boolean removeReaderProxy(GUID reader) {
-        logger.info("RTPS EDP {}", reader);
+        logger.debug("RTPS EDP Trying to remove READER {}", reader);
         ReaderProxyData rdata = this.m_PDP.lookupReaderProxyData(reader);
         if (rdata != null) {
-            logger.info("RTPS_EDP: in topic: {}", rdata.getTopicName());
+            logger.debug("RTPS_EDP Found READER {} in topic {}", reader, rdata.getTopicName());
             unpairReaderProxy(rdata);
             this.m_PDP.removeReaderProxyData(rdata);
             return true;
@@ -284,7 +284,7 @@ public abstract class EDP {
      * @return True if correct.
      */
     public boolean unpairWriterProxy(WriterProxyData wdata) {
-        logger.info("RTPS_EDP {}  in topic: {}", wdata.getGUID(), wdata.getTopicName());
+        logger.debug("RTPS_EDP Unpairing WRITER {} in topic {}", wdata.getGUID(), wdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
         mutex.lock();
         try {
@@ -312,7 +312,7 @@ public abstract class EDP {
      * @return True if correct.
      */
     public boolean unpairReaderProxy(ReaderProxyData rdata) {
-        logger.info("RTPS_EDP {} in topic: {}", rdata.getGUID(), rdata.getTopicName());
+        logger.debug("RTPS_EDP Unpairing READER {} in topic {}", rdata.getGUID(), rdata.getTopicName());
         final Lock mutex = m_RTPSParticipant.getParticipantMutex();
         mutex.lock();
         try {

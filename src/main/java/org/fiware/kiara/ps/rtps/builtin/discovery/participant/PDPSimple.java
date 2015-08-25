@@ -275,7 +275,7 @@ public class PDPSimple {
 
     public boolean removeReaderProxyData(ReaderProxyData rdata) {
         this.m_mutex.lock();
-        logger.info("Removing ReaderProxyData: " + rdata.getGUID());
+        logger.debug("Removing ReaderProxyData " + rdata.getGUID());
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
                 synchronized(this.m_guardMutex) {
@@ -294,7 +294,7 @@ public class PDPSimple {
 
     public boolean removeWriterProxyData(WriterProxyData wdata) {
         this.m_mutex.lock();
-        logger.info("Removing WriterProxyData: " + wdata.getGUID());
+        logger.debug("Removing WriterProxyData " + wdata.getGUID());
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
                 synchronized(this.m_guardMutex) {
@@ -312,7 +312,7 @@ public class PDPSimple {
     }
 
     public ParticipantProxyData lookupParticipantProxyData(GUID pguid) {
-        logger.info("Lookup ParticipantProxyData: " + pguid);
+        logger.info("Lookup ParticipantProxyData " + pguid);
         this.m_mutex.lock();
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
