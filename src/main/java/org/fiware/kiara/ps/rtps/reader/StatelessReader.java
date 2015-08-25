@@ -128,9 +128,12 @@ public class StatelessReader extends RTPSReader {
             if (this.m_history.receivedChange(change)) {
                 if (this.m_listener != null) {
                     this.m_mutex.unlock();
-                    this.m_listener.onNewCacheChangeAdded(this, change);
+                    try {
+                        this.m_listener.onNewCacheChangeAdded(this, change);
+                    } finally {
+                        this.m_mutex.lock();
+                    }
                 } 
-                this.m_mutex.lock();
                 this.m_history.postChange();
                 return true;
             }
