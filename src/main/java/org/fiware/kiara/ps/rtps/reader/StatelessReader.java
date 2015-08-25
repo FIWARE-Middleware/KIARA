@@ -197,7 +197,7 @@ public class StatelessReader extends RTPSReader {
     }
 
     @Override
-    public boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> proxy) {
+    public boolean nextUntakenCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy) {
         this.m_mutex.lock();
         try {
             /*CacheChange retChange = new CacheChange();

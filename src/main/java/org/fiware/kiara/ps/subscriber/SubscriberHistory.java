@@ -360,37 +360,37 @@ public class SubscriberHistory extends ReaderHistoryCache {
         this.m_mutex.lock();
         try {
             T retVal = null;
-            CacheChange change = new CacheChange();
+            ReturnParam<CacheChange> change = new ReturnParam<>();
             ReturnParam<WriterProxy> wp = new ReturnParam<>();
             if (this.m_reader.nextUntakenCache(change, wp)) {
-                if (!change.isRead()) {
+                if (!change.value.isRead()) {
                     this.decreadeUnreadCount();
                 }
-                change.setRead(true);
-                logger.debug("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
-                if (change.getKind() == ChangeKind.ALIVE) {
+                change.value.setRead(true);
+                logger.debug("Taking seqNum {} from writer {}", change.value.getSequenceNumber().toLong(), change.value.getWriterGUID());
+                if (change.value.getKind() == ChangeKind.ALIVE) {
                     try {
-                        retVal = (T) this.m_subscriber.getType().deserialize(change.getSerializedPayload());
+                        retVal = (T) this.m_subscriber.getType().deserialize(change.value.getSerializedPayload());
                     } catch (InstantiationException | IllegalAccessException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                  }
                 if (info != null) {
-                    info.sampleKind = change.getKind();
-                    info.writerGUID = change.getWriterGUID();
-                    info.sourceTimestamp = change.getSourceTimestamp();
+                    info.sampleKind = change.value.getKind();
+                    info.writerGUID = change.value.getWriterGUID();
+                    info.sourceTimestamp = change.value.getSourceTimestamp();
                     if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
                         info.ownershipStrength = wp.att.ownershipStrength;
                     }
                     if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) && 
-                            change.getKind() == ChangeKind.ALIVE) {
-                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
+                            change.value.getInstanceHandle().equals(new InstanceHandle()) &&
+                            change.value.getKind() == ChangeKind.ALIVE) {
+                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.value.getInstanceHandle()); // TODO Check this
                     }
-                    info.handle = change.getInstanceHandle();
+                    info.handle = change.value.getInstanceHandle();
                 }
-                this.removeChangeSub(change, null);
+                this.removeChangeSub(change.value, null);
                 return retVal;
             }
         } finally {
