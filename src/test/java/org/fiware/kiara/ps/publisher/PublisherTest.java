@@ -32,7 +32,8 @@ public class PublisherTest {
     
     public static void main(String[] args) {
         
-        publicationTest();
+        //publicationTest();
+        discoveryTest();
         
     }
     
@@ -440,7 +441,7 @@ public class PublisherTest {
         pAtt.rtps.builtinAtt.useWriterLP = false;
         pAtt.rtps.builtinAtt.useSimpleEDP = true;
         pAtt.rtps.builtinAtt.useStaticEDP = true;
-        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("LOCAL_WRITER_ENDPOINTS.xml");
+        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("WRITER_ENDPOINTS.xml");
         
         pAtt.rtps.setName("participant1");
         
@@ -482,6 +483,76 @@ public class PublisherTest {
         
         try {
             Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        
+        publisher.write(hw);
+        
+        Domain.removeParticipant(participant);
+        
+        System.out.println("Publisher finished");
+        
+        Kiara.shutdown();
+    }
+    
+    public static void discoveryTest() {
+        HelloWorldType type = new HelloWorldType();
+        HelloWorld hw = type.createData();
+        
+        hw.setInnerLongAtt(10);
+        hw.setInnerStringAtt("Hello World");
+        
+        ParticipantAttributes pAtt = new ParticipantAttributes();
+        //pAtt.rtps.defaultSendPort = 11511;
+        pAtt.rtps.useIPv4ToSend = true;
+        pAtt.rtps.builtinAtt.useSimplePDP = true;
+        pAtt.rtps.builtinAtt.useWriterLP = false;
+        pAtt.rtps.builtinAtt.useSimpleEDP = true;
+        pAtt.rtps.builtinAtt.useStaticEDP = true;
+        pAtt.rtps.builtinAtt.setStaticEndpointXMLFilename("WRITER_ENDPOINTS.xml");
+        
+        pAtt.rtps.setName("participant1");
+        
+        Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
+        
+        if (participant == null) {
+            System.out.println("Error when creating participant");
+            return;
+        }
+        
+        if (!Domain.registerType(participant, type)) {
+            System.out.println("Error registering type");
+            return;
+        }
+        
+        // Create publisher
+        PublisherAttributes pubAtt = new PublisherAttributes();
+        pubAtt.setUserDefinedID((short) 1);
+        pubAtt.topic.topicKind = TopicKind.NO_KEY;
+        pubAtt.topic.topicDataTypeName = "HelloWorld";
+        pubAtt.topic.topicName = "HelloWorldTopic";
+        pubAtt.topic.historyQos.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
+        pubAtt.topic.historyQos.depth = 30;
+        pubAtt.topic.resourceLimitQos.maxSamples = 50;
+        pubAtt.topic.resourceLimitQos.allocatedSamples = 20;
+        pubAtt.times.heartBeatPeriod = new Timestamp(2, 200*1000*1000);
+        pubAtt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        pubAtt.qos.liveliness.kind = LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
+        pubAtt.qos.liveliness.leaseDuration = new Timestamp(5, 1);
+        pubAtt.qos.liveliness.announcementPeriod = new Timestamp(5, 0);
+        
+        Publisher publisher = Domain.createPublisher(participant, pubAtt, new PubListener()); 
+        
+        if (publisher == null) {
+            System.out.println("Error creating publisher");
+            Domain.removeParticipant(participant);
+            return;
+        }
+        
+        try {
+            Thread.sleep(3000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
