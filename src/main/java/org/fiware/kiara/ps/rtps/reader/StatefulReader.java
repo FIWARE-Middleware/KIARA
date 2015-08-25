@@ -251,7 +251,7 @@ public class StatefulReader extends RTPSReader {
     }
 
     @Override
-    public boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> wpout) {
+    public boolean nextUntakenCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> wpout) {
         m_mutex.lock();
         try {
 
@@ -287,7 +287,7 @@ public class StatefulReader extends RTPSReader {
                 //        Actually first argument to this method should be
                 //        ReturnParam<CacheChange>, but this require additional
                 //        source code changes
-                change.copy(wchange);
+                change.value = wchange;
 
                 if (wpout != null) {
                     wpout.value = wp;

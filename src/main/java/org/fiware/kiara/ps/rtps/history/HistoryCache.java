@@ -27,6 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.util.ReturnParam;
 
 /**
  *
@@ -97,9 +98,9 @@ public abstract class HistoryCache {
         return null;
     }
 
-    public boolean getMinChange(CacheChange change) {
+    public boolean getMinChange(ReturnParam<CacheChange> change) {
         if (!this.m_minSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
-            change.copy(this.m_minSeqCacheChange);
+            change.value = this.m_minSeqCacheChange;
             return true;
         }
         return false;

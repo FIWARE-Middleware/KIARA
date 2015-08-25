@@ -79,7 +79,7 @@ public abstract class RTPSReader extends Endpoint {
     
     public abstract CacheChange nextUnreadCache(WriterProxy proxy);
 
-    public abstract boolean nextUntakenCache(CacheChange change, ReturnParam<WriterProxy> proxy);
+    public abstract boolean nextUntakenCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy);
 
     public abstract boolean nextUnreadCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy);
 
