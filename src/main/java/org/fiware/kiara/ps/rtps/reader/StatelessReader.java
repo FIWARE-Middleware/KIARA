@@ -95,7 +95,7 @@ public class StatelessReader extends RTPSReader {
         try {
             for (RemoteWriterAttributes it : this.m_matchedWriters) {
                 if (it.guid.equals(wdata.guid)) {
-                    logger.info("Writer " + wdata.guid + " removed from " + this.m_guid.getEntityId());
+                    logger.debug("Writer " + wdata.guid + " removed from " + this.m_guid.getEntityId());
                     this.m_matchedWriters.remove(wdata);
                     return true;
                 }

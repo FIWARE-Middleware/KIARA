@@ -243,7 +243,7 @@ public class StatelessWriter extends RTPSWriter {
                 }
             }
             if (found) {
-                logger.info("Reader Proxy removed");
+                logger.debug("Reader Proxy removed");
                 for (Locator lit : ratt.endpoint.unicastLocatorList.getLocators()) {
                     removeLocator(lit);
                 }
