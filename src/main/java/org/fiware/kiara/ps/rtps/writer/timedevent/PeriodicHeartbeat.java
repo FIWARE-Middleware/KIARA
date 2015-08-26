@@ -50,6 +50,10 @@ public class PeriodicHeartbeat extends TimedEvent {
         m_SFW = writer;
     }
 
+    public void destroy() {
+
+    }
+
     @Override
     public void event(EventCode code, String msg) {
         if (code == EVENT_SUCCESS) {

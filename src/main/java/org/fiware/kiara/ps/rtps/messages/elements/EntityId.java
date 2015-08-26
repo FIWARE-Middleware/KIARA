@@ -33,18 +33,18 @@ public class EntityId extends RTPSSubmessageElement {
 
     public enum EntityIdEnum {
 
-        ENTITYID_UNKNOWN (0x00000000),
-        ENTITYID_RTPSPARTICIPANT (0x000001C1),
-        ENTITYID_SEDP_BUILTIN_TOPIC_WRITER (0x000002C2),
-        ENTITYID_SEDP_BUILTIN_TOPIC_READER (0x000002C7),
-        ENTITYID_SEDP_BUILTIN_PUBLICATIONS_WRITER (0x000003C2),
-        ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER (0x000003C7),
-        ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_WRITER (0x000004C2),
-        ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER (0x000004C7),
-        ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER (0x000100C2),
-        ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER (0x000100C7),
-        ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER (0x000200C2),
-        ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER (0x000200C7);
+        ENTITYID_UNKNOWN(0x00000000),
+        ENTITYID_RTPSPARTICIPANT(0x000001C1),
+        ENTITYID_SEDP_BUILTIN_TOPIC_WRITER(0x000002C2),
+        ENTITYID_SEDP_BUILTIN_TOPIC_READER(0x000002C7),
+        ENTITYID_SEDP_BUILTIN_PUBLICATIONS_WRITER(0x000003C2),
+        ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER(0x000003C7),
+        ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_WRITER(0x000004C2),
+        ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER(0x000004C7),
+        ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER(0x000100C2),
+        ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER(0x000100C7),
+        ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER(0x000200C2),
+        ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER(0x000200C7);
 
         private final byte[] m_value;
         private final int m_intValue;
@@ -81,6 +81,10 @@ public class EntityId extends RTPSSubmessageElement {
         this.m_value = value.getValue().clone();
     }
 
+    public boolean isUnknown() {
+        return equals(new EntityId(EntityIdEnum.ENTITYID_UNKNOWN));
+    }
+
     public boolean isSPDPReader() {
         return equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER));
     }
@@ -112,14 +116,55 @@ public class EntityId extends RTPSSubmessageElement {
     public boolean isWriterLiveliness() {
         return equals(new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER));
     }
+
     public boolean isReaderLiveliness() {
         return equals(new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER));
+    }
+
+    public static EntityId createUnknown() {
+        return new EntityId(EntityIdEnum.ENTITYID_UNKNOWN);
+    }
+
+    public static EntityId createSPDPReader() {
+        return new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER);
+    }
+
+    public static EntityId createSPDPWriter() {
+        return new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER);
+    }
+
+    public static EntityId createSEDPPubWriter() {
+        return new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_WRITER);
+    }
+
+    public static EntityId createSEDPPubReader() {
+        return new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER);
+    }
+
+    public static EntityId createSEDPSubWriter() {
+        return new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_WRITER);
+    }
+
+    public static EntityId createSEDPSubReader() {
+        return new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER);
+    }
+
+    public static EntityId createRTPSParticipant() {
+        return new EntityId(EntityIdEnum.ENTITYID_RTPSPARTICIPANT);
+    }
+
+    public static EntityId createWriterLiveliness() {
+        return new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER);
+    }
+
+    public static EntityId createReaderLiveliness() {
+        return new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER);
     }
 
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
     }
-    
+
     public byte getValue(int index) {
         return this.m_value[index];
     }
@@ -131,15 +176,14 @@ public class EntityId extends RTPSSubmessageElement {
     }
 
     /*@Override
-	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
-		try {
+     public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
+     try {
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
+     } catch (IOException e) {
+     // TODO Auto-generated catch block
+     e.printStackTrace();
+     }
+     }*/
     @Override
     public short getSerializedSize() {
         return 4;
@@ -147,14 +191,14 @@ public class EntityId extends RTPSSubmessageElement {
 
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-        for (int i=0; i < this.m_value.length; ++i) {
+        for (int i = 0; i < this.m_value.length; ++i) {
             impl.serializeByte(message, name, this.m_value[i]);
         }
     }
 
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        for (int i=0; i < this.m_value.length; ++i) {
+        for (int i = 0; i < this.m_value.length; ++i) {
             this.m_value[i] = impl.deserializeByte(message, name);
         }
     }
@@ -163,7 +207,7 @@ public class EntityId extends RTPSSubmessageElement {
     public boolean equals(Object other) {
         if (other instanceof EntityId) {
             boolean equals = true;
-            for (int i=0; i < 4; ++i) {
+            for (int i = 0; i < 4; ++i) {
                 equals &= this.m_value[i] == ((EntityId) other).m_value[i];
             }
             return equals;
@@ -173,13 +217,11 @@ public class EntityId extends RTPSSubmessageElement {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("");
-        for (int i=0; i < this.m_value.length; ++i) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.m_value.length; ++i) {
             sb.append(this.m_value[i]);
         }
         return sb.toString();
     }
-
-    
 
 }
