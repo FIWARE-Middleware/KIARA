@@ -35,4 +35,8 @@ public class ReaderProxy {
         throw new UnsupportedOperationException();
     }
 
+    public void destroy() {
+
+    }
+
 }

@@ -26,17 +26,20 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
-import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.writer.timedevent.PeriodicHeartbeat;
 import org.fiware.kiara.ps.subscriber.ReaderProxy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class StatefulWriter extends RTPSWriter {
+
+    private static final Logger logger = LoggerFactory.getLogger(RTPSWriter.class);
 
     /**
      * Count of the sent heartbeats.
@@ -69,18 +72,24 @@ public class StatefulWriter extends RTPSWriter {
         m_times = new WriterTimes(att.times);
         m_matchedReaders = new ArrayList<>();
         if (guid.getEntityId().isSEDPPubWriter()) {
-            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER);
+            m_HBReaderEntityId = EntityId.createSEDPPubReader();
         } else if (guid.getEntityId().isSEDPSubWriter()) {
-            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER);
+            m_HBReaderEntityId = EntityId.createSEDPSubReader();
         } else if (guid.getEntityId().isWriterLiveliness()) {
-            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER);
+            m_HBReaderEntityId = EntityId.createReaderLiveliness();
         } else {
-            m_HBReaderEntityId = new EntityId(EntityIdEnum.ENTITYID_UNKNOWN);
+            m_HBReaderEntityId = EntityId.createUnknown();
         }
     }
 
     public void destroy() {
-
+        logger.info("RTPS WRITER: StatefulWriter destructor");
+        if (m_periodicHB != null)
+            m_periodicHB.destroy();
+	for (ReaderProxy it : m_matchedReaders) {
+            it.destroy();
+	}
+        m_matchedReaders.clear();
     }
 
     public List<ReaderProxy> getMatchedReaders() {
