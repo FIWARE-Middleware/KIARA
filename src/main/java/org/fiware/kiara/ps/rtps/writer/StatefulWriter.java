@@ -29,7 +29,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.writer.timedevent.PeriodicHeartbeat;
-import org.fiware.kiara.ps.subscriber.ReaderProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

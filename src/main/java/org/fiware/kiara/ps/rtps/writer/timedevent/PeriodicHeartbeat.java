@@ -20,6 +20,7 @@ package org.fiware.kiara.ps.rtps.writer.timedevent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
+
 import org.fiware.kiara.ps.rtps.common.ChangeForReader;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
@@ -28,10 +29,12 @@ import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
+
 import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_ABORT;
 import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_SUCCESS;
+
+import org.fiware.kiara.ps.rtps.writer.ReaderProxy;
 import org.fiware.kiara.ps.rtps.writer.StatefulWriter;
-import org.fiware.kiara.ps.subscriber.ReaderProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,7 +72,7 @@ public class PeriodicHeartbeat extends TimedEvent {
                 for (ReaderProxy it : m_SFW.getMatchedReaders()) {
                     unack.clear();
                     if (!unacked_changes) {
-                        it.unackedChanges(unack);
+                        unack = it.unackedChanges();
                         if (!unack.isEmpty()) {
                             unacked_changes = true;
                         }
