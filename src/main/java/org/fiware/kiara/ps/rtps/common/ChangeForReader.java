@@ -74,7 +74,27 @@ public class ChangeForReader {
         m_change = change;
         return true;
     }
-
+    
+    /**
+     * Get the sequence number
+     *
+     * @return SequenceNumber
+     */
+    public SequenceNumber getSequenceNumber() {
+        return this.seqNum;
+    }
+    
+    /**
+     * Set the cache change
+     *
+     * @param sequenceNumber The sequence number to set
+     * @return
+     */
+    public boolean setSequenceNumber(SequenceNumber sequenceNumber) {
+        seqNum.copy(sequenceNumber);
+        return true;
+    }
+    
     /**
      * Set change as not valid
      */
@@ -86,6 +106,14 @@ public class ChangeForReader {
 
     public boolean isValid() {
         return m_isValid;
+    }
+
+    public void copy(ChangeForReader change) {
+        status = ChangeForReaderStatus.createFromValue(change.status.ordinal());
+        isRelevant = change.isRelevant;
+        m_isValid = change.m_isValid;
+        seqNum.copy(change.getSequenceNumber());
+        m_change.copy(change.getChange());
     }
 
 }

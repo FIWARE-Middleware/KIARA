@@ -36,4 +36,23 @@ public enum ChangeForReaderStatus {
     private ChangeForReaderStatus(int value) {
         this.m_value = value;
     }
+
+    public static ChangeForReaderStatus createFromValue(int value) {
+        switch (value) {
+        case 0:
+            return ChangeForReaderStatus.UNSENT;
+        case 1:
+            return ChangeForReaderStatus.UNACKNOWLEDGED;
+        case 2:
+            return ChangeForReaderStatus.REQUESTED;
+        case 3:
+            return ChangeForReaderStatus.ACKNOWLEDGED;
+        case 4:
+            return ChangeForReaderStatus.UNDERWAY;
+        default:
+            return ChangeForReaderStatus.UNSENT;        
+        }
+    }
+
+
 }
