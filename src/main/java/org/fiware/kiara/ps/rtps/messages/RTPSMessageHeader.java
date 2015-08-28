@@ -34,8 +34,6 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class RTPSMessageHeader implements Serializable {
 
-    public static final int RTPS_MESSAGE_HEADER_SIZE = 20;
-
     char m_rtps[] = new char[4];
 
     ProtocolVersion m_protocolVersion;

@@ -152,5 +152,14 @@ public class RTPSSubmessage {
 		
 		return retVal;
 	}
+	
+	public int getSerializedSize() {
+	    int totalSize = 0;
+	    totalSize += this.m_submessageHeader.getSerializedSize();
+	    for (RTPSSubmessageElement element : this.m_submessageElements) {
+	        totalSize += element.getSerializedSize();
+	    }
+	    return totalSize;
+	}
 
 }

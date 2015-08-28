@@ -98,6 +98,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
 	
 	public void setData(Serializable data) {
 		this.m_appData = data;
+		//this.m_length += data.getSerializedSize();
 	}
 	
 	public void setDataFlag(boolean dataFlag) {
