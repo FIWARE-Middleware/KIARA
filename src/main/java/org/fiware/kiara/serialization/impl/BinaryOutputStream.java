@@ -67,6 +67,7 @@ public class BinaryOutputStream extends OutputStream {
 
     public void setPosition(int pos) {
         checkCapacity(pos);
+        size = pos;
     }
 
     @Override
