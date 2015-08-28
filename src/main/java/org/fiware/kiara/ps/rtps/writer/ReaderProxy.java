@@ -44,7 +44,7 @@ public class ReaderProxy {
     
     private List<ChangeForReader> m_changesForReader;
     
-    private boolean m_isRequestedChangesEmpty;
+    public boolean isRequestedChangesEmpty;
     
     //private NackResponseRelay m_nackResponse;
     
@@ -60,7 +60,7 @@ public class ReaderProxy {
         this.m_changesForReader = new ArrayList<ChangeForReader>();
         this.att = rdata;
         this.m_SFW = sw;
-        this.m_isRequestedChangesEmpty = true;
+        this.isRequestedChangesEmpty = true;
         //this.m_nackResponse = null;
         //this.m_nackSupression = null;
         this.m_lastAckNackCount = 0;
@@ -128,12 +128,12 @@ public class ReaderProxy {
                 for (ChangeForReader it : this.m_changesForReader) {
                     if (it.getSequenceNumber().equals(sit)) {
                         it.status = ChangeForReaderStatus.REQUESTED;
-                        this.m_isRequestedChangesEmpty = false;
+                        this.isRequestedChangesEmpty = false;
                         break;
                     }
                 }
             }
-            if (!this.m_isRequestedChangesEmpty) {
+            if (!this.isRequestedChangesEmpty) {
                 logger.debug("Requested Changes: {}", seqNumSet);
             }
         } finally {
@@ -206,12 +206,12 @@ public class ReaderProxy {
             for (ChangeForReader it : this.m_changesForReader) {
                 if (it.status != ChangeForReaderStatus.ACKNOWLEDGED) {
                     sn.copy(it.getSequenceNumber());
-                    sn.subtract(1);
+                    sn.decrement();
                     return sn;
                 }
             }
             sn.copy(this.m_changesForReader.get(this.m_changesForReader.size()-1).getSequenceNumber());
-            sn.subtract(1);
+            sn.decrement();
         }
         return sn;
     }
@@ -239,6 +239,14 @@ public class ReaderProxy {
         }
         
         return null;
+    }
+    
+    public StatefulWriter getSFW() {
+        return this.m_SFW;
+    }
+
+    public Lock getMutex() {
+        return this.m_mutex;
     }
 
 }

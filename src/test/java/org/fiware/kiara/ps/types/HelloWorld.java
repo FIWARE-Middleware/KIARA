@@ -149,5 +149,15 @@ public class HelloWorld implements Serializable {
         this.innerStringAtt = other.innerStringAtt;
     }
 
+    /*@Override
+    public short getSerializedSize() {
+        short totalSize = 0;
+        
+        totalSize += 4; // i32 
+        totalSize += 4 + this.innerStringAtt.length(); // Sring
+        
+        return totalSize;
+    }*/
+
 	
 }

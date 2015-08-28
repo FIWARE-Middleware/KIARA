@@ -148,7 +148,7 @@ public class MessageReceiver {
     }
 
     public void processCDRMessage(GUIDPrefix RTPSParticipantGuidPrefix, Locator loc, RTPSMessage msg) {
-        if (msg.getBuffer().length < RTPSMessageHeader.RTPS_MESSAGE_HEADER_SIZE) {
+        if (msg.getBuffer().length < RTPSMessage.RTPS_MESSAGE_HEADER_SIZE) {
             logger.warn("Received message is too short, ignoring");
             return;
         }

@@ -28,7 +28,7 @@ import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
-public class SequenceNumber extends RTPSSubmessageElement {
+public class SequenceNumber extends RTPSSubmessageElement implements Comparable {
 	
 	private int m_high;
 	private int m_low;
@@ -192,6 +192,15 @@ public class SequenceNumber extends RTPSSubmessageElement {
 			this.m_low++;
 		}
 	}
+	
+	public void decrement() {
+            if ((long) this.m_low - (long) 1 < 0) {
+                this.m_high--;
+                this.m_low = (int) (Math.pow(2.0, 32) - (1 - this.m_low));
+            } else {
+                this.m_low -= (int) 1;
+            }
+        }
 
         public SequenceNumber subtract(int inc) {
                 SequenceNumber res = new SequenceNumber(this);
@@ -216,6 +225,18 @@ public class SequenceNumber extends RTPSSubmessageElement {
         public void copy(SequenceNumber seq) {
             m_high = seq.m_high;
             m_low = seq.m_low;
+        }
+
+        @Override
+        public int compareTo(Object other) { // TODO Review this
+            SequenceNumber otherSeqNum = (SequenceNumber) other;
+            if (this.isLowerThan(otherSeqNum)) {
+                return -1;
+            } else if (this.equals(otherSeqNum)) {
+                return 0;
+            } else {
+                return 1;
+            }
         }
 
 }

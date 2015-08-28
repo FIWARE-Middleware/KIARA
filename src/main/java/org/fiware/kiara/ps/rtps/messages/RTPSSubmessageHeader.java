@@ -98,5 +98,9 @@ public class RTPSSubmessageHeader implements Serializable {
 		}
 		return false;
 	}
+
+    public int getSerializedSize() {
+        return 32;
+    }
 	
 }
