@@ -98,7 +98,7 @@ public class ChangeForReader {
     /**
      * Set change as not valid
      */
-    void notValid() {
+    public void notValid() {
         isRelevant = false;
         m_isValid = false;
         m_change = null;
@@ -113,6 +113,9 @@ public class ChangeForReader {
         isRelevant = change.isRelevant;
         m_isValid = change.m_isValid;
         seqNum.copy(change.getSequenceNumber());
+        if (m_change == null) {
+            this.m_change = new CacheChange();
+        }
         m_change.copy(change.getChange());
     }
 

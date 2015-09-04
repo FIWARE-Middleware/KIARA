@@ -103,7 +103,7 @@ public abstract class RTPSWriter extends Endpoint {
         if (change != null) {
             return change.getSequenceNumber();
         } else {
-            return new SequenceNumber();
+            return new SequenceNumber().setUnknown();
         }
     }
     
@@ -112,7 +112,7 @@ public abstract class RTPSWriter extends Endpoint {
         if (change != null) {
             return change.getSequenceNumber();
         } else {
-            return new SequenceNumber();
+            return new SequenceNumber().setUnknown();
         }
     }
     

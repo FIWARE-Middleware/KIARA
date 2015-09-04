@@ -21,12 +21,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import org.fiware.kiara.ps.publisher.WriterProxy;
+
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
+
 import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.LOST;
 import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.RECEIVED;
+
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
@@ -172,10 +174,11 @@ public class StatefulReader extends RTPSReader {
 
                 boolean continuous_removal = true;
                 for (int i = 0; i < wp.changesFromWriter.size(); ++i) {
-                    if (change.getSequenceNumber() == wp.changesFromWriter.get(i).seqNum) {
+                    if (change.getSequenceNumber().equals(wp.changesFromWriter.get(i).seqNum)) {
                         wp.changesFromWriter.get(i).notValid();
                         if (continuous_removal) {
                             wp.lastRemovedSeqNum.copy(wp.changesFromWriter.get(i).seqNum);
+                            wp.hasMinAvailableSeqNumChanged = true;
                             toRemove.add(i);
                         }
                         break;
@@ -184,13 +187,14 @@ public class StatefulReader extends RTPSReader {
                             && (wp.changesFromWriter.get(i).status == RECEIVED || wp.changesFromWriter.get(i).status == LOST)
                             && continuous_removal) {
                         wp.lastRemovedSeqNum.copy(wp.changesFromWriter.get(i).seqNum);
+                        wp.hasMinAvailableSeqNumChanged = true;
                         toRemove.add(i);
                         continue;
                     }
                     continuous_removal = false;
                 }
 
-                ListIterator<Integer> it = toRemove.listIterator();
+                ListIterator<Integer> it = toRemove.listIterator(toRemove.size());
                 while (it.hasPrevious()) {
                     wp.changesFromWriter.remove(it.previous().intValue());
                 }
@@ -207,6 +211,7 @@ public class StatefulReader extends RTPSReader {
     @Override
     public boolean changeReceived(CacheChange change, WriterProxy prox) {
         //First look for WriterProxy in case is not provided
+        System.out.println("BLBLA");
         m_mutex.lock();
         try {
             if (prox == null) {
@@ -225,7 +230,7 @@ public class StatefulReader extends RTPSReader {
                 return false;
             }
             SequenceNumber maxSeq = prox.getAvailableChangesMax();
-            if (change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
+            if (maxSeq != null && change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
                 logger.info("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
                 return false;
             }
@@ -262,7 +267,7 @@ public class StatefulReader extends RTPSReader {
             boolean available = false;
             logger.info("RTPS READER: {}: looking through: {} WriterProxies", getGuid().getEntityId(), matchedWriters.size());
             for (WriterProxy it : matchedWriters) {
-                it.getAvailableChangesMax(auxSeqNum);
+                //it.getAvailableChangesMax(auxSeqNum);
 
                 if (it.getAvailableChangesMin(auxSeqNum) != null) {
                     //logUser("AVAILABLE MIN for writer: "<<(*it)->m_att.guid<< " : " << auxSeqNum);

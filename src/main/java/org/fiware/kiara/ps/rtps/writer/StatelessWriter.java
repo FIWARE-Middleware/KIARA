@@ -89,7 +89,13 @@ public class StatelessWriter extends RTPSWriter {
         this.m_mutex.lock();
         try {
             List<CacheChange> changes = new ArrayList<CacheChange>();
-            changes.add(change);
+            /*if (change.getSerializedPayload().getData() != null) {
+                for (int i=0; i < 300; ++i) {
+                    changes.add(change);
+                }
+            } else {*/
+                changes.add(change);
+            //}
             
             LocatorList locList = new LocatorList();
             LocatorList locList2 = new LocatorList();
@@ -178,8 +184,8 @@ public class StatelessWriter extends RTPSWriter {
             
             if (unsentChangesNotEmpty) {
                 this.m_unsentChangesNotEmpty = new UnsentChangesNotEmptyEvent(this, 1000);
-                this.m_unsentChangesNotEmpty.restartTimer();
-                this.m_unsentChangesNotEmpty = null;
+                //this.m_unsentChangesNotEmpty.restartTimer();
+                //this.m_unsentChangesNotEmpty = null;
             }
             
             this.m_matchedReaders.add(ratt);

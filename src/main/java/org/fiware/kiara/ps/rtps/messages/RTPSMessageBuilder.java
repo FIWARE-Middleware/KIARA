@@ -17,6 +17,8 @@
  */
 package org.fiware.kiara.ps.rtps.messages;
 
+import java.io.IOException;
+
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -71,11 +73,20 @@ public class RTPSMessageBuilder {
         header.m_guidPrefix = prefix;
 
         message.setHeader(header);
+        
+        // NEW 
+        try {
+            header.serialize(message.getSerializer(), message.getBinaryOutputStream(), "");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        // NEW
 
         return true;
     }
 
-    public static boolean addSubmessageInfoTS(RTPSMessage message, java.sql.Timestamp t, boolean invalidateFlag) {
+    public static boolean addSubmessageInfoTS(RTPSMessage message, java.sql.Timestamp t, boolean invalidateFlag/*, boolean isLast*/) {
 
         RTPSSubmessage infoTs = new RTPSSubmessage();
         RTPSSubmessageHeader subHeader = new RTPSSubmessageHeader();
@@ -109,6 +120,10 @@ public class RTPSMessageBuilder {
 
         // Add submessage
         message.addSubmessage(infoTs);
+        
+        // NEW 
+        
+        infoTs.serialize(message.getSerializer(), message.getBinaryOutputStream()/*, isLast*/);
 
         return true;
     }
@@ -173,9 +188,9 @@ public class RTPSMessageBuilder {
         return true;
     }
 
-    public static boolean addSubmessageInfoTSNow(RTPSMessage message, boolean invalidateFlag) {
+    public static boolean addSubmessageInfoTSNow(RTPSMessage message, boolean invalidateFlag/*, boolean isLast*/) {
         java.sql.Timestamp t = new java.sql.Timestamp(System.currentTimeMillis());
-        return addSubmessageInfoTS(message, t, invalidateFlag);
+        return addSubmessageInfoTS(message, t, invalidateFlag/*, isLast*/);
     }
 
     public static boolean addSubmessageHeartbeat(RTPSMessage message, EntityId readerId, EntityId writerId, SequenceNumber firstSN, SequenceNumber lastSN, Count count, boolean isFinal, boolean livelinessFlag) {
@@ -215,6 +230,8 @@ public class RTPSMessageBuilder {
         submessageHeartbeat.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageHeartbeat);
+        
+        submessageHeartbeat.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
     }
@@ -277,6 +294,8 @@ public class RTPSMessageBuilder {
         submessageGap.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageGap);
+        
+        submessageGap.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
     }
@@ -412,7 +431,9 @@ public class RTPSMessageBuilder {
 
 
         message.addSubmessage(submessageData);
-
+        
+        submessageData.serialize(message.getSerializer(), message.getBinaryOutputStream());
+        
         return true;
     }
 

@@ -2,7 +2,7 @@ package org.fiware.kiara.ps.types;
 
 import java.io.IOException;
 
-import org.fiware.kiara.ps.LatencyType;
+import org.fiware.kiara.ps.oldtests.LatencyType;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;

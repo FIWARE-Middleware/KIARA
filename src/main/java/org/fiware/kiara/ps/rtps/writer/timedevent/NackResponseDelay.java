@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.fiware.kiara.ps.rtps.common.ChangeForReader;
 import org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
@@ -37,8 +38,10 @@ public class NackResponseDelay extends TimedEvent {
 
     @Override
     public void event(EventCode code, String msg) {
+        // TODO Check if creating an RTPSMessage inside each if block solves sending all the NACK responses
         if (code == EventCode.EVENT_SUCCESS) {
             logger.info("Responding to Acknack msg");
+            System.out.println("Responding to Acknack msg");
             Lock guardW = this.m_RP.getSFW().getMutex();
             guardW.lock();
             try {
@@ -69,15 +72,35 @@ public class NackResponseDelay extends TimedEvent {
                                     this.m_RP.att.guid.getEntityId());
                         }
                         if (!notRelevantChanges.isEmpty()) {
-                            /*RTPSMessageGroup.sendChangesAsGap(
+                            RTPSMessageGroup.sendChangesAsGap(
                                     this.m_RP.getSFW(), 
                                     notRelevantChanges, 
+                                    this.m_RP.att.guid.getEntityId(),
                                     this.m_RP.att.endpoint.unicastLocatorList, 
-                                    this.m_RP.att.endpoint.multicastLocatorList, 
-                                    this.m_RP.att.expectsInlineQos, 
-                                    this.m_RP.att.guid.getEntityId());*/
+                                    this.m_RP.att.endpoint.multicastLocatorList);
                         }
                         if (relevantChanges.isEmpty() && notRelevantChanges.isEmpty()) {
+                            RTPSMessage message = RTPSMessageBuilder.createMessage();
+                            SequenceNumber first = this.m_RP.getSFW().getSeqNumMin();
+                            SequenceNumber last = this.m_RP.getSFW().getSeqNumMin(); // TODO Review if this should be getSeqNumMax()
+                            if (!first.isUnknown() && !last.isUnknown() && last.isGreaterOrEqualThan(first)) {
+                                this.m_RP.getSFW().incrementHBCount();
+                                RTPSMessageBuilder.addSubmessageHeartbeat(
+                                        message, 
+                                        this.m_RP.att.guid.getEntityId(), 
+                                        this.m_RP.getSFW().getGuid().getEntityId(), 
+                                        first, 
+                                        last, 
+                                        this.m_RP.getSFW().getHeartbeatCount(), 
+                                        true, 
+                                        false);
+                            }
+                            for (Locator lit : this.m_RP.att.endpoint.unicastLocatorList.getLocators()) {
+                                this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
+                            }
+                            for (Locator lit : this.m_RP.att.endpoint.multicastLocatorList.getLocators()) {
+                                this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
+                            }
                             
                         }
                     }

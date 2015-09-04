@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 
 
+
 //import org.fiware.kiara.ps.rtps.BinaryInputStream;
 //import org.fiware.kiara.ps.rtps.BinaryOutputStream;
 //import org.fiware.kiara.ps.rtps.CDRSerializer;
@@ -60,6 +61,8 @@ public class RTPSMessage {
     private RTPSEndian m_endian;
     
     private int m_maxSize;
+    
+    private int initSubMsgPosition = -1;
 
     public RTPSMessage(int payloadSize, RTPSEndian endian) { // TODO Endian should be chosen from the user's side
 
@@ -90,7 +93,7 @@ public class RTPSMessage {
     }
 
     public void serialize() {
-        try {
+        /*try {
             this.m_header.serialize(this.m_ser, this.m_bos, "");
         } catch (IOException e) {
             e.printStackTrace();
@@ -103,13 +106,42 @@ public class RTPSMessage {
             } else {
                 subMsg.serialize(this.m_ser, this.m_bos, true);
             }
-        }
+        }*/
 
         //this.m_pos = this.m_bos.getPosition();
         this.m_buffer = this.m_bos.toByteArray();
         this.m_bis.setBuffer(this.m_buffer);
 
     }
+    
+    // NEW
+    public void checkPadding(/*CDRSerializer ser, BinaryOutputStream bos, boolean isLast*/) {
+
+        try {
+
+            int finalPos = this.m_bos.getPosition();
+            short size = (short) (finalPos - (initSubMsgPosition + 4));
+
+            if (/*!isLast && */(size % 4 != 0)) {
+                short diff = (short) (4 - (size % 4));
+                size = (short) (size + diff);
+                this.m_ser.addPadding(this.m_bos, diff);
+            }
+
+            byte newBuffer[] = new byte[2];
+            BinaryOutputStream newBos = new BinaryOutputStream();
+            newBos.setBuffer(newBuffer);
+
+            this.m_ser.serializeI16(newBos, "", size);
+            System.arraycopy(newBuffer, 0, this.m_bos.getBuffer(), initSubMsgPosition + 2, 2);
+            this.m_submessages.get(this.m_submessages.size()-1).getSubmessageHeader().setOctectsToNextHeader(size);
+
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    // NEW
 
     @Override
     public boolean equals(Object other) {
@@ -132,6 +164,10 @@ public class RTPSMessage {
 
     public BinaryInputStream getBinaryInputStream() {
         return this.m_bis;
+    }
+    
+    public BinaryOutputStream getBinaryOutputStream() {
+        return this.m_bos;
     }
 
     public void initBinaryOutputStream() {
@@ -172,6 +208,7 @@ public class RTPSMessage {
 
     public void addSubmessage(RTPSSubmessage submessage) {
         this.m_submessages.add(submessage);
+        initSubMsgPosition = this.m_bos.getPosition();
     }
 
     public void clearSubmessages() {

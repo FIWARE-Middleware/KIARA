@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicy;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicyKind;
@@ -18,6 +17,7 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.Serializable;
@@ -92,7 +92,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                         }
                         if (this.removeChangeSub(this.m_minSeqCacheChange, null)) {
                             if (!read) {
-                                this.decreadeUnreadCount();
+                                this.decreaseUnreadCount();
                             }
                             add = true;
                         }
@@ -146,7 +146,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                             }
                             if (this.removeChangeSub(vit.getSecond().get(0), vit)) {
                                 if (!read) {
-                                    this.decreadeUnreadCount();
+                                    this.decreaseUnreadCount();
                                 }
                                 add = true;
                             }
@@ -190,7 +190,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
         ++this.m_unreadCacheCount;
     }
     
-    public void decreadeUnreadCount() {
+    public void decreaseUnreadCount() {
         if (this.m_unreadCacheCount > 0) {
             --this.m_unreadCacheCount;
         }
@@ -275,7 +275,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
 
             if (this.m_reader.nextUnreadCache(change, proxy)) {
                 change.value.setRead(true);
-                this.decreadeUnreadCount();
+                this.decreaseUnreadCount();
                 logger.info(this.m_reader.getGuid().getEntityId() + ": reading " + change.value.getSequenceNumber().toLong());
                 if (change.value.getKind() == ChangeKind.ALIVE) {
                     try {
@@ -360,11 +360,11 @@ public class SubscriberHistory extends ReaderHistoryCache {
         this.m_mutex.lock();
         try {
             T retVal = null;
-            ReturnParam<CacheChange> change = new ReturnParam<>();
-            ReturnParam<WriterProxy> wp = new ReturnParam<>();
+            ReturnParam<CacheChange> change = new ReturnParam<CacheChange>();
+            ReturnParam<WriterProxy> wp = new ReturnParam<WriterProxy>();
             if (this.m_reader.nextUntakenCache(change, wp)) {
                 if (!change.value.isRead()) {
-                    this.decreadeUnreadCount();
+                    this.decreaseUnreadCount();
                 }
                 change.value.setRead(true);
                 logger.debug("Taking seqNum {} from writer {}", change.value.getSequenceNumber().toLong(), change.value.getWriterGUID());

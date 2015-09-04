@@ -22,7 +22,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
@@ -48,6 +47,8 @@ import org.fiware.kiara.ps.rtps.messages.elements.Unused;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.reader.StatefulReader;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
@@ -626,6 +627,8 @@ public class MessageReceiver {
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
 
         boolean endiannessFlag = flags.getFlagValue(0);
+        boolean finalFlag = flags.getFlagValue(1);
+        boolean livelinessFlag = flags.getFlagValue(2);
 
         if (endiannessFlag) {
             msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
@@ -647,7 +650,7 @@ public class MessageReceiver {
             EntityId writerId = new EntityId();
             writerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
-            writerGUID.setEntityId(readerId);
+            writerGUID.setEntityId(writerId);
             subMsg.addSubmessageElement(writerId);
 
             // Sequence numbers
@@ -667,8 +670,55 @@ public class MessageReceiver {
             Count count = new Count(0);
             count.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(count);
+            
+            int hbCount = count.getValue();
 
-            // TODO Status changes
+            // Status changes
+            
+            for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
+                Lock lock = it.getMutex();
+                lock.lock();
+                try {
+                    if (it.acceptMsgFrom(writerGUID, null) && it.acceptMsgDirectedTo(readerId)) {
+                        if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                            StatefulReader sr = (StatefulReader) it;
+                            WriterProxy wp = sr.matchedWriterLookup(writerGUID);
+                            if (wp != null) {
+                                this.m_guardWriterMutex.lock();
+                                try {
+                                    if (wp.lastHeartbeatCount < hbCount) {
+                                        wp.lastHeartbeatCount = hbCount;
+                                        wp.lostChangesUpdate(firstSN);
+                                        wp.missingChangesUpdate(lastSN);
+                                        wp.hearbeatFinalFlag = finalFlag;
+                                        
+                                        // Analyze whether if an ACKNACK message is needed
+                                        if (!finalFlag) {
+                                            wp.startHeartbeatResponse();
+                                        } else if (finalFlag && !livelinessFlag) {
+                                            if (wp.isMissingChangesEmpty) {
+                                                wp.startHeartbeatResponse();
+                                            }
+                                        }
+                                        
+                                        if (livelinessFlag) {
+                                            wp.assertLiveliness();
+                                        }
+                                    }
+                                } finally {
+                                    this.m_guardWriterMutex.unlock();
+                                }
+                            } else {
+                                logger.info("HB received is NOT from an associated writer");
+                            }
+                        }
+                    }
+                } finally {
+                    lock.unlock();
+                }
+            }
+            
+            
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

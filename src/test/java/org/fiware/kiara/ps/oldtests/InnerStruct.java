@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps;
+package org.fiware.kiara.ps.oldtests;
  /* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
  *
  * Copyright (C) 2014 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
