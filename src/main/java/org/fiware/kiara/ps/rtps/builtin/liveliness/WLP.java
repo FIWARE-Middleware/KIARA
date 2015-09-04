@@ -330,9 +330,12 @@ public class WLP {
             double wAnnouncementPeriodMilliSec = wqos.liveliness.announcementPeriod.toMilliSecondsDouble();
             if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
                 if (m_livelinessAutomatic == null) {
+                    /*
                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
                     m_livelinessAutomatic.restartTimer();
+                    */
+                    m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
@@ -479,9 +482,12 @@ public class WLP {
             double wAnnouncementPeriodMilliSec = wqos.liveliness.announcementPeriod.toMilliSecondsDouble();
             if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
                 if (m_livelinessAutomatic == null) {
+                    /*
                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
                     m_livelinessAutomatic.restartTimer();
+                    */
+                    m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
@@ -494,9 +500,12 @@ public class WLP {
                 }
             } else if (wqos.liveliness.kind == MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
                 if (m_livelinessManRTPSParticipant == null) {
+                    /*
                     m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS);
                     m_livelinessManRTPSParticipant.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
                     m_livelinessManRTPSParticipant.restartTimer();
+                    */
+                    m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minManRTPSParticipant_MilliSec > wAnnouncementPeriodMilliSec) {
                     m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;

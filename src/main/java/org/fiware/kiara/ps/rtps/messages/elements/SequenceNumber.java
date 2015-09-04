@@ -97,9 +97,10 @@ public class SequenceNumber extends RTPSSubmessageElement implements Comparable 
 		this.m_low = m_low;
 	}
 
-        public void setUnknown() {
+        public SequenceNumber setUnknown() {
             this.m_high = -1;
             this.m_low = 0;
+            return this;
         }
 
         public boolean isUnknown() {

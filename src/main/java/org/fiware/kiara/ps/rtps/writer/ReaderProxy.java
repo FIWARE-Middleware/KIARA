@@ -28,7 +28,11 @@ import org.fiware.kiara.ps.rtps.common.ChangeForReader;
 import org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
+import org.fiware.kiara.ps.rtps.resources.TimedEvent;
+import org.fiware.kiara.ps.rtps.writer.timedevent.NackResponseDelay;
+import org.fiware.kiara.ps.rtps.writer.timedevent.NackSupressionDuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +50,13 @@ public class ReaderProxy {
     
     public boolean isRequestedChangesEmpty;
     
-    //private NackResponseRelay m_nackResponse;
+    private NackResponseDelay m_nackResponse;
     
-    //private NackSupressionDuration m_nackSupression;
+    private NackSupressionDuration m_nackSupression;
+    
+    private Timestamp m_nackSupressionTimestamp;
+    
+    private Timestamp m_nackResponseTimestamp;
     
     private int m_lastAckNackCount;
     
@@ -61,8 +69,10 @@ public class ReaderProxy {
         this.att = rdata;
         this.m_SFW = sw;
         this.isRequestedChangesEmpty = true;
-        //this.m_nackResponse = null;
-        //this.m_nackSupression = null;
+        this.m_nackSupressionTimestamp = new Timestamp(times.nackSupressionDuration);
+        this.m_nackResponseTimestamp = new Timestamp(times.nackResponseDelay);
+        //this.m_nackResponse = new NackResponseDelay(this, times.nackResponseDelay.toMilliSecondsDouble());
+        //this.m_nackSupression = new NackSupressionDuration(this, times.nackSupressionDuration.toMilliSecondsDouble());
         this.m_lastAckNackCount = 0;
     }
     
@@ -247,6 +257,39 @@ public class ReaderProxy {
 
     public Lock getMutex() {
         return this.m_mutex;
+    }
+    
+    public List<ChangeForReader> getChangesForReader() {
+        return this.m_changesForReader;
+    }
+    
+    public boolean rtpsChangeIsRelevant(CacheChange change) {
+        return true; // In this version, always returns true
+    }
+    
+    public NackResponseDelay getNackResponseDelay() {
+        return this.m_nackResponse;
+    }
+    
+    public NackSupressionDuration getNackSupression() {
+        return this.m_nackSupression;
+    }
+
+    public void startNackSupression() {
+        if (this.m_nackSupression == null) {
+            this.m_nackSupression = new NackSupressionDuration(this, this.m_nackSupressionTimestamp.toMilliSecondsDouble());
+        }
+    }
+    
+    public void startNackResponseDelay() {
+        if (this.m_nackResponse == null) {
+            this.m_nackResponse = new NackResponseDelay(this, this.m_nackResponseTimestamp.toMilliSecondsDouble());
+        }
+    }
+
+    public void copy(ReaderProxy other) {
+        //this.att.copy(other.att);
+        //this.m_SFW
     }
 
 }

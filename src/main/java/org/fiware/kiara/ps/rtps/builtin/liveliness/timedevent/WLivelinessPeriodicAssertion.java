@@ -77,6 +77,20 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
         }
         m_iHandle.setValue(15, (byte) (m_livelinessKind.getValue() + 0x01));
     }
+    
+    public WLivelinessPeriodicAssertion(WLP pwlp, LivelinessQosPolicyKind kind, double milliseconds) {
+        super(milliseconds);
+        m_guidP = new GUIDPrefix();
+        m_livelinessKind = kind;
+        m_WLP = pwlp;
+        m_iHandle = new InstanceHandle();
+
+        m_guidP.copy(m_WLP.getRTPSParticipant().getGUID().getGUIDPrefix());
+        for (int i = 0; i < 12; ++i) {
+            m_iHandle.setValue(i, m_guidP.getValue(i));
+        }
+        m_iHandle.setValue(15, (byte) (m_livelinessKind.getValue() + 0x01));
+    }
 
     /**
      * Method invoked when the event occurs
@@ -96,7 +110,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
                 }
             }
             m_WLP.getBuiltinProtocols().getPDP().assertLocalWritersLiveliness(m_livelinessKind);
-            restartTimer();
+           // restartTimer();
         } else if (code == EVENT_ABORT) {
             logger.info("RTPS LIVELINESS: Liveliness Periodic Assertion aborted");
             stopSemaphorePost();

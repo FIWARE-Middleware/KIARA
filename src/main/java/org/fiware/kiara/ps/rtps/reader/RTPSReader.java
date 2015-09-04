@@ -17,7 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.reader;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.Endpoint;
 import org.fiware.kiara.ps.rtps.attributes.EndpointAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;

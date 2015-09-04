@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
@@ -60,6 +59,7 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.utils.InfoEndianness;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.StatelessWriter;
@@ -182,7 +182,7 @@ public class PDPSimple {
                 return false;
             }
 
-            this.m_resendParticipantTimer = new ResendParticipantProxyDataPeriod(this, this.m_discovery.leaseDurationAnnouncementPeriod.toMilliSecondsDouble());
+            //this.m_resendParticipantTimer = new ResendParticipantProxyDataPeriod(this, this.m_discovery.leaseDurationAnnouncementPeriod.toMilliSecondsDouble());
 
             return true;
 
@@ -191,13 +191,20 @@ public class PDPSimple {
         }
 
     }
+    
+    /*public void createResendParticipantProxyTDataPeriod() {
+        this.m_resendParticipantTimer = new ResendParticipantProxyDataPeriod(this, this.m_discovery.leaseDurationAnnouncementPeriod.toMilliSecondsDouble());
+    }*/
 
     public void stopParticipantAnnouncement() {
-        this.m_resendParticipantTimer.stopTimer();
+        if (this.m_resendParticipantTimer != null) {
+            this.m_resendParticipantTimer.stopTimer();
+        }
     }
 
     public void resetParticipantAnnouncement() {
-        this.m_resendParticipantTimer.restartTimer();
+        //this.m_resendParticipantTimer.restartTimer();
+        this.m_resendParticipantTimer = new ResendParticipantProxyDataPeriod(this, this.m_discovery.leaseDurationAnnouncementPeriod.toMilliSecondsDouble());
     }
 
     public ParticipantProxyData getLocalParticipantProxyData() {

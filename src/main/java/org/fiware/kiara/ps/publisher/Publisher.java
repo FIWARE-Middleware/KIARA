@@ -39,19 +39,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class Publisher<T> {
-    
+
     /**
-    *
-    * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-    */
+     *
+     * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+     */
     public class PublisherWriterListener extends WriterListener {
 
         private Publisher<T> m_publisher;
-        
+
         public PublisherWriterListener(Publisher<T> publisher) {
             this.m_publisher = publisher;
         }
@@ -62,29 +62,29 @@ public class Publisher<T> {
                 this.m_publisher.m_listener.onPublicationMatched(this.m_publisher, info);
             }
         }
-        
+
     }
-    
+
     private Participant m_participant;
-    
+
     private RTPSWriter m_writer;
-    
+
     private TopicDataType<T> m_type;
-    
+
     private PublisherAttributes m_att;
-    
+
     private PublisherHistory m_history;
-    
+
     private PublisherListener m_listener;
-    
+
     //private Publisher<T> m_userPublisher;
-    
+
     private RTPSParticipant m_rtpsParticipant;
-    
+
     private PublisherWriterListener m_writerListener;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
-    
+
     public Publisher(Participant participant, TopicDataType<T> dataType, PublisherAttributes att, PublisherListener listener) {
         this.m_participant = participant;
         this.m_writer = null;
@@ -96,35 +96,35 @@ public class Publisher<T> {
         //this.m_userPublisher = null;
         this.m_rtpsParticipant = null;
     }
-    
+
     public void destroy() {
         logger.info("Destroying Publisher (Writer GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSWriter(this.m_writer);
     }
-    
+
     public boolean write(T data) {
         logger.info("Writing new data");
         return this.createNewChange(ChangeKind.ALIVE, data);
     }
-    
+
     public  boolean createNewChange(ChangeKind kind, T data) {
         if (data == null) {
             logger.error("Data is null");
             return false;
         }
-        
+
         if (kind == ChangeKind.NOT_ALIVE_UNREGISTERED || kind == ChangeKind.NOT_ALIVE_DISPOSED || kind == ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED) {
             if (this.m_att.topic.topicKind == TopicKind.NO_KEY) {
                 logger.error("Topic is NO_KEY, operation not permitted");
                 return false;
             }
         }
-        
+
         InstanceHandle handle = new InstanceHandle();
         if (this.m_att.topic.topicKind == TopicKind.WITH_KEY) {
             this.m_type.getKey(data, handle);
         }
-        
+
         CacheChange ch = this.m_writer.newChange(kind, handle);
         if (ch != null) {
             if (kind == ChangeKind.ALIVE) {
@@ -143,42 +143,44 @@ public class Publisher<T> {
                     return false;
                 }
             }
+
             if (!this.m_history.addPubChange(ch)) {
                 this.m_history.releaseCache(ch);
                 return false;
             }
             return true;
+
         }
-        
+
         return false;
     }
-    
-    
+
+
     public  boolean dispose(T data) {
         logger.info("Disposing of data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED, data);
     }
-    
+
     public  boolean unregister(T data) {
         logger.info("Unregistering of type");
         return this.createNewChange(ChangeKind.NOT_ALIVE_UNREGISTERED, data);
     }
-    
+
     public  boolean disposeAndUnregister(T data) {
         logger.info("Disposing and unregistering data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED, data);
     }
-    
-    
+
+
     public int removeAllChanges(int removed) {
         logger.info("Removing all data from hsitory");
         return this.m_history.removeAllChangesNum();
     }
-    
+
     public boolean updateAttributes(PublisherAttributes att) {
         boolean updated = true;
         boolean missing = false;
-        
+
         if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
             if (att.unicastLocatorList.getLocators().size() != this.m_att.unicastLocatorList.getLocators().size() || 
                     att.multicastLocatorList.getLocators().size() != this.m_att.multicastLocatorList.getLocators().size()) {
@@ -213,16 +215,16 @@ public class Publisher<T> {
                 }
             }
         }
-        
+
         if (!this.m_att.topic.equals(att.topic)) {
             logger.warn("Topic attributes cannot be updated");
             updated &= false;
         }
-        
+
         if (!this.m_att.qos.canQosBeUpdated(att.qos)) {
             updated &= false;
         }
-        
+
         if (updated) {
             if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
                 // TODO Not supported in this version (StatefulWriter)
@@ -231,26 +233,26 @@ public class Publisher<T> {
             this.m_att = att;
             this.m_rtpsParticipant.updateLocalWriter(this.m_writer, this.m_att.qos);
         }
-        
+
         return updated;
     }
 
     public PublisherAttributes getAttributes() {
         return this.m_att;
     }
-    
+
     public PublisherHistory getHistory() {
         return this.m_history;
     }
-    
+
     public GUID getGuid() {
         return this.m_writer.getGuid();
     }
-    
+
     public RTPSParticipant getRTPSParticipant() {
         return this.m_rtpsParticipant;
     }
-    
+
     public void setRTPSParticipant(RTPSParticipant participant) {
         this.m_rtpsParticipant = participant;
     }

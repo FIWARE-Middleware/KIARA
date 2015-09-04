@@ -22,7 +22,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.common.Locator;

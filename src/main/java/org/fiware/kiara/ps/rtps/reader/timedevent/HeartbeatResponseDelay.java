@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
 import org.fiware.kiara.ps.rtps.common.ChangeFromWriter;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
@@ -13,6 +12,7 @@ import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode;
 import org.slf4j.Logger;

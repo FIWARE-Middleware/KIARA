@@ -68,7 +68,7 @@ public class PeriodicHeartbeat extends TimedEvent {
             final Lock mutex = m_SFW.getMutex();
             mutex.lock();
             try {//BEGIN PROTECTION
-                List<ChangeForReader> unack = new ArrayList<>();
+                List<ChangeForReader> unack = new ArrayList<ChangeForReader>();
                 for (ReaderProxy it : m_SFW.getMatchedReaders()) {
                     unack.clear();
                     if (!unacked_changes) {
@@ -103,13 +103,16 @@ public class PeriodicHeartbeat extends TimedEvent {
                     logger.info("RTPS WRITER: {} Sending Heartbeat ({} - {})",
                             m_SFW.getGuid().getEntityId(), firstSeq, lastSeq
                     );
+                    rtpsMessage.serialize();
                     for (Locator lit : locList) {
                         m_SFW.getRTPSParticipant().sendSync(rtpsMessage, lit);
                     }
 
                 }
                 //Reset TIMER
-                restartTimer();
+                //restartTimer();
+            } else {
+                stopTimer();
             }
 
         } else if (code == EVENT_ABORT) {

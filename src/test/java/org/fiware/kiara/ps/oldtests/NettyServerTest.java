@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps;
+package org.fiware.kiara.ps.oldtests;
 
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;

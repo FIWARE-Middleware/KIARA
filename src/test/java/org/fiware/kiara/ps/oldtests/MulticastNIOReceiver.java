@@ -1,4 +1,4 @@
-package org.fiware.kiara.ps;
+package org.fiware.kiara.ps.oldtests;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;

@@ -1,11 +1,16 @@
 package org.fiware.kiara.ps.rtps.reader.timedevent;
 
-import org.fiware.kiara.ps.publisher.WriterProxy;
+import org.fiware.kiara.ps.rtps.common.MatchingInfo;
+import org.fiware.kiara.ps.rtps.common.MatchingStatus;
+import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WriterProxyLiveliness extends TimedEvent {
 
-    // TODO Implement
+    private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
 
     /**
      * Pointer to the WriterProxy associated with this specific event.
@@ -19,8 +24,23 @@ public class WriterProxyLiveliness extends TimedEvent {
 
     @Override
     public void event(EventCode code, String msg) {
-        // TODO Auto-generated method stub
-        
+        if (code == EventCode.EVENT_SUCCESS) {
+            logger.info("Deleting writer {}", this.writerProxy.att.guid);
+            if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
+                if (this.writerProxy.statefulReader.getListener() != null) {
+                    MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
+                    this.writerProxy.statefulReader.getListener().onReaderMatched((RTPSReader) this.writerProxy.statefulReader, info);
+                }
+            }
+            // Now delete objects
+            this.writerProxy.writerProxyLiveliness = null;
+            this.writerProxy.destroy();
+            //this.stopTimer();
+        } else if (code == EventCode.EVENT_ABORT) {
+            this.stopSemaphorePost();
+        } else {
+            logger.info("Message: {}", msg);
+        }
     }
 
 }
