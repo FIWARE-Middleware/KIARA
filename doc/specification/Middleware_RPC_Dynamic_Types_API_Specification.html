@@ -1,0 +1,3697 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Middleware_RPC_Dynamic_Types_API_Specification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style id="mkstylesheet">
+body{-webkit-font-smoothing:antialiased;font-family:"Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;margin:30px 0 0;padding:0;background:#fff}#wrapper{padding:20px}li{font-size:110%}li li{font-size:100%}li p{font-size:100%;margin:.5em 0}h1{color:#000}h2{color:#111}h3{color:#111;margin:0}h4{color:#111}h5{color:#111}h6{font-size:1em;line-height:1.5em;margin:1.5em 0}body,p,td,div{color:#111;font-family:"Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;word-wrap:break-word}a{color:#0d6ea1;text-decoration:none;-webkit-transition:color 0.2s ease-in-out;-moz-transition:color 0.2s ease-in-out;-o-transition:color 0.2s ease-in-out;-ms-transition:color 0.2s ease-in-out;transition:color 0.2s ease-in-out}a:hover{color:#3593d9}body{font-size:15px;line-height:21px;margin:0 auto}h1{font-size:37px;line-height:42px;margin-top:42px;margin-bottom:21px}h2{font-size:27px;line-height:42px;margin-top:42px;margin-bottom:21px}h3{font-size:20px;line-height:21px;margin-top:21px;margin-bottom:21px}h4{font-size:20px;line-height:21px;margin-top:21px;margin-bottom:21px}p,ul,ol,pre,table,blockquote{margin-top:21px;margin-bottom:21px}hr{border:1px solid;margin:-1px 0}ul ul,ol ol,ul ol,ol ul{margin-top:0;margin-bottom:0}b,strong,em,small,code{line-height:1}.footnote{color:#0d6ea1;font-size:.8em;vertical-align:super}abbr,acronym{border-bottom:1px dotted #aaa}#wrapper img{max-width:100%;height:auto}dd{font-size:1em;margin-bottom:1em}li>p:first-child{margin:0}ul ul,ul ol{margin-bottom:.4em}caption,col,colgroup,table,tbody,td,tfoot,th,thead,tr{border-spacing:0}table{border:1px solid rgba(0,0,0,0.25);border-collapse:collapse;display:table;empty-cells:hide;margin:-1px 0 1.3125em;padding:0;table-layout:fixed}caption{display:table-caption;font-weight:700}col{display:table-column}colgroup{display:table-column-group}tbody{display:table-row-group}tfoot{display:table-footer-group}thead{display:table-header-group}td,th{display:table-cell}tr{display:table-row}table th,table td{font-size:1.1em;line-height:1.3;padding:.5em 1em 0}table thead{background:rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.15);border-bottom:1px solid rgba(0,0,0,0.2)}table tbody{background:rgba(0,0,0,0.05)}table tfoot{background:rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.15);border-top:1px solid rgba(0,0,0,0.2)}figure{display:inline-block;overflow:hidden;position:relative;margin:1em 0 2em}figcaption{font-style:italic;text-align:center;background:white;color:#666}.poetry pre{display:block;font-family:Georgia,Garamond,serif !important;font-size:110% !important;font-style:italic;line-height:1.6em;margin-left:1em}.poetry pre code{font-family:Georgia,Garamond,serif !important;word-break:break-all;word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;white-space:pre-wrap}blockquote p{font-size:110%;font-style:italic;line-height:1.6em}sup,sub,a.footnote{font-size:1.4ex;height:0;line-height:1;position:relative;vertical-align:super}sub{vertical-align:sub;top:-1px}p,h5{font-size:1.1429em;line-height:1.3125em;margin:1.3125em 0}dt,th{font-weight:700}table tr:nth-child(odd),table th:nth-child(odd),table td:nth-child(odd){background:rgba(255,255,255,0.06)}table tr:nth-child(even),table td:nth-child(even){background:rgba(200,200,200,0.25)}@media print{img,table,figure{page-break-inside:avoid}#wrapper{background:#fff;color:#303030;padding:10px;position:relative;text-indent:0}}@media screen{.inverted{background:#252a2a}.inverted #wrapper{background:#252a2a;color:#eee}.inverted hr{border-color:#333f40 !important}.inverted p,.inverted td,.inverted li,.inverted h1,.inverted h2,.inverted h3,.inverted h4,.inverted h5,.inverted h6,.inverted th,.inverted .math,.inverted caption,.inverted dt,.inverted dd{color:#eee}.inverted pre{background:#ccc}.inverted pre code{color:#111}.inverted table{background:none}.inverted table tr:nth-child(odd),.inverted table td:nth-child(odd){background:none}.inverted a{color:#acd1d5}::selection{background:rgba(157,193,200,0.5)}h1::selection{background-color:rgba(45,156,208,0.3)}h2::selection{background-color:rgba(90,182,224,0.3)}h3::selection,h4::selection,h5::selection,h6::selection,li::selection,ol::selection{background-color:rgba(133,201,232,0.3)}code::selection{background-color:rgba(0,0,0,0.7);color:#eee}code span::selection{background-color:rgba(0,0,0,0.7) !important;color:#eee !important}a::selection{background-color:rgba(255,230,102,0.2)}.inverted a::selection{background-color:rgba(255,230,102,0.6)}td::selection,th::selection,caption::selection{background-color:rgba(180,237,95,0.5)}}
+#mkreplaced-toc{list-style-position:inside;padding:0;margin:0 0 0 1rem;list-style-type:none}#mkreplaced-toc li::before{content:''}#mkreplaced-toc li{font-size:1.5rem;line-height:1.5;font-weight:normal}#mkreplaced-toc li ul{font-size:1.3rem;font-weight:300;padding:.5rem 0;margin:0 0 0 1rem}#mkreplaced-toc li.missing{list-style-type:none !important}#mkreplaced-toc.max-1 ul,#mkreplaced-toc.max1 ul{display:none}#mkreplaced-toc.max-2 ul ul,#mkreplaced-toc.max2 ul ul{display:none}#mkreplaced-toc.max-3 ul ul ul,#mkreplaced-toc.max3 ul ul ul{display:none}#mkreplaced-toc.max-4 ul ul ul ul,#mkreplaced-toc.max4 ul ul ul ul{display:none}#mkreplaced-toc.max-5 ul ul ul ul ul,#mkreplaced-toc.max5 ul ul ul ul ul{display:none}
+
+@media print{
+#wrapper #generated-toc-clone,#generated-toc{display:none!important}
+}
+#wrapper #generated-toc-clone, #wrapper #mkreplaced-toc, #wrapper #generated-toc-clone ul, #wrapper #mkreplaced-toc ul {
+    list-style-position: inside
+}
+#wrapper #generated-toc-clone li.missing, #wrapper #mkreplaced-toc li.missing {
+    list-style-type: none!important
+}
+#wrapper #generated-toc-clone, #wrapper #mkreplaced-toc {
+    list-style-type: upper-roman
+}
+#wrapper #generated-toc-clone>li>ul, #wrapper #mkreplaced-toc>li>ul  {
+    list-style-type: decimal
+}
+#wrapper #generated-toc-clone>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul {
+    list-style-type: decimal-leading-zero
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul {
+    list-style-type: lower-greek
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul>li>ul {
+    list-style-type: disc
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul>li>ul>li>ul {
+    list-style-type: square
+}
+#wrapper #generated-toc-clone,#wrapper #mkreplaced-toc{list-style-position:outside!important;margin-left:3rem;}
+</style>
+
+</head>
+<body class="normal">
+  <div id="wrapper">
+      <h1 id="advancedmiddlewarerpcdynamictypesapispecification">Advanced Middleware RPC Dynamic Types API Specification</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<h3 id="purpose">Purpose</h3>
+
+<p>The purpose of this document is to specify the dynamic Remote Procedure Call (RPC) Application Programming Interface (API) for the Advanced Middleware GE.</p>
+
+<h3 id="revisionhistory">Revision History</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;"><strong>Date</strong></th>
+	<th style="text-align:left;"><strong>Description</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;">30-January&#8211;2015</td>
+	<td style="text-align:left;">Frist release</td>
+</tr>
+<tr>
+	<td style="text-align:left;">04-February&#8211;2015</td>
+	<td style="text-align:left;">Update after review meeting</td>
+</tr>
+<tr>
+	<td style="text-align:left;">06-March&#8211;2015</td>
+	<td style="text-align:left;">Release 0.2.0</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="referencematerial">Reference Material</h3>
+
+<ul>
+<li><a href="./Middleware_IDL_Specification.html" title="Advanced Middleware IDL Specification"><em>Advanced Middleware IDL Specification</em></a></li>
+<li><a href="./Middleware_RPC_API_Specification.html" title="Advanced Middleware RPC API Specification"><em>Advanced Middleware RPC API Specification</em></a></li>
+</ul>
+
+<h2 id="aquickexample">A quick Example</h2>
+
+<p>Before the description of the public Advanced Middleware RPC Dynamic Types API, a quick example is provided. This example shows how a client should use this dynamic API framework to call a remote server and how a server can send the response. </p>
+
+<p>First of all, let’s bear in mind that the server provides an IDL defining the services and their functions. The example uses the following Advanced Middleware interface definition:</p>
+<pre><code class="(null)">service Calculator
+{
+ i32 add(i32 num1, i32 num2);
+};</code></pre>
+
+<h3 id="loadingtheservices’definitions">Loading the services’ definitions</h3>
+
+<p>To be able to call remote functions dynamically, it is required to know the services and what functions they offer. The use case is to load the <code>TypeCode</code>elements when creating the connection, so it will be the <code>Connection</code> class which offers an API to get all the data definitions from the server.</p>
+
+<h3 id="creatingaclient">Creating a client</h3>
+
+<p>On the client side, there is no differnce between the dynamic and the static API from the developers point of view in terms of creating the connection. In the dynamic case this connection will be used to obtain all the types and functions offered by the server.</p>
+
+<p>This means, the user has to create a connection and then use it to get a definition of the function he wants to execute. Let’s walk through it based on the following example.</p>
+<pre><code>// Create context and connect with the server
+Context context = Kiara.createContext();
+Connection connection = context.connect(&quot;kiara://127.0.0.1:8080/service&quot;);
+// Get a generic proxy based on the service interface
+ DynamicProxy client = connection.getDynamicProxy(&quot;Calculator&quot;);</code></pre>
+
+<p>When connecting to the server, the scheme specified in the URI is used by the Context to decide from where to download the information. In this example, the scheme “kiara” means the connection information is going to be downloaded from the server and then used in the negotiation process. Otherwise, information such as the transport protocol and serialization mechanism must be specified in the URI itself.</p>
+
+<p>Before being able to call remotely a function on the server, the client will need to have access to its functions, and in a typical RPC framework, this can be done by using a Proxy. The class named <code>DynamicProxy</code> allows the user to have access to this information from the data that has been downloaded from the server.</p>
+
+<p>To do so, the <code>Connection</code> object offers a function called <code>getDynamicProxy</code>, which looks inside the dynamic data types created when connecting to the server and retrieves a <code>DynamicProxy</code> whose name is the same as the service name specified as a parameter.</p>
+
+<p>Once the user has obtained this <code>DynamicProxy</code>, all the functions defined inside the service are available. To use them, two objects are necessary, the <code>DynamicFunctionRequest</code> and the <code>DynamicFunctionResponse</code>.</p>
+
+<p>The <code>DynamicFunctionRequest</code> object is created at run-time by using the name of the function the user wants to execute on the server’s side. If there is a function whose name fits the one specified, this object will be filled with all the <code>DynamicValue</code> objects necessary to execute the function.</p>
+
+<p>On the other hand, the DynamicFunctionResponse object will be created and filled with the response obtained from the server after the execution is finished (either if it finished properly or not).</p>
+<pre><code>// Create the function request
+DynamicFunctionRequest request = dclient.createFunctionRequest(&quot;add&quot;);
+((DynamicPrimitive) request.getParameterAt(0)).set(3.5);
+((DynamicPrimitive) request.getParameterAt(1)).set(5.2);
+// Execute the Remote Procedure Call
+DynamicFunctionResponse response = drequest.execute();</code></pre>
+
+<p>In this example, the <code>createFunctionRequest</code> method has been executed specifying “add as” the function name. Therefore, the <code>DynamicFunctionRequest</code> object will have two primitive <code>DynamicValue</code> objects (<code>DynamicPrimitive</code>) inside (one for each parameter defined in the IDL description of the function). The user can easily modify these values and call the execute method on the request object, obtaining this way a <code>DynamicFunctionResponse</code> which holds the result of the function execution.</p>
+
+<p>The <code>execute</code> method will have all the business logic so that the service name, the operation name, message ID, etc. as well as all the parameters are serialized properly according to the function that is going to be executed.</p>
+
+<p>The same thing happens with the return type of each function. Depending on the <code>DynamicValue</code> that defines it, a different deserialization method will be executed. By using this method, the user only has to specify which function must be executed on the server’s side, and all the information will be (de)serialized automatically.</p>
+
+<p>In order to know if the function finished the way it should, the <code>DynamicFunctionResponse</code> object offers a function named <code>isException</code>, which will return true if and only if the function did raise an exception. The following code snippet shows this behaviour:</p>
+<pre><code>// Check RPC result
+if (dresponse.isException()) {
+ DynamicData result = dresponse.getReturnValue();
+ System.out.println(&quot;Exception = &quot; + (DynamicPrimitive) result);
+} else {
+ DynamicData result = dresponse.getReturnValue();
+ System.out.println(&quot;Result = &quot; + ((DynamicPrimitive) result).get());
+}</code></pre>
+
+<h2 id="apioverview">API Overview</h2>
+
+<p>This section enumerates and describes the classes provided by Advanced Middleware Dynamic Types RPC API.</p>
+
+<h3 id="mainentrypoint">Main entry point</h3>
+
+<h4 id="org.fiware.kiara.kiara">org.fiware.kiara.Kiara</h4>
+
+<p>This class is the main entry point to use Advanced Middleware middleware. It creates or provides implementation of top level Advanced Middleware interfaces, especially <code>Context</code>.</p>
+
+<p><strong>Functions</strong>:</p>
+
+<ul>
+<li><strong>getTypeDescriptorBuilder</strong>: This function returns an instance of the type <code>DescriptorBuilder</code> described below.</li>
+<li><strong>getDynamicValueBuilder</strong>: This function returns an instance of the <code>DynamicValueBuilder</code> described below.</li>
+<li><strong>createContext</strong>: This function creates a new instance of the Context class, which is part of the public <a href="./Middleware_RPC_API_Specification.html" title="Advanced Middleware RPC API Specification">Advanced Middleware RPC API</a> .</li>
+<li><strong>shutdown</strong>: This function closes releases all internal Advanced Middleware structures, and is a part of the public <a href="./Middleware_RPC_API_Specification.html" title="Advanced Middleware RPC API Specification">Advanced Middleware RPC API</a>.</li>
+</ul>
+
+<h3 id="serializationmechanisms">Serialization mechanisms</h3>
+
+<h4 id="org.fiware.kiara.serialization.serializer">org.fiware.kiara.serialization.Serializer</h4>
+
+<p>This interface is part of the public <a href="./Middleware_RPC_API_Specification.html" title="Advanced Middleware RPC API Specification">Advanced Middleware RPC API</a>.</p>
+
+<h4 id="org.fiware.kiara.serialization.impl.serializable">org.fiware.kiara.serialization.impl.Serializable</h4>
+
+<p>This interface is the one that must be implemented by all the used defined data types in order to be serializable. It defines the methods <code>serialize</code> and <code>deserialize</code> for each data type. This class will not be described in this document, for more information take a look at the <a href="./Middleware_RPC_API_Specification.html" title="Advanced Middleware RPC API Specification">Advanced Middleware RPC API Specification</a> document.</p>
+
+<h3 id="clientapi">Client API</h3>
+
+<h4 id="org.fiware.kiara.client.connection">org.fiware.kiara.client.Connection</h4>
+
+<p>The <code>Connection</code> interface manages the connection to the server. It holds the required <code>Transport</code> objects and <code>Serialization</code> objects. Also it can create these object automatically depending on the server information. The connection provides the service proxy interfaces, which will be used by the application to call remote functions.</p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getDynamicProxy</strong>: This function looks in the endpoint for a service whose name is the same as the one specified as a parameter, and creates a new <code>DynamicProxy</code> representing that service. This <code>DynamicProxy</code> will provide the user with all the functions defined in such a service.</li>
+</ul>
+
+<h3 id="typedescriptor">TypeDescriptor</h3>
+
+<p>This subsection contains the interfaces and classes that are dependent on the user. This section will use the example in section API Usage Examples to define them.</p>
+
+<p><img src="images/MiddlewareClassDiagramTypeDescriptor.png" alt="Figure: Class Diagram TypeDescriptor" title="center|Figure: Class Diagram TypeDescriptor" /><br/>
+<center>Figure: Class Diagram TypeDescriptor</center></p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.typedescriptorbuilder">org.fiware.kiara.typecode.TypeDescriptorBuilder</h4>
+
+<p>This interface defined the operations used to create type-describing objects. It allows the users to create every supported data type inside Advanced Middleware by acting as a single access builder.</p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>createVoidType:</strong> This function creates a new <code>DataTypeDescriptor</code> representing a void data type..</li>
+<li><strong>createPrimitiveType:</strong> This function returns a new <code>PrimitiveTypeDescriptor</code> whose kind is the same specified as a parameter.</li>
+<li><strong>createArrayType</strong>: Function that creates a new <code>ArrayTypeDescriptor</code> object representing an array.</li>
+<li><strong>createListType</strong>: This function creates a new <code>ListTypeDescriptor</code> object representing a list of objects.</li>
+<li><strong>createSetType</strong>: Function that creates a new <code>SetTypeDescriptor</code> object representing a set. A set is defined as a list with no repeated objects.</li>
+<li><strong>createMapType</strong>: This function is used to create a <code>MapTypeDescriptor</code> object that represents a map data type.</li>
+<li><strong>createStructType</strong>: This function creates a new <code>StructTypeDescriptor</code> object representing a struct data type.</li>
+<li><strong>createEnumType</strong>: Function that creates a new <code>EnumTypeDescriptor</code> object representing an enumeration.</li>
+<li><strong>createUnionType</strong>: This function can be used to create a new <code>UnionTypeDescriptor</code> that represents a union data type.</li>
+<li><strong>createExceptionType</strong>: Function that creates a new <code>ExceptionTypeDescriptor</code> used to represent an exception data type.</li>
+<li><strong>createFunctionType</strong>: This function can be used to create a new <code>FunctionTypeDescriptor</code> representing a Remote Procedure Call (RPC).</li>
+<li><strong>createServiceType</strong>: Function that creates a new <code>ServiceTypeDescriptor</code> object used to represent a service defined in the server’s side.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.typedescriptor">org.fiware.kiara.typecode.TypeDescriptor</h4>
+
+<p>This class is used to manipulate the objects used to describe the data types. It allows the users to know what type of data an object represents.</p>
+
+<p><img src="images/MiddlewareInterfaceTypeDescriptor.png" alt="Figure: Interface TypeDescriptor" title="center|Figure: Interface TypeDescriptor" /><br/>
+<center>Figure: Interface TypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getKind:</strong> Function that returns the <code>TypeKind</code> of a <code>TypeDescriptor</code> object.</li>
+<li><strong>isData:</strong> This function returns true if and only if the <code>TypeDescriptor</code> represented by the object in which is invoked describes a data type. Functions and services are not considered data types.</li>
+<li><strong>isPrimitive:</strong> Function used to know if a <code>TypeCode</code> object is a description of a primitive data type.</li>
+<li><strong>isVoid:</strong> This function returns true if the <code>TypeDescriptor</code> object represents a void data type.</li>
+<li><strong>isContainer:</strong> This function can be used to check if a <code>TypeDescriptor</code> object is representing a container type. The types considered as container data types are arrays, lists, sets and maps.</li>
+<li><strong>isArray:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of an array data type.</li>
+<li><strong>isList:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a list data type.</li>
+<li><strong>isMap:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a map data type.</li>
+<li><strong>isSet:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a set data type.</li>
+<li><strong>isMembered:</strong> This function is used to know if a <code>TypeDescriptor</code> object is a description of a membered data type. <code>Membered</code> types are structs, enumerations, unions and exceptions.</li>
+<li><strong>isStruct:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a struct data type.</li>
+<li><strong>isEnum:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of an enumeration data type.</li>
+<li><strong>isUnion:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a union data type.</li>
+<li><strong>isException:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of an exception data type.</li>
+<li><strong>isFunction:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a function.</li>
+<li><strong>isService:</strong> Function used to know if a <code>TypeDescriptor</code> object is a description of a service.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.datatypedescriptor">org.fiware.kiara.typecode.data.DataTypeDescriptor</h4>
+
+<p>Interface that represents the top level class of the data type hierarchy. It is used as a generic type to englobe only and exclusively data type descriptors.</p>
+
+<p><img src="images/MiddlewareInterfaceDataTypeDescriptor.png" alt="Figure: Interface DataTypeDescriptor" title="center|Figure: Interface DataTypeDescriptor" /><br/>
+<center>Figure: Interface DataTypeDescriptor</center></p>
+
+<p><strong>Functions</strong>: None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.primitivetypedescriptor">org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor</h4>
+
+<p>Interface that represents a primitive data type. Primitive types include <strong>boolean</strong>, <strong>byte</strong>, <strong>i16</strong>, <strong>ui16</strong>, <strong>i32</strong>, <strong>ui32</strong>, <strong>i64</strong>, <strong>ui64</strong>, <strong>float32</strong>, <strong>float64</strong>, <strong>char</strong> and <strong>string</strong>.</p>
+
+<p><img src="images/MiddlewareInterfacePrimitiveTypeDescriptor.png" alt="Figure: Interface PrimitiveTypeDescriptor" title="center|Figure: Interface PrimitiveTypeDescriptor" /><br/>
+<center>Figure: Interface PrimitiveTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>isString</strong>: This function returns true if and only if the <code>PrimitiveTypeDescriptor</code> object represents a string data type.</li>
+<li><strong>setMaxFixedLength</strong>: This function can only be used with string types. It sets the maximum length value for a specific string represented by the <code>PrimitiveTypeDescriptor</code> object.</li>
+<li><strong>getMaxFixedLength</strong>: This function returns the maximum length specified when creating the <code>PrimitiveTypeDescriptor</code> object if it represents a string data type.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.containertypedescriptor">org.fiware.kiara.typecode.data.ContainerTypeDescriptor</h4>
+
+<p>Interface that represents a container data type. Container data types are <strong>arrays</strong>, <strong>lists</strong>, <strong>maps</strong> and <strong>sets</strong>.</p>
+
+<p><img src="images/MiddlewareInterfaceContainerTypeDescriptor.png" alt="Figure: Interface ContainerTypeDescriptor" title="center|Figure: Interface ContainerTypeDescriptor" /><br/>
+<center>Figure: Interface ContainerTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>setMaxSize</strong>: This function sets the maximum size of a container data type.</li>
+<li><strong>getMaxSize</strong>: This function returns the maximum size of a container data type.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.arraytypedescriptor">org.fiware.kiara.typecode.data.ArrayTypeDescriptor</h4>
+
+<p>Interface that represents an array data type. Arrays can hold multiple repeated objects of the same data type inside.</p>
+
+<p><img src="images/MiddlewareInterfaceArrayTypeDescriptor.png" alt="Figure: Interface ArrayTypeDescriptor" title="center|Figure: Interface ArrayTypeDescriptor" /><br/>
+<center>Figure: Interface ArrayTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getElementType</strong>: This function returns the <code>DataTypeDescriptor</code> object describing the content type of the array.</li>
+<li><strong>setElementType</strong>: This function sets the <code>DataTypeDescriptor</code> object describing the content type of the array.</li>
+<li><strong>setDimensions</strong>: This method sets the dimensions of the array.</li>
+<li><strong>getDimensions</strong>: This method returns the different dimensions of the array.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.listtypedescriptor">org.fiware.kiara.typecode.data.ListTypeDescriptor</h4>
+
+<p>Interface that represents a list data type. Lists can hold multiple repeated objects of the same data type inside.</p>
+
+<p><img src="images/MiddlewareInterfaceListTypeDescriptor.png" alt="Figure: Interface ListTypeDescriptor" title="center|Figure: Interface ListTypeDescriptor" /><br/>
+<center>Figure: Interface ListTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getElementType</strong>: This function returns the <code>DataTypeDescriptor</code> object describing the content type of the list.</li>
+<li><strong>setElementType</strong>: This function sets the <code>DataTypeDescriptor</code> object describing the content type of the list.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.settypedescriptor">org.fiware.kiara.typecode.data.SetTypeDescriptor</h4>
+
+<p>Interface that represents a set data type. Sets can have non repeated objects of the same data type inside.</p>
+
+<p><img src="images/MiddlewareInterfaceSetTypeDescriptor.png" alt="Figure: Interface SetTypeDescriptor" title="center|Figure: Interface SetTypeDescriptor" /><br/>
+<center>Figure: Interface SetTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getElementType</strong>: This function returns the <code>DataTypeDescriptor</code> object describing the content type of the set.</li>
+<li><strong>setElementType</strong>: This function sets the <code>DataTypeDescriptor</code> object describing the content type of the set.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.maptypedescriptor">org.fiware.kiara.typecode.data.MapTypeDescriptor</h4>
+
+<p>Interface that represents a map data type. Maps can hold multiple key-object pairs inside if and only if the key objects are unique.</p>
+
+<p><img src="images/MiddlewareInterfaceMapTypeDescriptor.png" alt="Figure: Interface MapTypeDescriptor" title="center|Figure: Interface MapTypeDescriptor" /><br/>
+<center>Figure: Interface MapTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getKeyTypeDescriptor</strong>: This function returns the <code>DataTypeDescriptor</code> object describing the key type of the map.</li>
+<li><strong>setKeyTypeDescriptor</strong>: This function sets the <code>DataTypeDescriptor</code> object describing the key type of the map.</li>
+<li><strong>getValueTypeDescriptor</strong>: This function returns the <code>DataTypeDescriptor</code> object describing the value type of the map.</li>
+<li><strong>setValueTypeDescriptor</strong>: This function sets the <code>DataTypeDescriptor</code> object describing the value type of the map.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.memberedtypedescriptor">org.fiware.kiara.typecode.data.MemberedTypeDescriptor</h4>
+
+<p>Interface that represents a membered data type. <code>Membered</code> data types are <strong>structs</strong>, <strong>enumerations</strong>, <strong>unions</strong> and <strong>exceptions</strong>.</p>
+
+<p><img src="images/MiddlewareInterfaceMemberedTypeDescriptor.png" alt="Figure: Interface MemberedTypeDescriptor" title="center|Figure: Interface MemberedTypeDescriptor" /><br/>
+<center>Figure: Interface MemberedTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getMembers</strong>: This function returns the list of member objects stored in a <code>ContainerTypeDescriptor</code> object.</li>
+<li><strong>getName</strong>: This function returns the name of the <code>ContainerTypeDescriptor</code> object.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.structtypedescriptor">org.fiware.kiara.typecode.data.StructTypeDescriptor</h4>
+
+<p>Interface that represents a struct data type. Structs can have multiple different <code>DataTypeDescriptor</code> objects inside stored as members. Every struct member is identified by a unique name.</p>
+
+<p><img src="images/MiddlewareInterfaceStructTypeDescriptor.png" alt="Figure: Interface StructTypeDescriptor" title="center|Figure: Interface StructTypeDescriptor" /><br/>
+<center>Figure: Interface StructTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>addMember</strong>: This function adds a new <code>TypeDescriptor</code> object as a member using a specific name.</li>
+<li><strong>getMember</strong>: This function returns a <code>DataTypeDescriptor</code> object identified by the name introduced as a parameter.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.enumtypedescriptor">org.fiware.kiara.typecode.data.EnumTypeDescriptor</h4>
+
+<p>Interface that represents an enumeration data type. Enumerations are formed by a group of different string values.</p>
+
+<p><img src="images/MiddlewareInterfaceEnumTypeDescriptor.png" alt="Figure: Interface EnumTypeDescriptor" title="center|Figure: Interface EnumTypeDescriptor" /><br/>
+<center>Figure: Interface EnumTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>addValue</strong>: This function adds a new value to the enumeration using the string object received as a parameter.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.uniontypedescriptor">org.fiware.kiara.typecode.data.UnionTypeDescriptor</h4>
+
+<p>Interface that represents a union data type. Unions are formed by a group of members identified by their names and the labels of the discriminator to which they are assigned.</p>
+
+<p><img src="images/MiddlewareInterfaceUnionTypeDescriptor.png" alt="Figure: Interface UnionTypeDescriptor" title="center|Figure: Interface UnionTypeDescriptor" /><br/>
+<center>Figure: Interface UnionTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>addMember</strong>: This function adds a new <code>TypeDescriptor</code> object as a member using a specific name and the labels of the discriminator.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.exceptiontypedescriptor">org.fiware.kiara.typecode.data.ExceptionTypeDescriptor</h4>
+
+<p>Interface that represents a struct data type. Exceptions can have multiple different <code>DataTypeDescriptor</code> objects inside stored as members. Every struct member is identified by a unique name.</p>
+
+<p><img src="images/MiddlewareInterfaceExceptionTypeDescriptor.png" alt="Figure: Interface ExceptionTypeDescriptor" title="center|Figure: Interface ExceptionTypeDescriptor" /><br/>
+<center>Figure: Interface ExceptionTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>addMember</strong>: This function adds a new <code>TypeDescriptor</code> object as a member using a specific name.</li>
+<li><strong>getMember</strong>: This function returns a <code>DataTypeDescriptor</code> object identified by the name introduced as a parameter.</li>
+<li><strong>getMd5</strong>: This function returns the Md5 hash string of the exception name.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.member">org.fiware.kiara.typecode.data.Member</h4>
+
+<p>Interface that represents a member of a <code>MemberedTypeDescriptor</code> object. Each member is identified by its name and the <code>TypeDescriptor</code> object that it holds.</p>
+
+<p><img src="images/MiddlewareInterfaceMember.png" alt="Figure: Interface Member" title="center|Figure: Interface Member" /><br/>
+<center>Figure: Interface Member</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getName</strong>: This function returns the member’s name.</li>
+<li><strong>getTypeDescriptor</strong>: This function returns a <code>DataTypeDescriptor</code> object stored inside the member.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.enummember">org.fiware.kiara.typecode.data.EnumMember</h4>
+
+<p>Interface that represents a member of a <code>EnumTypeDescriptor</code> object. It inherits from <code>Member</code> interface and therefore it has no new methods.</p>
+
+<p><img src="images/MiddlewareInterfaceMember.png" alt="Figure: Interface EnumMember" title="center|Figure: Interface EnumMember" /><br/>
+<center>Figure: Interface EnumMember</center></p>
+
+<p><strong>Functions:</strong> None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.data.unionmember">org.fiware.kiara.typecode.data.UnionMember</h4>
+
+<p>Interface that represents a member of a <code>UnionTypeDescriptor</code> object. It inherits from Member interface and therefore it has no new methods.</p>
+
+<p><img src="images/MiddlewareInterfaceUnionMember.png" alt="Figure: Interface UnionMember" title="center|Figure: Interface UnionMember" /><br/>
+<center>Figure: Interface UnionMember</center></p>
+
+<p><strong>Functions:</strong> None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.services.functiontypedescriptor">org.fiware.kiara.typecode.services.FunctionTypeDescriptor</h4>
+
+<p>This interface represents a function, providing methods to easily describe it by setting its return type, parameters and exceptions that it might throw.</p>
+
+<p><img src="images/MiddlewareInterfaceFunctionTypeDescriptor.png" alt="Figure: Interface FunctionTypeDescriptor" title="center|Figure: Interface FunctionTypeDescriptor" /><br/>
+<center>Figure: Interface FunctionTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getReturnType</strong>:This function returns the return <code>DataTypeDescriptor</code> of the function.</li>
+<li><strong>setReturnType</strong>: This function sets the return <code>DataTypeDescriptor</code> of the function.</li>
+<li><strong>getParameter</strong>: This function returns a <code>DataTypeDescriptor</code> representing a parameter whose name is the same as the one indicated.</li>
+<li><strong>addParameter</strong>: This function adds a new <code>DataTypeDescriptor</code> to the parameters list with the name indicated.</li>
+<li><strong>getException</strong>: This function returns an <code>ExceptionTypeDescriptor</code> whose name is the same as the one specified as a parameter.</li>
+<li><strong>addException</strong>: This function adds a new <code>ExceptionTypeDescriptor</code> to the exceptions list.</li>
+<li><strong>getName</strong>: This function returns the function name.</li>
+<li><strong>getServiceName</strong>: This function returns the name of the <code>ServiceTypeDescriptor</code> in which the <code>FunctionTypeDescriptor</code> is defined.</li>
+<li><strong>setServiceName</strong>: This function sets the name of the <code>ServiceTypeDescriptor</code> in which the <code>FunctionTypeDescriptor</code> is defined.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.typecode.services.servicetypedescriptor">org.fiware.kiara.typecode.services.ServiceTypeDescriptor</h4>
+
+<p>This interface represents a service, providing methods to add the FunctionTypeDescriptor objects representing every function defined in a specific service.</p>
+
+<p><img src="images/MiddlewareInterfaceServiceTypeDescriptor.png" alt="Figure: Interface ServiceTypeDescriptor" title="center|Figure: Interface ServiceTypeDescriptor" /><br/>
+<center>Figure: Interface ServiceTypeDescriptor</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getName</strong>: This function returns the service name.</li>
+<li><strong>getScopedName</strong>: This function returns the service scoped name.</li>
+<li><strong>getFunctions</strong>: This function returns the list of <code>FunctionTypeDescriptor</code> objects stored inside the <code>ServiceTypeDescriptor</code>.</li>
+<li><strong>addFunction</strong>: This function adds a <code>FunctionTypeDescriptor</code> to the list of functions defined inside the service.</li>
+</ul>
+
+<h3 id="dynamic">Dynamic</h3>
+
+<p>This subsection contains the interfaces and classes that are designed to provide the developer with functions to create and manage dynamic data types.</p>
+
+<p><img src="images/MiddlewareClassDiagramDynamicValue.png" alt="Figure: Class Diagramm DynamicValue" title="center|Figure: Class Diagramm DynamicValue" /><br/>
+<center>Figure: Class Diagramm DynamicValue</center></p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.dynamicvaluebuilder">org.fiware.kiara.dynamic.DynamicValueBuilder</h4>
+
+<p>This class allows the users to create new data types based on their <code>TypeCode</code> descriptions.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicValueBuilder.png" alt="Figure: Interface DynamicValueBuilder" title="center|Figure: Interface DynamicValueBuilder" /><br/>
+<center>Figure: Interface DynamicValueBuilder</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>createData:</strong> This function allows the user to create new <code>DynamicData</code> objects by using their <code>TypeDescriptor</code>.</li>
+<li><strong>createFunctionRequest:</strong> This function receives a <code>FunctionTypeDescriptor</code> object describing a function, and it generates a new <code>DynamicFunctionRequest</code> (which inherits from <code>DynamicData</code>) object representing it.</li>
+<li><strong>createFunctionResponse:</strong> This function receives a <code>FunctionTypeDescriptor</code> object describing a function, and it generates a new <code>DynamicFunctionResponse</code> (which inherits from <code>DynamicData</code>) object representing it.</li>
+<li><strong>createService:</strong> This function receives a <code>ServiceTypeDescriptor</code> object describing a function, and it creates a new <code>DynamicService</code> object representing it.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.dynamicvalue">org.fiware.kiara.dynamic.DynamicValue</h4>
+
+<p>Interface that acts as a supertype for every dynamic value that can be managed. Every <code>DynamicValue</code> object is defined by using a <code>TypeDescriptor</code> which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the <code>TypeDescriptor</code> object it was created from.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicValue.png" alt="Figure: Interface DynamicValue" title="center|Figure: Interface DynamicValue" /><br/>
+<center>Figure: Interface DynamicValue</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getTypeDescriptor</strong>: This function returns the TypeDescriptor used when creating the DynamicValue object.</li>
+<li><strong>serialize:</strong> This function serializes the content of the DynamicValue object inside a BinaryOutputStream message.</li>
+<li><strong>deserialize:</strong> This function deserializes the content of a BinaryInputStream message into a DynamicValue object.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicdata">org.fiware.kiara.dynamic.data.DynamicData</h4>
+
+<p>Interface that is used to group all the <code>DynamicValues</code> representing data types.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicData.png" alt="Figure: Interface DynamicData" title="center|Figure: Interface DynamicData" /><br/>
+<center>Figure: Interface DynamicData</center></p>
+
+<p><strong>Functions:</strong> None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicprimitive">org.fiware.kiara.dynamic.data.DynamicPrimitive</h4>
+
+<p>This class allows the users to manipulate <code>DynamicData</code> objects made from <code>PrimitiveTypeDescriptor</code> objects.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicPrimitive.png" alt="Figure: Interface DynamicPrimitive" title="center|Figure: Interface DynamicPrimitive" /><br/>
+<center>Figure: Interface DynamicPrimitive</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>set:</strong> This function sets the inner value of a <code>DynamicPrimitive</code> object according to the <code>TypeDescriptor</code> specified when creating it.</li>
+<li><strong>get</strong>: This function returns the value of a <code>DynamicPrimitive</code> object.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamiccontainer">org.fiware.kiara.dynamic.data.DynamicContainer</h4>
+
+<p>This class holds the data values of a <code>DynamicData</code> object created from a <code>ContainerTypeDescriptor</code>.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicContainer.png" alt="Figure: Interface DynamicContainer" title="center|Figure: Interface DynamicContainer" /><br/>
+<center>Figure: Interface DynamicContainer</center></p>
+
+<p><strong>Functions:</strong> None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicarray">org.fiware.kiara.dynamic.data.DynamicArray</h4>
+
+<p>This class holds the data values of a <code>DynamicData</code> object created from an <code>ArrayTypeDescriptor</code>. A <code>DynamicArray</code> contains a group of <code>DynamicData</code> objects (all must be the same type) stored in single or multi dimensional matrixes.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicArray.png" alt="Figure: Interface DynamicArray" title="center|Figure: Interface DynamicArray" /><br/>
+<center>Figure: Interface DynamicArray</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getElementAt:</strong> This function returns <code>DynamicData</code> object stored in a certain position or coordinate..</li>
+<li><strong>setElementAt</strong>: This function sets a <code>DynamicData</code> object in a specific position inside the array. If the array has multiple dimensions, the object will be set in a specific coordinate.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamiclist">org.fiware.kiara.dynamic.data.DynamicList</h4>
+
+<p>This class holds the data values of a DynamicData object created from a ListTypeDescriptor. A list can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicList must have been created from the same TypeDescriptor definition.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicList.png" alt="Figure: Interface DynamicList" title="center|Figure: Interface DynamicList" /><br/>
+<center>Figure: Interface DynamicList</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>add:</strong> This function adds a <code>DynamicData</code> object into the list in the last position or in the position specified via parameter.</li>
+<li><strong>get</strong>: This function returns a <code>DynamicData</code> object stored is a specific position in the list.</li>
+<li><strong>isEmpty</strong>: This function returns true if the <code>DynamicList</code> is empty.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicset">org.fiware.kiara.dynamic.data.DynamicSet</h4>
+
+<p>This class holds the data values of a DynamicData object created from a SetTypeDescriptor. A set can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicSet must have been created from the same TypeDescriptor definition and it cannot be duplicated objects.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicSet.png" alt="Figure: Interface DynamicSet" title="center|Figure: Interface DynamicSet" /><br/>
+<center>Figure: Interface DynamicSet</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>add:</strong> This function adds a <code>DynamicData</code> object into the list in the last position or in the position specified via parameter.</li>
+<li><strong>get</strong>: This function returns a <code>DynamicData</code> object stored is a specific position in the list.</li>
+<li><strong>isEmpty</strong>: This function returns true if the <code>DynamicSet</code> is empty.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicmap">org.fiware.kiara.dynamic.data.DynamicMap</h4>
+
+<p>This class holds a list of pairs key-value instances of DynamicData. In a DynamicMap, the key values cannot be duplicated.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicMap.png" alt="Figure: Interface DynamicMap" title="center|Figure: Interface DynamicMap" /><br/>
+<center>Figure: Interface DynamicMap</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>put:</strong> This function adds a new key-value pair using the DynamicData objets introduces as parameters. It will return false if the key value already exists in the map.</li>
+<li><strong>containsKey</strong>: This function returns true if the DynamicMap contains at least one key-value pair in which the key DynamicData object is equal to the one introduced as a parameter.</li>
+<li><strong>containsValue</strong>: This function returns true if the DynamicMap contains at least one key-value pair in which the value DynamicData object is equal to the one introduced as a parameter.</li>
+<li><strong>get</strong>: This function returns a DynamicData object from a key-value pair whose key is equal to the one introduced as a parameter.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicmembered">org.fiware.kiara.dynamic.data.DynamicMembered</h4>
+
+<p>This class represents a <code>DynamicData</code> type formed by multiple <code>DynamicData</code> objects stored into a class named <code>DynamicMember</code>.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicMembered.png" alt="Figure: Interface DynamicMembered" title="center|Figure: Interface DynamicMembered" /><br/>
+<center>Figure: Interface DynamicMembered</center></p>
+
+<p><strong>Functions:</strong> None</p>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicstruct">org.fiware.kiara.dynamic.data.DynamicStruct</h4>
+
+<p>This class holds group of <code>DynamicData</code> objects acting as members of a stucture. Each member is identified by its name.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicStruct.png" alt="Figure: Interface DynamicStruct" title="center|Figure: Interface DynamicStruct" /><br/>
+<center>Figure: Interface DynamicStruct</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getMember:</strong> This function returns a <code>DynamicData</code> object (acting as a member of the structure) whose name is the same as the one introduced as a parameter.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicenum">org.fiware.kiara.dynamic.data.DynamicEnum</h4>
+
+<p>This class is used to dynamically manipulate enumerations described by a specific <code>EnumTypeDescriptor</code> object.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicEnum.png" alt="Figure: Interface DynamicEnum" title="center|Figure: Interface DynamicEnum" /><br/>
+<center>Figure: Interface DynamicEnum</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>set:</strong> This function sets the actual value of the DynamicEnum object to the one specified as a parameter.</li>
+<li><strong>get</strong>: This function returns the actual value of the DynamicEnum object.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicunion">org.fiware.kiara.dynamic.data.DynamicUnion</h4>
+
+<p>This class is used to dynamically manipulate unions described by a specific <code>UnionTypeDescriptor</code> object. A union is formed by some <code>DynamicData</code> objects, and the valid one is selected by using a discriminator.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicUnion.png" alt="Figure: Interface DynamicUnion" title="center|Figure: Interface DynamicUnion" /><br/>
+<center>Figure: Interface DynamicUnion</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>_d:</strong> This function either returns the discriminator or sets a new one, depending on the existence of an object parameter indicating a new value.</li>
+<li><strong>getMember</strong>: This function returns valid <code>DynamicData</code> value depending on the selected discriminator.</li>
+<li><strong>setMember</strong>: This function sets the <code>DynamicData</code> object received as a parameter in the member whose name is the same as the one introduced (if and only if the discriminator value is correct).</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicexception">org.fiware.kiara.dynamic.data.DynamicException</h4>
+
+<p>This class holds group of <code>DynamicData</code> objects acting as members of an exception. Each member is identified by its own name.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicException.png" alt="Figure: Interface DynamicException" title="center|Figure: Interface DynamicException" /><br/>
+<center>Figure: Interface DynamicException</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getMember:</strong> This function returns a <code>DynamicData</code> object whose name is the same as the one introduced as a parameter.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.data.dynamicmember">org.fiware.kiara.dynamic.data.DynamicMember</h4>
+
+<p>This class represents a dynamic member of any DynamicMembered object. It is used to store the DynamicData objects inside structures, unions, enumerations and exceptions.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicMember.png" alt="Figure: Interface DynamicMember" title="center|Figure: Interface DynamicMember" /><br/>
+<center>Figure: Interface DynamicMember</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getName:</strong> This function returns the member’s name.</li>
+<li><strong>getDynamicData</strong>: This function returns the <code>DynamicData</code> stored inside a <code>DynamicMember</code> object.</li>
+<li><strong>equals</strong>: It returns true if two <code>DynamicMember</code> objects are equal.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.service.dynamicfunctionrequest">org.fiware.kiara.dynamic.service.DynamicFunctionRequest</h4>
+
+<p>This class represents a dynamic function request. This class is used to create objects whose objective is to invoke functions remotely.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicFunctionRequest.png" alt="Figure: Interface DynamicFunctionRequest" title="center|Figure: Interface DynamicFunctionRequest" /><br/>
+<center>Figure: Interface DynamicFunctionRequest</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getParameter:</strong> This function returns a <code>DynamicData</code> object stored in the parameter list depending on its name or its position in such list.</li>
+<li><strong>execute</strong>: This function executes a function remotely. It serializes all the necessary information and sends the request over the wire. It returns a <code>DynamicFunctionResponse</code> with the result.</li>
+<li><strong>executeAsync</strong>: This function behaves the same way as the function <code>execute</code>. The only difference is that it needs a callback to be executed when the response arrives from the server.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.service.dynamicfunctionresponse">org.fiware.kiara.dynamic.service.DynamicFunctionResponse</h4>
+
+<p>This class represents a dynamic function response. This class is used to retrieve the information sent from the server after a remote procedure call.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicFunctionResponse.png" alt="Figure: Interface DynamicFunctionResponse" title="center|Figure: Interface DynamicFunctionResponse" /><br/>
+<center>Figure: Interface DynamicFunctionResponse</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>isException:</strong> This function returns true if the server raised an exception when executing the function.</li>
+<li><strong>setException</strong>: This method sets the attribute indicating that an exception has been thrown on the server side.</li>
+<li><strong>setReturnValue</strong>: This function sets a <code>DynamicData</code> object as a return value for the remote call.</li>
+<li><strong>getReturnValue</strong>: This function returns the <code>DynamicData</code> representing the result of the remote call.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.service.dynamicproxy">org.fiware.kiara.dynamic.service.DynamicProxy</h4>
+
+<p>This class represents a proxy than can be dynamically used to create an instance of DynamicFunctionRequest or a DynamicFunctionResponse depending if the user wants an object to execute a remote call or to store the result.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicProxy.png" alt="Figure: Interface DynamicProxy" title="center|Figure: Interface DynamicProxy" /><br/>
+<center>Figure: Interface DynamicProxy</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>getServiceName:</strong> This function returns the service name.</li>
+<li><strong>createFunctionRequest</strong>: This function creates a new object instance of <code>DynamicFunctionRequest</code> according to the <code>FunctionTypeDescriptor</code> that was used to describe it.</li>
+<li><strong>createFunctionResponse</strong>: This function creates a new object instance of <code>DynamicFunctionResponse</code> according to the <code>FunctionTypeDescriptor</code> that was used to describe it.</li>
+</ul>
+
+<hr />
+
+<h4 id="org.fiware.kiara.dynamic.service.dynamicfunctionhandler">org.fiware.kiara.dynamic.service.DynamicFunctionHandler</h4>
+
+<p>This class represents a dynamic object used to hold the implementation of a specific function. Its process method must be defined by the user when creating the object, and it will be used to register the service’s functions on the server’s side.</p>
+
+<p><img src="images/MiddlewareInterfaceDynamicFunctionHandler.png" alt="Figure: Interface DynamicFunctionHandler" title="center|Figure: Interface DynamicFunctionHandler" /><br/>
+<center>Figure: Interface DynamicFunctionHandler</center></p>
+
+<p><strong>Functions:</strong></p>
+
+<ul>
+<li><strong>process:</strong> This function is the one that will be registered to be executed when a client invokes remotely a function. It must be implemented by the user.</li>
+</ul>
+
+<h2 id="detailedapi">Detailed API</h2>
+
+<p>This section defines in detail the API provided by the classes defined above.</p>
+
+<h3 id="mainentrypoint">Main entry point</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.Kiara</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getTypeDescriptorBuilder</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">TypeDescriptorBuilder</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getDynamicValueBuilder</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicValueBuilder</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createContext</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Context</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">shutdown</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="clientapi">Client API</h3>
+
+<p>This classes are those related to the client side API. This section includes all the relevant classes, attributes and methods.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.client.Connection</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getTransport</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Transport</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getSerializer</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Serializer</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getServiceProxy</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">T</td>
+	<td style="text-align:left;">Exception</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">interfaceClass</td>
+	<td style="text-align:left;">Class&lt;T&gt;</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getDynamicProxy</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicProxy</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="typedescriptor">TypeDescriptor</h3>
+
+<p>This classes are those related to the client’s side API. This section includes all the relevant classes, attributes and methods.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.TypeDescriptorBuilder</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createVoidType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createPrimitiveType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">PrimitiveTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">kind</td>
+	<td style="text-align:left;">TypeKind</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createArrayType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">ArrayTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">dimensions</td>
+	<td style="text-align:left;">int[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createListType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">ListTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">maxSize</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createSetType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">SetTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">maxSize</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createMapType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">MapTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">keyDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">valueDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">maxSize</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createStructType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">StructTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createEnumType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">EnumTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">values</td>
+	<td style="text-align:left;">String[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createUnionType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">UnionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">discriminatorDesc</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createExceptionType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">ExceptionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createServiceType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">ServiceTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">scopedName</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.TypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getKind</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">TypeKind</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isData</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isPrimitive</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isVoid</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isContainer</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isArray</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isList</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isMap</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isSet</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isMembered</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isEnum</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isUnion</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isStruct</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isException</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isService</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isFunction</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.DataTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isString</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setMaxFixedLength</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">PrimitiveTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">length</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMaxFixedLength</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.ContainerTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setMaxSize</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">length</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMaxSize</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.ArrayTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentType</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setDimensions</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">dimensions</td>
+	<td style="text-align:left;">int[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getDimensions</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">List&lt;Integer&gt;</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.ListTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentType</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.SetTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setElementType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">contentType</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.MapTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setKeyTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">keyTypeDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getKeyTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setValueTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">valueTypeDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getValueTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.MemberedTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMembers</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">List&lt;Member&gt;</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.StructTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">member</td>
+	<td style="text-align:left;">TypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.EnumTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addValue</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.UnionTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">UnionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">typeDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">isDefault</td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">labels</td>
+	<td style="text-align:left;">Object[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.FunctionTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getReturnType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setReturnType</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">returnType</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getParameter</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addParameter</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">parameter</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getException</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">ExceptionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addException</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">exception</td>
+	<td style="text-align:left;">ExceptionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getServiceName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setServiceName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">serviceName</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.typecode.data.ServiceTypeDescriptor</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getScopedName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getFunctions</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">List&lt;FunctionTypeDescriptor&gt;</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">addFunction</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">functionTypeDesc</td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="dynamic">Dynamic</h3>
+
+<p>The following classes are those related to creation and management of dynamic types, including data definition and function description and execution.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.DynamicValueBuilder</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createData</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">dataDescriptor</td>
+	<td style="text-align:left;">DataTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionRequest</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionRequest</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">functionDescriptor</td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">serializer</td>
+	<td style="text-align:left;">Serializer</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">transport</td>
+	<td style="text-align:left;">Transport</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionRequest</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionRequest</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">functionDescriptor</td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionResponse</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionResponse</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">functionDescriptor</td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">serializer</td>
+	<td style="text-align:left;">Serializer</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">transport</td>
+	<td style="text-align:left;">Transport</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionResponse</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionResponse</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">functionDescriptor</td>
+	<td style="text-align:left;">FunctionTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createService</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicProxy</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">serviceDescriptor</td>
+	<td style="text-align:left;">ServiceTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">serializer</td>
+	<td style="text-align:left;">Serializer</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">transport</td>
+	<td style="text-align:left;">Transport</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.DynamicValue</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getTypeDescriptor</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">TypeDescriptor</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">serialize</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;">IOException</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">impl</td>
+	<td style="text-align:left;">SerializerImpl</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">message</td>
+	<td style="text-align:left;">BinaryOutputStream</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">deserialize</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;">IOException</td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">impl</td>
+	<td style="text-align:left;">SerializerImpl</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">message</td>
+	<td style="text-align:left;">BinaryInputStream</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicData</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicPrimitive</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">set</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">Object</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">get</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Object</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">set</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicContainer</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicArray</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getElement</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">position</td>
+	<td style="text-align:left;">int[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setElementAt</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">position</td>
+	<td style="text-align:left;">int[]</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicList</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">add</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">element</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">add</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">index</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">element</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">get</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">index</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isEmpty</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicSet</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">add</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">element</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">add</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">index</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">element</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">get</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">index</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isEmpty</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicMap</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">put</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">key</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">containsKey</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">key</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">containsValue</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">get</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">key</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicMembered</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicStruct</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicEnum</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">set</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">get</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.Dynamic</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_d</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">value</td>
+	<td style="text-align:left;">Object</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">_d</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">Object</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">data</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicException</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getMember</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.data.DynamicMember</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getDynamicData</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">equals</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">anotherObject</td>
+	<td style="text-align:left;">Object</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionRequest</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getParameter</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getParameterAt</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">index</td>
+	<td style="text-align:left;">int</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">execute</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionResponse</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">executeAsync</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">callback</td>
+	<td style="text-align:left;" colspan="2">AsyncCallback&lt;DynamicFunctionResponse&gt;</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionResponse</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">isException</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setException</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">isException</td>
+	<td style="text-align:left;">boolean</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">setReturnValue</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">returnType</td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getReturnValue</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicData</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.service.DynamicProxy</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">getServiceName</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionRequest</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionRequest</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">createFunctionReqponse</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">DynamicFunctionResponse</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">name</td>
+	<td style="text-align:left;">String</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;" colspan="4"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionRequest</strong></th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Attributes</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Type</em></td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;">n/a</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;" colspan="4"><strong>Public Operations</strong></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><em>Name</em></td>
+	<td style="text-align:left;"><em>Parameters</em></td>
+	<td style="text-align:left;"><em>Returns/Type</em></td>
+	<td style="text-align:left;"><em>Raises</em></td>
+</tr>
+<tr>
+	<td style="text-align:left;">process</td>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">void</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">request</td>
+	<td style="text-align:left;">DynamicFunctionRequest</td>
+	<td style="text-align:left;"></td>
+</tr>
+<tr>
+	<td style="text-align:left;"></td>
+	<td style="text-align:left;">response</td>
+	<td style="text-align:left;">DynamicFunctionResponse</td>
+	<td style="text-align:left;"></td>
+</tr>
+</tbody>
+</table>
+
+<!-- ##END MARKED WRAPPER## -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,1496 @@
+<!DOCTYPE html>  
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>Middleware_IDL_Specification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style id="mkstylesheet">
+body{-webkit-font-smoothing:antialiased;font-family:"Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;margin:30px 0 0;padding:0;background:#fff}#wrapper{padding:20px}li{font-size:110%}li li{font-size:100%}li p{font-size:100%;margin:.5em 0}h1{color:#000}h2{color:#111}h3{color:#111;margin:0}h4{color:#111}h5{color:#111}h6{font-size:1em;line-height:1.5em;margin:1.5em 0}body,p,td,div{color:#111;font-family:"Helvetica Neue",Helvetica,Arial,Verdana,sans-serif;word-wrap:break-word}a{color:#0d6ea1;text-decoration:none;-webkit-transition:color 0.2s ease-in-out;-moz-transition:color 0.2s ease-in-out;-o-transition:color 0.2s ease-in-out;-ms-transition:color 0.2s ease-in-out;transition:color 0.2s ease-in-out}a:hover{color:#3593d9}body{font-size:15px;line-height:21px;margin:0 auto}h1{font-size:37px;line-height:42px;margin-top:42px;margin-bottom:21px}h2{font-size:27px;line-height:42px;margin-top:42px;margin-bottom:21px}h3{font-size:20px;line-height:21px;margin-top:21px;margin-bottom:21px}h4{font-size:20px;line-height:21px;margin-top:21px;margin-bottom:21px}p,ul,ol,pre,table,blockquote{margin-top:21px;margin-bottom:21px}hr{border:1px solid;margin:-1px 0}ul ul,ol ol,ul ol,ol ul{margin-top:0;margin-bottom:0}b,strong,em,small,code{line-height:1}.footnote{color:#0d6ea1;font-size:.8em;vertical-align:super}abbr,acronym{border-bottom:1px dotted #aaa}#wrapper img{max-width:100%;height:auto}dd{font-size:1em;margin-bottom:1em}li>p:first-child{margin:0}ul ul,ul ol{margin-bottom:.4em}caption,col,colgroup,table,tbody,td,tfoot,th,thead,tr{border-spacing:0}table{border:1px solid rgba(0,0,0,0.25);border-collapse:collapse;display:table;empty-cells:hide;margin:-1px 0 1.3125em;padding:0;table-layout:fixed}caption{display:table-caption;font-weight:700}col{display:table-column}colgroup{display:table-column-group}tbody{display:table-row-group}tfoot{display:table-footer-group}thead{display:table-header-group}td,th{display:table-cell}tr{display:table-row}table th,table td{font-size:1.1em;line-height:1.3;padding:.5em 1em 0}table thead{background:rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.15);border-bottom:1px solid rgba(0,0,0,0.2)}table tbody{background:rgba(0,0,0,0.05)}table tfoot{background:rgba(0,0,0,0.15);border:1px solid rgba(0,0,0,0.15);border-top:1px solid rgba(0,0,0,0.2)}figure{display:inline-block;overflow:hidden;position:relative;margin:1em 0 2em}figcaption{font-style:italic;text-align:center;background:white;color:#666}.poetry pre{display:block;font-family:Georgia,Garamond,serif !important;font-size:110% !important;font-style:italic;line-height:1.6em;margin-left:1em}.poetry pre code{font-family:Georgia,Garamond,serif !important;word-break:break-all;word-break:break-word;-webkit-hyphens:auto;-moz-hyphens:auto;hyphens:auto;white-space:pre-wrap}blockquote p{font-size:110%;font-style:italic;line-height:1.6em}sup,sub,a.footnote{font-size:1.4ex;height:0;line-height:1;position:relative;vertical-align:super}sub{vertical-align:sub;top:-1px}p,h5{font-size:1.1429em;line-height:1.3125em;margin:1.3125em 0}dt,th{font-weight:700}table tr:nth-child(odd),table th:nth-child(odd),table td:nth-child(odd){background:rgba(255,255,255,0.06)}table tr:nth-child(even),table td:nth-child(even){background:rgba(200,200,200,0.25)}@media print{img,table,figure{page-break-inside:avoid}#wrapper{background:#fff;color:#303030;padding:10px;position:relative;text-indent:0}}@media screen{.inverted{background:#252a2a}.inverted #wrapper{background:#252a2a;color:#eee}.inverted hr{border-color:#333f40 !important}.inverted p,.inverted td,.inverted li,.inverted h1,.inverted h2,.inverted h3,.inverted h4,.inverted h5,.inverted h6,.inverted th,.inverted .math,.inverted caption,.inverted dt,.inverted dd{color:#eee}.inverted pre{background:#ccc}.inverted pre code{color:#111}.inverted table{background:none}.inverted table tr:nth-child(odd),.inverted table td:nth-child(odd){background:none}.inverted a{color:#acd1d5}::selection{background:rgba(157,193,200,0.5)}h1::selection{background-color:rgba(45,156,208,0.3)}h2::selection{background-color:rgba(90,182,224,0.3)}h3::selection,h4::selection,h5::selection,h6::selection,li::selection,ol::selection{background-color:rgba(133,201,232,0.3)}code::selection{background-color:rgba(0,0,0,0.7);color:#eee}code span::selection{background-color:rgba(0,0,0,0.7) !important;color:#eee !important}a::selection{background-color:rgba(255,230,102,0.2)}.inverted a::selection{background-color:rgba(255,230,102,0.6)}td::selection,th::selection,caption::selection{background-color:rgba(180,237,95,0.5)}}
+#mkreplaced-toc{list-style-position:inside;padding:0;margin:0 0 0 1rem;list-style-type:none}#mkreplaced-toc li::before{content:''}#mkreplaced-toc li{font-size:1.5rem;line-height:1.5;font-weight:normal}#mkreplaced-toc li ul{font-size:1.3rem;font-weight:300;padding:.5rem 0;margin:0 0 0 1rem}#mkreplaced-toc li.missing{list-style-type:none !important}#mkreplaced-toc.max-1 ul,#mkreplaced-toc.max1 ul{display:none}#mkreplaced-toc.max-2 ul ul,#mkreplaced-toc.max2 ul ul{display:none}#mkreplaced-toc.max-3 ul ul ul,#mkreplaced-toc.max3 ul ul ul{display:none}#mkreplaced-toc.max-4 ul ul ul ul,#mkreplaced-toc.max4 ul ul ul ul{display:none}#mkreplaced-toc.max-5 ul ul ul ul ul,#mkreplaced-toc.max5 ul ul ul ul ul{display:none}
+
+@media print{
+#wrapper #generated-toc-clone,#generated-toc{display:none!important}
+}
+#wrapper #generated-toc-clone, #wrapper #mkreplaced-toc, #wrapper #generated-toc-clone ul, #wrapper #mkreplaced-toc ul {
+    list-style-position: inside
+}
+#wrapper #generated-toc-clone li.missing, #wrapper #mkreplaced-toc li.missing {
+    list-style-type: none!important
+}
+#wrapper #generated-toc-clone, #wrapper #mkreplaced-toc {
+    list-style-type: upper-roman
+}
+#wrapper #generated-toc-clone>li>ul, #wrapper #mkreplaced-toc>li>ul  {
+    list-style-type: decimal
+}
+#wrapper #generated-toc-clone>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul {
+    list-style-type: decimal-leading-zero
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul {
+    list-style-type: lower-greek
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul>li>ul {
+    list-style-type: disc
+}
+#wrapper #generated-toc-clone>li>ul>li>ul>li>ul>li>ul>li>ul, #wrapper #mkreplaced-toc>li>ul>li>ul>li>ul>li>ul>li>ul {
+    list-style-type: square
+}
+#wrapper #generated-toc-clone,#wrapper #mkreplaced-toc{list-style-position:outside!important;margin-left:3rem;}
+</style>
+
+</head>
+<body class="normal firstload">
+  <div id="wrapper">
+      <h1 id="middlewareidlspecification">Middleware IDL Specification</h1>
+
+<h2 id="preface">Preface</h2>
+
+<p>The foundation of the FIWARE Middleware Interface Definition Language (IDL) is the Object Management Group (OMG) IDL 3.5. See <a href="#appendix-c-omg-idl-3.5-grammar"><em>Appendix C</em></a> for the OMG IDL 3.5 grammar.</p>
+
+<p>To maintain backward compatibility, the FIWARE Middleware IDL grammar embraces all OMG IDL 3.5 features. IDL parsers are not required to implement all of the extended OMG features. Check the documentation of the specific parser implementations.</p>
+
+<p>The basic subset needed by DDS and future standard RPC over DDS must be supported.</p>
+
+<h2 id="relateddocumentation">Related documentation</h2>
+
+<ul>
+<li><a href="http://www.omg.org/spec/DDS-XTypes/1.0/"><em>OMG DDS-XTypes 1.0</em></a></li>
+</ul>
+
+<h2 id="syntaxdefinition">Syntax Definition</h2>
+
+<p>The FIWARE Middleware IDL specification consists of one or more type definitions, constant definitions, exception definitions, or module definitions.<br/>
+Some definitions are allowed in the grammar for backward compatibility, but are not used by the FIWARE Middleware IDL and therefore will be ignored by the implmentations.</p>
+<pre><code class="(null)">&lt;specification&gt; ::= &lt;import&gt;* &lt;definition&gt;+
+&lt;definition&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+             |   &lt;const_dcl&gt; &quot;;&quot;
+             |   &lt;except_dcl&gt; &quot;;&quot;
+             |   &lt;interface&gt; &quot;;&quot;
+             |   &lt;module&gt; &quot;;&quot;
+             |   &lt;value&gt; &quot;;&quot;
+             |   &lt;type_id_dcl&gt; &quot;;&quot;
+             |   &lt;type_prefix_dcl&gt; &quot;;&quot;
+             |   &lt;event&gt; &quot;;&quot;
+             |   &lt;component&gt; &quot;;&quot;
+             |   &lt;home_dcl&gt; &quot;;&quot;
+             |   &lt;annotation_dcl&gt; &quot;;&quot;
+             |   &lt;annotation_appl&gt; &lt;definition&gt;</code></pre>
+
+<p>See section <a href="#import-declaration"><em>Import Declaration</em></a> for the specification of <code>&lt;import&gt;</code><br/>
+See section <a href="#module-declaration"><em>Module Declaration</em></a> for the specification of <code>&lt;module\&gt;</code><br/>
+See section <a href="#interface-declaration"><em>Interface Declaration</em></a> for the specification of <code>&lt;interface&gt;</code><br/>
+See section <a href="#value-declaration"><em>Value Declaration</em></a> for the specification of <code>&lt;value\&gt;</code><br/>
+See section <a href="#constant-declaration"><em>Constant Declaration</em></a> for the specification of <code>&lt;const_dcl&gt;</code><br/>
+See section <a href="#type-declaration"><em>Type Declaration</em></a> for the specification of <code>&lt;type_dcl&gt;</code><br/>
+See section <a href="#exception-declaration"><em>Exception Declaration</em></a> for the specification of <code>&lt;except_dcl&gt;</code><br/>
+See section <a href="#repository-identity-related-declarations"><em>Repository Identity Related Declarations</em></a> for the specification of <code>&lt;type_id_dcl&gt;</code> and <code>&lt;type_prefix_dcl&gt;</code><br/>
+See section <a href="#event-declaration"><em>Event Declaration</em></a> for the specification of <code>&lt;event&gt;</code><br/>
+See section <a href="#component-declaration"><em>Component Declaration</em></a> for the specification of <code>&lt;component&gt;</code><br/>
+See section <a href="#event-declaration"><em>Event Declaration</em></a> for the specification of <code>&lt;home_dcl&gt;</code><br/>
+See section <a href="#annotation-declaration"><em>Annotation Declaration</em></a> for the specification of <code>&lt;annotation_dcl&gt;</code><br/>
+See section <a href="#annotation-application"><em>Annotation Application</em></a> for the specification of <code>&lt; annotation_appl&gt;</code> </p>
+
+<h3 id="importdeclaration">Import Declaration</h3>
+
+<p>An import statement conforms to the following syntax:</p>
+<pre><code class="(null)">&lt;import&gt; ::= &quot;import&quot; &lt;imported_scope&gt; &quot;;&quot;
+&lt;imported_scope&gt; ::= &lt;scoped_name&gt; | &lt;string_lieral&gt;</code></pre>
+
+<p>Import declarations are not supported by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and ignore the declaration.</p>
+
+<h3 id="moduledeclaration">Module Declaration</h3>
+
+<p>A module definition conforms to the following syntax:</p>
+<pre><code class="(null)">&lt;module&gt; ::= (&quot;module&quot; | &quot;namespace&quot;) &lt;identifier&gt; &quot;{&quot; &lt;definition&gt; + &quot;}&quot;</code></pre>
+
+<p>The module construct is used to scope IDL identifiers. FIWARE Middleware IDL supports the OMG IDL 3.5 keyword <code>module</code>, but also adds the modern keyword <code>namespace</code> as an alias.</p>
+
+<p>Examples of module definitions:</p>
+<pre><code class="(null)">namespace MyNamespace {
+   ...
+};
+
+namespace YourNamespace {
+   namespace HisNamespace {
+      ...
+   };
+};</code></pre>
+
+<h3 id="interfacedeclaration">Interface Declaration</h3>
+
+<p>An interface definition conforms to the following syntax:</p>
+<pre><code class="(null)">&lt;interface&gt; ::= &lt;interface_dcl&gt; | &lt;forward_dcl&gt;
+&lt;interface_dcl&gt; ::= &lt;interface_header&gt; &quot;{&quot; &lt;interface_body&gt; &quot;}&quot;
+&lt;forward_dcl&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ] (&quot;interface&quot; | &quot;service&quot;) &lt;identifier&gt;
+&lt;interface_header&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ](&quot;interface&quot; | &quot;service&quot;) &lt;identifier&gt;
+                       [ &lt;interface_inheritance_spec&gt; ]
+&lt;interface_body&gt; ::= &lt;export&gt;*
+&lt;export&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+          |   &lt;const_dcl&gt; &quot;;&quot;
+          |   &lt;except_dcl&gt; &quot;;&quot;
+          |   &lt;attr_dcl&gt; &quot;;&quot;
+          |   &lt;op_dcl&gt; &quot;;&quot;
+          |   &lt;type_id_dcl&gt; &quot;;&quot;
+          |   &lt;type_prefix_dcl&gt; &quot;;&quot;</code></pre>
+
+<p>Example of interface definition:</p>
+<pre><code class="(null)">service MyService {
+   ...
+};</code></pre>
+
+<h4 id="interfaceheader">Interface Header</h4>
+
+<p>The interface header consists of three elements:</p>
+
+<ol>
+<li>An optional modifier specifying if the interface is an abstract interface.</li>
+<li>The interface name. The name must be preceded by the old OMG IDL 3.5 keyword <code>interface</code> or the new modern keyword <code>service</code>.</li>
+<li>An optional inheritance specification.</li>
+</ol>
+
+<p>An interface declaration containing the keyword <code>abstract</code> in its header, declares an abstract interface. Abstract interfaces have slightly different rules from <em>regular</em> interfaces, as described in section <a href="#abstract-interface"><em>Abstract interface</em></a>.</p>
+
+<p>An interface declaration containing the keyword <code>local</code> in its header, declares a local interface. Local interfaces are not currently supported by the FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this, and explain the interface will be used as a <em>regular</em> interface.</p>
+
+<h4 id="interfaceinheritancespecification">Interface Inheritance Specification</h4>
+
+<p>The syntax for interface inheritance is as follows:</p>
+<pre><code class="(null)">&lt;interface_inheritance_spec&gt; ::= &quot;:&quot; &lt;interface_name&gt; { &quot;,&quot; &lt;interface_name&gt; }*
+&lt;interface_name&gt; ::= &lt;scoped_name&gt;
+&lt;scoped_name&gt; ::= &lt;identifier&gt;
+            |   &quot;::&quot; &lt;identifier&gt;
+            |   &lt;scoped_name&gt; &quot;::&quot; &lt;identifier&gt;</code></pre>
+
+<p>Each <code>&lt;scoped_name&gt;</code> in an <code>&lt;interface_inheritance_spec&gt;</code> must be the name of a previously defined interface or an alias to a previously defined interface.</p>
+
+<h4 id="interfacebody">Interface Body</h4>
+
+<p>The interface body contains the following kind of declarations:</p>
+
+<ul>
+<li>Constant declarations whose syntax is described in section <a href="#constant-declaration"><em>Constant Declaration</em></a>.</li>
+<li>Type declarations whose syntax is described in section <a href="#type-declaration"><em>Type Declaration</em></a>.</li>
+<li>Exception declarations whose syntax is described in section <a href="#exception-declaration"><em>Exception Declaration</em></a>.</li>
+<li>Attribute declarations whose syntax is described in section <a href="#attribute-declaration"><em>Attribute Declaration</em></a>.</li>
+<li>Operation declarations whose syntax is described in section <a href="#operation-declaration"><em>Operation Declaration</em></a>.</li>
+</ul>
+
+<h4 id="abstractinterface">Abstract interface</h4>
+
+<p>An interface declaration contains the keyword <code>abstract</code> in its header, declares an abstract interface. The following special rule apply to abstract interfaces:</p>
+
+<ul>
+<li>Abstract interfaces may only inherit from other abstract interfaces.</li>
+</ul>
+
+<h3 id="valuedeclaration">Value Declaration</h3>
+
+<p>Value type declarations are supported by FIWARE Middleware IDL, but aren’t by FIWARE Middleware. Any FIWARE Middleware IDL parser has to explain that these declarations are not used and the parser will ignore them.</p>
+
+<h2 id="constantdeclaration">### Constant Declaration</h2>
+
+<p>A constant definition conforms to the following syntax:</p>
+<pre><code class="(null)">&lt;const_dcl&gt; ::= &quot;const&quot; &lt;const_type&gt;
+                &lt;identifier&gt; &quot;=&quot; &lt;const_exp&gt;
+&lt;const_type&gt; ::= &lt;integer_type&gt;
+             |   &lt;char_type&gt;
+             |   &lt;wide_char_type&gt;
+             |   &lt;boolean_type&gt;
+             |   &lt;floating_pt_type&gt;
+             |   &lt;string_type&gt;
+             |   &lt;wide_string_type&gt;
+             |   &lt;fixed_pt_const_type&gt;
+             |   &lt;scoped_name&gt;
+             |   &lt;octet_type&gt;
+&lt;const_exp&gt; ::= &lt;or_expr&gt;
+&lt;or_expr&gt; ::= &lt;xor_expr&gt;
+           |  &lt;or_expr&gt; &quot;|&quot; &lt;xor_expr&gt;
+&lt;xor_expr&gt; ::= &lt;and_expr&gt;
+           |   &lt;xor_expr&gt; &quot;^&quot; &lt;and_expr&gt;
+&lt;and_expr&gt; ::= &lt;shift_expr&gt;
+           |   &lt;and_expr&gt; &quot;&amp;&quot; &lt;shift_expr&gt;
+&lt;shift_expr&gt; ::= &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&gt;&gt;&quot; &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&lt;&lt;&quot; &lt;add_expr&gt;
+&lt;add_expr&gt; ::= &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;+&quot; &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;-&quot; &lt;mult_expr&gt;
+&lt;mult_expr&gt; ::= &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;*&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;/&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;%&quot; &lt;unary_expr&gt;
+&lt;unary_expr&gt; ::= &lt;unary_operator&gt; &lt;primary_expr&gt;
+             |   &lt;primary_expr&gt;
+&lt;unary_operator&gt; ::= &quot;-&quot;
+                 |   &quot;+&quot;
+                 |   &quot;~&quot;
+&lt;primary_expr&gt; ::= &lt;scoped_name&gt;
+               |   &lt;literal&gt;
+               |   &quot;(&quot; &lt;const_exp&gt; &quot;)&quot;
+&lt;literal&gt; ::= &lt;integer_literal&gt;
+          |   &lt;string_literal&gt;
+          |   &lt;wide_string_literal&gt;
+          |   &lt;character_literal&gt;
+          |   &lt;wide_character_literal&gt;
+          |   &lt;fixed_pt_literal&gt;
+          |   &lt;floating_pt_literal&gt;
+          |   &lt;boolean_literal&gt;
+&lt;boolean_literal&gt; ::= &quot;TRUE&quot;
+                  |   &quot;FALSE&quot;
+&lt;positive_int_const&gt; ::= &lt;const_exp&gt;</code></pre>
+
+<p>Examples for constant declarations:</p>
+<pre><code class="(null)">const string c_str = &quot;HelloWorld&quot;;
+const i32 c_int = 34;
+const boolean c_bool = true;</code></pre>
+
+<h3 id="typedeclaration">Type Declaration</h3>
+
+<p>As in OMG IDL 3.5, FIWARE Middleware IDL provides constructs for naming data types; that is, it provides C language-like declarations that associate an identifier with a type. The IDL uses the keyword <code>typedef</code> to associate a name with a data type. </p>
+
+<p>Type declarations conform to the following syntax:</p>
+<pre><code class="(null)">&lt;type_dcl&gt; ::= &quot;typedef&quot; &lt;type_declarator&gt;
+           |   &lt;struct_type&gt;
+           |   &lt;union_type&gt;
+           |   &lt;enum_type&gt;
+           |   &quot;native&quot; &lt;simple_declarator&gt;
+           |   &lt;constr_forward_decl&gt;
+&lt;type_declarator&gt; ::= &lt;type_spec&gt; &lt;declarators&gt;</code></pre>
+
+<p>For type declarations, FIWARE Middleware IDL defines a set of type specifiers to represent typed value. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;type_spec&gt; ::= &lt;simple_type_spec&gt;
+            |   &lt;constr_type_spec&gt;
+&lt;simple_type_spec&gt; ::= &lt;base_type_spec&gt;
+                   |   &lt;template_type_spec&gt;
+                   |   &lt;scoped_name&gt;
+&lt;base_type_spec&gt; ::= &lt;floating_pt_type&gt;
+                 |   &lt;integer_type&gt;
+                 |   &lt;char_type&gt;
+                 |   &lt;wide_char_type&gt;
+                 |   &lt;boolean_type&gt;
+                 |   &lt;octet_type&gt;
+                 |   &lt;any_type&gt;
+                 |   &lt;object_type&gt;
+                 |   &lt;value_base_type&gt;
+&lt;template_type_spec&gt; ::= &lt;sequence_type&gt;
+                     |   &lt;set_type&gt;
+                     |   &lt;map_type&gt;
+                     |   &lt;string_type&gt;
+                     |   &lt;wide_string_type&gt;
+                     |   &lt;fixed_pt_type&gt;
+&lt;constr_type_spec&gt; ::= &lt;struct_type&gt;
+                   |   &lt;union_type&gt;
+                   |   &lt;enum_type&gt;
+&lt;declarators&gt; ::= &lt;declarator&gt; { &quot;,&quot; &lt;declarator&gt; }*
+&lt;declarator&gt; ::= &lt;simple_declarator&gt;
+             |   &lt;complex_declarator&gt;
+&lt;simple_declarator&gt; ::= &lt;identifier&gt;
+&lt;complex_declarator&gt; ::= &lt;array_declarator&gt;</code></pre>
+
+<p>The <code>&lt;scoped_name\&gt;</code> in <code>&lt;simple_type_spec&gt;</code> must be a previously defined type introduced by a type declaration(<code>&lt;type_dcl&gt;</code> - see section <a href="#type-declaration"><em>Type Declaration</em></a>).</p>
+
+<p>The next subsections describe basic and constructed type specifiers.</p>
+
+<h4 id="basictypes">Basic Types</h4>
+
+<p>The syntax for the supported basic types is as follows:</p>
+<pre><code class="(null)">&lt;floating_pt_type&gt; ::= &quot;float&quot;
+                   |   &quot;double&quot;
+                   |   &quot;long&quot; &quot;double&quot;
+                   |   &quot;float32&quot;
+                   |   &quot;float64&quot;
+                   |   &quot;float128&quot;
+&lt;integer_type&gt; ::= &lt;signed_int&gt;
+               |   &lt;unsigned_int&gt;
+&lt;signed_int&gt; ::= &lt;signed_short_int&gt;
+             |   &lt;signed_long_int&gt;
+             |   &lt;signed_longlong_int&gt;
+&lt;signed_short_int&gt; ::= &quot;short&quot;
+                   |   &quot;i16&quot;
+&lt;signed_long_int&gt; ::= &quot;long&quot;
+                  |    &quot;i32&quot;
+&lt;signed_longlong_int&gt; ::= &quot;long&quot; &quot;long&quot;
+                      |   &quot;i64&quot;
+&lt;unsigned_int&gt; ::= &lt;unsigned_short_int&gt;
+               |   &lt;unsigned_long_int&gt;
+               |   &lt;unsigned_longlong_int&gt;
+&lt;unsigned_short_int&gt; ::= &quot;unsigned&quot; &quot;short&quot;
+                     |   &quot;ui16&quot;
+&lt;unsigned_long_int&gt; ::= &quot;unsigned&quot; &quot;long&quot;
+                    |   &quot;ui32&quot;
+&lt;unsigned_longlong_int&gt; ::= &quot;unsigned&quot; &quot;long&quot; &quot;long&quot;
+                        |   &quot;ui64&quot;
+&lt;char_type&gt; ::= &quot;char&quot;
+&lt;wide_char_type&gt; ::= &quot;wchar&quot;
+&lt;boolean_type&gt; ::= &quot;boolean&quot;
+&lt;octet_type&gt; ::= &quot;octet&quot;
+             |   &quot;byte&quot;
+&lt;any_type&gt; ::= &quot;any&quot;</code></pre>
+
+<p>Each IDL data type is mapped to a native data type via the appropriate language mapping. The syntax allows to use some OMG IDL 3.5 keywords and to use new modern keyword. For example, FIWARE Middleware IDL supports both keywords: <code>long</code> and <code>i32</code>.</p>
+
+<p>The <strong>any</strong> type is not supported currently by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this.</p>
+
+<h3 id="constructedtypes">Constructed Types</h3>
+
+<p>Constructed types are <strong>structs</strong>, <strong>unions</strong>, and <strong>enums</strong>.<br/>
+Their syntax is as follows:</p>
+<pre><code class="(null)">&lt;type_dcl&gt; ::= &quot;typedef&quot; &lt;type_declarator&gt;
+           |   &lt;struct_type&gt;
+           |   &lt;union_type&gt;
+           |   &lt;enum_type&gt;
+           |   &quot;native&quot; &lt;simple_declarator&gt;
+           |   &lt;constr_forward_decl&gt;
+&lt;constr_type_spec&gt; ::= &lt;struct_type&gt;
+                   |   &lt;union_type&gt;
+                   |   &lt;enum_type&gt;
+&lt;constr_forward_decl&gt; ::= &quot;struct&quot; &lt;identifier&gt;
+                      |   &quot;union&quot; &lt;identifier&gt;</code></pre>
+
+<h5 id="structures">Structures</h5>
+
+<p>The syntax for the <code>struct</code> type is as follows:</p>
+<pre><code class="(null)">&lt;struct_type&gt; ::= &quot;struct&quot; &lt;identifier&gt; &quot;{&quot; &lt;member_list&gt; &quot;}&quot;
+&lt;member_list&gt; ::= &lt;member&gt; +
+&lt;member&gt; ::= &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;</code></pre>
+
+<p>Example of struct syntax:</p>
+<pre><code class="(null)">struct MyStruct {
+    i32 f_int;
+    string f_str;
+    boolean f_bool;
+};</code></pre>
+
+<h4 id="unions">Unions</h4>
+
+<p>The syntax for the <code>union</code> type is as follows:</p>
+<pre><code class="(null)">&lt;union_type&gt; ::= &quot;union&quot; &lt;identifier&gt; &quot;switch&quot;
+                 &quot;(&quot; &lt;switch_type_spec&gt; &quot;)&quot;
+                 &quot;{&quot; &lt;switch_body&gt; &quot;}&quot;
+&lt;switch_type_spec&gt; ::= &lt;integer_type&gt;
+                   |   &lt;char_type&gt;
+                   |   &lt;boolean_type&gt;
+                   |   &lt;enum_type&gt;
+                   |   &lt;scoped_name&gt;
+&lt;switch_body&gt; ::= &lt;case&gt; +
+&lt;case&gt; ::= &lt;case_label&gt; + &lt;element_spec&gt; &quot;;&quot;
+&lt;case_label&gt; ::= &quot;case&quot; &lt;const_exp&gt; &quot;:&quot;
+             |   &quot;default&quot; &quot;:&quot;
+&lt;element_spec&gt; ::= &lt;type_spec&gt; &lt;declarator&gt;</code></pre>
+
+<p>The <code>&lt;scoped_name&gt;</code> in the <code>&lt;switch_type_spec&gt;</code> production must be a previously defined <code>integer</code>, <code>char</code>, <code>boolean</code> or <code>enum</code> type.</p>
+
+<p>Example of union syntax:</p>
+<pre><code class="(null)">union MyUnion switch(i32)
+{
+   case 1:
+      i32 f_int;
+   case 2:
+      string f_str;
+   default:
+      boolean f_bool;
+};</code></pre>
+
+<h5 id="enumerations">Enumerations</h5>
+
+<p>Enumerated types consist of ordered lists of identifiers.<br/>
+The syntax is as follows:</p>
+<pre><code class="(null)">&lt;enum_type&gt; ::= &quot;enum&quot; &lt;identifier&gt;
+                &quot;{&quot; &lt;enumerator&gt; { &quot;,&quot; &lt;enumerator&gt; } * &quot;}&quot;
+&lt;enumerator&gt; ::= &lt;identifier&gt;</code></pre>
+
+<p>Example of an enumerated type:</p>
+<pre><code class="(null)">enum MyEnum {
+   ENUM1,
+   ENUM2,
+   ENUM3
+};</code></pre>
+
+<h4 id="templatetypes">Template Types</h4>
+
+<p>Template types are:</p>
+<pre><code class="(null)">&lt;template_type_spec&gt; ::= &lt;sequence_type&gt;
+                     |   &lt;set_type&gt;
+                     |   &lt;map_type&gt;
+                     |   &lt;string_type&gt;
+                     |   &lt;wide_string_type&gt;
+                     |   &lt;fixed_pt_type&gt;</code></pre>
+
+<h5 id="lists">Lists</h5>
+
+<p>The FIWARE Middleware IDL defined the template type <code>list</code>. A list is similar to the OMG IDL 3.5 <code>sequence</code> type. It is one-dimensional array with two characteristics: a maximum size (which is fixed at compile time) and a length (which is determined at run time). The syntax is as follows:</p>
+<pre><code class="(null)">&lt;sequence_type&gt; ::= &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+                |   &quot;list&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;list&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;</code></pre>
+
+<p>Examples of list type declarations:</p>
+<pre><code class="(null)">list&lt;string&gt; mylist;
+list&lt;string, 32&gt; myboundedlist;</code></pre>
+
+<h5 id="sets">Sets</h5>
+
+<p>The FIWARE Middleware IDL includes the template type <code>set</code>. At marshalling level it is like the template type <code>list</code>. But at a higher level, contrary to the list type, a set can only contain unique values. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;set_type&gt; ::= &quot;set&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;set&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;</code></pre>
+
+<p>Examples of set type declarations:</p>
+<pre><code class="(null)">set&lt;string&gt; myset;
+set&lt;string, 32&gt; myboundedset;</code></pre>
+
+<h5 id="maps">Maps</h5>
+
+<p>The FIWARE Middleware IDL includes the template type <code>map</code>, using the upcoming definition in OMG IDL 4.0. Maps are a collections, similar to lists, but items are associated with a <em>key</em>. Like lists, maps may be bounded or unbounded. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;map_type&gt; ::= &quot;map&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot;
+                    &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;map&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;</code></pre>
+
+<p>Examples of map type declaration:</p>
+<pre><code class="(null)">map&lt;i32, string&gt; mymap;
+map&lt;i32, string, 32&gt; myboundedmap;</code></pre>
+
+<p>In CDR marshalling, objects of type map shall be represented according to the following equivalent OMG IDL 3.5 definition:</p>
+<pre><code class="(null)">struct MapEntry_&lt;key_type&gt;_&lt;value_type&gt;[_&lt;bound&gt;] {
+    &lt;key_type&gt; key;
+    value_type&gt; value;
+};
+
+typedef sequence&lt;MapEntry_&lt;key_type&gt;_&lt;value_type&gt;[_&lt;bound&gt;][, &lt;bound&gt;]&gt;
+   Map_&lt;key_type&gt;_&lt;value_type&gt;[_&lt;bound&gt;];</code></pre>
+
+<h5 id="strings">Strings</h5>
+
+<p>The syntax for defining a string is as follows:</p>
+<pre><code class="(null)">&lt;string_type&gt; ::= &quot;string&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+              |   &quot;string&quot;</code></pre>
+
+<h5 id="wstrings">Wstrings</h5>
+
+<p>The syntax for defining a wstring is as follows:</p>
+<pre><code class="(null)">&lt;wide_string_type&gt; ::= &quot;wstring&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                   |   &quot;wstring&quot;</code></pre>
+
+<h5 id="fixedtype">Fixed Type</h5>
+
+<p>The <code>fixed</code> data type represents a fixed-point decimal number of up to 31 significant digits. The scale factor is a non-negative integer less than or equal to the total number of digits.</p>
+
+<p>The <code>fixed</code> data type will be mapped to the native fixed point capability of a programming language, if available. If there is not a native fixed point type, then the IDL mapping for that language will provide a fixed point data types. The syntax of the fixed type is as follows:</p>
+<pre><code class="(null)">&lt;fixed_pt_type&gt; ::= &quot;fixed&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+&lt;fixed_pt_const_type&gt; ::= &quot;fixed&quot;</code></pre>
+
+<h4 id="complextypes">Complex Types</h4>
+
+<h5 id="arrays">Arrays</h5>
+
+<p>The syntax for array is as follows:</p>
+<pre><code class="(null)">&lt;array_declarator&gt; ::= &lt;identifier&gt; &lt;fixed_array_size&gt;+
+&lt;fixed_array_size&gt; ::= &quot;[&quot; &lt;positive_int_const&gt; &quot;]&quot;</code></pre>
+
+<p>Example of array type declarations:</p>
+<pre><code class="(null)">i32 myi32array[32];
+string mystrarray[32];</code></pre>
+
+<h4 id="nativetypes">Native Types</h4>
+
+<p>The syntax for native types is as follows:</p>
+<pre><code class="(null)">&lt;type_dcl&gt; ::= &quot;native&quot; &lt;simple_declarator&gt;
+&lt;simple_declarator&gt; ::= &lt;identifier&gt;</code></pre>
+
+<p>Native types are not supported by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and ignore this definition.</p>
+
+<h3 id="exceptiondeclaration">Exception Declaration</h3>
+
+<p>Exception declarations permit the declaration of struct-like data structures, which may be returned to indicate that an exceptional condition has occurred during the performance of a request. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;except_dcl&gt; ::= &quot;exception&quot; &lt;identifier&gt; &quot;{&quot; &lt;member&gt;* &quot;}&quot;</code></pre>
+
+<p>Example of an exception declaration:</p>
+<pre><code class="(null)">exception myException {
+   string msg;
+   i32 code;
+};</code></pre>
+
+<h3 id="operationdeclaration">Operation Declaration</h3>
+
+<p>Operation declarations in OMG IDL 3.5 and FIWARE Middleware IDL are similar to C function declarations. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;op_dcl&gt; ::= [ &lt;op_attribute&gt; ] &lt;op_type_spec&gt;
+             &lt;identifier&gt; &lt;parameter_dcls&gt;
+             [ &lt;raises_expr&gt; ] [ &lt;context_expr&gt; ]
+&lt;op_attribute&gt; ::= &quot;oneway&quot;
+&lt;op_type_spec&gt; ::= &lt;param_type_spec&gt;
+               | &quot;void&quot;</code></pre>
+
+<p>Example of an operation declaration:</p>
+<pre><code class="(null)">service myService {
+    void set(i32 param);
+    i32 get();
+    i32 add(i32 param1, i32 param2) raises (myException);
+};</code></pre>
+
+<p>An operation declaration consists of:</p>
+
+<ul>
+<li>An optional <em>operation attribute</em> that is supported by FIWARE Middleware IDL for backward compatibility. Operation attributes are described in section <a href="#operation-attribute"><em>Operation attribute</em></a>.</li>
+<li>The <em>type</em> of the operation’s return result. Operations that do not return a result must specify the void type.</li>
+<li>An <em>identifier</em> that names the operation in the scope of the interface in which it is defined.</li>
+<li>A <em>parameter list</em> that specifies zero or more parameter declarations for the operation. Parameter declaration is described in section <a href="#parameter-declarations"><em>Parameter Declarations</em></a>.</li>
+<li>An optional <em>raises expression</em> that indicates which exception may be raised as a result of an invocation of this operation. Raises expression are described in section <a href="#raises-expressions"><em>Raises Expressions</em></a>.</li>
+<li>An optional <em>context expression</em> that is inherited from OMG IDL 3.5, but FIWARE Middleware will not use. Context expressions are described in section <a href="#context-expressions"><em>Context Expressions</em></a>.</li>
+</ul>
+
+<h4 id="operationattribute">Operation attribute</h4>
+
+<p>The syntax for operation attributes is as follows:</p>
+<pre><code class="(null)">&lt;op_attribute&gt; ::= &quot;oneway&quot;</code></pre>
+
+<p>This attribute is supported in FIWARE Middleware for backward compatibility. But in FIWARE Middleware IDL the preferedby way to define a <strong>oneway</strong> function is using the <strong>@Oneway</strong> annotation as described in section <a href="#oneway-functions"><em>Oneway functions</em></a>.</p>
+
+<h4 id="parameterdeclarations">Parameter Declarations</h4>
+
+<p>Parameter declarations in FIWARE Middleware IDL operation declarations have the following syntax:</p>
+<pre><code class="(null)">&lt;parameter_dcls&gt; ::= &quot;(&quot; &lt;param_dcl&gt; { &quot;,&quot; &lt;param_dcl&gt; }* &quot;)&quot;
+                 |   &quot;(&quot; &quot;)&quot;
+&lt;param_dcl&gt; ::= [ &lt;param_attribute&gt; ] &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+&lt;param_attribute&gt; ::= &quot;in&quot;
+                  |   &quot;out&quot;
+                  |   &quot;inout&quot;
+&lt;raises_expr&gt; ::= &quot;raises&quot; &quot;(&quot; &lt;scoped_name&gt; { &quot;,&quot; &lt;scoped_name&gt; }* &quot;)&quot;
+&lt;param_type_spec&gt; ::= &lt;base_type_spec&gt;
+                  |   &lt;string_type&gt;
+                  |   &lt;wide_string_type&gt;
+                  |   &lt;scoped_name&gt;</code></pre>
+
+<p>The FIWARE Middleware IDL will <em>not</em> use output parameters, as modern IDLs do. It supports the keywords <code>in</code>, <code>inout</code>, and <code>out</code>, but any FIWARE Middleware IDL parser will inform users all parameters will be input parameters.</p>
+
+<h4 id="raisesexpressions">Raises Expressions</h4>
+
+<p>There are two kinds of raises expressions.</p>
+
+<h5 id="raisesexpression">Raises Expression</h5>
+
+<p>A raises expression specifies which exceptions may be raised as a result of an invocation of the operation or accessing a readonly attribute. The syntax for its specification is as follows:</p>
+<pre><code class="(null)">&lt;raises_expr&gt; ::= &quot;raises&quot; &quot;(&quot; &lt;scoped_name&gt; { &quot;,&quot; &lt;scoped_name&gt; }* &quot;)&quot;</code></pre>
+
+<p>The <code>&lt;scoped_name&gt;</code>s in the raises expression must be previously defined exceptions.</p>
+
+<h5 id="getraisesandsetraisesexpression">getraises and setraises Expression</h5>
+
+<p>The syntax is as follows:</p>
+<pre><code class="(null)">&lt;attr_raises_expr&gt; ::= &lt;get_excep_expr&gt; [ &lt;set_excep_expr&gt; ]
+                   |   &lt;set_excep_expr&gt;
+&lt;get_excep_expr&gt; ::= &quot;getraises&quot; &lt;exception_list&gt;
+&lt;set_excep_expr&gt; ::= &quot;setraises&quot; &lt;exception_list&gt;
+&lt;exception_list&gt; ::= &quot;(&quot; &lt;scoped_name&gt; { &quot;,&quot; &lt;scoped_name&gt; }* &quot;)&quot;</code></pre>
+
+<p><code>getraises</code> and <code>setraises</code> expressions are used in attribute declarations. Like in attribute declarations, theses expressions are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these expressions.</p>
+
+<h4 id="contextexpressions">Context Expressions</h4>
+
+<p>The syntax for content expressions is as follows:</p>
+<pre><code class="(null)">&lt;context_expr&gt; ::= &quot;context&quot; &quot;(&quot; &lt;string_literal&gt; { &quot;,&quot; &lt;string_literal&gt; }* &quot;)&quot;</code></pre>
+
+<p>Context expressions are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these expressions.</p>
+
+<h3 id="attributedeclaration">Attribute Declaration</h3>
+
+<p>The syntax for attribute declarations is as follows:</p>
+<pre><code class="(null)">&lt;attr_dcl&gt; ::= &lt;readonly_attr_spec&gt; | &lt;attr_spec&gt;
+&lt;readonly_attr_spec&gt; ::= &quot;readonly&quot; &quot;attribute&quot; &lt;param_type_spec&gt;
+                         &lt;readonly_attr_declarator&gt;
+&lt;readonly_attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;raises_expr&gt;
+                           |   &lt;simple_declarator&gt; { &quot;,&quot; &lt;simple_declarator&gt; }*
+&lt;attr_spec&gt; ::= &quot;attribute&quot; &lt;param_type_spec&gt;
+                &lt;attr_declarator&gt;
+&lt;attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;attr_raises_expr&gt;
+                  |   &lt;simple_declarator&gt; { &quot;,&quot; &lt;simple_declarator&gt; }*</code></pre>
+
+<p>These declarations are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these declarations.</p>
+
+<h3 id="repositoryidentityrelateddeclarations">Repository Identity Related Declarations</h3>
+
+<p>The syntax for repository identity related declarations is as follows:</p>
+<pre><code class="(null)">&lt;type_id_dcl&gt; ::= &quot;typeid&quot; &lt;scoped_name&gt; &lt;string_literal&gt;
+&lt;type_prefix_dcl&gt; ::= &quot;typeprefix&quot; &lt;scoped_name&gt; &lt;string_literal&gt;</code></pre>
+
+<p>These declarations are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these declarations.</p>
+
+<h3 id="eventdeclaration">Event Declaration</h3>
+
+<p>The syntax for event declarations is as follows:</p>
+<pre><code class="(null)">&lt;event&gt; ::= ( &lt;event_dcl&gt; | &lt;event_abs_dcl&gt; | &lt;event_forward_dcl&gt;)
+&lt;event_forward_dcl&gt; ::= [ &quot;abstract&quot; ] &quot;eventtype&quot; &lt;identifier&gt;
+&lt;event_abs_dcl&gt; ::= &quot;abstract&quot; &quot;eventtype&quot; &lt;identifier&gt;
+                    [ &lt;value_inheritance_spec&gt; ]
+                    &quot;{&quot; &lt;export&gt;* &quot;}&quot;
+&lt;event_dcl&gt; ::= &lt;event_header&gt; &quot;{&quot; &lt;value_element&gt; * &quot;}&quot;
+&lt;event_header&gt; ::= [ &quot;custom&quot; ] &quot;eventtype&quot;
+                   &lt;identifier&gt; [ &lt;value_inheritance_spec&gt; ]</code></pre>
+
+<p>These declarations are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these declarations.</p>
+
+<h3 id="componentdeclaration">Component Declaration</h3>
+
+<p>The syntax for component declarations is as follows:</p>
+<pre><code class="(null)">&lt;component&gt; ::= &lt;component_dcl&gt; | &lt;component_forward_dcl&gt;
+&lt;component_forward_dcl&gt; ::= &quot;component&quot; &lt;identifier&gt;
+&lt;component_dcl&gt; ::= &lt;component_header&gt; &quot;{&quot; &lt;component_body&gt; &quot;}&quot;
+&lt;component_header&gt; ::= &quot;component&quot; &lt;identifier&gt;
+                       [ &lt;component_inheritance_spec&gt; ]
+                       [ &lt;supported_interface_spec&gt; ]
+&lt;supported_interface_spec&gt; ::= &quot;supports&quot; &lt;scoped_name&gt; { &quot;,&quot; &lt;scoped_name&gt; }*
+&lt;component_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;component_body&gt; ::= &lt;component_export&gt;*
+&lt;component_export&gt; ::= &lt;provides_dcl&gt; &quot;;&quot;
+                   |   &lt;uses_dcl&gt; &quot;;&quot;
+                   |   &lt;emits_dcl&gt; &quot;;&quot;
+                   |   &lt;publishes_dcl&gt; &quot;;&quot;
+                   |   &lt;consumes_dcl&gt; &quot;;&quot;
+                   |   &lt;attr_dcl&gt; &quot;;&quot;
+&lt;provides_dcl&gt; ::= &quot;provides&quot; &lt;interface_type&gt; &lt;identifier&gt;
+&lt;interface_type&gt; ::= &lt;scoped_name&gt; | &quot;Object&quot;
+&lt;uses_dcl&gt; ::= &quot;uses&quot; [ &quot;multiple&quot; ] &lt;interface_type&gt; &lt;identifier&gt;
+&lt;emits_dcl&gt; ::= &quot;emits&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;publishes_dcl&gt; ::= &quot;publishes&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;consumes_dcl&gt; ::= &quot;consumes&quot; &lt;scoped_name&gt; &lt;identifier&gt;</code></pre>
+
+<p>These declarations are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these declarations.</p>
+
+<h3 id="homedeclaration">Home Declaration</h3>
+
+<p>The syntax for home declarations is as follows:</p>
+<pre><code class="(null)">&lt;home_dcl&gt; ::= &lt;home_header&gt; &lt;home_body&gt;
+&lt;home_header&gt; ::= &quot;home&quot; &lt;identifier&gt;
+                  [ &lt;home_inheritance_spec&gt; ]
+                  [ &lt;supported_interface_spec&gt; ]
+                  &quot;manages&quot; &lt;scoped_name&gt;
+                  [ &lt;primary_key_spec&gt; ]
+&lt;home_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;primary_key_spec&gt; ::= &quot;primarykey&quot; &lt;scoped_name&gt;
+&lt;home_body&gt; ::= &quot;{&quot; &lt;home_export&gt;* &quot;}&quot;
+&lt;home_export ::= &lt;export&gt;
+             |   &lt;factory_dcl&gt; &quot;;&quot;
+             |   &lt;finder_dcl&gt; &quot;;&quot;
+&lt;factory_dcl&gt; ::= &quot;factory&quot; &lt;identifier&gt;
+                  &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                  [ &lt;raises_expr&gt; ]
+&lt;finder_dcl&gt; ::= &quot;finder&quot; &lt;identifier&gt;
+                 &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                 [ &lt;raises_expr&gt; ]</code></pre>
+
+<p>These declarations are supported by FIWARE Middleware IDL but not by FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform users about this and it will ignore these declarations.</p>
+
+<h3 id="annotationdeclaration">Annotation Declaration</h3>
+
+<p>An annotation type is a form of aggregated type similar to a structure with members that could be given constant values. FIWARE Middleware IDL annotations are the ones used in future OMG IDL 4.0, whose are similar to the one provided by Java.</p>
+
+<p>An annotation is defined with a header and a body. The syntax is as follows:</p>
+<pre><code class="(null)">&lt;annotation_dcl&gt; ::= &lt;annotation_def&gt; &quot;;&quot;
+                 |   &lt;annotation_forward_dcl&gt;
+&lt;annotation_def&gt; ::= &lt;annotation_header&gt; &quot;{&quot; &lt;annotation_body&gt; &quot;}&quot;</code></pre>
+
+<h4 id="annotationheader">Annotation Header</h4>
+
+<p>The header consists of:<br/>
+- The keyword <code>@annotation</code>, followed by an identifier that is the name given to the annotation.<br/>
+- Optionally a single inheritance specification.</p>
+
+<p>The syntax of an annotation header is as follows:</p>
+<pre><code class="(null)">&lt;annotation_header&gt; ::= &quot;@annotation&quot; &lt;identifier&gt; [&lt;annotation_inheritance_spec&gt;]
+&lt;annotation_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;</code></pre>
+
+<h4 id="annotationbody">Annotation Body</h4>
+
+<p>The body contains a list of zero to several member embedded within braces. Each attribute consists of:<br/>
+- The keyword <code>attribute</code>.<br/>
+- The member type, which must be a constant type <code>&lt;const_type&gt;</code>.<br/>
+- The name given to the member.<br/>
+- An optional default value, given by a constant expression <code>&lt;const_expr&gt;</code> prefixed with the keyword <strong>default</strong>. The constant expression must be compatible with the member type.</p>
+
+<p>The syntax of annotation body is as follows:</p>
+<pre><code class="(null)">&lt;annotation_body&gt; ::= &lt;annotation_member&gt;*
+&lt;annotation_member&gt; ::= &lt;const_type&gt; &lt;simple_declarator&gt;
+                        [ &quot;default&quot; &lt;const_expr&gt; ] &quot;;&quot;</code></pre>
+
+<h4 id="annotationforwarding">Annotation Forwarding</h4>
+
+<p>Annotations may also be forward-declared, which allow referencing an annotation whose definition is not provided yet. </p>
+
+<p>The syntax of a forwarding annotation is as follows:</p>
+<pre><code class="(null)">&lt;annotation_forward_dcl&gt; ::= &quot;@annotation&quot; &lt;scoped_name&gt;</code></pre>
+
+<h3 id="annotationapplication">Annotation Application</h3>
+
+<p>An annotation, once its type defined, may be applied using the following syntax:</p>
+<pre><code class="(null)">&lt;annotation_appl&gt; ::= &quot;@&quot; &lt;scoped_name&gt; [ &quot;(&quot; [ &lt;annotation_appl_params&gt; ] &quot;)&quot; ]
+&lt;annotation_appl_params&gt; ::= &lt;const_exp&gt;
+                        |   &lt;annotation_appl_param&gt; { &quot;,&quot; &lt;annotation_appl_param&gt; }*
+&lt;annotation_appl_param&gt; ::= &lt;identifier&gt; &quot;=&quot; &lt;const_exp&gt;</code></pre>
+
+<p>Applying an annotation consists in prefixing the element under annotation with:<br/>
+- The annotation name prefixed with a commercial at (@)<br/>
+- Followed by the list of values given to the annotation’s members within parentheses and separated by comma. Each parameter value consist in:<br/>
+ - The name of the member<br/>
+ - The symbol &#8216;=&#8217;<br/>
+ - A constant expression, whose type must be compatible with the member’s declaration.</p>
+
+<p>Members may be indicated in any order. Members with no default value must be given a value. Members with default value may be omitted. In that case, the member is considered as valued with its default value.</p>
+
+<p>Two shortened forms exist:<br/>
+- In case, there is no member, the annotation application may be as short as just the name of the annotation prefixed by &#8216;@&#8217;<br/>
+- In case there is only one member, the annotation application may be as short as the name of the annotation prefixed by &#8216;@&#8217; and followed with the constant value of that unique member within (). The type of the provided constant expression must compatible with the members’ declaration</p>
+
+<p>An annotation may be applied to almost any IDL construct or sub-construct. Applying and annotation consists actually in adding the related meta-data to the element under annotation. Full FIWARE Middleware IDL described in section <a href="#h.h832exl87ix3"><em>Appendix B: FIWARE Middleware IDL Grammar</em></a> shows this.</p>
+
+<h3 id="built-inannotations">Built-in annotations</h3>
+
+<p>FIWARE Middleware will support some built-in annotations, that any user can use in IDL files.</p>
+
+<h4 id="memberids">Member IDs</h4>
+
+<p>All members of aggregated types have an integral member ID that uniquely identifies them within their defining type. Because OMG IDL 3.5 has no native syntax for expressing this information, IDs by default are defined implicitly based on the members’ relative declaration order. The first member (which, in a union type, is the discriminator) has ID 0, the second ID 1, the third ID 2, and so on.</p>
+
+<p>As described in OMG IDL for X-Types, these implicit ID assignments can be overridden by using the &#8220;ID&#8221; annotation interface. The equivalent definition of this type is as follows:</p>
+<pre><code class="(null)">@annotation ID {
+    attribute ui32 value;
+};</code></pre>
+
+<h4 id="optionalmembers">Optional members</h4>
+
+<p>The FIWARE Middleware IDL allows to declare a member optional, applying the &#8220;Optional&#8221; annotation. The definitions is as follows:</p>
+<pre><code class="(null)">@annotation Optional {
+    attribute boolean value default true;
+};</code></pre>
+
+<p>The CDR marshalling for this optional members is defined in IDL X-Types standard.</p>
+
+<h4 id="keymembers">Key members</h4>
+
+<p>The FIWARE Middleware IDL allows to declare a member as part of the key, applying the &#8220;Key&#8221; annotation. This will be needed for future pub/sub communication using DDS. The definitions is as follows:</p>
+<pre><code class="(null)">@annotation Key {
+    attribute boolean value default true;
+};</code></pre>
+
+<h4 id="onewayfunctions">Oneway functions</h4>
+
+<p>The FIWARE Middleware IDL allows to declare a function as oneway method, applying the &#8220;Oneway&#8221; annotation. The definitions is as follows:</p>
+<pre><code class="(null)">@annotation Oneway {
+    attribute boolean value default true;
+};</code></pre>
+
+<h4 id="asynchronousfunctions">Asynchronous functions</h4>
+
+<p>The FIWARE Middleware IDL allows to declare a function as asynchronous method, applying the &#8220;Async&#8221; annotation. The definitions is as follows:</p>
+<pre><code class="(null)">@annotation Async {
+    attribute boolean value default true;
+}</code></pre>
+
+<h2 id="idlcompleteexample">IDL Complete Example</h2>
+
+<p>This section provides a complete example of a FIWARE Middleware IDL file:</p>
+<pre><code class="(null)">typedef list&lt;i32&gt; accountList;
+// @Encrypted annotation applies to map type declaration.
+@Encrypted(mode=&quot;sha1&quot;)
+typedef map&lt;string, i32&gt; userAccountMap;
+
+// @CppMapping annotation applies to the namespace
+@CppMapping
+namespace ThiefBank {
+   
+   // @Authentication annotation applies to the service.
+   @Authentication(mechanism=&quot;login&quot;)
+   service AccountService {
+      // @Security annotation applies to the structure declaration.
+      @Security
+      struct AccountInfo {
+          i32 count;
+         string user;
+      };
+
+      @Oneway
+      void setAccounts(userAccountMap uamap);
+
+      //@Encrypted annotation applies to the parameter &quot;account&quot;.
+      @Oneway
+      void setAccount(string user, @Encrypted i32 account);
+
+      //@Encrypted annotation applies to the return value.
+      @Encrypted
+      AccountInfo get(string user);
+
+      //@FullEncrypted annotation applies to the operation.
+      @FullEncrypted(mode=&quot;sha1&quot;)
+      AccountInfo get_secured(string user);   
+   };
+};</code></pre>
+
+<p>The annotations used in previous example are defined as follows:</p>
+<pre><code class="(null)">@annotation CppMapping {
+   attribute boolean value default true;
+};
+
+@annotation Authentication {
+   attribute string mechanism default &quot;none&quot;;
+};
+
+@annotation Encrypted {
+   attribute string mode default &quot;sha512&quot;;
+};
+
+@annotation FullEncrypted {
+   attribute string mode default &quot;sha512&quot;;
+};
+
+@annotation Security {
+   attribute boolean active default true;
+};</code></pre>
+
+<h2 id="appendixa:changesfromomgidl3.5">Appendix A: Changes from OMG IDL 3.5</h2>
+
+<p>This section summarizes in one block all changes applied from OMG IDL 3.5 to the FIWARE Middleware IDL:</p>
+
+<ul>
+<li>Modern keyword for modules. New keyword is <code>namespace</code>. See section <a href="#module-declaration"><em>Module Declaration</em></a>.</li>
+<li>Modern keyword for interfaces. New keyword is <code>service</code>. See section <a href="#interface-header"><em>Interface Header</em></a>.</li>
+<li>Modern keywords for basic types. See section <a href="#basic-types"><em>Basic Types</em></a>.</li>
+<li>New template types. See section <a href="#template-types"><em>Template Types</em></a>.</li>
+<li>FIWARE Middleware IDL only uses input parameters. See section <a href="#parameter-declarations"><em>Parameter Declarations</em></a></li>
+<li>FIWARE Middleware IDL adds annotations. See sections <a href="#annotation-declaration"><em>Annotation Declaration</em></a> and <a href="#annotation-application"><em>Annotation Application</em></a>.</li>
+</ul>
+
+<p>Also FIWARE Middleware IDL does <strong>not</strong> use and support (and therefore ignores) several OMG IDL 3.5 constructs:</p>
+
+<ul>
+<li>Import declarations. See section <a href="#import-declaration"><em>Import Declaration</em></a>.</li>
+<li>Value declarations. See section <a href="#value-declaration"><em>Value Declaration</em></a>.</li>
+<li>&#8216;Any&#8217; type. See section <a href="#basic-types"><em>Basic Types</em></a>.</li>
+<li>Native types. See section <a href="#native-types"><em>Native Types</em></a>.</li>
+<li>Context expressions. See section <a href="#context-expressions"><em>Context Expressions</em></a>.</li>
+<li>Attribute declarations. See section <a href="#attribute-declaration"><em>Attribute Declaration</em></a>.</li>
+<li>Repository Identity Related Declarations. See section <a href="#repository-identity-related-declarations"><em>Repository Identity Related Declarations</em></a>.</li>
+<li>Event declarations. See section <a href="#event-declaration"><em>Event Declaration</em></a>.</li>
+<li>Component declarations. See section <a href="#component-declaration"><em>Component Declaration</em></a>.</li>
+<li>Home declarations. See section <a href="#home-declaration"><em>Home Declaration</em></a>.</li>
+</ul>
+
+<h2 id="appendixb:fiwaremiddlewareidlgrammar">Appendix B: FIWARE Middleware IDL Grammar</h2>
+<pre><code class="(null)">&lt;specification&gt; ::= &lt;import&gt;* &lt;definition&gt;+
+&lt;definition&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+             |   &lt;const_dcl&gt; &quot;;&quot;
+             |   &lt;except_dcl&gt; &quot;;&quot;
+             |   &lt;interface&gt; &quot;;&quot;
+             |   &lt;module&gt; &quot;;&quot;
+             |   &lt;value&gt; &quot;;&quot;
+             |   &lt;type_id_dcl&gt; &quot;;&quot;
+             |   &lt;type_prefix_dcl&gt; &quot;;&quot;
+             |   &lt;event&gt; &quot;;&quot;
+             |   &lt;component&gt; &quot;;&quot;
+             |   &lt;home_dcl&gt; &quot;;&quot;
+             |   &lt;annotation_dcl&gt; &quot;;&quot;
+             |   &lt;annotation_appl&gt; &lt;definition&gt;
+&lt;annotation_dcl&gt; ::= &lt;annotation_def&gt; &quot;;&quot;
+                 |   &lt;annotation_forward_dcl&gt;
+&lt;annotation_def&gt; ::= &lt;annotation_header&gt; &quot;{&quot; &lt;annotation_body&gt; &quot;}&quot;
+&lt;annotation_header&gt; ::= &quot;@annotation&quot; &lt;identifier&gt; [&lt;annotation_inheritance_spec&gt;]
+&lt;annotation_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;annotation_body&gt; ::= &lt;annotation_member&gt;*
+&lt;annotation_member&gt; ::= &lt;const_type&gt; &lt;simple_declarator&gt;
+                        [ &quot;default&quot; &lt;const_expr&gt; ] &quot;;&quot;
+&lt;annotation_forward_dcl&gt; ::= &quot;@annotation&quot; &lt;scoped_name&gt;
+&lt;annotation_appl&gt; ::= &quot;@&quot; &lt;scoped_name&gt; [ &quot;(&quot; [ &lt;annotation_appl_params&gt; ] &quot;)&quot; ]
+&lt;annotation_appl_params&gt; ::= &lt;const_exp&gt;
+                        |   &lt;annotation_appl_param&gt; { &quot;,&quot; &lt;annotation_appl_param&gt; }*
+&lt;annotation_appl_param&gt; ::= &lt;identifier&gt; &quot;=&quot; &lt;const_exp&gt;
+&lt;module&gt; ::= (&quot;module&quot; | &quot;namespace&quot;) &lt;identifier&gt; &quot;{&quot; &lt;definition&gt; + &quot;}&quot;
+&lt;interface&gt; ::= &lt;interface_dcl&gt;
+            |   &lt;forward_dcl&gt;
+&lt;interface_dcl&gt; ::= &lt;interface_header&gt; &quot;{&quot; &lt;interface_body&gt; &quot;}&quot;
+&lt;forward_dcl&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ] (&quot;interface&quot; | &quot;service&quot;) &lt;identifier&gt;
+&lt;interface_header&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ] (&quot;interface&quot; | &quot;service&quot;) &lt;identifier&gt;
+                       [ &lt;interface_inheritance_spec&gt; ]
+&lt;interface_body&gt; ::= &lt;export&gt;*
+&lt;export&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+          |   &lt;const_dcl&gt; &quot;;&quot;
+          |   &lt;except_dcl&gt; &quot;;&quot;
+          |   &lt;attr_dcl&gt; &quot;;&quot;
+          |   &lt;op_dcl&gt; &quot;;&quot;
+          |   &lt;type_id_dcl&gt; &quot;;&quot;
+          |   &lt;type_prefix_dcl&gt; &quot;;&quot;
+         |   &lt;annotation_appl&gt; &lt;export&gt;
+&lt;interface_inheritance_spec&gt; ::= &quot;:&quot; &lt;interface_name&gt;
+                                 { &quot;,&quot; &lt;interface_name&gt; }*
+&lt;interface_name&gt; ::= &lt;scoped_name&gt;
+&lt;scoped_name&gt; ::= &lt;identifier&gt;
+            |   &quot;::&quot; &lt;identifier&gt;
+            |   &lt;scoped_name&gt; &quot;::&quot; &lt;identifier&gt;
+&lt;value&gt; ::= ( &lt;value_dcl&gt; | &lt;value_abs_dcl&gt; | &lt;value_box_dcl&gt; | &lt;value_forward_dcl&gt;)
+&lt;value_forward_dcl&gt; ::= [ &quot;abstract&quot; ] &quot;valuetype&quot; &lt;identifier&gt;
+&lt;value_box_dcl&gt; ::= &quot;valuetype&quot; &lt;identifier&gt; &lt;type_spec&gt;
+&lt;value_abs_dcl&gt; ::= &quot;abstract&quot; &quot;valuetype&quot; &lt;identifier&gt;
+                    [ &lt;value_inheritance_spec&gt; ]
+                    &quot;{&quot; &lt;export&gt;* &quot;}&quot;
+&lt;value_dcl&gt; ::= &lt;value_header&gt; &quot;{&quot; &lt;value_element&gt;* &quot;}&quot;
+&lt;value_header&gt; ::= [&quot;custom&quot; ] &quot;valuetype&quot; &lt;identifier&gt;
+                   [ &lt;value_inheritance_spec&gt; ]
+&lt;value_inheritance_spec&gt; ::= [ &quot;:&quot; [ &quot;truncatable&quot; ] &lt;value_name&gt;
+                             { &quot;,&quot; &lt;value_name&gt; }* ]
+                             [ &quot;supports&quot; &lt;interface_name&gt;
+                             { &quot;,&quot; &lt;interface_name&gt; }* ]
+&lt;value_name&gt; ::= &lt;scoped_name&gt;
+&lt;value_element&gt; ::= &lt;export&gt; | &lt;state_member&gt; | &lt;init_dcl&gt;
+&lt;state_member&gt; ::= ( &quot;public&quot; | &quot;private&quot; )
+                   &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;
+&lt;init_dcl&gt; ::= &quot;factory&quot; &lt;identifier&gt;
+               &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+               [ &lt;raises_expr&gt; ] &quot;;&quot;
+&lt;init_param_decls&gt; ::= &lt;init_param_decl&gt; { &quot;,&quot; &lt;init_param_decl&gt; }*
+&lt;init_param_decl&gt; ::= &lt;init_param_attribute&gt; &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+&lt;init_param_attribute&gt; ::= &quot;in&quot;
+&lt;const_dcl&gt; ::= &quot;const&quot; &lt;const_type&gt;
+                &lt;identifier&gt; &quot;=&quot; &lt;const_exp&gt;
+&lt;const_type&gt; ::= &lt;integer_type&gt;
+             |   &lt;char_type&gt;
+             |   &lt;wide_char_type&gt;
+             |   &lt;boolean_type&gt;
+             |   &lt;floating_pt_type&gt;
+             |   &lt;string_type&gt;
+             |   &lt;wide_string_type&gt;
+             |   &lt;fixed_pt_const_type&gt;
+             |   &lt;scoped_name&gt;
+             |   &lt;octet_type&gt;
+&lt;const_exp&gt; ::= &lt;or_expr&gt;
+&lt;or_expr&gt; ::= &lt;xor_expr&gt;
+           |   &lt;or_expr&gt; &quot;|&quot; &lt;xor_expr&gt;
+&lt;xor_expr&gt; ::= &lt;and_expr&gt;
+           |   &lt;xor_expr&gt; &quot;^&quot; &lt;and_expr&gt;
+&lt;and_expr&gt; ::= &lt;shift_expr&gt;
+           |   &lt;and_expr&gt; &quot;&amp;&quot; &lt;shift_expr&gt;
+&lt;shift_expr&gt; ::= &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&gt;&gt;&quot; &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&lt;&lt;&quot; &lt;add_expr&gt;
+&lt;add_expr&gt; ::= &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;+&quot; &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;-&quot; &lt;mult_expr&gt;
+&lt;mult_expr&gt; ::= &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;*&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;/&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;%&quot; &lt;unary_expr&gt;
+&lt;unary_expr&gt; ::= &lt;unary_operator&gt; &lt;primary_expr&gt;
+             |   &lt;primary_expr&gt;
+&lt;unary_operator&gt; ::= &quot;-&quot;
+                 |   &quot;+&quot;
+                 |   &quot;~&quot;
+&lt;primary_expr&gt; ::= &lt;scoped_name&gt;
+               |   &lt;literal&gt;
+               |   &quot;(&quot; &lt;const_exp&gt; &quot;)&quot;
+&lt;literal&gt; ::= &lt;integer_literal&gt;
+          |   &lt;string_literal&gt;
+          |   &lt;wide_string_literal&gt;
+          |   &lt;character_literal&gt;
+          |   &lt;wide_character_literal&gt;
+          |   &lt;fixed_pt_literal&gt;
+          |   &lt;floating_pt_literal&gt;
+          |   &lt;boolean_literal&gt;
+&lt;boolean_literal&gt; ::= &quot;TRUE&quot;
+                  |   &quot;FALSE&quot;
+&lt;positive_int_const&gt; ::= &lt;const_exp&gt;
+&lt;type_dcl&gt; ::= &quot;typedef&quot; &lt;type_declarator&gt;
+           |   &lt;struct_type&gt;
+           |   &lt;union_type&gt;
+           |   &lt;enum_type&gt;
+           |   &quot;native&quot; &lt;simple_declarator&gt;
+           |   &lt;constr_forward_decl&gt;
+&lt;type_declarator&gt; ::= &lt;type_spec&gt; &lt;declarators&gt;
+&lt;type_spec&gt; ::= &lt;simple_type_spec&gt;
+            |   &lt;constr_type_spec&gt;
+&lt;simple_type_spec&gt; ::= &lt;base_type_spec&gt;
+                   |   &lt;template_type_spec&gt;
+                   |   &lt;scoped_name&gt;
+&lt;base_type_spec&gt; ::= &lt;floating_pt_type&gt;
+                 |   &lt;integer_type&gt;
+                 |   &lt;char_type&gt;
+                 |   &lt;wide_char_type&gt;
+                 |   &lt;boolean_type&gt;
+                 |   &lt;octet_type&gt;
+                 |   &lt;any_type&gt;
+                 |   &lt;object_type&gt;
+                 |   &lt;value_base_type&gt;
+&lt;template_type_spec&gt; ::= &lt;sequence_type&gt;
+                     |   &lt;set_type&gt;
+                     |   &lt;map_type&gt;
+                     |   &lt;string_type&gt;
+                     |   &lt;wide_string_type&gt;
+                     |   &lt;fixed_pt_type&gt;
+&lt;constr_type_spec&gt; ::= &lt;struct_type&gt;
+                   |   &lt;union_type&gt;
+                   |   &lt;enum_type&gt;
+&lt;declarators&gt; ::= &lt;declarator&gt; { &quot;,&quot; &lt;declarator&gt; }∗
+&lt;declarator&gt; ::= &lt;simple_declarator&gt;
+             |   &lt;complex_declarator&gt;
+&lt;simple_declarator&gt; ::= &lt;identifier&gt;
+&lt;complex_declarator&gt; ::= &lt;array_declarator&gt;
+&lt;floating_pt_type&gt; ::= &quot;float&quot;
+                   |   &quot;double&quot;
+                   |   &quot;long&quot; &quot;double&quot;
+                   |   &quot;float32&quot;
+                   |   &quot;float64&quot;
+                   |   &quot;float128&quot;
+&lt;integer_type&gt; ::= &lt;signed_int&gt;
+               |   &lt;unsigned_int&gt;
+&lt;signed_int&gt; ::= &lt;signed_short_int&gt;
+             |   &lt;signed_long_int&gt;
+             |   &lt;signed_longlong_int&gt;
+&lt;signed_short_int&gt; ::= &quot;short&quot;
+                   |   &quot;i16&quot;
+&lt;signed_long_int&gt; ::= &quot;long&quot;
+                  |    &quot;i32&quot;
+&lt;signed_longlong_int&gt; ::= &quot;long&quot; &quot;long&quot;
+                      |   &quot;i64&quot;
+&lt;unsigned_int&gt; ::= &lt;unsigned_short_int&gt;
+               |   &lt;unsigned_long_int&gt;
+               |   &lt;unsigned_longlong_int&gt;
+&lt;unsigned_short_int&gt; ::= &quot;unsigned&quot; &quot;short&quot;
+                     |   &quot;ui16&quot;
+&lt;unsigned_long_int&gt; ::= &quot;unsigned&quot; &quot;long&quot;
+                    |   &quot;ui32&quot;
+&lt;unsigned_longlong_int&gt; ::= &quot;unsigned&quot; &quot;long&quot; &quot;long&quot;
+                        |   &quot;ui64&quot;
+&lt;char_type&gt; ::= &quot;char&quot;
+&lt;wide_char_type&gt; ::= &quot;wchar&quot;
+&lt;boolean_type&gt; ::= &quot;boolean&quot;
+&lt;octet_type&gt; ::= &quot;octet&quot;
+             |   &quot;byte&quot;
+&lt;any_type&gt; ::= &quot;any&quot;
+&lt;object_type&gt; ::= &quot;Object&quot;
+&lt;struct_type&gt; ::= &quot;struct&quot; &lt;identifier&gt; &quot;{&quot; &lt;member_list&gt; &quot;}&quot;
+&lt;member_list&gt; ::= &lt;member&gt;+
+&lt;member&gt; ::= &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;
+         |   &lt;annotation_appl&gt; &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;
+&lt;union_type&gt; ::= &quot;union&quot; &lt;identifier&gt; &quot;switch&quot;
+                 &quot;(&quot; &lt;switch_type_spec&gt; &quot;)&quot;
+                 &quot;{&quot; &lt;switch_body&gt; &quot;}&quot;
+&lt;switch_type_spec&gt; ::= &lt;integer_type&gt;
+                   |   &lt;char_type&gt;
+                   |   &lt;boolean_type&gt;
+                   |   &lt;enum_type&gt;
+                   |   &lt;scoped_name&gt;
+&lt;switch_body&gt; ::= &lt;case&gt; +
+&lt;case&gt; ::= &lt;case_label&gt; + &lt;element_spec&gt; &quot;;&quot;
+&lt;case_label&gt; ::= &quot;case&quot; &lt;const_exp&gt; &quot;:&quot;
+             |   &quot;default&quot; &quot;:&quot;
+&lt;element_spec&gt; ::= &lt;type_spec&gt; &lt;declarator&gt;
+               |   &lt;annotation_appl&gt; &lt;type_spec&gt; &lt;declarator&gt;
+&lt;enum_type&gt; ::= &quot;enum&quot; &lt;identifier&gt;
+                &quot;{&quot; &lt;enumerator&gt; { &quot;,&quot; &lt;enumerator&gt; } ∗ &quot;}&quot;
+&lt;enumerator&gt; ::= &lt;identifier&gt;
+&lt;sequence_type&gt; ::= &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+                |   &quot;list&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;list&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+&lt;set_type&gt; ::= &quot;set&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;set&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+&lt;map_type&gt; ::= &quot;map&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot;
+                    &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;map&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+&lt;string_type&gt; ::= &quot;string&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+              |   &quot;string&quot;
+&lt;wide_string_type&gt; ::= &quot;wstring&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                   |   &quot;wstring&quot;
+&lt;array_declarator&gt; ::= &lt;identifier&gt; &lt;fixed_array_size&gt;+
+&lt;fixed_array_size&gt; ::= &quot;[&quot; &lt;positive_int_const&gt; &quot;]&quot;
+&lt;attr_dcl&gt; ::= &lt;readonly_attr_spec&gt;
+           |   &lt;attr_spec&gt;
+&lt;except_dcl&gt; ::= &quot;exception&quot; &lt;identifier&gt; &quot;{&quot; &lt;member&gt;* &quot;}&quot;
+&lt;op_dcl&gt; ::= [ &lt;op_attribute&gt; ] &lt;op_type_spec&gt;
+             &lt;identifier&gt; &lt;parameter_dcls&gt;
+             [ &lt;raises_expr&gt; ] [ &lt;context_expr&gt; ]
+&lt;op_attribute&gt; ::= &quot;oneway&quot;
+&lt;op_type_spec&gt; ::= &lt;param_type_spec&gt;
+               | &quot;void&quot;
+&lt;parameter_dcls&gt; ::= &quot;(&quot; &lt;param_dcl&gt; { &quot;,&quot; &lt;param_dcl&gt; } ∗ &quot;)&quot;
+                 |   &quot;(&quot; &quot;)&quot;
+&lt;param_dcl&gt; ::= [&lt;param_attribute&gt;] &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+            |   [&lt;param_attribute&gt;] &lt;annotation_appl&gt;
+                &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+&lt;param_attribute&gt; ::= &quot;in&quot;
+                  |   &quot;out&quot;
+                  |   &quot;inout&quot;
+&lt;raises_expr&gt; ::= &quot;raises&quot; &quot;(&quot; &lt;scoped_name&gt;
+                  { &quot;,&quot; &lt;scoped_name&gt; } ∗ &quot;)&quot;
+&lt;context_expr&gt; ::= &quot;context&quot; &quot;(&quot; &lt;string_literal&gt;
+                   { &quot;,&quot; &lt;string_literal&gt; } ∗ &quot;)&quot;
+&lt;param_type_spec&gt; ::= &lt;base_type_spec&gt;
+                  |   &lt;string_type&gt;
+                  |   &lt;wide_string_type&gt;
+                  |   &lt;scoped_name&gt;
+&lt;fixed_pt_type&gt; ::= &quot;fixed&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+&lt;fixed_pt_const_type&gt; ::= &quot;fixed&quot;
+&lt;value_base_type&gt; ::= &quot;ValueBase&quot;
+&lt;constr_forward_decl&gt; ::= &quot;struct&quot; &lt;identifier&gt;
+                      |   &quot;union&quot; &lt;identifier&gt;
+&lt;import&gt; ::= &quot;import&quot; &lt;imported_scope&gt; &quot;;&quot;
+&lt;imported_scope&gt; ::= &lt;scoped_name&gt; | &lt;string_literal&gt;
+&lt;type_id_dcl&gt; ::= &quot;typeid&quot; &lt;scoped_name&gt; &lt;string_literal&gt;
+&lt;type_prefix_dcl&gt; ::= &quot;typeprefix&quot; &lt;scoped_name&gt; &lt;string_literal&gt;
+&lt;readonly_attr_spec&gt; ::= &quot;readonly&quot; &quot;attribute&quot; &lt;param_type_spec&gt;
+                         &lt;readonly_attr_declarator&gt;
+&lt;readonly_attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;raises_expr&gt;
+                           |   &lt;simple_declarator&gt;
+                               { &quot;,&quot; &lt;simple_declarator&gt; }*
+&lt;attr_spec&gt; ::= &quot;attribute&quot; &lt;param_type_spec&gt;
+                &lt;attr_declarator&gt;
+&lt;attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;attr_raises_expr&gt;
+                  |   &lt;simple_declarator&gt;
+                      { &quot;,&quot; &lt;simple_declarator&gt; }*
+&lt;attr_raises_expr&gt; ::= &lt;get_excep_expr&gt; [ &lt;set_excep_expr&gt; ]
+                   |   &lt;set_excep_expr&gt;
+&lt;get_excep_expr&gt; ::= &quot;getraises&quot; &lt;exception_list&gt;
+&lt;set_excep_expr&gt; ::= &quot;setraises&quot; &lt;exception_list&gt;
+&lt;exception_list&gt; ::= &quot;(&quot; &lt;scoped_name&gt;
+                     { &quot;,&quot; &lt;scoped_name&gt; } * &quot;)&quot;
+&lt;component&gt; ::= &lt;component_dcl&gt;
+            |   &lt;component_forward_dcl&gt;
+&lt;component_forward_dcl&gt; ::= &quot;component&quot; &lt;identifier&gt;
+&lt;component_dcl&gt; ::= &lt;component_header&gt;
+                    &quot;{&quot; &lt;component_body&gt; &quot;}&quot;
+&lt;component_header&gt; ::= &quot;component&quot; &lt;identifier&gt;
+                       [ &lt;component_inheritance_spec&gt; ]
+                       [ &lt;supported_interface_spec&gt; ]
+&lt;supported_interface_spec&gt; ::= &quot;supports&quot; &lt;scoped_name&gt;
+                               { &quot;,&quot; &lt;scoped_name&gt; }*
+&lt;component_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;component_body&gt; ::= &lt;component_export&gt;*
+&lt;component_export&gt; ::= &lt;provides_dcl&gt; &quot;;&quot;
+                   |   &lt;uses_dcl&gt; &quot;;&quot;
+                   |   &lt;emits_dcl&gt; &quot;;&quot;
+                   |   &lt;publishes_dcl&gt; &quot;;&quot;
+                   |   &lt;consumes_dcl&gt; &quot;;&quot;
+                   |   &lt;attr_dcl&gt; &quot;;&quot;
+&lt;provides_dcl&gt; ::= &quot;provides&quot; &lt;interface_type&gt; &lt;identifier&gt;
+&lt;interface_type&gt; ::= &lt;scoped_name&gt;
+                 |   &quot;Object&quot;
+&lt;uses_dcl&gt; ::= &quot;uses&quot; [ &quot;multiple&quot; ]
+               &lt; interface_type&gt; &lt;identifier&gt;
+&lt;emits_dcl&gt; ::= &quot;emits&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;publishes_dcl&gt; ::= &quot;publishes&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;consumes_dcl&gt; ::= &quot;consumes&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;home_dcl&gt; ::= &lt;home_header&gt; &lt;home_body&gt;
+&lt;home_header&gt; ::= &quot;home&quot; &lt;identifier&gt;
+                  [ &lt;home_inheritance_spec&gt; ]
+                  [ &lt;supported_interface_spec&gt; ]
+                  &quot;manages&quot; &lt;scoped_name&gt;
+                  [ &lt;primary_key_spec&gt; ]
+&lt;home_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;primary_key_spec&gt; ::= &quot;primarykey&quot; &lt;scoped_name&gt;
+&lt;home_body&gt; ::= &quot;{&quot; &lt;home_export&gt;* &quot;}&quot;
+&lt;home_export ::= &lt;export&gt;
+             |   &lt;factory_dcl&gt; &quot;;&quot;
+             |   &lt;finder_dcl&gt; &quot;;&quot;
+&lt;factory_dcl&gt; ::= &quot;factory&quot; &lt;identifier&gt;
+                  &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                  [ &lt;raises_expr&gt; ]
+&lt;finder_dcl&gt; ::= &quot;finder&quot; &lt;identifier&gt;
+                 &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                 [ &lt;raises_expr&gt; ]
+&lt;event&gt; ::= ( &lt;event_dcl&gt; | &lt;event_abs_dcl&gt; |
+            &lt;event_forward_dcl&gt;)
+&lt;event_forward_dcl&gt; ::= [ &quot;abstract&quot; ] &quot;eventtype&quot; &lt;identifier&gt;
+&lt;event_abs_dcl&gt; ::= &quot;abstract&quot; &quot;eventtype&quot; &lt;identifie
+                    [ &lt;value_inheritance_spec&gt; ]
+                    &quot;{&quot; &lt;export&gt;* &quot;}&quot;
+&lt;event_dcl&gt; ::= &lt;event_header&gt; &quot;{&quot; &lt;value_element&gt; * &quot;}&quot;
+&lt;event_header&gt; ::= [ &quot;custom&quot; ] &quot;eventtype&quot;
+                   &lt;identifier&gt; [ &lt;value_inheritance_spec&gt; ]</code></pre>
+
+<h2 id="appendixc:omgidl3.5grammar">Appendix C: OMG IDL 3.5 Grammar</h2>
+<pre><code class="(null)">&lt;specification&gt; ::= &lt;import&gt;* &lt;definition&gt;+
+&lt;definition&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+             |   &lt;const_dcl&gt; &quot;;&quot;
+             |   &lt;except_dcl&gt; &quot;;&quot;
+             |   &lt;interface&gt; &quot;;&quot;
+             |   &lt;module&gt; &quot;;&quot;
+             |   &lt;value&gt; &quot;;&quot;
+             |   &lt;type_id_dcl&gt; &quot;;&quot;
+             |   &lt;type_prefix_dcl&gt; &quot;;&quot;
+             |   &lt;event&gt; &quot;;&quot;
+             |   &lt;component&gt; &quot;;&quot;
+             |   &lt;home_dcl&gt; &quot;;&quot;
+&lt;module&gt; ::= &quot;module&quot; &lt;identifier&gt; &quot;{&quot; &lt;definition&gt; + &quot;}&quot;
+&lt;interface&gt; ::= &lt;interface_dcl&gt;
+            |   &lt;forward_dcl&gt;
+&lt;interface_dcl&gt; ::= &lt;interface_header&gt; &quot;{&quot; &lt;interface_body&gt; &quot;}&quot;
+&lt;forward_dcl&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ] &quot;interface&quot; &lt;identifier&gt;
+&lt;interface_header&gt; ::= [ &quot;abstract&quot; | &quot;local&quot; ] &quot;interface&quot; &lt;identifier&gt;
+                       [ &lt;interface_inheritance_spec&gt; ]
+&lt;interface_body&gt; ::= &lt;export&gt;*
+&lt;export&gt; ::= &lt;type_dcl&gt; &quot;;&quot;
+          |   &lt;const_dcl&gt; &quot;;&quot;
+          |   &lt;except_dcl&gt; &quot;;&quot;
+          |   &lt;attr_dcl&gt; &quot;;&quot;
+          |   &lt;op_dcl&gt; &quot;;&quot;
+          |   &lt;type_id_dcl&gt; &quot;;&quot;
+          |   &lt;type_prefix_dcl&gt; &quot;;&quot;
+&lt;interface_inheritance_spec&gt; ::= &quot;:&quot; &lt;interface_name&gt;
+                                 { &quot;,&quot; &lt;interface_name&gt; }*
+&lt;interface_name&gt; ::= &lt;scoped_name&gt;
+&lt;scoped_name&gt; ::= &lt;identifier&gt;
+            |   &quot;::&quot; &lt;identifier&gt;
+            |   &lt;scoped_name&gt; &quot;::&quot; &lt;identifier&gt;
+&lt;value&gt; ::= ( &lt;value_dcl&gt; | &lt;value_abs_dcl&gt; | &lt;value_box_dcl&gt; | &lt;value_forward_dcl&gt;)
+&lt;value_forward_dcl&gt; ::= [ &quot;abstract&quot; ] &quot;valuetype&quot; &lt;identifier&gt;
+&lt;value_box_dcl&gt; ::= &quot;valuetype&quot; &lt;identifier&gt; &lt;type_spec&gt;
+&lt;value_abs_dcl&gt; ::= &quot;abstract&quot; &quot;valuetype&quot; &lt;identifier&gt;
+                    [ &lt;value_inheritance_spec&gt; ]
+                    &quot;{&quot; &lt;export&gt;* &quot;}&quot;
+&lt;value_dcl&gt; ::= &lt;value_header&gt; &quot;{&quot; &lt; value_element&gt;* &quot;}&quot;
+&lt;value_header&gt; ::= [&quot;custom&quot; ] &quot;valuetype&quot; &lt;identifier&gt;
+                   [ &lt;value_inheritance_spec&gt; ]
+&lt;value_inheritance_spec&gt; ::= [ &quot;:&quot; [ &quot;truncatable&quot; ] &lt;value_name&gt;
+                             { &quot;,&quot; &lt;value_name&gt; }* ]
+                             [ &quot;supports&quot; &lt;interface_name&gt;
+                             { &quot;,&quot; &lt;interface_name&gt; }* ]
+&lt;value_name&gt; ::= &lt;scoped_name&gt;
+&lt;value_element&gt; ::= &lt;export&gt; | &lt; state_member&gt; | &lt;init_dcl&gt;
+&lt;state_member&gt; ::= ( &quot;public&quot; | &quot;private&quot; )
+                   &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;
+&lt;init_dcl&gt; ::= &quot;factory&quot; &lt;identifier&gt;
+               &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+               [ &lt;raises_expr&gt; ] &quot;;&quot;
+&lt;init_param_decls&gt; ::= &lt;init_param_decl&gt; { &quot;,&quot; &lt;init_param_decl&gt; }*
+&lt;init_param_decl&gt; ::= &lt;init_param_attribute&gt; &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+&lt;init_param_attribute&gt; ::= &quot;in&quot;
+&lt;const_dcl&gt; ::= &quot;const&quot; &lt;const_type&gt;
+                &lt;identifier&gt; &quot;=&quot; &lt;const_exp&gt;
+&lt;const_type&gt; ::= &lt;integer_type&gt;
+             |   &lt;char_type&gt;
+             |   &lt;wide_char_type&gt;
+             |   &lt;boolean_type&gt;
+             |   &lt;floating_pt_type&gt;
+             |   &lt;string_type&gt;
+             |   &lt;wide_string_type&gt;
+             |   &lt;fixed_pt_const_type&gt;
+             |   &lt;scoped_name&gt;
+             |   &lt;octet_type&gt;
+&lt;const_exp&gt; ::= &lt;or_expr&gt;
+&lt;or_expr&gt; ::= &lt;xor_expr&gt;
+           |   &lt;or_expr&gt; &quot;|&quot; &lt;xor_expr&gt;
+&lt;xor_expr&gt; ::= &lt;and_expr&gt;
+           |   &lt;xor_expr&gt; &quot;^&quot; &lt;and_expr&gt;
+&lt;and_expr&gt; ::= &lt;shift_expr&gt;
+           |   &lt;and_expr&gt; &quot;&amp;&quot; &lt;shift_expr&gt;
+&lt;shift_expr&gt; ::= &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&gt;&gt;&quot; &lt;add_expr&gt;
+             |   &lt;shift_expr&gt; &quot;&lt;&lt;&quot; &lt;add_expr&gt;
+&lt;add_expr&gt; ::= &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;+&quot; &lt;mult_expr&gt;
+           |   &lt;add_expr&gt; &quot;-&quot; &lt;mult_expr&gt;
+&lt;mult_expr&gt; ::= &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;*&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;/&quot; &lt;unary_expr&gt;
+            |   &lt;mult_expr&gt; &quot;%&quot; &lt;unary_expr&gt;
+&lt;unary_expr&gt; ::= &lt;unary_operator&gt; &lt;primary_expr&gt;
+             |   &lt;primary_expr&gt;
+&lt;unary_operator&gt; ::= &quot;-&quot;
+                 |   &quot;+&quot;
+                 |   &quot;~&quot;
+&lt;primary_expr&gt; ::= &lt;scoped_name&gt;
+               |   &lt;literal&gt;
+               |   &quot;(&quot; &lt;const_exp&gt; &quot;)&quot;
+&lt;literal&gt; ::= &lt;integer_literal&gt;
+          |   &lt;string_literal&gt;
+          |   &lt;wide_string_literal&gt;
+          |   &lt;character_literal&gt;
+          |   &lt;wide_character_literal&gt;
+          |   &lt;fixed_pt_literal&gt;
+          |   &lt;floating_pt_literal&gt;
+          |   &lt;boolean_literal&gt;
+&lt;boolean_literal&gt; ::= &quot;TRUE&quot;
+                  |   &quot;FALSE&quot;
+&lt;positive_int_const&gt; ::= &lt;const_exp&gt;
+&lt;type_dcl&gt; ::= &quot;typedef&quot; &lt;type_declarator&gt;
+           |   &lt;struct_type&gt;
+           |   &lt;union_type&gt;
+           |   &lt;enum_type&gt;
+           |   &quot;native&quot; &lt;simple_declarator&gt;
+           |   &lt;constr_forward_decl&gt;
+&lt;type_declarator&gt; ::= &lt;type_spec&gt; &lt;declarators&gt;
+&lt;type_spec&gt; ::= &lt;simple_type_spec&gt;
+            |   &lt;constr_type_spec&gt;
+&lt;simple_type_spec&gt; ::= &lt;base_type_spec&gt;
+                   |   &lt;template_type_spec&gt;
+                   |   &lt;scoped_name&gt;
+&lt;base_type_spec&gt; ::= &lt;floating_pt_type&gt;
+                 |   &lt;integer_type&gt;
+                 |   &lt;char_type&gt;
+                 |   &lt;wide_char_type&gt;
+                 |   &lt;boolean_type&gt;
+                 |   &lt;octet_type&gt;
+                 |   &lt;any_type&gt;
+                 |   &lt;object_type&gt;
+                 |   &lt;value_base_type&gt;
+&lt;template_type_spec&gt; ::= &lt;sequence_type&gt;
+                     |   &lt;string_type&gt;
+                     |   &lt;wide_string_type&gt;
+                     |   &lt;fixed_pt_type&gt;
+&lt;constr_type_spec&gt; ::= &lt;struct_type&gt;
+                   |   &lt;union_type&gt;
+                   |   &lt;enum_type&gt;
+&lt;declarators&gt; ::= &lt;declarator&gt; { &quot;,&quot; &lt;declarator&gt; }∗
+&lt;declarator&gt; ::= &lt;simple_declarator&gt;
+             |   &lt;complex_declarator&gt;
+&lt;simple_declarator&gt; ::= &lt;identifier&gt;
+&lt;complex_declarator&gt; ::= &lt;array_declarator&gt;
+&lt;floating_pt_type&gt; ::= &quot;float&quot;
+                   |   &quot;double&quot;
+                   |   &quot;long&quot; &quot;double&quot;
+&lt;integer_type&gt; ::= &lt;signed_int&gt;
+               |   &lt;unsigned_int&gt;
+&lt;signed_int&gt; ::= &lt;signed_short_int&gt;
+             |   &lt;signed_long_int&gt;
+             |   &lt;signed_longlong_int&gt;
+&lt;signed_short_int&gt; ::= &quot;short&quot;
+&lt;signed_long_int&gt; ::= &quot;long&quot;
+&lt;signed_longlong_int&gt; ::= &quot;long&quot; &quot;long&quot;
+&lt;unsigned_int&gt; ::= &lt;unsigned_short_int&gt;
+               |   &lt;unsigned_long_int&gt;
+               |   &lt;unsigned_longlong_int&gt;
+&lt;unsigned_short_int&gt; ::= &quot;unsigned&quot; &quot;short&quot;
+&lt;unsigned_long_int&gt; ::= &quot;unsigned&quot; &quot;long&quot;
+&lt;unsigned_longlong_int&gt; ::= &quot;unsigned&quot; &quot;long&quot; &quot;long&quot;
+&lt;char_type&gt; ::= &quot;char&quot;
+&lt;wide_char_type&gt; ::= &quot;wchar&quot;
+&lt;boolean_type&gt; ::= &quot;boolean&quot;
+&lt;octet_type&gt; ::= &quot;octet&quot;
+&lt;any_type&gt; ::= &quot;any&quot;
+&lt;object_type&gt; ::= &quot;Object&quot;
+&lt;struct_type&gt; ::= &quot;struct&quot; &lt;identifier&gt; &quot;{&quot; &lt;member_list&gt; &quot;}&quot;
+&lt;member_list&gt; ::= &lt;member&gt; +
+&lt;member&gt; ::= &lt;type_spec&gt; &lt;declarators&gt; &quot;;&quot;
+&lt;union_type&gt; ::= &quot;union&quot; &lt;identifier&gt; &quot;switch&quot;
+                 &quot;(&quot; &lt;switch_type_spec&gt; &quot;)&quot;
+                 &quot;{&quot; &lt;switch_body&gt; &quot;}&quot;
+&lt;switch_type_spec&gt; ::= &lt;integer_type&gt;
+                   |   &lt;char_type&gt;
+                   |   &lt;boolean_type&gt;
+                   |   &lt;enum_type&gt;
+                   |   &lt;scoped_name&gt;
+&lt;switch_body&gt; ::= &lt;case&gt; +
+&lt;case&gt; ::= &lt;case_label&gt; + &lt;element_spec&gt; &quot;;&quot;
+&lt;case_label&gt; ::= &quot;case&quot; &lt;const_exp&gt; &quot;:&quot;
+             |   &quot;default&quot; &quot;:&quot;
+&lt;element_spec&gt; ::= &lt;type_spec&gt; &lt;declarator&gt;
+&lt;enum_type&gt; ::= &quot;enum&quot; &lt;identifier&gt;
+                &quot;{&quot; &lt;enumerator&gt; { &quot;,&quot; &lt;enumerator&gt; } ∗ &quot;}&quot;
+&lt;enumerator&gt; ::= &lt;identifier&gt;
+&lt;sequence_type&gt; ::= &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                |   &quot;sequence&quot; &quot;&lt;&quot; &lt;simple_type_spec&gt; &quot;&gt;&quot;
+&lt;string_type&gt; ::= &quot;string&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+              |   &quot;string&quot;
+&lt;wide_string_type&gt; ::= &quot;wstring&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+                   |   &quot;wstring&quot;
+&lt;array_declarator&gt; ::= &lt;identifier&gt; &lt;fixed_array_size&gt;+
+&lt;fixed_array_size&gt; ::= &quot;[&quot; &lt;positive_int_const&gt; &quot;]&quot;
+&lt;attr_dcl&gt; ::= &lt;readonly_attr_spec&gt;
+           |   &lt;attr_spec&gt;
+&lt;except_dcl&gt; ::= &quot;exception&quot; &lt;identifier&gt; &quot;{&quot; &lt;member&gt;* &quot;}&quot;
+&lt;op_dcl&gt; ::= [ &lt;op_attribute&gt; ] &lt;op_type_spec&gt;
+             &lt;identifier&gt; &lt;parameter_dcls&gt;
+             [ &lt;raises_expr&gt; ] [ &lt;context_expr&gt; ]
+&lt;op_attribute&gt; ::= &quot;oneway&quot;
+&lt;op_type_spec&gt; ::= &lt;param_type_spec&gt;
+               | &quot;void&quot;
+&lt;parameter_dcls&gt; ::= &quot;(&quot; &lt;param_dcl&gt; { &quot;,&quot; &lt;param_dcl&gt; } ∗ &quot;)&quot;
+                 |   &quot;(&quot; &quot;)&quot;
+&lt;param_dcl&gt; ::= &lt;param_attribute&gt; &lt;param_type_spec&gt; &lt;simple_declarator&gt;
+&lt;param_attribute&gt; ::= &quot;in&quot;
+                  |   &quot;out&quot;
+                  |   &quot;inout&quot;
+&lt;raises_expr&gt; ::= &quot;raises&quot; &quot;(&quot; &lt;scoped_name&gt;
+                  { &quot;,&quot; &lt;scoped_name&gt; } ∗ &quot;)&quot;
+&lt;context_expr&gt; ::= &quot;context&quot; &quot;(&quot; &lt;string_literal&gt;
+                   { &quot;,&quot; &lt;string_literal&gt; } ∗ &quot;)&quot;
+&lt;param_type_spec&gt; ::= &lt;base_type_spec&gt;
+                  |   &lt;string_type&gt;
+                  |   &lt;wide_string_type&gt;
+                  |   &lt;scoped_name&gt;
+&lt;fixed_pt_type&gt; ::= &quot;fixed&quot; &quot;&lt;&quot; &lt;positive_int_const&gt; &quot;,&quot; &lt;positive_int_const&gt; &quot;&gt;&quot;
+&lt;fixed_pt_const_type&gt; ::= &quot;fixed&quot;
+&lt;value_base_type&gt; ::= &quot;ValueBase&quot;
+&lt;constr_forward_decl&gt; ::= &quot;struct&quot; &lt;identifier&gt;
+                      |   &quot;union&quot; &lt;identifier&gt;
+&lt;import&gt; ::= &quot;import&quot; &lt;imported_scope&gt; &quot;;&quot;
+&lt;imported_scope&gt; ::= &lt;scoped_name&gt; | &lt;string_literal&gt;
+&lt;type_id_dcl&gt; ::= &quot;typeid&quot; &lt;scoped_name&gt; &lt;string_literal&gt;
+&lt;type_prefix_dcl&gt; ::= &quot;typeprefix&quot; &lt;scoped_name&gt; &lt;string_literal&gt;
+&lt;readonly_attr_spec&gt; ::= &quot;readonly&quot; &quot;attribute&quot; &lt;param_type_spec&gt;
+                         &lt;readonly_attr_declarator&gt;
+&lt;readonly_attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;raises_expr&gt;
+                           |   &lt;simple_declarator&gt;
+                               { &quot;,&quot; &lt;simple_declarator&gt; }*
+&lt;attr_spec&gt; ::= &quot;attribute&quot; &lt;param_type_spec&gt;
+                &lt;attr_declarator&gt;
+&lt;attr_declarator&gt; ::= &lt;simple_declarator&gt; &lt;attr_raises_expr&gt;
+                  |   &lt;simple_declarator&gt;
+                      { &quot;,&quot; &lt;simple_declarator&gt; }*
+&lt;attr_raises_expr&gt; ::= &lt;get_excep_expr&gt; [ &lt;set_excep_expr&gt; ]
+                   |   &lt;set_excep_expr&gt;
+&lt;get_excep_expr&gt; ::= &quot;getraises&quot; &lt;exception_list&gt;
+&lt;set_excep_expr&gt; ::= &quot;setraises&quot; &lt;exception_list&gt;
+&lt;exception_list&gt; ::= &quot;(&quot; &lt;scoped_name&gt;
+                     { &quot;,&quot; &lt;scoped_name&gt; } * &quot;)&quot;
+&lt;component&gt; ::= &lt;component_dcl&gt;
+            |   &lt;component_forward_dcl&gt;
+&lt;component_forward_dcl&gt; ::= &quot;component&quot; &lt;identifier&gt;
+&lt;component_dcl&gt; ::= &lt;component_header&gt;
+                    &quot;{&quot; &lt;component_body&gt; &quot;}&quot;
+&lt;component_header&gt; ::= &quot;component&quot; &lt;identifier&gt;
+                       [ &lt;component_inheritance_spec&gt; ]
+                       [ &lt;supported_interface_spec&gt; ]
+&lt;supported_interface_spec&gt; ::= &quot;supports&quot; &lt;scoped_name&gt;
+                               { &quot;,&quot; &lt;scoped_name&gt; }*
+&lt;component_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;component_body&gt; ::= &lt;component_export&gt;*
+&lt;component_export&gt; ::= &lt;provides_dcl&gt; &quot;;&quot;
+                   |   &lt;uses_dcl&gt; &quot;;&quot;
+                   |   &lt;emits_dcl&gt; &quot;;&quot;
+                   |   &lt;publishes_dcl&gt; &quot;;&quot;
+                   |   &lt;consumes_dcl&gt; &quot;;&quot;
+                   |   &lt;attr_dcl&gt; &quot;;&quot;
+&lt;provides_dcl&gt; ::= &quot;provides&quot; &lt;interface_type&gt; &lt;identifier&gt;
+&lt;interface_type&gt; ::= &lt;scoped_name&gt;
+                 |   &quot;Object&quot;
+&lt;uses_dcl&gt; ::= &quot;uses&quot; [ &quot;multiple&quot; ]
+               &lt; interface_type&gt; &lt;identifier&gt;
+&lt;emits_dcl&gt; ::= &quot;emits&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;publishes_dcl&gt; ::= &quot;publishes&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;consumes_dcl&gt; ::= &quot;consumes&quot; &lt;scoped_name&gt; &lt;identifier&gt;
+&lt;home_dcl&gt; ::= &lt;home_header&gt; &lt;home_body&gt;
+&lt;home_header&gt; ::= &quot;home&quot; &lt;identifier&gt;
+                  [ &lt;home_inheritance_spec&gt; ]
+                  [ &lt;supported_interface_spec&gt; ]
+                  &quot;manages&quot; &lt;scoped_name&gt;
+                  [ &lt;primary_key_spec&gt; ]
+&lt;home_inheritance_spec&gt; ::= &quot;:&quot; &lt;scoped_name&gt;
+&lt;primary_key_spec&gt; ::= &quot;primarykey&quot; &lt;scoped_name&gt;
+&lt;home_body&gt; ::= &quot;{&quot; &lt;home_export&gt;* &quot;}&quot;
+&lt;home_export ::= &lt;export&gt;
+             |   &lt;factory_dcl&gt; &quot;;&quot;
+             |   &lt;finder_dcl&gt; &quot;;&quot;
+&lt;factory_dcl&gt; ::= &quot;factory&quot; &lt;identifier&gt;
+                  &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                  [ &lt;raises_expr&gt; ]
+&lt;finder_dcl&gt; ::= &quot;finder&quot; &lt;identifier&gt;
+                 &quot;(&quot; [ &lt;init_param_decls&gt; ] &quot;)&quot;
+                 [ &lt;raises_expr&gt; ]
+&lt;event&gt; ::= ( &lt;event_dcl&gt; | &lt;event_abs_dcl&gt; |
+            &lt;event_forward_dcl&gt;)
+&lt;event_forward_dcl&gt; ::= [ &quot;abstract&quot; ] &quot;eventtype&quot; &lt;identifier&gt;
+&lt;event_abs_dcl&gt; ::= &quot;abstract&quot; &quot;eventtype&quot; &lt;identifie
+                    [ &lt;value_inheritance_spec&gt; ]
+                    &quot;{&quot; &lt;export&gt;* &quot;}&quot;
+&lt;event_dcl&gt; ::= &lt;event_header&gt; &quot;{&quot; &lt;value_element&gt; * &quot;}&quot;
+&lt;event_header&gt; ::= [ &quot;custom&quot; ] &quot;eventtype&quot;
+                   &lt;identifier&gt; [ &lt;value_inheritance_spec&gt; ]</code></pre>
+<!-- ##END MARKED WRAPPER## -->
+    </div>
+</body>
+</html>
