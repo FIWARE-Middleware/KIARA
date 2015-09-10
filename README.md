@@ -29,11 +29,11 @@ In particular it requires no service running in the background.
 
 The following Manuals are available in the docs section:
 
-* [KIARA Installation and Admin Guide](doc/Installation_and_Admin_Guide.md)
-* [KIARA User and Developer Guide](doc/User_and_Developer_Guide.md)
+* [KIARA Installation and Admin Guide](doc/Installation_and_Admin_Guide.html)
+* [KIARA User and Developer Guide](doc/User_and_Developer_Guide.html)
 
 ### Architecture and Specification
-* [Architecture](doc/specification/Architecture.md)
-* [IDL Specification](doc/specification/Middleware_IDL_Specification.md)
-* [RPC API Specification](doc/specification/Middleware_RPC_API_Specification.md)
-* [RPC Dynamic Types API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.md)
+* [Architecture](doc/specification/Architecture.html)
+* [IDL Specification](doc/specification/Middleware_IDL_Specification.html)
+* [RPC API Specification](doc/specification/Middleware_RPC_API_Specification.html)
+* [RPC Dynamic Types API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.html)
