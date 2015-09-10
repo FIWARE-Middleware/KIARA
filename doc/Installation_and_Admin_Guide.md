@@ -44,6 +44,7 @@ Runtime Systems:
 * Any Java SE JRE 7 or later distribution (OpenJDK, Oracle Java SE or IBM Java SDK)
 
 Development Systems:
+
 * Any Java SE JDK 7 or later distribution (OpenJDK, Oracle Java SE or IBM Java SDK)
 * Build Tools (gradle or maven) and/or IDE (Eclipse, IntelliJ IDEA, Netbeans, ...)
 
@@ -54,6 +55,7 @@ KIARA is tested on Windows (7), Linux (Ubuntu 14.04/Fedora 19) and OS X (10.9/10
 
 ## Installation of the Java JDK
 Please follow the installation instructions of the respective Java distribution:
+
 * [OpenJDK](http://openjdk.java.net/install/) (Default on most Linux-Systems)
 * [Oracle Java SE JDK](http://docs.oracle.com/javase/8/docs/technotes/guides/install) (Linux, Windows, OS X, Solaris)
 * [IBM Java SE JDK](http://www-01.ibm.com/support/knowledgecenter/#!/SSYKE2_7.0.0/welcome/welcome_javasdk_version71.html) (Linux, Windows, AIX, z/OS) 
@@ -217,6 +219,7 @@ The KIARA components (libraries) are usually delivered together with the the dev
 
 ## Setting up the development environment
 In this section it is explained how to set up your development environment and configure your project to use KIARA Advanced Middleware. We support the most common build tools for Java projects, which are:
+
 * Gradle 
 * Apache Maven 
 
