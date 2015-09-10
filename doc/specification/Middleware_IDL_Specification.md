@@ -1,5 +1,44 @@
-Middleware IDL Specification
-============================
+Advanced Middleware IDL Specification
+=====================================
+___Date: 8th April 2015___
+
+This version: [*0.2.0*](#)  
+Previous version: n/a  
+Latest version: [*latest*](Middleware_IDL_Specification.html)  
+
+Editors:
+
+- [eProsima - The Middleware Experts][EPROS]
+- [DFKI - German Research Center for Artificial Intelligence][DFKI]
+- [ZHAW - School of Engineering (ICCLab)][ZHAW]
+
+[EPROS]: http://eprosima.com/index.php/en/ "eProsima - The Middleware Experts"
+[DFKI]: http://www.dfki.de/ "German Research Center for Artificial Intelligence"
+[ZHAW]: http://blog.zhaw.ch/icclab "ZHAW - School of Engineering (ICCLab)"
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+
+----
+
+Abstract
+--------
+Ahe Advanced Middleware GE enables flexible, efficient, scalable, and secure communication between distributed applications and to/between FIWARE GEs.
+The __Interface Definition Language (IDL)__ Specifications allowes to describes the Data Types and Operations supported by a Service. Following is a list of the main features it supports:
+
+* __IDL, Dynamic Types & Application Types__: It support the usual schema of IDL compilation to generate support code for the data types.
+* __IDL Grammar__: An OMG-like grammar for the IDL as in DDS, Thrift, ZeroC ICE, CORBA, etc.
+* __Types__: Support of simple set of basic types, structs, and various high level types such as lists, sets, and dictionaries (maps).
+* __Type inheritance, Extensible Types, Versioning__: Advanced data types, extensions, and inheritance, and other advanced features will be supported.
+* __Annotation Language__: The IDL is extended with an annotation language to add properties to the data types and operations. These will, for example, allows adding security policies and QoS requirements.
+
+## Status of this Document
+
+| **Date**        | **Description**       | 
+|-----------------|-----------------------|
+| 8-April-2015    | 0.2.0 First Release   |
+
+----
+
 Preface
 -------
 The foundation of the FIWARE Middleware Interface Definition Language (IDL) is the Object Management Group (OMG) IDL 3.5. See [*Appendix C*](#appendix-c-omg-idl-3.5-grammar) for the OMG IDL 3.5 grammar.
@@ -144,7 +183,6 @@ An interface declaration contains the keyword `abstract` in its header, declares
 Value type declarations are supported by FIWARE Middleware IDL, but aren’t by FIWARE Middleware. Any FIWARE Middleware IDL parser has to explain that these declarations are not used and the parser will ignore them.
 
 ### Constant Declaration
---------------------
 
 A constant definition conforms to the following syntax:
 ```

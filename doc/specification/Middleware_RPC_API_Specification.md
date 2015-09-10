@@ -1,5 +1,40 @@
 Advanced Middleware RPC API Specification
 =========================================
+___Date: 8th April 2015___
+
+This version: [*0.2.0*](#)  
+Previous version: n/a  
+Latest version: [*latest*](Middleware_RPC_API_Specification.html)  
+
+Editors:
+
+- [eProsima - The Middleware Experts][EPROS]
+- [DFKI - German Research Center for Artificial Intelligence][DFKI]
+- [ZHAW - School of Engineering (ICCLab)][ZHAW]
+
+[EPROS]: http://eprosima.com/index.php/en/ "eProsima - The Middleware Experts"
+[DFKI]: http://www.dfki.de/ "German Research Center for Artificial Intelligence"
+[ZHAW]: http://blog.zhaw.ch/icclab "ZHAW - School of Engineering (ICCLab)"
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+
+----
+
+Abstract
+--------
+Ahe Advanced Middleware GE enables flexible, efficient, scalable, and secure communication between distributed applications and to/between FIWARE GEs.
+The __Middleware RPC API Specification__ describes the interfaces and procedures to do Request/Reply type Remote Procedure Calls (RPC).
+
+It provides basic static compile-time Data-Mapping and generation of Function Stubs/Skeletons, created by a compile time IDL-Parser/Generator from the remote service description, which is provided in the Advanced Middleware Interface Definition Language (IDL) syntax, which is based on the Object Management Group (OMG) IDL draft submitted to W3C.
+
+## Status of this Document
+
+| **Date**        | **Description** | 
+|-----------------|-----------------|
+| 7-November-2014 | Release 0.1.0   |
+| 8-April-2015    | Release 0.2.0   |
+
+----
 
 Introduction
 ------------
@@ -7,21 +42,14 @@ Introduction
 
 This document attempts to describe the Advanced Middleware RPC API.
 
-### Revision History
-
-| **Date**        | **Description** | 
-|-----------------|-----------------|
-| 7-November-2014 | Release 0.1.0   |
-| 8-April-2015    | Release 0.2.0   |
-
 ### Reference Material
 
 - [*Advanced Middleware IDL Specification*][AMiIDLSpec]
 - [*Advanced Middleware RPC Dynamic Types API Specification*][AMiRPCDynSpec]
 
-[AMiIDLSpec]: ./Middleware_IDL_Specification.md "Advanced Middleware IDL Specification"
-[AMiRPCSpec]: ./Middleware_RPC_API_Specification.md "Advanced Middleware RPC API Specification"
-[AMiRPCDynSpec]: ./Middleware_RPC_Dynamic_Types_API_Specification.md "Advanced Middleware RPC Dynamic Types API Specification"
+[AMiIDLSpec]: ./Middleware_IDL_Specification.html "Advanced Middleware IDL Specification"
+[AMiRPCSpec]: ./Middleware_RPC_API_Specification.html "Advanced Middleware RPC API Specification"
+[AMiRPCDynSpec]: ./Middleware_RPC_Dynamic_Types_API_Specification.html "Advanced Middleware RPC Dynamic Types API Specification"
 
 A quick Example
 ----------------

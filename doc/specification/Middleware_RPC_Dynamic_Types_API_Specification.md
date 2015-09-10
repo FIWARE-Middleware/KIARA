@@ -1,19 +1,47 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
+___Date: 8th April 2015___
+
+This version: [*0.2.0*](#)  
+Previous version: n/a  
+Latest version: [*latest*](Middleware_RPC_Dynamic_Types_Specification.html)  
+
+Editors:
+
+- [eProsima - The Middleware Experts][EPROS]
+- [DFKI - German Research Center for Artificial Intelligence][DFKI]
+- [ZHAW - School of Engineering (ICCLab)][ZHAW]
+
+[EPROS]: http://eprosima.com/index.php/en/ "eProsima - The Middleware Experts"
+[DFKI]: http://www.dfki.de/ "German Research Center for Artificial Intelligence"
+[ZHAW]: http://blog.zhaw.ch/icclab "ZHAW - School of Engineering (ICCLab)"
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+
+----
+
+Abstract
+--------
+Ahe Advanced Middleware GE enables flexible, efficient, scalable, and secure communication between distributed applications and to/between FIWARE GEs.
+The __Middleware RPC Dynamic Types API Specification__ describes the extensions to the __Middleware RPC API Specification__ to do _dynamic_ Request/Reply type Remote Procedure Calls (RPC).
+
+It provides a _dynamic runtime Data-Mapping and invocation of Function proxies_, by parsing the IDL description of the remote service at runtime and map it to the function/data definition provided by the developer when setting up the connection.
+
+## Status of this Document
+
+| **Date**         | **Description**               | 
+|------------------|-------------------------------|
+| 30-January-2015  | Frist release                 |
+| 04-February-2015 | Update after review meeting   |
+| 08-April-2015    | Release 0.2.0                 |
+
+----
 
 Introduction
 ------------
 ### Purpose
 
 The purpose of this document is to specify the dynamic Remote Procedure Call (RPC) Application Programming Interface (API) for the Advanced Middleware GE.
-
-### Revision History
-
-| **Date**         | **Description**               | 
-|------------------|-------------------------------|
-| 30-January-2015  | Frist release                 |
-| 04-February-2015 | Update after review meeting   |
-| 06-March-2015    | Release 0.2.0                 |
 
 ### Reference Material
 
