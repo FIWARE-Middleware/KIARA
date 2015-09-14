@@ -37,7 +37,8 @@ public interface TransportImpl extends Transport, Closeable {
      * request message otherwise.
      *
      * @param message
-     * @return
+     * @return request or response message
+     * @see TransportMessage
      */
     public TransportMessage createTransportMessage(TransportMessage message);
 

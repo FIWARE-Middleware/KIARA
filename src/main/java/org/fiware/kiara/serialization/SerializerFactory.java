@@ -17,18 +17,33 @@
  */
 package org.fiware.kiara.serialization;
 
-import java.io.IOException;
-
 /**
+ * This interface provides the abstraction of the factory that
+ * creates serializers.
+ * It has a name and can be registered with the context via internal API.
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface SerializerFactory {
 
+    /**
+     * This function returns name of the serializer.
+     * @return serializer name
+     */
     public String getName();
 
+    /**
+     * This function returns priority of the serializer which depends on
+     * the efficiency.
+     * @return serializer priority
+     */
     public int getPriority();
 
+    /**
+     * This function creates a new serializer.
+     * @return new serializer instance
+     * @see Serializer
+     */
     public Serializer createSerializer();
 
 }

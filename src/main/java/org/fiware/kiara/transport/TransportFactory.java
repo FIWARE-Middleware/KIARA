@@ -25,19 +25,53 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * This interface provides the abstraction of the factory that creates
+ * transports and server transports.
+ * It has a name and can be registered with the context.
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface TransportFactory {
 
+    /**
+     * This function returns name of the transport.
+     * @return transport name
+     */
     public String getName();
 
+    /**
+     * This function returns priority of the transport which depends on the efficiency.
+     * @return transport priority
+     */
     public int getPriority();
 
+    /**
+     * This function returns true when transport uses secure connections.
+     * @return secure connection state of the transport
+     */
     public boolean isSecureTransport();
 
+    /**
+     * This function instantiates a network transport when the user wants later to configure it.
+     *
+     * @param uri
+     * @param settings
+     * @return future which is done when transport is opened.
+     * @throws InvalidAddressException
+     * @throws IOException
+     * @see ListenableFuture
+     * @see Transport
+     */
     public ListenableFuture<Transport> createTransport(String uri, Map<String, Object> settings) throws InvalidAddressException, IOException;
 
+    /**
+     * This function instantiates a network server transport when the user wants later to configure.
+     *
+     * @param url
+     * @return new server transport instance
+     * @throws IOException
+     * @see ServerTransport
+     */
     public ServerTransport createServerTransport(String url) throws IOException;
 
 }
