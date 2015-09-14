@@ -27,6 +27,6 @@ public abstract class SubscriberListener {
     
     public abstract void onNewDataMessage(Subscriber<?> sub);
     
-    public abstract void onSubscriptionMatched(Subscriber sub, MatchingInfo info);
+    public abstract void onSubscriptionMatched(Subscriber<?> sub, MatchingInfo info);
 
 }
