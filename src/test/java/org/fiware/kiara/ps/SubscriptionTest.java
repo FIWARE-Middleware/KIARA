@@ -41,6 +41,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.subscriber.SampleInfo;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
+import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
 import org.fiware.kiara.serialization.impl.Serializable;
@@ -155,26 +156,26 @@ public class SubscriptionTest {
             final CountDownLatch workInitSignal = new CountDownLatch(1);
             final CountDownLatch workDoneSignal = new CountDownLatch(1);
 
-            org.fiware.kiara.ps.subscriber.Subscriber subscriber = Domain.createSubscriber(participant, satt, new SubscriberListener() {
+            org.fiware.kiara.ps.subscriber.Subscriber<HelloWorld> subscriber = Domain.createSubscriber(participant, satt, new SubscriberListener() {
 
                 private int n_matched;
 
                 @Override
-                public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber sub) {
+                public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber<?> sub) {
                     System.out.println("Message received");
-                    SampleInfo info = new SampleInfo();
-                    Serializable type = sub.takeNextData(null);
+                    //SampleInfo info = new SampleInfo();
+                    HelloWorld type = (HelloWorld) sub.takeNextData(null);
                     while (type != null) {
-                        HelloWorld instance = (HelloWorld) type;
-                        System.out.println(instance.getInnerStringAtt());
-                        type = sub.takeNextData(null);
+                        //HelloWorld instance = (HelloWorld) type;
+                        System.out.println(type.getInnerStringAtt());
+                        type = (HelloWorld) sub.takeNextData(null);
                         workDoneSignal.countDown();
                         System.out.println("workDoneSignal sent");
                     }
                 }
 
                 @Override
-                public void onSubscriptionMatched(org.fiware.kiara.ps.subscriber.Subscriber sub, MatchingInfo info) {
+                public void onSubscriptionMatched(org.fiware.kiara.ps.subscriber.Subscriber<?> sub, MatchingInfo info) {
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
                         System.out.println("Publisher Matched. Total : " + this.n_matched);

@@ -27,7 +27,7 @@ public class SubListener extends SubscriberListener {
     }
 
     @Override
-    public void onSubscriptionMatched(Subscriber sub, MatchingInfo info) {
+    public void onSubscriptionMatched(Subscriber<?> sub, MatchingInfo info) {
         if (info.status == MatchingStatus.MATCHED_MATHING) {
             n_matched++;
             System.out.println("Publisher Matched. Total : " + this.n_matched);

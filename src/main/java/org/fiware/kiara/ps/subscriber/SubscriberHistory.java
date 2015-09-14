@@ -381,7 +381,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     info.writerGUID = change.value.getWriterGUID();
                     info.sourceTimestamp = change.value.getSourceTimestamp();
                     if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = wp.att.ownershipStrength;
+                        info.ownershipStrength = wp.value.att.ownershipStrength;
                     }
                     if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
                             change.value.getInstanceHandle().equals(new InstanceHandle()) &&
