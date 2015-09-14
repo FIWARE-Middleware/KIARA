@@ -18,10 +18,21 @@
 package org.fiware.kiara.serialization;
 
 /**
+ * This interface provides an abstraction for serialization mechanism
+ * implementations.
+ * The user can creates directly a serializer using the interface
+ * {@link org.fiware.kiara.Context}.
+ * This {@link org.fiware.kiara.Context} interface will return the serialization mechanism
+ * implementation encapsulated in this interface.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public interface Serializer {
 
+    /**
+     * Returns name of the serializer.
+     *
+     * @return name of the serializer.
+     */
     public String getName();
 }

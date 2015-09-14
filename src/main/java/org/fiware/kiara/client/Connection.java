@@ -20,13 +20,38 @@ package org.fiware.kiara.client;
 import org.fiware.kiara.dynamic.services.DynamicProxy;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * The connection interface manages the connection to the server.
+ * It holds the required Transport objects and Serialization objects.
+ * Also it can create these object automatically depending on the server
+ * information.
+ * The connection provides the service proxy interfaces, which will can
+ * be used by the application to call remote functions.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public interface Connection {
 
+    /**
+     * This function provides a new proxy instance that user can use to call
+     * remote procedures. This proxy uses the connection to send the requests
+     * to the server.
+     *
+     * @param <T>
+     * @param interfaceClass
+     * @return new proxy instance
+     * @throws Exception
+     */
     public <T> T getServiceProxy(Class<T> interfaceClass) throws Exception;
 
+    /**
+     * This function provides a new dynamic proxy instance that user can use to
+     * call remote procedures. This proxy uses the connection to send the
+     * requests to the server.
+     *
+     * @param name
+     * @return new dynamic proxy instance
+     * @see DynamicProxy
+     */
     public DynamicProxy getDynamicProxy(String name);
 
 }
