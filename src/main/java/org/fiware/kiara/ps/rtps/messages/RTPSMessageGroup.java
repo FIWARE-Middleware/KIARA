@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,8 +35,6 @@ import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  *
