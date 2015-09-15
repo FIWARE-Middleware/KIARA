@@ -10,7 +10,7 @@ import org.fiware.kiara.serialization.impl.CDRSerializer;
 public class HelloWorldType extends SerializableDataType<HelloWorld> {
 
     public HelloWorldType() {
-        super(HelloWorld.class, "HelloWorld", HelloWorld.getMaxSize(), false);
+        super(HelloWorld.class, "HelloWorld", SerializedPayload.PAYLOAD_MAX_SIZE, false);
     }
 
     @Override
