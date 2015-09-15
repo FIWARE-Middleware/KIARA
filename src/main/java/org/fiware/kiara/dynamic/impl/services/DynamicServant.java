@@ -34,7 +34,7 @@ import org.fiware.kiara.server.Servant;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportImpl;
 import org.fiware.kiara.transport.impl.TransportMessage;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 /**
  *

@@ -18,9 +18,21 @@
 package org.fiware.kiara.dynamic.services;
 
 /**
+ * This class represents a dynamic object used to hold the implementation of a
+ * specific function. Its process method must be defined by the user when
+ * creating the object, and it will be used to register the service?s functions
+ * on the server?s side.
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface DynamicFunctionHandler {
+
+    /**
+     * This function is the one that will be registered to be executed when a
+     * client invokes remotely a function. It must be implemented by the user.
+     *
+     * @param request dynamic function request
+     * @param response dynamic function response
+     */
     public void process(DynamicFunctionRequest request, DynamicFunctionResponse response);
 }

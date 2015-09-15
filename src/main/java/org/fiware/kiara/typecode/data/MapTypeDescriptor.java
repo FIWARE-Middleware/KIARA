@@ -18,18 +18,50 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a map data type. Maps can hold multiple key-object
+ * pairs inside if and only if the key objects are unique.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface MapTypeDescriptor extends ContainerTypeDescriptor {
-    
+
+    /**
+     * This function sets the {@link DataTypeDescriptor} object describing the
+     * key type of the map.
+     *
+     * @param keyDescriptor key type descriptor
+     * @see DataTypeDescriptor
+     * @return
+     */
     public boolean setKeyTypeDescriptor(DataTypeDescriptor keyDescriptor);
-    
+
+    /**
+     * This function returns the {@link DataTypeDescriptor} object describing
+     * the key type of the map.
+     *
+     * @return key type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getKeyTypeDescriptor();
-    
+
+    /**
+     * This function sets the DataTypeDescriptor object describing the value
+     * type of the map.
+     *
+     * @param valueDescriptor value type descriptor
+     * @return true if operation was successful
+     * @see DataTypeDescriptor
+     */
     public boolean setValueTypeDescriptor(DataTypeDescriptor valueDescriptor);
-    
+
+    /**
+     * This function returns the {@link DataTypeDescriptor} object describing
+     * the value type of the map.
+     *
+     * @return data type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getValueTypeDescriptor();
 
 }

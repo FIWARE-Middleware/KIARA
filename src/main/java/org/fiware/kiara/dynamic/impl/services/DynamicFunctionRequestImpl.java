@@ -36,7 +36,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.transport.Transport;
 import org.fiware.kiara.transport.impl.TransportImpl;
 import org.fiware.kiara.transport.impl.TransportMessage;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;

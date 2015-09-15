@@ -18,16 +18,41 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ *
+ * Interface that represents a primitive data type. Primitive types include
+ * boolean, byte, i16, ui16, i32, ui32, i64, ui64, float32, float64, char and
+ * string.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface PrimitiveTypeDescriptor extends DataTypeDescriptor {
-    
+
+    /**
+     * This function returns true if and only if the
+     * {@link PrimitiveTypeDescriptor} object represents a string data type.
+     *
+     * @return true if this type is string
+     */
     public boolean isString();
 
+    /**
+     * This function can only be used with string types. It sets the maximum
+     * length value for a specific string represented by the
+     * {@link PrimitiveTypeDescriptor} object.
+     *
+     * @param length
+     * @return
+     */
     public PrimitiveTypeDescriptor setMaxFixedLength(int length);
 
+    /**
+     * This function returns the maximum length specified when creating the
+     * {@link PrimitiveTypeDescriptor} object if it represents a string data
+     * type.
+     *
+     * @return maximal fixed length of the string data type.
+     */
     public int getMaxFixedLength();
 
 }

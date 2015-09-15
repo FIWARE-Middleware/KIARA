@@ -23,5 +23,10 @@ package org.fiware.kiara;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public interface RunningService {
+
+    /**
+     * This function is called by {@link Kiara} class on shutdown.
+     * @see Kiara
+     */
     public void shutdownService();
 }

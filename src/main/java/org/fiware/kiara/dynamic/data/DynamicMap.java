@@ -18,19 +18,53 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class holds a list of pairs key-value instances of {@link DynamicData}.
+ * In a {@link DynamicMap}, the key values cannot be duplicated.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicMap extends DynamicContainer {
-    
+
+    /**
+     * This function adds a new key-value pair using the DynamicData objets
+     * introduces as parameters. It will return false if the key value already
+     * exists in the map.
+     *
+     * @param key
+     * @param value
+     * @return
+     */
     public boolean put(DynamicData key, DynamicData value);
-    
+
+    /**
+     * This function returns true if the DynamicMap contains at least one
+     * key-value pair in which the key DynamicData object is equal to the one
+     * introduced as a parameter.
+     *
+     * @param key
+     * @return
+     */
     public boolean containsKey(DynamicData key);
-    
+
+    /**
+     * This function returns true if the DynamicMap contains at least one
+     * key-value pair in which the value DynamicData object is equal to the one
+     * introduced as a parameter.
+     *
+     * @param value
+     * @return
+     */
     public boolean containsValue(DynamicData value);
-    
+
+    /**
+     * This function returns a DynamicData object from a key-value pair whose
+     * key is equal to the one introduced as a parameter.
+     *
+     * @param key
+     * @return
+     * @see DynamicData
+     */
     public DynamicData get(DynamicData key);
-    
 
 }

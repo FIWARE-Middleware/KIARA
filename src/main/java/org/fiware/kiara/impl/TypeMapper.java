@@ -17,7 +17,7 @@ import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
 import org.fiware.kiara.typecode.data.SetTypeDescriptor;
 import org.fiware.kiara.typecode.data.StructTypeDescriptor;
 import org.fiware.kiara.typecode.data.UnionTypeDescriptor;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 
 import com.eprosima.idl.parser.tree.Definition;

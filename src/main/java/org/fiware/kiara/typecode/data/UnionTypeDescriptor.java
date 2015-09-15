@@ -18,12 +18,26 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a union data type. Unions are formed by a group of
+ * members identified by their names and the labels of the discriminator to
+ * which they are assigned.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface UnionTypeDescriptor extends MemberedTypeDescriptor {
 
+    /**
+     * This function adds a new TypeDescriptor object as a member using a
+     * specific name and the labels of the discriminator.
+     *
+     * @param typeDescriptor member type descriptor
+     * @param name member type name
+     * @param isDefault true for default member
+     * @param labels discriminator labels
+     * @return union type descriptor
+     * @see UnionTypeDescriptor
+     */
     public UnionTypeDescriptor addMember(DataTypeDescriptor typeDescriptor, String name, boolean isDefault, Object... labels);
 
 }

@@ -18,14 +18,31 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a set data type. Sets can have non repeated objects
+ * of the same data type inside.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface SetTypeDescriptor extends ContainerTypeDescriptor {
-    
+
+    /**
+     * This function returns the DataTypeDescriptor object describing the
+     * content type of the set.
+     *
+     * @return element type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getElementType();
 
+    /**
+     * This function sets the DataTypeDescriptor object describing the content
+     * type of the set.
+     *
+     * @param contentType element type descriptor
+     * @return true if operation was successful
+     * @see DataTypeDescriptor
+     */
     public boolean setElementType(DataTypeDescriptor contentType);
 
 }
