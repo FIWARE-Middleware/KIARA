@@ -22,18 +22,51 @@ import org.fiware.kiara.dynamic.DynamicValue;
 import org.fiware.kiara.dynamic.data.DynamicData;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class represents a dynamic function request. This class is used to
+ * create objects whose objective is to invoke functions remotely.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicFunctionRequest extends DynamicValue {
-    
+
+    /**
+     * This function returns a {@link DynamicData} object stored in the
+     * parameter list depending on its name.
+     *
+     * @param name parameter name
+     * @return parameter
+     * @see DynamicData
+     */
     public DynamicData getParameter(String name);
 
+    /**
+     * This function returns a {@link DynamicData} object stored in the
+     * parameter list at the specified position.
+     *
+     * @param index parameter index
+     * @return parameter
+     * @see DynamicData
+     */
     public DynamicData getParameterAt(int index);
 
+    /**
+     * This function executes a function remotely. It serializes all the
+     * necessary information and sends the request over the wire. It returns a
+     * {@link DynamicFunctionResponse} with the result.
+     *
+     * @return dynamic function response
+     * @see DynamicFunctionResponse
+     */
     public DynamicFunctionResponse execute();
 
+    /**
+     * This function behaves the same way as the function execute. The only
+     * difference is that it needs a callback to be executed when the response
+     * arrives from the server.
+     *
+     * @param callback
+     */
     public void executeAsync(AsyncCallback<DynamicFunctionResponse> callback);
 
 }

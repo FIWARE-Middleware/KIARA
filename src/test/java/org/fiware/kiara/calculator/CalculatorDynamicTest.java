@@ -32,7 +32,7 @@ import org.fiware.kiara.dynamic.services.DynamicProxy;
 import org.fiware.kiara.typecode.TypeDescriptorBuilder;
 import org.fiware.kiara.typecode.TypeKind;
 import org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

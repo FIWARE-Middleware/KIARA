@@ -18,18 +18,47 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class is used to dynamically manipulate unions described by a specific
+ * {@link UnionTypeDescriptor} object. A union is formed by some
+ * {@link DynamicData} objects, and the valid one is selected by using a
+ * discriminator.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicUnion extends DynamicMembered {
-    
+
+    /**
+     * This function sets a new discriminator.
+     *
+     * @param value new discriminator
+     */
     public void _d(Object value);
-    
+
+    /**
+     * This function returns the discriminator.
+     *
+     * @return
+     */
     public Object _d();
-    
+
+    /**
+     * This function returns valid {@link DynamicData} value depending on the
+     * selected discriminator.
+     *
+     * @param name member name
+     * @return dynamic data
+     */
     public DynamicData getMember(String name);
-    
+
+    /**
+     * This function sets the {@link DynamicData} object received as a parameter
+     * in the member whose name is the same as the one introduced (if and only
+     * if the discriminator value is correct).
+     *
+     * @param name member name
+     * @param data
+     */
     public void setMember(String name, DynamicData data);
 
 }

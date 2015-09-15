@@ -20,14 +20,32 @@ package org.fiware.kiara.typecode.data;
 import org.fiware.kiara.typecode.TypeDescriptor;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a struct data type. Structs can have multiple
+ * different DataTypeDescriptor objects inside stored as members. Every struct
+ * member is identified by a unique name.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface StructTypeDescriptor extends MemberedTypeDescriptor {
 
+    /**
+     * This function adds a new TypeDescriptor object as a member using a
+     * specific name.
+     *
+     * @param member member type descriptor
+     * @param name name of the member
+     */
     public void addMember(TypeDescriptor member, String name);
-    
+
+    /**
+     * This function returns a DataTypeDescriptor object identified by the name
+     * introduced as a parameter.
+     *
+     * @param name member name
+     * @return member type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getMember(String name);
-    
+
 }

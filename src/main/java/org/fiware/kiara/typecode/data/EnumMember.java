@@ -18,9 +18,11 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
+ * Interface that represents a member of a {@link EnumTypeDescriptor} object. It
+ * inherits from {@link Member} interface and therefore it has no new methods.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
 */
 public interface EnumMember extends Member {
 

@@ -18,9 +18,11 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
+ * This class holds the data values of a {@link DynamicData} object created from
+ * a {@link ContainerTypeDescriptor}.
+ *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
+ *
 */
 public interface DynamicContainer extends DynamicData {
 

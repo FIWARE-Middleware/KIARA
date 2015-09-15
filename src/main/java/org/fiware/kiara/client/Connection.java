@@ -44,9 +44,10 @@ public interface Connection {
     public <T> T getServiceProxy(Class<T> interfaceClass) throws Exception;
 
     /**
-     * This function provides a new dynamic proxy instance that user can use to
-     * call remote procedures. This proxy uses the connection to send the
-     * requests to the server.
+     * This function looks in the endpoint for a service whose name is the same
+     * as the one specified as a parameter, and creates a new DynamicProxy
+     * representing that service.
+     * This DynamicProxy will provide the user with all the functions defined in such a service.
      *
      * @param name
      * @return new dynamic proxy instance

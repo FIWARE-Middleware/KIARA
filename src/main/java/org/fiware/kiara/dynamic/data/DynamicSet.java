@@ -18,18 +18,49 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class holds the data values of a DynamicData object created from a
+ * {@link SetTypeDescriptor}. A set can only have one dimension and it has a
+ * maximum length. All the {@link DynamicData} objects stored inside a
+ * {@link DynamicSet} must have been created from the same
+ * {@link TypeDescriptor} definition and it cannot be duplicated objects.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicSet extends DynamicContainer {
-    
+
+    /**
+     * This function adds a {@link DynamicData} object into the list in the last
+     * position.
+     *
+     * @param element
+     * @return true if operation was successful
+     */
     public boolean add(DynamicData element);
-    
+
+    /**
+     * This function adds a {@link DynamicData} object into the list in the
+     * position specified via parameter.
+     *
+     * @param index
+     * @param element
+     */
     public void add(int index, DynamicData element);
-    
+
+    /**
+     * This function returns a {@link DynamicData} object stored is a specific
+     * position in the list.
+     *
+     * @param index
+     * @return dynamic data object
+     */
     public DynamicData get(int index);
-    
+
+    /**
+     * This function returns true if the {@link DynamicSet} is empty.
+     *
+     * @return true if set is empty
+     */
     public boolean isEmpty();
 
 }

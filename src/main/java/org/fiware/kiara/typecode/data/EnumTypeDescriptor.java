@@ -18,12 +18,20 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents an enumeration data type. Enumerations are formed
+ * by a group of different string values.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface EnumTypeDescriptor extends MemberedTypeDescriptor {
-    
+
+    /**
+     * This function adds a new value to the enumeration using the string object
+     * received as a parameter.
+     *
+     * @param value enumeration item value
+     */
     public void addValue(String value);
 
 }

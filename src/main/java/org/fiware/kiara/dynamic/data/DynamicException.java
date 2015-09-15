@@ -18,12 +18,21 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class holds group of {@link DynamicData} objects acting as members of an
+ * exception. Each member is identified by its own name.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicException extends DynamicMembered {
-    
+
+    /**
+     * This function returns a {@link DynamicData} object whose name is the same
+     * as the one introduced as a parameter.
+     *
+     * @param name member name
+     * @return dynamic data
+     */
     public DynamicData getMember(String name);
-    
+
 }

@@ -18,16 +18,28 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a container data type. Container data types are
+ * arrays, lists, maps and sets.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface ContainerTypeDescriptor extends DataTypeDescriptor {
-    
+
     public static final int UNBOUNDED = -1;
-    
+
+    /**
+     * This function sets the maximum size of a container data type.
+     *
+     * @param length maximum size of this container
+     */
     public void setMaxSize(int length);
-    
+
+    /**
+     * This function returns the maximum size of a container data type.
+     *
+     * @return maximum size of this container
+     */
     public int getMaxSize();
-  
+
 }
