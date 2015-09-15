@@ -75,5 +75,9 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
             return null;
         }
     }
+    
+   /* public static int getMaxSize() {
+        return SerializedPayload.PAYLOAD_MAX_SIZE;
+    }*/
 
 }

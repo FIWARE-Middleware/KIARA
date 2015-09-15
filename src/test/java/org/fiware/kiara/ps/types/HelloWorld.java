@@ -140,9 +140,9 @@ public class HelloWorld implements Serializable {
 		return Objects.hash(this.innerLongAtt, this.innerStringAtt);
     }
 
-    public static int getMaxSize() {
+    /*public static int getMaxSize() {
         return 4 + 4 + 255;
-    }
+    }*/
     
     public void copy(HelloWorld other) {
         this.innerLongAtt = other.innerLongAtt;
