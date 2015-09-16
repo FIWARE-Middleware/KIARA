@@ -19,7 +19,7 @@ package org.fiware.kiara.client;
 
 /**
 * This interface provides an abstraction used by the client to return the
-* server?s reply to the user when the calling was asynchronous.
+* server's reply to the user when the calling was asynchronous.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

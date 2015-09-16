@@ -130,7 +130,7 @@ public class WLPListener extends ReaderListener {
      * Compute the key from a CacheChange
      *
      * @param change
-     * @return
+     * @return true if operation was successful
      */
     public boolean computeKey(CacheChange change) {
         return true;

@@ -19,22 +19,25 @@ package org.fiware.kiara.dynamic.data;
 
 /**
  * This class is used to dynamically manipulate enumerations described by a
- * specific {@link EnumTypeDescriptor} object.
+ * specific {@link org.fiware.kiara.typecode.data.EnumTypeDescriptor} object.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
-*/
+ */
 public interface DynamicEnum extends DynamicMembered {
 
     /**
-     * This function sets the actual value of the DynamicEnum object to the one specified as a parameter.
+     * This function sets the actual value of the DynamicEnum object to the one
+     * specified as a parameter.
+     *
      * @param value
      */
     public void set(String value);
 
     /**
      * This function returns the actual value of the {@link DynamicEnum} object.
-     * @return
+     *
+     * @return value of this enum
      */
     public String get();
 

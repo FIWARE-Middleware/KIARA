@@ -38,7 +38,7 @@ public interface DynamicValueBuilder {
 
     /**
      * This function allows the user to create new DynamicData objects by using
-     * their {@link TypeDescriptor}.
+     * their {@link DataTypeDescriptor}.
      *
      * @param dataDescriptor type descriptor
      * @return dynamic data object
@@ -54,7 +54,8 @@ public interface DynamicValueBuilder {
      * @param functionDescriptor
      * @param serializer
      * @param transport
-     * @return
+     * @return dynamic function request object
+     * @see DynamicFunctionRequest
      */
     public DynamicFunctionRequest createFunctionRequest(FunctionTypeDescriptor functionDescriptor, Serializer serializer, Transport transport);
 
@@ -95,7 +96,7 @@ public interface DynamicValueBuilder {
 
     /**
      * This function receives a {@link ServiceTypeDescriptor} object describing
-     * a function, and it creates a new {@link DynamicService} object
+     * a function, and it creates a new {@link DynamicProxy} object
      * representing it.
      *
      * @param serviceDescriptor service type descriptor

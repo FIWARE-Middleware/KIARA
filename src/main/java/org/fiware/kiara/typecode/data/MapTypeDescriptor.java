@@ -32,7 +32,7 @@ public interface MapTypeDescriptor extends ContainerTypeDescriptor {
      *
      * @param keyDescriptor key type descriptor
      * @see DataTypeDescriptor
-     * @return
+     * @return true if operation was successful
      */
     public boolean setKeyTypeDescriptor(DataTypeDescriptor keyDescriptor);
 

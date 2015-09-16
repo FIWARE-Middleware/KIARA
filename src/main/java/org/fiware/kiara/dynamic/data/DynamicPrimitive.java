@@ -19,7 +19,7 @@ package org.fiware.kiara.dynamic.data;
 
 /**
  * This class allows the users to manipulate {@link DynamicData} objects made
- * from {@link PrimitiveTypeDescriptor} objects.
+ * from {@link org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor} objects.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
@@ -28,10 +28,11 @@ public interface DynamicPrimitive extends DynamicData {
 
     /**
      * This function sets the inner value of a {@link DynamicPrimitive} object
-     * according to the {@link TypeDescriptor} specified when creating it.
+     * according to the {@link org.fiware.kiara.typecode.TypeDescriptor}
+     * specified when creating it.
      *
      * @param value
-     * @return
+     * @return true if operation was successful
      */
     public boolean set(Object value);
 
@@ -44,7 +45,8 @@ public interface DynamicPrimitive extends DynamicData {
 
     /**
      * This function sets the inner value of a {@link DynamicPrimitive} object
-     * according to the {@link TypeDescriptor} specified when creating it.
+     * according to the {@link org.fiware.kiara.typecode.TypeDescriptor}
+     * specified when creating it.
      *
      * @param value dynamic data
      * @return true if operation was successful

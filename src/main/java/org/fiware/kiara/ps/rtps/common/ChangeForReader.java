@@ -30,6 +30,9 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
  */
 public class ChangeForReader {
 
+    /**
+     * Status
+     */
     public ChangeForReaderStatus status;
 
     /**
@@ -45,6 +48,9 @@ public class ChangeForReader {
     private boolean m_isValid;
     private CacheChange m_change;
 
+    /**
+     * Default constructor
+     */
     public ChangeForReader() {
         status = UNSENT;
         isRelevant = true;
@@ -66,7 +72,7 @@ public class ChangeForReader {
      * Set the cache change
      *
      * @param change Cache change
-     * @return
+     * @return true if operation was successful
      */
     public boolean setChange(CacheChange change) {
         m_isValid = true;
@@ -83,18 +89,16 @@ public class ChangeForReader {
     public SequenceNumber getSequenceNumber() {
         return this.seqNum;
     }
-    
+
     /**
-     * Set the cache change
+     * Set the sequence number
      *
      * @param sequenceNumber The sequence number to set
-     * @return
      */
-    public boolean setSequenceNumber(SequenceNumber sequenceNumber) {
+    public void setSequenceNumber(SequenceNumber sequenceNumber) {
         seqNum.copy(sequenceNumber);
-        return true;
     }
-    
+
     /**
      * Set change as not valid
      */

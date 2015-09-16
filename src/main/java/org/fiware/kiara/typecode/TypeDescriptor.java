@@ -29,7 +29,7 @@ public interface TypeDescriptor {
     public boolean isData();
 
     /**
-     * Function used to know if a {@link TypeCode} object is a description of a
+     * Function used to know if a TypeCode object is a description of a
      * primitive data type.
      *
      * @return true if this type is primitive type

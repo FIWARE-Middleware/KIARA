@@ -19,10 +19,11 @@ package org.fiware.kiara.dynamic.data;
 
 /**
  * This class holds the data values of a DynamicData object created from a
- * {@link SetTypeDescriptor}. A set can only have one dimension and it has a
- * maximum length. All the {@link DynamicData} objects stored inside a
- * {@link DynamicSet} must have been created from the same
- * {@link TypeDescriptor} definition and it cannot be duplicated objects.
+ * {@link org.fiware.kiara.typecode.data.SetTypeDescriptor}. A set can only have
+ * one dimension and it has a maximum length. All the {@link DynamicData}
+ * objects stored inside a {@link DynamicSet} must have been created from the
+ * same {@link org.fiware.kiara.typecode.TypeDescriptor} definition and it
+ * cannot be duplicated objects.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
