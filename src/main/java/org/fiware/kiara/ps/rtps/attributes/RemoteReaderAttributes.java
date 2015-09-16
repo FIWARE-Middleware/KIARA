@@ -21,17 +21,27 @@ import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class RemoteReaderAttributes, to define the attributes of a Remote Reader.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class RemoteReaderAttributes {
-    
+
+    /**
+     * Attributes of the associated endpoint.
+     */
     public EndpointAttributes endpoint;
-    
+
+    /**
+     * GUID_t of the reader.
+     */
     public GUID guid;
-    
+
+    /**
+     * Expects inline QOS.
+     */
     public boolean expectsInlineQos;
-    
+
     public RemoteReaderAttributes() {
         this.endpoint = new EndpointAttributes();
         this.guid = new GUID();

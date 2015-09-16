@@ -27,27 +27,27 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class TopicDataQosPolicy, to indicate the Topic Data.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class TopicDataQosPolicy extends Parameter {
 
     // TODO
-
     public QosPolicy parent;
-    
-    private List<Byte> m_value;
-    
+
+    private final List<Byte> m_value;
+
     public TopicDataQosPolicy() {
         super(ParameterId.PID_TOPIC_DATA, (short) 0);
         this.parent = new QosPolicy(false);
-        this.m_value = new ArrayList<Byte>();
+        this.m_value = new ArrayList<>();
     }
-    
+
     public void pushBack(byte b) {
         this.m_value.add(b);
     }
-    
+
     public void clear() {
         this.m_value.clear();
     }
@@ -69,8 +69,7 @@ public class TopicDataQosPolicy extends Parameter {
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
-    
 
 }

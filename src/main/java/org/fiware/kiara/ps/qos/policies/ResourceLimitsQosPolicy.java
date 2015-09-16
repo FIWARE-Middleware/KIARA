@@ -27,13 +27,17 @@ import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class ResourceLimitsQosPolicy, defines the ResourceLimits for the Writer or
+ * the Reader. max_samples: Default value 5000. max_instances: Default value 10.
+ * max_samples_per_instance: Default value 400. allocated_samples: Default value
+ * 3000.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
-    
+
     public QosPolicy parent;
-    
+
     public ResourceLimitsQosPolicy() {
         super(ParameterId.PID_RESOURCE_LIMITS, (short) (Parameter.PARAMETER_KIND_LENGTH + 4 + 4));
         this.parent = new QosPolicy(false);
@@ -44,13 +48,13 @@ public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
     }
 
     public int maxSamples;
-    
+
     public int maxInstances;
-    
+
     public int maxSamplesPerInstance;
-    
+
     public int allocatedSamples;
-    
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);

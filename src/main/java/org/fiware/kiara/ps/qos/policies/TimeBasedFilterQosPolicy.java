@@ -26,16 +26,19 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class TimeBasedFilterQosPolicy, to indicate the Time Based Filter Qos. This
+ * QosPolicy can be defined and is transmitted to the rest of the network but is
+ * not implemented in this version. minimum_separation: Default value c_TimeZero
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class TimeBasedFilterQosPolicy extends Parameter {
     // TODO
 
     public QosPolicy parent;
-    
+
     public Timestamp minimumSeparation;
-    
+
     public TimeBasedFilterQosPolicy() {
         super(ParameterId.PID_TIME_BASED_FILTER, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(false);
@@ -50,9 +53,7 @@ public class TimeBasedFilterQosPolicy extends Parameter {
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
-    
-    
-    
+
 }

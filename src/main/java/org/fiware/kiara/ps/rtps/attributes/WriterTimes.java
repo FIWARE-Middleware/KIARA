@@ -20,31 +20,43 @@ package org.fiware.kiara.ps.rtps.attributes;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class WriterTimes, defining the times associated with the Reliable Writers
+ * events.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class WriterTimes {
-	
-	public Timestamp heartBeatPeriod;
-	public Timestamp nackResponseDelay;
-	public Timestamp nackSupressionDuration;
 
-        public WriterTimes(WriterTimes value) {
-            this.heartBeatPeriod = new Timestamp(value.heartBeatPeriod);
-            this.nackResponseDelay = new Timestamp(value.nackResponseDelay);
-            this.nackSupressionDuration = new Timestamp(value.nackSupressionDuration);
-        }
+    /**
+     * Periodic HB period, default value 3s.
+     */
+    public Timestamp heartBeatPeriod;
+    /**
+     * Delay to apply to the response of a ACKNACK message, default value ~45ms.
+     */
+    public Timestamp nackResponseDelay;
+    /**
+     * This time allows the RTPSWriter to ignore nack messages too soon after
+     * the data as sent, default value 0s.
+     */
+    public Timestamp nackSupressionDuration;
 
-	public WriterTimes() {
-		this.heartBeatPeriod = new Timestamp(3, 0);
-		this.nackResponseDelay = new Timestamp(0, 200*1000*1000);
-		this.nackSupressionDuration = new Timestamp().timeZero();
-	}
+    public WriterTimes(WriterTimes value) {
+        this.heartBeatPeriod = new Timestamp(value.heartBeatPeriod);
+        this.nackResponseDelay = new Timestamp(value.nackResponseDelay);
+        this.nackSupressionDuration = new Timestamp(value.nackSupressionDuration);
+    }
 
-        public void copy(WriterTimes value) {
-            this.heartBeatPeriod.copy(value.heartBeatPeriod);
-            this.nackResponseDelay.copy(value.nackResponseDelay);
-            this.nackSupressionDuration.copy(value.nackSupressionDuration);
-        }
+    public WriterTimes() {
+        this.heartBeatPeriod = new Timestamp(3, 0);
+        this.nackResponseDelay = new Timestamp(0, 200 * 1000 * 1000);
+        this.nackSupressionDuration = new Timestamp().timeZero();
+    }
+
+    public void copy(WriterTimes value) {
+        this.heartBeatPeriod.copy(value.heartBeatPeriod);
+        this.nackResponseDelay.copy(value.nackResponseDelay);
+        this.nackSupressionDuration.copy(value.nackSupressionDuration);
+    }
 
 }

@@ -18,21 +18,32 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum PresentationQosPolicyAccessScopeKind, different kinds of Presentation
+ * Policy order for PresentationQosPolicy.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum PresentationQosPolicyAccessScopeKind {
-    
-    INSTANCE_PRESENTATION_QOS((byte) 0), //!< Instance Presentation, default value.
-    TOPIC_PRESENTATION_QOS((byte) 1), //!< Topic Presentation.
-    GROUP_PRESENTATION_QOS((byte) 2);//!< Group Presentation.
-    
+
+    /**
+     * Instance Presentation, default value.
+     */
+    INSTANCE_PRESENTATION_QOS((byte) 0),
+    /**
+     * Topic Presentation.
+     */
+    TOPIC_PRESENTATION_QOS((byte) 1),
+    /**
+     * Group Presentation.
+     */
+    GROUP_PRESENTATION_QOS((byte) 2);
+
     private byte m_value;
-    
+
     private PresentationQosPolicyAccessScopeKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }

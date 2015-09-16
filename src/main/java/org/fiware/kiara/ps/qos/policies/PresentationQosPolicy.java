@@ -25,19 +25,23 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class PresentationQosPolicy, to indicate the Presentation Qos Policy. This
+ * QosPolicy can be defined and is transmitted to the rest of the network but is
+ * not implemented in this version. access_scope: Default value
+ * INSTANCE_PRESENTATION_QOS coherent_access: Default value false.
+ * ordered_access: Default value false.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class PresentationQosPolicy extends Parameter {
 
     // TODO
-    
     public QosPolicy parent;
-    
+
     public PresentationQosPolicyAccessScopeKind accessScope;
-    
+
     public boolean coherentAccess;
-    
+
     public boolean orderedAccess;
 
     public PresentationQosPolicy() {
@@ -58,8 +62,7 @@ public class PresentationQosPolicy extends Parameter {
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
-    
 
 }

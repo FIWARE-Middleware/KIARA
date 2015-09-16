@@ -17,7 +17,6 @@
  */
 package org.fiware.kiara.ps.qos;
 
-import java.util.Arrays;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicyKind;
@@ -44,51 +43,107 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class WriterQos, containing all the possible Qos that can be set for a
+ * determined Publisher. Although these values can be set and are transmitted
+ * during the Endpoint Discovery Protocol, not all of the behaviour associated
+ * with them has been implemented in the library. Please consult each of them to
+ * check for implementation details and default values.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class WriterQos {
 
+    /**
+     * Durability Qos, implemented in the library.
+     */
     public DurabilityQosPolicy durability;
 
+    /**
+     * Durability Service Qos, NOT implemented in the library.
+     */
     public DurabilityServiceQosPolicy durabilityService;
 
+    /**
+     * Deadline Qos, NOT implemented in the library.
+     */
     public DeadLineQosPolicy deadline;
 
+    /**
+     * Latency Budget Qos, NOT implemented in the library.
+     */
     public LatencyBudgetQosPolicy latencyBudget;
 
+    /**
+     * Liveliness Qos, implemented in the library.
+     */
     public LivelinessQosPolicy liveliness;
 
+    /**
+     * Reliability Qos, implemented in the library.
+     */
     public ReliabilityQosPolicy reliability;
 
+    /**
+     * Lifespan Qos, NOT implemented in the library.
+     */
     public LifespanQosPolicy lifespan;
 
+    /**
+     * UserData Qos, NOT implemented in the library.
+     */
     public UserDataQosPolicy userData;
 
+    /**
+     * Time Based Filter Qos, NOT implemented in the library.
+     */
     public TimeBasedFilterQosPolicy timeBasedFilter;
 
+    /**
+     * Ownership Qos, NOT implemented in the library.
+     */
     public OwnershipQosPolicy ownership;
 
+    /**
+     * Owenership Strength Qos, NOT implemented in the library.
+     */
     public OwnershipStrengthQosPolicy ownershipStrength;
 
+    /**
+     * Destination Order Qos, NOT implemented in the library.
+     */
     public DestinationOrderQosPolicy destinationOrder;
 
+    /**
+     * Presentation Qos, NOT implemented in the library.
+     */
     public PresentationQosPolicy presentation;
 
+    /**
+     * Partition Qos, implemented in the library.
+     */
     public PartitionQosPolicy partition;
 
+    /**
+     * Topic Data Qos, NOT implemented in the library.
+     */
     public TopicDataQosPolicy topicData;
 
+    /**
+     * Group Data Qos, NOT implemented in the library.
+     */
     public GroupDataQosPolicy groupData;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(WriterQos.class);
 
+    /**
+     * Default Constructor
+     */
     public WriterQos() {
         this.reliability = new ReliabilityQosPolicy();
         this.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
         this.durability = new DurabilityQosPolicy();
         this.durability.kind = DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
-        
+
         this.durability = new DurabilityQosPolicy();
         this.durabilityService = new DurabilityServiceQosPolicy();
         this.deadline = new DeadLineQosPolicy();
@@ -107,106 +162,115 @@ public class WriterQos {
         this.groupData = new GroupDataQosPolicy();
     }
 
+    /**
+     * Set Qos from another class
+     *
+     * @param qos Reference from a WriterQos object.
+     * @param firstTime Boolean indicating whether is the first time (If not
+     * some parameters cannot be set).
+     */
     public void setQos(WriterQos qos, boolean firstTime) {
-        if(firstTime) {
-                durability.copy(qos.durability);
-                durability.parent.hasChanged = true;
+        if (firstTime) {
+            durability.copy(qos.durability);
+            durability.parent.hasChanged = true;
         }
-        if(firstTime || deadline.period != qos.deadline.period) {
-                deadline.copy(qos.deadline);
-                deadline.parent.hasChanged = true;
+        if (firstTime || deadline.period != qos.deadline.period) {
+            deadline.copy(qos.deadline);
+            deadline.parent.hasChanged = true;
         }
-        if(latencyBudget.duration != qos.latencyBudget.duration) {
-                latencyBudget.copy(qos.latencyBudget);
-                latencyBudget.parent.hasChanged = true;
+        if (latencyBudget.duration != qos.latencyBudget.duration) {
+            latencyBudget.copy(qos.latencyBudget);
+            latencyBudget.parent.hasChanged = true;
         }
-        if(!liveliness.leaseDuration.equals(qos.liveliness.leaseDuration)) {
-                liveliness.leaseDuration.copy(qos.liveliness.leaseDuration);
-                liveliness.parent.hasChanged = true;
+        if (!liveliness.leaseDuration.equals(qos.liveliness.leaseDuration)) {
+            liveliness.leaseDuration.copy(qos.liveliness.leaseDuration);
+            liveliness.parent.hasChanged = true;
         }
-        if(firstTime) {
-                liveliness.copy(qos.liveliness);
-                liveliness.parent.hasChanged = true;
+        if (firstTime) {
+            liveliness.copy(qos.liveliness);
+            liveliness.parent.hasChanged = true;
         }
-        if(firstTime) {
-                reliability.copy(qos.reliability);
-                reliability.parent.hasChanged = true;
+        if (firstTime) {
+            reliability.copy(qos.reliability);
+            reliability.parent.hasChanged = true;
         }
-        if(firstTime) {
-                ownership.copy(qos.ownership);
-                ownership.parent.hasChanged = true;
+        if (firstTime) {
+            ownership.copy(qos.ownership);
+            ownership.parent.hasChanged = true;
         }
-        if(destinationOrder.kind != qos.destinationOrder.kind ) {
-                destinationOrder.copy(qos.destinationOrder);
-                destinationOrder.parent.hasChanged = true;
+        if (destinationOrder.kind != qos.destinationOrder.kind) {
+            destinationOrder.copy(qos.destinationOrder);
+            destinationOrder.parent.hasChanged = true;
         }
         if (!userData.getDataBuf().equals(qos.userData.getDataBuf())) {
-                userData.copy(qos.userData);
-                userData.parent.hasChanged = true;
+            userData.copy(qos.userData);
+            userData.parent.hasChanged = true;
         }
-        if(firstTime || !timeBasedFilter.minimumSeparation.equals(qos.timeBasedFilter.minimumSeparation)) {
-                timeBasedFilter.copy(qos.timeBasedFilter);
-                timeBasedFilter.parent.hasChanged = true;
+        if (firstTime || !timeBasedFilter.minimumSeparation.equals(qos.timeBasedFilter.minimumSeparation)) {
+            timeBasedFilter.copy(qos.timeBasedFilter);
+            timeBasedFilter.parent.hasChanged = true;
         }
-        if(firstTime || presentation.accessScope != qos.presentation.accessScope ||
-                        presentation.coherentAccess != qos.presentation.coherentAccess ||
-                        presentation.orderedAccess != qos.presentation.orderedAccess
-        ) {
-                presentation.copy(qos.presentation);
-                presentation.parent.hasChanged = true;
+        if (firstTime || presentation.accessScope != qos.presentation.accessScope
+                || presentation.coherentAccess != qos.presentation.coherentAccess
+                || presentation.orderedAccess != qos.presentation.orderedAccess) {
+            presentation.copy(qos.presentation);
+            presentation.parent.hasChanged = true;
         }
-        if(qos.partition.getNames().size() > 0) {
-                partition.copy(qos.partition);
-                partition.parent.hasChanged = true;
+        if (qos.partition.getNames().size() > 0) {
+            partition.copy(qos.partition);
+            partition.parent.hasChanged = true;
         }
 
         if (!topicData.getValue().equals(qos.topicData.getValue())) {
-                topicData.copy(qos.topicData);
-                topicData.parent.hasChanged = true;
+            topicData.copy(qos.topicData);
+            topicData.parent.hasChanged = true;
         }
         if (!groupData.getValue().equals(qos.groupData.getValue())) {
-                groupData.copy(qos.groupData);
-                groupData.parent.hasChanged = true;
+            groupData.copy(qos.groupData);
+            groupData.parent.hasChanged = true;
         }
-        if(firstTime || durabilityService.kind != qos.durabilityService.kind ||
-                        durabilityService.historyDepth != qos.durabilityService.historyDepth ||
-                        durabilityService.maxInstances != qos.durabilityService.maxInstances ||
-                        durabilityService.maxSamples != qos.durabilityService.maxSamples||
-                        durabilityService.maxSamplesPerInstance != qos.durabilityService.maxSamplesPerInstance ||
-                        durabilityService.serviceCleanupDelay != qos.durabilityService.serviceCleanupDelay
-        ) {
-                durabilityService.copy(qos.durabilityService);
-                durabilityService.parent.hasChanged = true;
+        if (firstTime || durabilityService.kind != qos.durabilityService.kind
+                || durabilityService.historyDepth != qos.durabilityService.historyDepth
+                || durabilityService.maxInstances != qos.durabilityService.maxInstances
+                || durabilityService.maxSamples != qos.durabilityService.maxSamples
+                || durabilityService.maxSamplesPerInstance != qos.durabilityService.maxSamplesPerInstance
+                || durabilityService.serviceCleanupDelay != qos.durabilityService.serviceCleanupDelay) {
+            durabilityService.copy(qos.durabilityService);
+            durabilityService.parent.hasChanged = true;
         }
-        if(lifespan.duration != qos.lifespan.duration ) {
-                lifespan.copy(qos.lifespan);
-                lifespan.parent.hasChanged = true;
+        if (lifespan.duration != qos.lifespan.duration) {
+            lifespan.copy(qos.lifespan);
+            lifespan.parent.hasChanged = true;
         }
-        if(qos.ownershipStrength.value !=ownershipStrength.value) {
-                ownershipStrength.copy(qos.ownershipStrength);
-                ownershipStrength.parent.hasChanged = true;
+        if (qos.ownershipStrength.value != ownershipStrength.value) {
+            ownershipStrength.copy(qos.ownershipStrength);
+            ownershipStrength.parent.hasChanged = true;
         }
     }
 
+    /**
+     * Check if the Qos values are compatible between each other.
+     * @return True if correct.
+     */
     public boolean checkQos() {
-        if(durability.kind == DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS) {
-            logger.error("TRANSIENT Durability not supported"); 
+        if (durability.kind == DurabilityQosPolicyKind.TRANSIENT_DURABILITY_QOS) {
+            logger.error("TRANSIENT Durability not supported");
             return false;
         }
-        if(durability.kind == DurabilityQosPolicyKind.PERSISTENT_DURABILITY_QOS) {
-            logger.error("PERSISTENT Durability not supported"); 
+        if (durability.kind == DurabilityQosPolicyKind.PERSISTENT_DURABILITY_QOS) {
+            logger.error("PERSISTENT Durability not supported");
             return false;
         }
-        if(destinationOrder.kind == DestinationOrderQosPolicyKind.BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS) {
-            logger.error("BY SOURCE TIMESTAMP DestinationOrder not supported"); 
+        if (destinationOrder.kind == DestinationOrderQosPolicyKind.BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS) {
+            logger.error("BY SOURCE TIMESTAMP DestinationOrder not supported");
             return false;
         }
-        if(reliability.kind == ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS && ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
+        if (reliability.kind == ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS && ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
             logger.error("BEST_EFFORT incompatible with EXCLUSIVE ownership");
             return false;
         }
-        if(liveliness.kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS || liveliness.kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
-            if(liveliness.leaseDuration.isLowerThan(new Timestamp().timeInfinite()) && liveliness.leaseDuration.isLowerOrEqualThan(liveliness.announcementPeriod)) {
+        if (liveliness.kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS || liveliness.kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
+            if (liveliness.leaseDuration.isLowerThan(new Timestamp().timeInfinite()) && liveliness.leaseDuration.isLowerOrEqualThan(liveliness.announcementPeriod)) {
                 logger.error("WRITERQOS: LeaseDuration <= announcement period.");
                 return false;
             }
@@ -214,27 +278,32 @@ public class WriterQos {
         return true;
     }
 
+    /**
+     * Returns true if Qos can be updated
+     * @param qos writer QoS
+     * @return true if Qos can be updated
+     */
     public boolean canQosBeUpdated(WriterQos qos) {
         boolean updatable = true;
-        if(durability.kind != qos.durability.kind) {
+        if (durability.kind != qos.durability.kind) {
             updatable = false;
-            logger.warn("Durability kind cannot be changed after the creation of a publisher."); 
+            logger.warn("Durability kind cannot be changed after the creation of a publisher.");
         }
 
-        if(liveliness.kind !=  qos.liveliness.kind) {
+        if (liveliness.kind != qos.liveliness.kind) {
             updatable = false;
-            logger.warn("Liveliness Kind cannot be changed after the creation of a publisher."); 
+            logger.warn("Liveliness Kind cannot be changed after the creation of a publisher.");
         }
 
-        if(reliability.kind != qos.reliability.kind) {
+        if (reliability.kind != qos.reliability.kind) {
             updatable = false;
             logger.warn("Reliability Kind cannot be changed after the creation of a publisher.");
         }
-        if(ownership.kind != qos.ownership.kind) {
+        if (ownership.kind != qos.ownership.kind) {
             updatable = false;
             logger.warn("Ownership Kind cannot be changed after the creation of a publisher.");
         }
-        if(destinationOrder.kind != qos.destinationOrder.kind) {
+        if (destinationOrder.kind != qos.destinationOrder.kind) {
             updatable = false;
             logger.warn("Destination order Kind cannot be changed after the creation of a publisher.");
         }

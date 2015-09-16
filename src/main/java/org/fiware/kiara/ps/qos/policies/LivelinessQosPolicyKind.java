@@ -18,30 +18,46 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum LivelinessQosPolicyKind, different kinds of liveliness for
+ * LivelinessQosPolicy
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum LivelinessQosPolicyKind {
-    AUTOMATIC_LIVELINESS_QOS((byte) 0), //!< Automatic Liveliness, default value.
-    MANUAL_BY_PARTICIPANT_LIVELINESS_QOS((byte) 1), //!< MANUAL_BY_PARTICIPANT_LIVELINESS_QOS
-    MANUAL_BY_TOPIC_LIVELINESS_QOS((byte) 2); //!< MANUAL_BY_TOPIC_LIVELINESS_QOS
-    
-    private byte m_value;
-    
+
+    /**
+     * Automatic Liveliness, default value.
+     */
+    AUTOMATIC_LIVELINESS_QOS((byte) 0),
+    /**
+     * MANUAL_BY_PARTICIPANT_LIVELINESS_QOS
+     */
+    MANUAL_BY_PARTICIPANT_LIVELINESS_QOS((byte) 1),
+    /**
+     * MANUAL_BY_TOPIC_LIVELINESS_QOS
+     */
+    MANUAL_BY_TOPIC_LIVELINESS_QOS((byte) 2);
+
+    private final byte m_value;
+
     private LivelinessQosPolicyKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }
 
     public static LivelinessQosPolicyKind fromValue(byte value) {
         switch (value) {
-            case 0: return AUTOMATIC_LIVELINESS_QOS;
-            case 1: return MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
-            case 2: return MANUAL_BY_TOPIC_LIVELINESS_QOS;
-            default: return null;
+            case 0:
+                return AUTOMATIC_LIVELINESS_QOS;
+            case 1:
+                return MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
+            case 2:
+                return MANUAL_BY_TOPIC_LIVELINESS_QOS;
+            default:
+                return null;
         }
     }
 }

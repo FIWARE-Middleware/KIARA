@@ -24,18 +24,46 @@ import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 
 /**
+ * Structure EndpointAttributes, describing the attributes associated with an
+ * RTPS Endpoint.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class EndpointAttributes {
 
+    /**
+     * Endpoint kind, default value WRITER
+     */
     public EndpointKind endpointKind;
+    /**
+     * Topic kind, default value NO_KEY
+     */
     public TopicKind topicKind;
+    /**
+     * Reliability kind, default value BEST_EFFORT
+     */
     public ReliabilityKind reliabilityKind;
+    /**
+     * Durability kind, default value VOLATILE
+     */
     public DurabilityKind durabilityKind;
+    /**
+     * Unicast locator list
+     */
     public final LocatorList unicastLocatorList;
+    /**
+     * Multicast locator list
+     */
     public final LocatorList multicastLocatorList;
+    /**
+     * User Defined ID, used for StaticEndpointDiscovery, default value -1.
+     */
     private short m_userDefinedId;
+
+    /**
+     * Entity ID, if the user want to specify the EntityID of the enpoint,
+     * default value -1.
+     */
     private short m_entityId;
 
     public EndpointAttributes() {
@@ -49,18 +77,38 @@ public class EndpointAttributes {
         this.multicastLocatorList = new LocatorList();
     }
 
+    /**
+     * Get the user defined ID
+     *
+     * @return User defined ID
+     */
     public short getUserDefinedID() {
         return this.m_userDefinedId;
     }
 
+    /**
+     * Set the user defined ID
+     *
+     * @param id User defined ID to be set
+     */
     public void setUserDefinedID(short id) {
         this.m_userDefinedId = id;
     }
 
+    /**
+     * Get the entity defined ID
+     *
+     * @return Entity ID
+     */
     public short getEntityID() {
         return this.m_entityId;
     }
 
+    /**
+     * Set the entity ID
+     *
+     * @param id Entity ID to be set
+     */
     public void setEntityID(short id) {
         this.m_entityId = id;
     }

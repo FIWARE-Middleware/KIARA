@@ -18,28 +18,47 @@
 package org.fiware.kiara.ps.rtps.attributes;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class HistoryCacheAttributes, to specify the attributes of a WriterHistory or
+ * a ReaderHistory. This class is only intended to be used with the RTPS API.
+ * The Publsiher-Subscriber API has other fields to define this values
+ * (HistoryQosPolicy and ResourceLimitsQosPolicy).
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class HistoryCacheAttributes {
 
-	public int payloadMaxSize;
-	public int initialReservedCaches;
-	public int maximumReservedCaches;
+    /**
+     * Maximum payload size of the history, default value 500.
+     */
+    public int payloadMaxSize;
+    /**
+     * Number of the initial Reserved Caches, default value 500.
+     */
+    public int initialReservedCaches;
+    /**
+     * Maximum number of reserved caches. Default value is 0 that indicates to
+     * keep reserving until something breaks.
+     */
+    public int maximumReservedCaches;
 
-	public HistoryCacheAttributes() {
-		this.payloadMaxSize = 500;
-		this.initialReservedCaches = 500;
-		this.maximumReservedCaches = 0;
-	}
+    public HistoryCacheAttributes() {
+        this.payloadMaxSize = 500;
+        this.initialReservedCaches = 500;
+        this.maximumReservedCaches = 0;
+    }
 
-	public HistoryCacheAttributes(int payloadMaxSize, int initialeservedCaches, int maximumReservedCaches) {
-		super();
-		this.payloadMaxSize = payloadMaxSize;
-		this.initialReservedCaches = initialeservedCaches;
-		this.maximumReservedCaches = maximumReservedCaches;
-	}
-
-
+    /**
+     * Constructor
+     *
+     * @param payloadMaxSize Maximum payload size.
+     * @param initialeservedCaches Initial reserved caches.
+     * @param maximumReservedCaches Maximum reserved caches.
+     */
+    public HistoryCacheAttributes(int payloadMaxSize, int initialeservedCaches, int maximumReservedCaches) {
+        super();
+        this.payloadMaxSize = payloadMaxSize;
+        this.initialReservedCaches = initialeservedCaches;
+        this.maximumReservedCaches = maximumReservedCaches;
+    }
 
 }

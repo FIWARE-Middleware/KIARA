@@ -22,13 +22,23 @@ import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 
 /**
+ * Class ReaderAttributes, to define the attributes of a RTPSReader.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ReaderAttributes {
 
+    /**
+     * Attributes of the associated endpoint.
+     */
     public EndpointAttributes endpointAtt;
+    /**
+     * Times associated with this reader.
+     */
     public ReaderTimes times;
+    /**
+     * Indicates if the reader expects Inline qos, default value 0.
+     */
     public boolean expectsInlineQos;
 
     public ReaderAttributes() {

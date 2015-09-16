@@ -21,33 +21,79 @@ import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
+ * Class BuiltinAttributes, to define the behavior of the RTPSParticipant
+ * builtin protocols.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class BuiltinAttributes {
 
+    /**
+     * If set to false, NO discovery whatsoever would be used. Publisher and
+     * Subscriber defined with the same topic name would NOT be linked. All
+     * matching must be done manually through the addReaderLocator,
+     * addReaderProxy, addWriterProxy methods.
+     */
     public boolean useSimplePDP; // SimpleParticipantDiscoveryProtocol
 
+    /**
+     * Indicates to use the WriterLiveliness protocol.
+     */
     public boolean useWriterLP; // WriterLivelinessProtocol
 
+    /**
+     * If set to true, SimpleEDP would be used.
+     */
     public boolean useSimpleEDP; // SimpleEndpointDiscoveryProtocol
 
+    /**
+     * If set to true, StaticEDP based on an XML file would be implemented. The
+     * XML filename must be provided.
+     */
     public boolean useStaticEDP; // StaticEndpointDiscoveryProtocol
 
+    /**
+     * DomainId to be used by the RTPSParticipant (80 by default).
+     */
     public int domainID;
 
+    /**
+     * Lease Duration of the RTPSParticipant, indicating how much time remote
+     * RTPSParticipants should consider this RTPSParticipant alive.
+     */
     public Timestamp leaseDuration;
 
+    /**
+     * The period for the RTPSParticipant to send its Discovery Message to all
+     * other discovered RTPSParticipants as well as to all Multicast ports.
+     */
     public Timestamp leaseDurationAnnouncementPeriod;
 
+    /**
+     * Attributes of the SimpleEDP protocol
+     */
     public SimpleEDPAttributes simpleEDP;
 
+    /**
+     * Metatraffic Unicast Locator List
+     */
     public LocatorList metatrafficUnicastLocatorList;
 
+    /**
+     * Metatraffic Multicast Locator List.
+     */
     public LocatorList metatrafficMulticastLocatorList;
 
+    /**
+     * StaticEDP XML filename, only necessary if
+     * use_STATIC_EndpointDiscoveryProtocol=true
+     */
     private String m_staticEndpointXMLFilename;
 
+    /**
+     * StaticEDP XML configuration text, only necessary if
+     * use_STATIC_EndpointDiscoveryProtocol=true, only used for tests
+     */
     private String m_staticEndpointXML;
 
     public BuiltinAttributes() {
@@ -65,18 +111,38 @@ public class BuiltinAttributes {
         this.metatrafficUnicastLocatorList = new LocatorList();
     }
 
+    /**
+     * Get the static endpoint XML filename
+     *
+     * @return Static endpoint XML filename
+     */
     public String getStaticEndpointXMLFilename() {
         return this.m_staticEndpointXMLFilename;
     }
 
+    /**
+     * Set the static endpoint XML filename
+     *
+     * @param filename Static endpoint XML filename
+     */
     public void setStaticEndpointXMLFilename(String filename) {
         this.m_staticEndpointXMLFilename = filename;
     }
 
+    /**
+     * Get the static endpoint XML configuration text
+     *
+     * @return Static endpoint XML configuration texxt
+     */
     public String getStaticEndpointXML() {
         return this.m_staticEndpointXML;
     }
 
+    /**
+     * Set the static endpoint XML configuration text
+     *
+     * @param edpXml Static endpoint XML configuration text
+     */
     public void setStaticEndpointXML(String edpXml) {
         this.m_staticEndpointXML = edpXml;
     }

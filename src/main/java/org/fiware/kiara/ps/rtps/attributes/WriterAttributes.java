@@ -22,12 +22,19 @@ import org.fiware.kiara.ps.rtps.common.EndpointKind;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class WriterAttributes, defining the attributes of a RTPSWriter.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class WriterAttributes {
 
+    /**
+     * Attributes of the associated endpoint.
+     */
     public EndpointAttributes endpointAtt;
+    /**
+     * Writer Times (only used for RELIABLE).
+     */
     public WriterTimes times;
 
     public WriterAttributes() {

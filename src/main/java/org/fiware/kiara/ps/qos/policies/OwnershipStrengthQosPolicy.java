@@ -25,7 +25,8 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
+ * Class OwnershipStrengthQosPolicy, to indicate the strength of the ownership.
+ * value: Default value 0.
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class OwnershipStrengthQosPolicy extends Parameter {

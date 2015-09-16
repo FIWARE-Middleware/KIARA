@@ -26,22 +26,25 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class ReliabilityQosPolicy, to indicate the reliability of the endpoints.
+ * kind: Default value BEST_EFFORT_RELIABILITY_QOS for ReaderQos and
+ * RELIABLE_RELIABILITY_QOS for WriterQos. max_blocking_time: Not Used in this
+ * version.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ReliabilityQosPolicy extends Parameter {
-    
+
     // TODO
-    
     public QosPolicy parent;
-    
+
     public ReliabilityQosPolicyKind kind;
-    
+
     public Timestamp maxBlockingTime;
-    
+
     public ReliabilityQosPolicy() {
         super(ParameterId.PID_RELIABILITY, (short) (Parameter.PARAMETER_KIND_LENGTH + Parameter.PARAMETER_KIND_LENGTH));
-        this.parent = new QosPolicy(true);
+        this.parent = new QosPolicy(true); // indicate send always
         this.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
         this.maxBlockingTime = new Timestamp();
     }

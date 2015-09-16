@@ -26,13 +26,16 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class DurabilityQosPolicy, to indicate the durability of the samples. kind:
+ * Default value for Subscribers: VOLATILE_DURABILITY_QOS, for Publishers
+ * TRANSIENT_LOCAL_DURABILITY_QOS
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class DurabilityQosPolicy extends Parameter {
-    
+
     public QosPolicy parent;
-    
+
     public DurabilityQosPolicyKind kind;
 
     public DurabilityQosPolicy() {
@@ -66,5 +69,5 @@ public class DurabilityQosPolicy extends Parameter {
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
-    
+
 }

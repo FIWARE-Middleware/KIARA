@@ -19,7 +19,6 @@ package org.fiware.kiara.ps.qos.policies;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
@@ -28,34 +27,33 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class UserDataQosPolicy, to transmit user data during the discovery phase.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class UserDataQosPolicy extends Parameter {
 
     // TODO
-    
     public QosPolicy parent;
-    
+
     private List<Byte> dataBuf;
-    
+
     public UserDataQosPolicy() {
         super(ParameterId.PID_USER_DATA, (short) 0);
         this.parent = new QosPolicy(false);
     }
-    
+
     /*public byte[] getDataBuf() {
-        return this.dataBuf;
-    }*/
-    
+     return this.dataBuf;
+     }*/
     public List<Byte> getDataBuf() {
         return this.dataBuf;
     }
 
     public void setDataBuf(List<Byte> buf) {
-        if (buf == null)
+        if (buf == null) {
             dataBuf = null;
-        else if (dataBuf != null && dataBuf.size() == buf.size()) {
+        } else if (dataBuf != null && dataBuf.size() == buf.size()) {
             System.arraycopy(buf, 0, dataBuf, 0, buf.size());
         } else {
             dataBuf = new ArrayList<Byte>(buf);
@@ -72,5 +70,4 @@ public class UserDataQosPolicy extends Parameter {
         // Do nothing
     }
 
-    
 }

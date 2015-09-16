@@ -18,20 +18,28 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum ReliabilityQosPolicyKind, different kinds of reliability for
+ * ReliabilityQosPolicy.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum ReliabilityQosPolicyKind {
-    
+
+    /**
+     * Best Effort reliability (default for Subscribers).
+     */
     BEST_EFFORT_RELIABILITY_QOS((byte) 0),
+    /**
+     * Reliable reliability (default for Publishers).
+     */
     RELIABLE_RELIABILITY_QOS((byte) 1);
-    
+
     private byte m_value;
-    
+
     private ReliabilityQosPolicyKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }
