@@ -32,6 +32,7 @@ import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
+import static org.fiware.kiara.ps.rtps.common.EndpointKind.WRITER;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
@@ -51,6 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class Participant used to group Publishers and Subscribers into a single
+ * working unit.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
@@ -73,7 +76,6 @@ public class Participant /*<T extends Serializable>*/ {
     private List<TopicDataType<?>> m_types;
 
     //private List<SerializableDataType> m_types_old;
-
     public class MyRTPSParticipantListener extends RTPSParticipantListener {
 
         private Participant m_participant;
@@ -119,6 +121,13 @@ public class Participant /*<T extends Serializable>*/ {
         RTPSDomain.removeRTPSParticipant(this.m_rtpsParticipant);
     }
 
+    /**
+     * Create a Publisher in this Participant.
+     *
+     * @param att Attributes of the Publisher.
+     * @param listener reference to the listener.
+     * @return reference to the created Publisher.
+     */
     @SuppressWarnings("unchecked")
     public <T> Publisher<T> createPublisher(PublisherAttributes att, PublisherListener listener) {
         //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
@@ -186,7 +195,6 @@ public class Participant /*<T extends Serializable>*/ {
         writerAtt.times = att.times;
 
         //RTPSWriter writer = RTPSDomain. TODO continue impl
-
         RTPSWriter writer = RTPSDomain.createRTPSWriter(this.m_rtpsParticipant, writerAtt, (WriterHistoryCache) publisher.getHistory(), publisher.getWriterListener());
         if (writer == null) {
             logger.error("Problem creating associated Writer");
@@ -204,84 +212,13 @@ public class Participant /*<T extends Serializable>*/ {
         return publisher;
     }
 
-    public Publisher<?> createPublisher_old(PublisherAttributes att, PublisherListener listener) {
-        //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
-        /*TopicDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
-
-        logger.info("Creating Publisher in Topic " + att.topic.topicName);
-
-        if (type == null) {
-            logger.error("Type : " + att.topic.topicDataTypeName + " Not Registered");
-            return null;
-        }
-
-        if (att.topic.topicKind == TopicKind.WITH_KEY && !type.isGetKeyDefined()) {
-            logger.error("Keyed Topic needs getKey function");
-            return null;
-        }
-
-        if (this.m_att.rtps.builtinAtt.useStaticEDP) {
-            if (att.getUserDefinedID() <= 0) {
-                logger.error("Static EDP requires user defined Id");
-                return null;
-            }
-        }
-
-        if (!att.unicastLocatorList.isValid()) {
-            logger.error("Unicast Locator List for Publisher contains invalid Locator");
-            return null;
-        }
-
-        if (!att.multicastLocatorList.isValid()) {
-            logger.error("Multicast Locator List for Publisher contains invalid Locator");
-            return null;
-        }
-
-        if (!att.qos.checkQos() || !att.topic.checkQos()) {
-            return null;
-        }
-
-        Publisher<?> publisher = new Publisher(this, type, att, listener);
-        publisher.setRTPSParticipant(this.m_rtpsParticipant);
-
-        WriterAttributes writerAtt = new WriterAttributes();
-        writerAtt.endpointAtt.durabilityKind = att.qos.durability.kind == DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS ? DurabilityKind.VOLATILE : DurabilityKind.TRANSIENT_LOCAL;
-        writerAtt.endpointAtt.endpointKind = EndpointKind.WRITER;
-        writerAtt.endpointAtt.multicastLocatorList = att.multicastLocatorList;
-        writerAtt.endpointAtt.reliabilityKind = att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS ? ReliabilityKind.RELIABLE : ReliabilityKind.BEST_EFFORT;
-        writerAtt.endpointAtt.topicKind = att.topic.topicKind;
-        writerAtt.endpointAtt.unicastLocatorList = att.unicastLocatorList;
-
-        if (att.getEntityId() > 0) {
-            writerAtt.endpointAtt.setEntityID(att.getEntityId());
-        } 
-
-        if (att.getUserDefinedID() > 0) {
-            writerAtt.endpointAtt.setUserDefinedID(att.getUserDefinedID());
-        }
-
-        writerAtt.times = att.times;
-
-        //RTPSWriter writer = RTPSDomain. TODO continue impl
-
-        RTPSWriter writer = RTPSDomain.createRTPSWriter(this.m_rtpsParticipant, writerAtt, (WriterHistoryCache) publisher.getHistory(), publisher.getWriterListener());
-        if (writer == null) {
-            logger.error("Problem creating associated Writer");
-            return null;
-        }
-
-        publisher.setWriter(writer);
-
-        this.m_publishers.add(publisher);
-
-        this.m_rtpsParticipant.registerWriter(writer, att.topic, att.qos);
-
-        logger.info("Publisher {} created in topic {}", publisher.getGuid(), att.topic.topicName);
-
-        return publisher;*/
-        return null;
-    }
-
+    /**
+     * Create a Subscriber in this Participant.
+     *
+     * @param att Attributes of the Subscriber
+     * @param listener reference to the listener.
+     * @return reference to the created Subscriber.
+     */
     @SuppressWarnings("unchecked")
     public <T> Subscriber<T> createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
 
@@ -362,8 +299,14 @@ public class Participant /*<T extends Serializable>*/ {
         return subscriber;
     }
 
+    /**
+     * Remove a Publisher from this participant.
+     *
+     * @param pub reference to the Publisher.
+     * @return True if correctly removed.
+     */
     public boolean removePublisher(Publisher<?> pub) {
-        for (int i=0; i < this.m_publishers.size(); ++i) {
+        for (int i = 0; i < this.m_publishers.size(); ++i) {
             Publisher<?> it = this.m_publishers.get(i);
             if (it.getGuid().equals(pub.getGuid())) {
                 it.destroy();
@@ -374,8 +317,14 @@ public class Participant /*<T extends Serializable>*/ {
         return true;
     }
 
+    /**
+     * Remove a Subscriber from this participant.
+     *
+     * @param sub reference to the Subscriber.
+     * @return True if correctly removed.
+     */
     public boolean removeSubscriber(Subscriber<?> sub) {
-        for (int i=0; i < this.m_subscribers.size(); ++i) {
+        for (int i = 0; i < this.m_subscribers.size(); ++i) {
             Subscriber<?> it = this.m_subscribers.get(i);
             if (it.getGuid().equals(sub.getGuid())) {
                 it.destroy();
@@ -386,6 +335,12 @@ public class Participant /*<T extends Serializable>*/ {
         return true;
     }
 
+    /**
+     * Register a type in this participant.
+     *
+     * @param type reference to the {@link TopicDataType}.
+     * @return True if registered.
+     */
     public boolean registerType(TopicDataType<?> type) {
 
         if (type.getTypeSize() <= 0) {
@@ -415,46 +370,12 @@ public class Participant /*<T extends Serializable>*/ {
         return true;
     }
 
-    public boolean registerType_old(SerializableDataType<?> type) {
-
-        /*if (type.getTypeSize() <= 0) {
-            logger.error("Registered Type must have maximum byte size > 0");
-            return false;
-        }
-
-        if (type.getTypeSize() > SerializedPayload.PAYLOAD_MAX_SIZE) {
-            logger.error("Current version only supports types of sizes < " + SerializedPayload.PAYLOAD_MAX_SIZE);
-            return false;
-        }
-
-        if (type.getName().length() <= 0) {
-            logger.error("Registered Type must have a name");
-            return false;
-        }
-
-        for (TopicDataType<?> it : this.m_types) {
-            if (it.getName().equals(type.getName())) {
-                logger.error("Type with the same name already exists");
-                return false;
-            }
-        }
-
-        this.m_types.add(type);
-        logger.info("Type " + type.getName() + " registered");*/
-        return true;
-    }
-
-    /*public TopicDataType getRegisteredType(String typeName) {
-
-        for (TopicDataType type : this.m_types) {
-            if (type.getName().equals(typeName)) {
-                return type;
-            }
-        }
-
-        return null;
-    }*/
-
+    /**
+     * Returns type registered with specified type name.
+     *
+     * @param typeName type name
+     * @return type or null if no type with specified name is registered
+     */
     public TopicDataType<?> getRegisteredType(String typeName) {
 
         for (TopicDataType<?> type : this.m_types) {
@@ -466,40 +387,64 @@ public class Participant /*<T extends Serializable>*/ {
         return null;
     }
 
-    public <T extends Serializable> SerializableDataType<T> getRegisteredType_old(String typeName) {
-
-        /*for (SerializableDataType<T> type : this.m_types) {
-            if (type.getName().equals(typeName)) {
-                return type;
-            }
-        }*/
-
-        return null;
-    }
-
-
+    /**
+     * Get the {@link GUID} of the associated RTPSParticipant.
+     *
+     * @return {@link GUID}.
+     */
     public GUID getGuid() {
         return this.m_rtpsParticipant.getGUID();
     }
 
+    /**
+     * Get the participant attributes
+     *
+     * @return Participant attributes
+     */
     public ParticipantAttributes getAttributes() {
         return this.m_att;
 
     }
 
+    /**
+     * This method can be used when using a StaticEndpointDiscovery mechanism
+     * different that the one included in FastRTPS, for example when
+     * communicating with other implementations. It indicates the Participant
+     * that an Endpoint from the XML has been discovered and should be
+     * activated.
+     *
+     * @param paricipantGuid Participant {@link GUID}.
+     * @param userId User defined ID as shown in the XML file.
+     * @param kind EndpointKind (WRITER or READER)
+     * @return True if correctly found and activated.
+     */
     public boolean newRemoteEndpointDiscovered(GUID paricipantGuid, short userId, EndpointKind kind) {
-        return false;
-
+        return this.m_rtpsParticipant.newRemoteEndpointDiscovered(paricipantGuid, userId, kind);
     }
 
+    /**
+     * Get the participant listener
+     *
+     * @return Participant listener
+     */
     public RTPSParticipantListener getListener() {
         return this.m_rtpsListener;
     }
 
+    /**
+     * Set RTPSParticipant
+     *
+     * @param part RTPSParticipant
+     */
     public void setRTPSParticipant(RTPSParticipant part) {
         this.m_rtpsParticipant = part;
     }
 
+    /**
+     * Get SPDP unicast port
+     *
+     * @return SPDP unicast port
+     */
     public int getSPDPUnicastPort() {
         if (this.m_rtpsParticipant != null) {
             return this.m_rtpsParticipant.getSPDPUnicastPort();
@@ -507,6 +452,11 @@ public class Participant /*<T extends Serializable>*/ {
         return -1;
     }
 
+    /**
+     * Get SPDP multicast port
+     *
+     * @return SPDP multicast port
+     */
     public int getSPDPMulticastPort() {
         if (this.m_rtpsParticipant != null) {
             return this.m_rtpsParticipant.getSPDPMulticastPort();
@@ -514,6 +464,11 @@ public class Participant /*<T extends Serializable>*/ {
         return -1;
     }
 
+    /**
+     * Get user unicast port
+     *
+     * @return user unicast port
+     */
     public int getUserUnicastPort() {
         if (this.m_rtpsParticipant != null) {
             return this.m_rtpsParticipant.getUserUnicastPort();
@@ -521,16 +476,16 @@ public class Participant /*<T extends Serializable>*/ {
         return -1;
     }
 
+    /**
+     * Get user multicast port
+     *
+     * @return user multicast port
+     */
     public int getUserMulticastPort() {
         if (this.m_rtpsParticipant != null) {
             return this.m_rtpsParticipant.getUserMulticastPort();
         }
         return -1;
     }
-
-
-
-
-
 
 }

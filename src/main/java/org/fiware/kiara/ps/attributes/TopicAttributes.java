@@ -25,23 +25,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class TopicAttributes, used by the user to define the attributes of the topic
+ * associated with a Publisher or Subscriber.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class TopicAttributes {
-    
+
+    /**
+     * TopicKind, default value NO_KEY.
+     */
     public TopicKind topicKind;
-    
+
+    /**
+     * Topic Name.
+     */
     public String topicName;
-    
+
+    /**
+     * Topic Data Type Name.
+     */
     public String topicDataTypeName;
-    
+
+    /**
+     * QOS Regarding the History to be saved.
+     */
     public HistoryQosPolicy historyQos;
-    
+
+    /**
+     * QOS Regarding the resources to allocate.
+     */
     public ResourceLimitsQosPolicy resourceLimitQos;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(TopicAttributes.class);
-    
+
     /**
      * Main Constructor
      */
@@ -52,9 +69,10 @@ public class TopicAttributes {
         this.historyQos = new HistoryQosPolicy();
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
-    
+
     /**
-     * Constructor
+     * Constructor, you need to provide the topic name and the topic data type.
+     *
      * @param name The name of the topic
      * @param dataType The name of the data type
      * @param kind The TopicKind of the topic
@@ -67,47 +85,67 @@ public class TopicAttributes {
         this.resourceLimitQos = new ResourceLimitsQosPolicy();
     }
 
+    /**
+     * Get the topic data type
+     *
+     * @return Topic data type
+     */
     public String getTopicDataType() {
         return topicDataTypeName;
     }
 
+    /**
+     * Get the topic kind
+     *
+     * @return Topic kind
+     */
     public TopicKind getTopicKind() {
         return topicKind;
     }
 
+    /**
+     * Get the topic name
+     *
+     * @return Topic name
+     */
     public String getTopicName() {
         return topicName;
     }
 
+    /**
+     * Method to check whether the defined QOS are correct.
+     *
+     * @return True if they are valid.
+     */
     public boolean checkQos() {
         if (resourceLimitQos.maxSamplesPerInstance > resourceLimitQos.maxSamples && this.topicKind == TopicKind.WITH_KEY) {
-            logger.error("INCORRECT TOPIC QOS: Max samples per instance must be less or equal than max samples"); 
+            logger.error("INCORRECT TOPIC QOS: Max samples per instance must be less or equal than max samples");
             return false;
         }
-        
+
         if (resourceLimitQos.maxSamplesPerInstance * resourceLimitQos.maxInstances > resourceLimitQos.maxSamples && topicKind == TopicKind.WITH_KEY) {
-            logger.warn("TOPIC QOS: maxSamples < maxSamplesPerInstance * maxInstances"); 
+            logger.warn("TOPIC QOS: maxSamples < maxSamplesPerInstance * maxInstances");
         }
-        
+
         if (historyQos.kind == HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS) {
             if (historyQos.depth > resourceLimitQos.maxSamples) {
-                logger.error("INCORRECT TOPIC QOS: depth must be <= max_samples"); 
+                logger.error("INCORRECT TOPIC QOS: depth must be <= max_samples");
                 return false;
             }
             if (historyQos.depth > resourceLimitQos.maxSamplesPerInstance && topicKind == TopicKind.WITH_KEY) {
-                logger.error("INCORRECT TOPIC QOS: depth must be <= max_samples_per_instance"); 
+                logger.error("INCORRECT TOPIC QOS: depth must be <= max_samples_per_instance");
                 return false;
             }
             if (historyQos.depth <= 0) {
-                logger.error("INCORRECT TOPIC QOS: depth must be > 0"); 
+                logger.error("INCORRECT TOPIC QOS: depth must be > 0");
                 return false;
             }
         }
-        
+
         return true;
-        
+
     }
-    
+
     @Override
     public boolean equals(Object other) {
         if (other instanceof TopicAttributes) {

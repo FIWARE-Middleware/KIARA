@@ -22,52 +22,96 @@ import org.fiware.kiara.ps.rtps.attributes.WriterTimes;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class PublisherAttributes, used by the user to define the attributes of a
+ * Publisher.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class PublisherAttributes {
-    
+
+    /**
+     * Topic Attributes for the Publisher
+     */
     public TopicAttributes topic;
-    
+
+    /**
+     * QOS for the Publisher
+     */
     public WriterQos qos;
-    
+
+    /**
+     * Writer Attributes
+     */
     public WriterTimes times;
-    
+
+    /**
+     * Unicast locator list
+     */
     public LocatorList unicastLocatorList;
-    
+
+    /**
+     * Multicast locator list
+     */
     public LocatorList multicastLocatorList;
-    
+
+    /**
+     * User Defined ID, used for StaticEndpointDiscovery, default value -1.
+     */
     private short m_userDefinedId;
-    
+
+    /**
+     * Entity ID, if the user want to specify the EntityID of the endpoint,
+     * default value -1.
+     */
     private short m_entityId;
-    
+
     /**
      * Main Constructor
      */
     public PublisherAttributes() {
         this.m_userDefinedId = -1;
         this.m_entityId = -1;
-        
+
         this.topic = new TopicAttributes();
         this.qos = new WriterQos();
         this.times = new WriterTimes();
         this.unicastLocatorList = new LocatorList();
         this.multicastLocatorList = new LocatorList();
-        
+
     }
-    
+
+    /**
+     * Get the user defined ID
+     *
+     * @return User defined ID
+     */
     public short getUserDefinedID() {
         return this.m_userDefinedId;
     }
-    
+
+    /**
+     * Set the user defined ID
+     *
+     * @param userDefinedId User defined ID to be set
+     */
     public void setUserDefinedID(short userDefinedId) {
         this.m_userDefinedId = userDefinedId;
     }
-    
+
+    /**
+     * Get the entity defined ID
+     *
+     * @return Entity ID
+     */
     public short getEntityId() {
         return this.m_entityId;
     }
-    
+
+    /**
+     * Set the entity ID
+     *
+     * @param entityId Entity ID to be set
+     */
     public void setEntityId(short entityId) {
         this.m_entityId = entityId;
     }

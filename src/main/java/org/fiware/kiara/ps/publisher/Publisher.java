@@ -22,7 +22,6 @@ import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
 import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.common.Locator;
-import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -33,12 +32,12 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
-import org.fiware.kiara.ps.topic.TopicDataTypeOld;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class Publisher, used to send data to associated subscribers.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
@@ -50,7 +49,7 @@ public class Publisher<T> {
      */
     public class PublisherWriterListener extends WriterListener {
 
-        private Publisher<T> m_publisher;
+        private final Publisher<T> m_publisher;
 
         public PublisherWriterListener(Publisher<T> publisher) {
             this.m_publisher = publisher;
@@ -78,7 +77,6 @@ public class Publisher<T> {
     private PublisherListener m_listener;
 
     //private Publisher<T> m_userPublisher;
-
     private RTPSParticipant m_rtpsParticipant;
 
     private PublisherWriterListener m_writerListener;
@@ -102,12 +100,24 @@ public class Publisher<T> {
         RTPSDomain.removeRTPSWriter(this.m_writer);
     }
 
+    /**
+     * Write data to the topic.
+     *
+     * @param data reference to the data
+     * @return True if correct
+     */
     public boolean write(T data) {
         logger.info("Writing new data");
         return this.createNewChange(ChangeKind.ALIVE, data);
     }
 
-    public  boolean createNewChange(ChangeKind kind, T data) {
+    /**
+     *
+     * @param kind
+     * @param data
+     * @return
+     */
+    public boolean createNewChange(ChangeKind kind, T data) {
         if (data == null) {
             logger.error("Data is null");
             return false;
@@ -128,7 +138,7 @@ public class Publisher<T> {
         CacheChange ch = this.m_writer.newChange(kind, handle);
         if (ch != null) {
             if (kind == ChangeKind.ALIVE) {
-                ch.getSerializedPayload().setData((Serializable) data); 
+                ch.getSerializedPayload().setData((Serializable) data);
                 if (!this.m_type.serialize(data, ch.getSerializedPayload())) {
                     logger.warn("RTPSWriter: Serialization returns false");
                     this.m_history.releaseCache(ch);
@@ -155,35 +165,65 @@ public class Publisher<T> {
         return false;
     }
 
-
-    public  boolean dispose(T data) {
+    /**
+     * Dispose of a previously written data.
+     *
+     * @param data reference to the data.
+     * @return True if correct.
+     */
+    public boolean dispose(T data) {
         logger.info("Disposing of data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED, data);
     }
 
-    public  boolean unregister(T data) {
+    /**
+     * Unregister a previously written data.
+     *
+     * @param data Pointer to the data.
+     * @return True if correct.
+     */
+    public boolean unregister(T data) {
         logger.info("Unregistering of type");
         return this.createNewChange(ChangeKind.NOT_ALIVE_UNREGISTERED, data);
     }
 
-    public  boolean disposeAndUnregister(T data) {
+    /**
+     * Dispose and unregister a previously written data.
+     *
+     * @param data Pointer to the data.
+     * @return True if correct.
+     */
+    public boolean disposeAndUnregister(T data) {
         logger.info("Disposing and unregistering data");
         return this.createNewChange(ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED, data);
     }
 
-
+    /**
+     * Remove all the Changes in the associated RTPSWriter.
+     *
+     * @param removed Number of elements removed
+     * @return number of elements removed
+     */
     public int removeAllChanges(int removed) {
         logger.info("Removing all data from hsitory");
         return this.m_history.removeAllChangesNum();
     }
 
+    /**
+     * Update the Attributes of the publisher;
+     *
+     * @param att Reference to a PublisherAttributes object to update the
+     * parameters;
+     * @return True if correctly updated, false if ANY of the updated parameters
+     * cannot be updated
+     */
     public boolean updateAttributes(PublisherAttributes att) {
         boolean updated = true;
         boolean missing = false;
 
         if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
-            if (att.unicastLocatorList.getLocators().size() != this.m_att.unicastLocatorList.getLocators().size() || 
-                    att.multicastLocatorList.getLocators().size() != this.m_att.multicastLocatorList.getLocators().size()) {
+            if (att.unicastLocatorList.getLocators().size() != this.m_att.unicastLocatorList.getLocators().size()
+                    || att.multicastLocatorList.getLocators().size() != this.m_att.multicastLocatorList.getLocators().size()) {
                 logger.warn("Locator Lists cannot be changed or updated in this version");
                 updated &= false;
             } else {
@@ -229,7 +269,7 @@ public class Publisher<T> {
             if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
                 // TODO Not supported in this version (StatefulWriter)
             }
-            this.m_att.qos.setQos(att.qos,  false);
+            this.m_att.qos.setQos(att.qos, false);
             this.m_att = att;
             this.m_rtpsParticipant.updateLocalWriter(this.m_writer, this.m_att.qos);
         }
@@ -237,30 +277,67 @@ public class Publisher<T> {
         return updated;
     }
 
+    /**
+     * Get the Attributes of the Subscriber.
+     *
+     * @return Attributes of the Subscriber.
+     */
     public PublisherAttributes getAttributes() {
         return this.m_att;
     }
 
+    /**
+     * Get publisher history.
+     *
+     * @return publisher history
+     * @see PublisherHistory
+     */
     public PublisherHistory getHistory() {
         return this.m_history;
     }
 
+    /**
+     * Get the {@link GUID} of the associated RTPSWriter.
+     *
+     * @return GUID.
+     */
     public GUID getGuid() {
         return this.m_writer.getGuid();
     }
 
+    /**
+     * Get the RTPS participant.
+     *
+     * @return RTPS participant
+     * @see RTPSParticipant
+     */
     public RTPSParticipant getRTPSParticipant() {
         return this.m_rtpsParticipant;
     }
 
+    /**
+     * Set the RTPS participant.
+     *
+     * @see RTPSParticipant
+     */
     public void setRTPSParticipant(RTPSParticipant participant) {
         this.m_rtpsParticipant = participant;
     }
 
+    /**
+     * Get the writer listener
+     *
+     * @return writer listener
+     */
     public WriterListener getWriterListener() {
         return this.m_writerListener;
     }
 
+    /**
+     * Set the writer
+     *
+     * @param writer
+     */
     public void setWriter(RTPSWriter writer) {
         this.m_writer = writer;
     }
