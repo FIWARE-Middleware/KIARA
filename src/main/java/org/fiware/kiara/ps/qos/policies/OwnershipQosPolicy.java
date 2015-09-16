@@ -25,15 +25,16 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class OwnershipQosPolicy, to indicate the ownership kind of the endpoints.
+ * kind: Default value SHARED_OWNERSHIP_QOS.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class OwnershipQosPolicy extends Parameter {
 
     // TODO
-    
     public QosPolicy parent;
-    
+
     public OwnershipQosPolicyKind kind;
 
     public OwnershipQosPolicy() {
@@ -50,7 +51,7 @@ public class OwnershipQosPolicy extends Parameter {
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
 
 }

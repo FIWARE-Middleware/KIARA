@@ -18,19 +18,24 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum OwnershipQosPolicyKind, different kinds of ownership for
+ * OwnershipQosPolicy.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum OwnershipQosPolicyKind {
-    SHARED_OWNERSHIP_QOS ((byte) 0), //!< Shared Ownership, default value.
-    EXCLUSIVE_OWNERSHIP_QOS((byte) 1); //!< Exclusive ownership
-    
-    private byte m_value;
-    
+
+    /** Shared Ownership, default value. */
+    SHARED_OWNERSHIP_QOS((byte) 0),
+    /** Exclusive ownership */
+    EXCLUSIVE_OWNERSHIP_QOS((byte) 1);
+
+    private final byte m_value;
+
     private OwnershipQosPolicyKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }

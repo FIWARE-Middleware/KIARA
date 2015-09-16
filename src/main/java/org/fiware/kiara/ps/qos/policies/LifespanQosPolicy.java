@@ -26,13 +26,15 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class LifespanQosPolicy. This QosPolicy can be defined and is transmitted to
+ * the rest of the network but is not implemented in this version. duration:
+ * Default value c_TimeInfinite.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class LifespanQosPolicy extends Parameter {
 
     // TODO
-    
     public QosPolicy parent;
 
     public final Timestamp duration;
@@ -52,8 +54,7 @@ public class LifespanQosPolicy extends Parameter {
     public void deserializeContent(SerializerImpl impl,
             BinaryInputStream message, String name) throws IOException {
         // Do nothing
-        
+
     }
-    
 
 }

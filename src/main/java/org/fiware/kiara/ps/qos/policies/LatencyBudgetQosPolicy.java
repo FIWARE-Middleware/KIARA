@@ -25,9 +25,12 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class LatencyBudgetQosPolicy, to indicate the LatencyBudget of the samples.
+ * This QosPolicy can be defined and is transmitted to the rest of the network
+ * but is not implemented in this version. period: Default value c_TimeZero.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class LatencyBudgetQosPolicy extends Parameter {
     // TODO
 

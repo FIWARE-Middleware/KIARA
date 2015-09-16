@@ -25,39 +25,78 @@ import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class Endpoint, all entities of the RTPS network are a specification of this
+ * class. Although the RTPSParticipant is also defined as an endpoint in the
+ * RTPS specification in this implementation the RTPSParticipant class DOESN'T
+ * inherit from this class. The elements needed where added directly to the
+ * RTPSParticipant class. This way each instance of our class (Endpoint) has a
+ * pointer to the RTPSParticipant they belong to.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class Endpoint {
-	
-	protected RTPSParticipant m_participant;
-	
-	protected GUID m_guid;
-	
-	protected EndpointAttributes m_att;
-	
-	protected final Lock m_mutex = new ReentrantLock(true);
-	
-	public Endpoint(RTPSParticipant participant, GUID guid, EndpointAttributes att) {
-		this.m_participant = participant;
-		this.m_guid = guid;
-		this.m_att = att;
-	}
 
-	public EndpointAttributes getAttributes() {
-		return this.m_att;
-	}
-	
-	public GUID getGuid() {
-		return this.m_guid;
-	}
-	
-	public RTPSParticipant getRTPSParticipant() {
-	    return this.m_participant;
-	}
+    /**
+     * Reference to the RTPSParticipant containing this endpoints
+     */
+    protected RTPSParticipant m_participant;
 
-        public Lock getMutex() {
-            return m_mutex;
-        }
+    /**
+     * Guid of the Endpoint
+     */
+    protected GUID m_guid;
+
+    /**
+     * Endpoint Attributes
+     */
+    protected EndpointAttributes m_att;
+
+    /**
+     * Mutex of the object
+     */
+    protected final Lock m_mutex = new ReentrantLock(true);
+
+    public Endpoint(RTPSParticipant participant, GUID guid, EndpointAttributes att) {
+        this.m_participant = participant;
+        this.m_guid = guid;
+        this.m_att = att;
+    }
+
+    /**
+     * Get associated attributes
+     *
+     * @return Endpoint attributes
+     */
+    public EndpointAttributes getAttributes() {
+        return this.m_att;
+    }
+
+    /**
+     * Get associated GUID
+     *
+     * @return Associated GUID
+     */
+    public GUID getGuid() {
+        return this.m_guid;
+    }
+
+    /**
+     * Get associated RTPS participant
+     *
+     * @return RTPS participant
+     * @see RTPSParticipant
+     */
+    public RTPSParticipant getRTPSParticipant() {
+        return this.m_participant;
+    }
+
+    /**
+     * Get mutex
+     *
+     * @return Associated Mutex
+     */
+    public Lock getMutex() {
+        return m_mutex;
+    }
 
 }

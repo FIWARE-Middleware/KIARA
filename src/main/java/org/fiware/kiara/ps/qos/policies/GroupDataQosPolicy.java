@@ -27,27 +27,27 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class GroupDataQosPolicy, to indicate the Group Data.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class GroupDataQosPolicy extends Parameter {
-    
+
     // TODO
-    
     public QosPolicy parent;
-    
+
     private List<Byte> m_value;
-    
+
     public GroupDataQosPolicy() {
         super(ParameterId.PID_GROUP_DATA, (short) 0);
         this.parent = new QosPolicy(false);
         this.m_value = new ArrayList<Byte>();
     }
-    
+
     public void pushBack(byte b) {
         this.m_value.add(b);
     }
-    
+
     public void clear() {
         this.m_value.clear();
     }

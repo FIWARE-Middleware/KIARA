@@ -40,19 +40,21 @@ import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
-import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class HistoryQosPolicy, defines the HistoryQos of the topic in the Writer or
+ * Reader side. kind: Default value KEEP_LAST_HISTORY_QOS. depth: Default value
+ * 1000.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class HistoryQosPolicy extends Parameter {
-    
+
     public QosPolicy parent;
-    
+
     public HistoryQosPolicyKind kind;
-    
+
     public int depth;
 
     public HistoryQosPolicy() {
@@ -61,7 +63,7 @@ public class HistoryQosPolicy extends Parameter {
         this.kind = HistoryQosPolicyKind.KEEP_LAST_HISTORY_QOS;
         this.depth = 1000;
     }
-    
+
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -79,7 +81,7 @@ public class HistoryQosPolicy extends Parameter {
         message.skipBytes(3);
         this.depth = impl.deserializeI32(message, name);
     }
-    
+
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

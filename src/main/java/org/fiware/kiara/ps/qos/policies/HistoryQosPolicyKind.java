@@ -35,20 +35,24 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum HistoryQosPolicyKind, different kinds of History Qos for
+ * HistoryQosPolicy.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum HistoryQosPolicyKind {
-    
-    KEEP_LAST_HISTORY_QOS((byte) 0), //!< Keep only a number of samples, default value.
-    KEEP_ALL_HISTORY_QOS((byte) 1); //!< Keep all samples until the ResourceLimitsQosPolicy are exhausted.
-    
+
+    /** Keep only a number of samples, default value. */
+    KEEP_LAST_HISTORY_QOS((byte) 0),
+    /** Keep all samples until the ResourceLimitsQosPolicy are exhausted. */
+    KEEP_ALL_HISTORY_QOS((byte) 1);
+
     private byte m_value;
-    
+
     private HistoryQosPolicyKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }

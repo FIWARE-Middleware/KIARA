@@ -20,23 +20,29 @@ package org.fiware.kiara.ps.rtps.attributes;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class ReaderTimes, defining the times associated with the Reliable Readers
+ * events.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ReaderTimes {
-	
-	public Timestamp heartbeatResponseDelay;
 
-	public ReaderTimes() {
-            this.heartbeatResponseDelay = new Timestamp(0, 500*1000*1000);
-	}
+    /**
+     * Delay to be applied when a hearbeat message is received, default value
+     * ~116ms.
+     */
+    public Timestamp heartbeatResponseDelay;
 
-        public ReaderTimes(ReaderTimes value) {
-            this.heartbeatResponseDelay = new Timestamp(value.heartbeatResponseDelay);
-        }
+    public ReaderTimes() {
+        this.heartbeatResponseDelay = new Timestamp(0, 500 * 1000 * 1000);
+    }
 
-        public void copy(ReaderTimes value) {
-            heartbeatResponseDelay.copy(value.heartbeatResponseDelay);
-        }
+    public ReaderTimes(ReaderTimes value) {
+        this.heartbeatResponseDelay = new Timestamp(value.heartbeatResponseDelay);
+    }
+
+    public void copy(ReaderTimes value) {
+        heartbeatResponseDelay.copy(value.heartbeatResponseDelay);
+    }
 
 }

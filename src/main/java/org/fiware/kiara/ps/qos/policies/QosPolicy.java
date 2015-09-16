@@ -35,15 +35,17 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
-public class QosPolicy{
-    
+ * Class QosPolicy is a base class for all the different QoS defined to the
+ * Writers and Readers.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
+public class QosPolicy {
+
     protected boolean m_sendAlways;
-    
+
     public boolean hasChanged;
-    
+
     public QosPolicy() {
         this.hasChanged = false;
         this.m_sendAlways = false;

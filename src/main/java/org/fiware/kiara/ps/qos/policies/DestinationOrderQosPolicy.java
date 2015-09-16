@@ -25,17 +25,20 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class DestinationOrderQosPolicy, to indicate the Destination Order Qos. This
+ * QosPolicy can be defined and is transmitted to the rest of the network but is
+ * not implemented in this version. kind: Default value
+ * BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class DestinationOrderQosPolicy extends Parameter {
-    
+
     // TODO
-    
     public QosPolicy parent;
-    
+
     public DestinationOrderQosPolicyKind kind;
-    
+
     public DestinationOrderQosPolicy() {
         super(ParameterId.PID_DESTINATION_ORDER, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(true);

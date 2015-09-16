@@ -18,15 +18,23 @@
 package org.fiware.kiara.ps.rtps.attributes;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class SimpleEDPAttributes, to define the attributes of the Simple Endpoint
+ * Discovery Protocol.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class SimpleEDPAttributes {
-    
+
+    /**
+     * Default value true.
+     */
     public boolean usePulicationWriterAndSubscriptionReader;
-    
+
+    /**
+     * Default value true.
+     */
     public boolean usePulicationReaderAndSubscriptionWriter;
-    
+
     public SimpleEDPAttributes() {
         this.usePulicationReaderAndSubscriptionWriter = true;
         this.usePulicationWriterAndSubscriptionReader = true;

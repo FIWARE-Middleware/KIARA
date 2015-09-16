@@ -18,19 +18,28 @@
 package org.fiware.kiara.ps.qos.policies;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enum OwnershipQosPolicyKind, different kinds of destination order for
+ * DestinationOrderQosPolicy.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum DestinationOrderQosPolicyKind {
-    BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS((byte) 0), //!< By Reception Timestamp, default value.
-    BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS((byte) 1); //!< By Source Timestamp.
-    
+
+    /**
+     * By Reception Timestamp, default value.
+     */
+    BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS((byte) 0),
+    /**
+     * By Source Timestamp.
+     */
+    BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS((byte) 1);
+
     private byte m_value;
-    
+
     private DestinationOrderQosPolicyKind(byte value) {
         this.m_value = value;
     }
-    
+
     public byte getValue() {
         return this.m_value;
     }

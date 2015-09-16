@@ -26,17 +26,26 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class LivelinessQosPolicy, to indicate the Liveliness of the Writers. This
+ * QosPolicy can be defined for the Subscribers and is transmitted but only the
+ * Writer Liveliness protocol is implemented in this version. The user should
+ * set the lease_duration and the announcement_period with values that differ in
+ * at least 30%. Values too close to each other may cause the failure of the
+ * writer liveliness assertion in networks with high latency or with lots of
+ * communication errors. kind: Default value AUTOMATIC_LIVELINESS_QOS
+ * lease_duration: Default value c_TimeInfinite. announcement_period: Default
+ * value c_TimeInfinite (must be < lease_duration).
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class LivelinessQosPolicy extends Parameter {
-    
+
     public QosPolicy parent;
-    
+
     public LivelinessQosPolicyKind kind;
-    
+
     public Timestamp leaseDuration;
-    
+
     public Timestamp announcementPeriod;
 
     public LivelinessQosPolicy() {
@@ -55,7 +64,6 @@ public class LivelinessQosPolicy extends Parameter {
     }
 
     // TODO
-
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

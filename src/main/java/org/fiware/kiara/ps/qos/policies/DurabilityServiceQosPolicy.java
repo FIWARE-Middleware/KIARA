@@ -27,25 +27,31 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class DurabilityServiceQosPolicy, to indicate the Durability Service. This
+ * QosPolicy can be defined and is transmitted to the rest of the network but is
+ * not implemented in this version. service_cleanup_delay: Default value
+ * c_TimeZero. history_kind: Default value KEEP_LAST_HISTORY_QOS. history_depth:
+ * Default value 1. max_samples: Default value -1. max_instances: Default value
+ * -1. max_samples_per_instance: Default value -1.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class DurabilityServiceQosPolicy extends Parameter {
 
     public QosPolicy parent;
-    
+
     public Timestamp serviceCleanupDelay;
-    
+
     public HistoryQosPolicyKind kind;
-    
+
     public int historyDepth;
-    
+
     public int maxSamples;
-    
+
     public int maxInstances;
-    
+
     public int maxSamplesPerInstance;
-    
+
     public DurabilityServiceQosPolicy() {
         super(ParameterId.PID_DURABILITY_SERVICE, (short) (Parameter.PARAMETER_KIND_LENGTH + Parameter.PARAMETER_KIND_LENGTH + 4 + 4 + 4 + 4));
         this.parent = new QosPolicy(false);
@@ -72,28 +78,28 @@ public class DurabilityServiceQosPolicy extends Parameter {
         super.serialize(impl, message, name);
 
         this.serviceCleanupDelay.serialize(impl, message, name);
-        
+
         impl.serializeByte(message, name, this.kind.getValue());
         impl.serializeByte(message, name, (byte) 0);
         impl.serializeByte(message, name, (byte) 0);
         impl.serializeByte(message, name, (byte) 0);
-        
+
         impl.serializeI32(message, name, this.historyDepth);
         impl.serializeI32(message, name, this.maxSamples);
         impl.serializeI32(message, name, this.maxInstances);
         impl.serializeI32(message, name, this.maxSamplesPerInstance);
-        
+
     }
 
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
-        
+
         this.serviceCleanupDelay.deserialize(impl, message, name);
-        
+
         this.kind = HistoryQosPolicyKind.values()[impl.deserializeByte(message, name)];
         message.skipBytes(3);
-        
+
         this.historyDepth = impl.deserializeI32(message, name);
         this.maxSamples = impl.deserializeI32(message, name);
         this.maxInstances = impl.deserializeI32(message, name);
@@ -104,8 +110,5 @@ public class DurabilityServiceQosPolicy extends Parameter {
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
-
-    
-    
 
 }
