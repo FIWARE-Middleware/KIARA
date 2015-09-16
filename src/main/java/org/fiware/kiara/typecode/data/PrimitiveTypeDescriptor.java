@@ -42,7 +42,8 @@ public interface PrimitiveTypeDescriptor extends DataTypeDescriptor {
      * {@link PrimitiveTypeDescriptor} object.
      *
      * @param length
-     * @return
+     * @return primitive type descriptor
+     * @see PrimitiveTypeDescriptor
      */
     public PrimitiveTypeDescriptor setMaxFixedLength(int length);
 

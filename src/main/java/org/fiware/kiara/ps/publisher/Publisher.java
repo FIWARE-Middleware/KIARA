@@ -112,10 +112,11 @@ public class Publisher<T> {
     }
 
     /**
+     * Create new change.
      *
-     * @param kind
-     * @param data
-     * @return
+     * @param kind change kind
+     * @param data data
+     * @return true if operation was successful
      */
     public boolean createNewChange(ChangeKind kind, T data) {
         if (data == null) {

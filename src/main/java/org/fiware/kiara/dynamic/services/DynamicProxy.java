@@ -40,7 +40,8 @@ public interface DynamicProxy extends DynamicValue {
     /**
      * This function creates a new object instance of
      * {@link DynamicFunctionRequest} according to the
-     * {@link FunctionTypeDescriptor} that was used to describe it.
+     * {@link org.fiware.kiara.typecode.services.FunctionTypeDescriptor} that
+     * was used to describe it.
      *
      * @param name request function name
      * @return dynamic function request
@@ -51,7 +52,8 @@ public interface DynamicProxy extends DynamicValue {
     /**
      * This function creates a new object instance of
      * {@link DynamicFunctionResponse} according to the
-     * {@link FunctionTypeDescriptor} that was used to describe it.
+     * {@link org.fiware.kiara.typecode.services.FunctionTypeDescriptor} that
+     * was used to describe it.
      *
      * @param name response function name
      * @return dynamic function response

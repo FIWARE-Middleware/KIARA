@@ -33,7 +33,7 @@ public interface DynamicMap extends DynamicContainer {
      *
      * @param key
      * @param value
-     * @return
+     * @return true if operation was successful
      */
     public boolean put(DynamicData key, DynamicData value);
 
@@ -43,7 +43,7 @@ public interface DynamicMap extends DynamicContainer {
      * introduced as a parameter.
      *
      * @param key
-     * @return
+     * @return true if this map contains a mapping for the specified key
      */
     public boolean containsKey(DynamicData key);
 
@@ -53,7 +53,7 @@ public interface DynamicMap extends DynamicContainer {
      * introduced as a parameter.
      *
      * @param value
-     * @return
+     * @return true if this map maps one or more keys to the specified value
      */
     public boolean containsValue(DynamicData value);
 
@@ -62,7 +62,8 @@ public interface DynamicMap extends DynamicContainer {
      * key is equal to the one introduced as a parameter.
      *
      * @param key
-     * @return
+     * @return the value to which the specified key is mapped, or null if this
+     * map contains no mapping for the key
      * @see DynamicData
      */
     public DynamicData get(DynamicData key);

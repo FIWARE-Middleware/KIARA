@@ -19,7 +19,7 @@ package org.fiware.kiara.dynamic.data;
 
 /**
  * This class holds the data values of a DynamicData object created from an
- * {@link ArrayTypeDescriptor}. A {@link DynamicArray} contains a group of
+ * {@link org.fiware.kiara.typecode.data.ArrayTypeDescriptor}. A {@link DynamicArray} contains a group of
  * {@link DynamicData} objects (all must be the same type) stored in single or
  * multi dimensional matrixes.
  *
@@ -33,7 +33,8 @@ public interface DynamicArray extends DynamicContainer {
      * position or coordinate.
      *
      * @param position
-     * @return
+     * @return dynamic data
+     * @see DynamicData
      */
     public DynamicData getElementAt(int... position);
 
