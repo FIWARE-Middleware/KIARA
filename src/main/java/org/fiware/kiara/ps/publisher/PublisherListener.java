@@ -20,11 +20,20 @@ package org.fiware.kiara.ps.publisher;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class PublisherListener, it should be used by the end user to implement
+ * specific callbacks to certain actions.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public abstract class PublisherListener {
-    
+
+    /**
+     * This method is called when the Publisher is matched (or unmatched)
+     * against an endpoint.
+     *
+     * @param pub Pointer to the associated Publisher
+     * @param info Information regarding the matched subscriber
+     */
     public abstract void onPublicationMatched(Publisher pub, MatchingInfo info);
 
 }

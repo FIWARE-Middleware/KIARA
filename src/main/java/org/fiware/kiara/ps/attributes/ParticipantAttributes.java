@@ -20,14 +20,20 @@ package org.fiware.kiara.ps.attributes;
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class ParticipantAttributes, used by the user to define the attributes of a
+ * Participant. The Participants in the Publisher-Subscriber layer are only a
+ * container to a RTPSParticipant, so their attributes are the same. Still to
+ * maintain the equivalence this class is used to define them.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ParticipantAttributes {
-    
-    //!Attributes of the associated RTPSParticipant.
+
+    /**
+     * Attributes of the associated RTPSParticipant.
+     */
     public RTPSParticipantAttributes rtps;
-    
+
     /**
      * Main Constructor
      */

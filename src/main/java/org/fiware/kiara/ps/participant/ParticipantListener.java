@@ -18,11 +18,20 @@
 package org.fiware.kiara.ps.participant;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class ParticipantListener, used by the user to override certain virtual
+ * methods to program behaviour to certain events.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public abstract class ParticipantListener {
-    
+
+    /**
+     * This method is called when a new Participant is discovered, or a
+     * previously discovered participant changes its QOS or its removed.
+     *
+     * @param p reference to the Participant
+     * @param info DiscoveryInfo.
+     */
     public abstract void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info);
-    
+
 }
