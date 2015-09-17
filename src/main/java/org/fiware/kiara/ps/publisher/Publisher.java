@@ -180,7 +180,7 @@ public class Publisher<T> {
     /**
      * Unregister a previously written data.
      *
-     * @param data Pointer to the data.
+     * @param data Reference to the data.
      * @return True if correct.
      */
     public boolean unregister(T data) {
@@ -191,7 +191,7 @@ public class Publisher<T> {
     /**
      * Dispose and unregister a previously written data.
      *
-     * @param data Pointer to the data.
+     * @param data Reference to the data.
      * @return True if correct.
      */
     public boolean disposeAndUnregister(T data) {

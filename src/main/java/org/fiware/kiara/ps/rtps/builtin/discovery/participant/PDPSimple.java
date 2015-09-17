@@ -356,7 +356,7 @@ public class PDPSimple {
             for (Locator lit : this.m_builtin.getMetatrafficMulticastLocatorList().getLocators()) {
                 this.m_SPDPWriter.addLocator(ratt, lit);
             }
-            if (this.m_builtin.getUseMandaory()) {
+            if (this.m_builtin.getUseMandatory()) {
                 this.m_SPDPWriter.addLocator(ratt, this.m_builtin.getMandatoryMulticastLocator());
             }
             logger.debug("Simple PDP Builtin Writer created with GUID {}", this.m_SPDPWriter.getGuid());
