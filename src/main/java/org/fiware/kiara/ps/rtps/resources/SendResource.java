@@ -251,7 +251,7 @@ public class SendResource {
     /**
      * Send a CDR message synchronously. No waiting is required.
      *
-     * @param msg Pointer to the message.
+     * @param msg Reference to the message.
      * @param loc Locator where to send the message.
      */
     public synchronized void sendSync(RTPSMessage msg, Locator loc) {

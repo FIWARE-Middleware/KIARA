@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * Class EDPStaticXML used to parse the XML file that contains information about
  * remote endpoints.
  *
- * 
+ *
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
@@ -54,7 +54,7 @@ public class EDPStaticXML {
      *
      * @param partname RTPSParticipant name
      * @param id Id of the reader
-     * @return Pointer to return the information.
+     * @return Reference to return the information.
      */
     public ReaderProxyData lookforReader(String partname, short id) {
         for (StaticRTPSParticipantInfo pit : m_RTPSParticipants) {
@@ -74,7 +74,7 @@ public class EDPStaticXML {
      *
      * @param partname RTPSParticipant name
      * @param id Id of the writer
-     * @return Pointer to return the information.
+     * @return Reference to return the information.
      */
     public WriterProxyData lookforWriter(String partname, short id) {
         for (StaticRTPSParticipantInfo pit : m_RTPSParticipants) {

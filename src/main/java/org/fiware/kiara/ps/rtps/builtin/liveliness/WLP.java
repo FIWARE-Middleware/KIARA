@@ -64,22 +64,22 @@ public class WLP {
     private static final Logger logger = LoggerFactory.getLogger(WLP.class);
 
     /**
-     * Pointer to the local RTPSParticipant.
+     * Reference to the local RTPSParticipant.
      */
     private RTPSParticipant m_participant;
 
     /**
-     * Pointer to the BuiltinProtocols class.
+     * Reference to the BuiltinProtocols class.
      */
     private final BuiltinProtocols m_builtinProtocols;
 
     /**
-     * Pointer to the builtinRTPSParticipantMEssageWriter.
+     * Reference to the builtinRTPSParticipantMEssageWriter.
      */
     private StatefulWriter m_builtinWriter;
 
     /**
-     * Pointer to the builtinRTPSParticipantMEssageReader.
+     * Reference to the builtinRTPSParticipantMEssageReader.
      */
     private StatefulReader m_builtinReader;
 
@@ -94,12 +94,12 @@ public class WLP {
      */
     private WLPListener m_listener;
     /**
-     * Pointer to the periodic assertion timer object for the automatic
+     * Reference to the periodic assertion timer object for the automatic
      * liveliness writers.
      */
     private WLivelinessPeriodicAssertion m_livelinessAutomatic;
     /**
-     * Pointer to the periodic assertion timer object for the manual by
+     * Reference to the periodic assertion timer object for the manual by
      * RTPSParticipant liveliness writers.
      */
     private WLivelinessPeriodicAssertion m_livelinessManRTPSParticipant;
@@ -128,7 +128,7 @@ public class WLP {
     /**
      * Constructor
      *
-     * @param builtinProtocols Pointer to the BuiltinProtocols object.
+     * @param builtinProtocols Reference to the BuiltinProtocols object.
      */
     public WLP(BuiltinProtocols builtinProtocols) {
         m_minAutomatic_MilliSec = Double.MAX_VALUE;
@@ -220,7 +220,7 @@ public class WLP {
     /**
      * Assign the remote endpoints for a newly discovered RTPSParticipant.
      *
-     * @param pdata Pointer to the RTPSParticipantProxyData object.
+     * @param pdata Reference to the RTPSParticipantProxyData object.
      * @return True if correct.
      */
     public boolean assignRemoteEndpoints(ParticipantProxyData pdata) {
@@ -282,7 +282,7 @@ public class WLP {
     /**
      * Remove remote endpoints from the liveliness protocol.
      *
-     * @param pdata Pointer to the ParticipantProxyData to remove
+     * @param pdata Reference to the ParticipantProxyData to remove
      */
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
         m_mutex.lock();
@@ -319,7 +319,7 @@ public class WLP {
     /**
      * Add a local writer to the liveliness protocol.
      *
-     * @param writer Pointer to the RTPSWriter.
+     * @param writer Reference to the RTPSWriter.
      * @param wqos
      * @return True if correct.
      */

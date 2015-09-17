@@ -50,7 +50,7 @@ public class StatefulReader extends RTPSReader {
     private final ReaderTimes m_times;
 
     /**
-     * Vector containing pointers to the matched writers.
+     * List containing references to the matched writers.
      */
     private final List<WriterProxy> matchedWriters;
 
@@ -288,7 +288,7 @@ public class StatefulReader extends RTPSReader {
             if (available && wchange != null) {
 
                 // FIXME: This is not correct since in original code
-                //        CacheChange is passed by pointer to poiner
+                //        CacheChange is passed by reference to poiner
                 //        Actually first argument to this method should be
                 //        ReturnParam<CacheChange>, but this require additional
                 //        source code changes

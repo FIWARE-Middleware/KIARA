@@ -13,7 +13,7 @@ public class WriterProxyLiveliness extends TimedEvent {
     private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
 
     /**
-     * Pointer to the WriterProxy associated with this specific event.
+     * Reference to the WriterProxy associated with this specific event.
      */
     public WriterProxy writerProxy;
 

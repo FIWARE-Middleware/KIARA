@@ -86,7 +86,7 @@ public abstract class RTPSReader extends Endpoint {
      * Check if the reader accepts messages from a writer with a specific GUID_t.
      *
      * @param entityGUID GUID to check
-     * @param proxy Reference of the WriterProxy. Since we already look for it wee return the pointer
+     * @param proxy Reference of the WriterProxy. Since we already look for it wee return the references
      * so the execution can run faster.
      * @return true if the reader accepts messages from the writer with GUID_t entityGUID.
      */

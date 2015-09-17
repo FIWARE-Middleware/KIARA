@@ -60,7 +60,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     private final InstanceHandle m_iHandle;
 
     /**
-     * GuidPrefix_t
+     * GUIDPrefix
      */
     private final GUIDPrefix m_guidP;
 
