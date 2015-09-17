@@ -30,27 +30,53 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.util.ReturnParam;
 
 /**
+ * Class HistoryCache, container of the different CacheChanges 
+ * and the methods to access them.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public abstract class HistoryCache {
 
-    /* Attributes */
-
+    /**
+     * The {@link HistoryCacheAttributes} associated to the HistoryCache
+     */
     protected HistoryCacheAttributes m_attributes;
 
+    /**
+     * List of references to the {@link CacheChange}.
+     */
     protected List<CacheChange> m_changes;
 
+    /**
+     * Variable to know if the history is full without 
+     * needing to block the History mutex.
+     */
     protected boolean m_isHistoryFull;
 
+    /**
+     * Pointer to and invalid {@link CacheChange} used to return the 
+     * maximum and minimum when no changes are stored in the history.
+     */
     protected CacheChange m_invalidChange;
 
+    /**
+     * Pointer to the minimum sequeceNumber {@link CacheChange}.
+     */
     protected CacheChange m_minSeqCacheChange;
 
+    /**
+     * Pointer to the maximum sequeceNumber {@link CacheChange}.
+     */
     protected CacheChange m_maxSeqCacheChange;
 
+    /**
+     * Pool of cache changes reserved when the History is created.
+     */
     protected CacheChangePool m_changePool;
 
+    /**
+     * Mutex
+     */
     public final Lock m_mutex;
 
     /* Methods */
@@ -58,12 +84,8 @@ public abstract class HistoryCache {
     protected HistoryCache(HistoryCacheAttributes att) {
         this.m_attributes = att;
         this.m_isHistoryFull = false;
-        //this.m_invalidChange = null;
         this.m_changePool = new CacheChangePool(att.initialReservedCaches, att.payloadMaxSize, att.maximumReservedCaches);
-        //this.m_minSeqCacheChange = null;
-        //this.m_maxSeqCacheChange = null;
         this.m_mutex = new ReentrantLock(true);
-
         this.m_changes = new ArrayList<CacheChange>(att.initialReservedCaches);
         this.m_invalidChange = this.m_changePool.reserveCache();
         this.m_invalidChange.setWriterGUID(new GUID());
@@ -91,6 +113,11 @@ public abstract class HistoryCache {
         return false;
     }
 
+    /**
+     * Get the minimum CacheChange in the HistoryCache
+     * 
+     * @return The minimum CacheChange
+     */
     public CacheChange getMinChange() {
         if (!this.m_minSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
             return this.m_minSeqCacheChange;
@@ -98,6 +125,12 @@ public abstract class HistoryCache {
         return null;
     }
 
+    /**
+     * Get the minimum CacheChange inside a ReturnParam object
+     * 
+     * @param change The ReturnParam to store CacheChange
+     * @return The ReturnParam with the stored CacheChange
+     */
     public boolean getMinChange(ReturnParam<CacheChange> change) {
         if (!this.m_minSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
             change.value = this.m_minSeqCacheChange;
@@ -106,6 +139,11 @@ public abstract class HistoryCache {
         return false;
     }
 
+    /**
+     * Get the maximum CacheChange in the HistoryCache
+     * 
+     * @return The maximum CacheChange
+     */
     public CacheChange getMaxChange() {
         if (!this.m_maxSeqCacheChange.getSequenceNumber().equals(this.m_invalidChange.getSequenceNumber())) {
             return this.m_maxSeqCacheChange;
@@ -113,6 +151,14 @@ public abstract class HistoryCache {
         return null;
     }
 
+    /**
+     * Get the Change that matches with the specified objects
+     * 
+     * @param seq The SequenceNumber to compare with the one in the CacheChange
+     * @param guid The GUID to compare with the one in the CacheChange
+     * @param change The CacheChange reference
+     * @return true if the CacheChange has been found; false otherwise
+     */
     public boolean getChange(SequenceNumber seq, GUID guid, CacheChange change) {
         this.m_mutex.lock();
         Iterator<CacheChange> it = this.m_changes.iterator();
@@ -130,26 +176,98 @@ public abstract class HistoryCache {
         return false;
     }
 
+    /**
+     * Get the HistoryCacheAttributes
+     * 
+     * @return The HistoryCacheAttributes
+     */
     public HistoryCacheAttributes getAttributes() {
         return this.m_attributes;
     }
 
+    /**
+     * Reserves a new CacheChange object
+     * 
+     * @return the new reserved CacheChange
+     */
     public CacheChange reserveCache() {
         return this.m_changePool.reserveCache();
     }
 
+    /**
+     * Frees the information inside a CacheChange reference
+     * 
+     * @param change The CacheChange referente to be freed
+     */
     public void releaseCache(CacheChange change) {
         this.m_changePool.releaseCache(change);
     }
 
+    /**
+     * Returns a boolean value indicating if the HistoryCache is full
+     * 
+     * @return true if the HistoryCache is full; false otherwise
+     */
     public boolean isFull() {
         return this.m_isHistoryFull;
     }
 
+    /**
+     * Get the HistoryCache size
+     * 
+     * @return The HistoryCache size
+     */
     public int getHistorySize() {
         return this.m_changes.size();
     }
 
+    /**
+     * Removes a CacheChange from the HistoryCache
+     * 
+     * @param change The CacheChange to be removed
+     * @return true if the CacheChange has been removed; false otherwise
+     */
+    public abstract boolean removeChange(CacheChange change);
+
+    /**
+     * Get an iterator over the CacheChange objects in the HistoryCache 
+     * 
+     * @return A new CacheChange iterator
+     */
+    public Iterator<CacheChange> changesIterator() {
+        return this.m_changes.iterator();
+    }
+
+    /**
+     * Get the CacheChange objects in the HistoryCache
+     * 
+     * @return The list of CacheChange objects
+     */
+    public List<CacheChange> getChanges() {
+        return this.m_changes;
+    }
+
+    /**
+     * Get the maximum serialized size
+     * 
+     * @return The maximum serialized size
+     */
+    public int getTypeMaxSerialized() {
+        return this.m_changePool.getPayloadSize();
+    }
+
+    /**
+     * Get the mutex
+     * 
+     * @return The mutex
+     */
+    public Lock getMutex() {
+        return this.m_mutex;
+    }
+
+    /**
+     * Updates the maximum sequence number of the HistoryCache
+     */
     public void updateMaxMinSeqNum() {
         if (this.m_changes.size() == 0) {
             this.m_minSeqCacheChange = m_invalidChange;
@@ -160,23 +278,6 @@ public abstract class HistoryCache {
         }
     }
 
-    public abstract boolean removeChange(CacheChange change);
-
-    public Iterator<CacheChange> changesIterator() {
-        return this.m_changes.iterator();
-    }
-
-    public List<CacheChange> getChanges() {
-        return this.m_changes;
-    }
-
-    public int getTypeMaxSerialized() {
-        return this.m_changePool.getPayloadSize();
-    }
-
-    public Lock getMutex() {
-        return this.m_mutex;
-    }
-
+    
 
 }
