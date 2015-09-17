@@ -42,8 +42,8 @@ public abstract class TopicDataType<T> {
      * abstract. It is VERY IMPORTANT that the user sets the serializedPaylaod
      * length correctly.
      *
-     * @param data Pointer to the data
-     * @param payload Pointer to the payload
+     * @param data Reference to the data
+     * @param payload Reference to the payload
      * @return True if correct.
      */
     public abstract boolean serialize(T data, SerializedPayload payload);
@@ -52,7 +52,7 @@ public abstract class TopicDataType<T> {
      * Deserialize method, it should be implemented by the user, since it is
      * abstract.
      *
-     * @param payload Pointer to the payload
+     * @param payload Reference to the payload
      * @return True if correct.
      * @throws java.lang.InstantiationException
      * @throws java.lang.IllegalAccessException
@@ -62,15 +62,15 @@ public abstract class TopicDataType<T> {
     /**
      * Create a Data Type.
      *
-     * @return Void pointer to the created object.
+     * @return Void reference to the created object.
      */
     public abstract T createData();
 
     /**
      * Get the key associated with the data.
      *
-     * @param data Pointer to the data.
-     * @param ihandle Pointer to the Handle.
+     * @param data Reference to the data.
+     * @param ihandle Reference to the Handle.
      * @return True if correct.
      */
     public boolean getKey(T data, InstanceHandle ihandle) {

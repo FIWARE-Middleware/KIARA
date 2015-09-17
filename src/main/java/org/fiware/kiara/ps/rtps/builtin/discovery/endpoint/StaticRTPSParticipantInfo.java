@@ -26,8 +26,6 @@ import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
  * Class StaticRTPSParticipantInfo, contains the information of writers and
  * readers loaded from the XML file.
  *
- * 
- *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class StaticRTPSParticipantInfo {
@@ -37,14 +35,17 @@ public class StaticRTPSParticipantInfo {
      */
     public String participantName;
     /**
-     * List of ReaderProxyData pointer
+     * List of ReaderProxyData references
      */
     public final List<ReaderProxyData> readers;
     /**
-     * Vector of ReaderProxyData pointer
+     * List of ReaderProxyData references
      */
     public final List<WriterProxyData> writers;
 
+    /**
+     * Main Constructor
+     */
     public StaticRTPSParticipantInfo() {
         this.readers = new ArrayList<>();
         this.writers = new ArrayList<>();

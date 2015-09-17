@@ -27,8 +27,8 @@ public class EDPStatic extends EDP {
     /**
      * Constructor.
      *
-     * @param p Pointer to the PDPSimple
-     * @param part Pointer to the RTPSParticipantImpl
+     * @param p Reference to the PDPSimple
+     * @param part Reference to the RTPSParticipantImpl
      */
     public EDPStatic(PDPSimple p, RTPSParticipant part) {
         super(p, part);
@@ -59,7 +59,7 @@ public class EDPStatic extends EDP {
      * After a new local ReaderProxyData has been created some processing is
      * needed (depends on the implementation).
      *
-     * @param rdata Pointer to the ReaderProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
      * @return True if correct.
      */
     @Override
@@ -83,7 +83,7 @@ public class EDPStatic extends EDP {
      * After a new local WriterProxyData has been created some processing is
      * needed (depends on the implementation).
      *
-     * @param wdata Pointer to the Writer ProxyData object.
+     * @param wdata Reference to the Writer ProxyData object.
      * @return True if correct.
      */
     @Override
@@ -107,7 +107,7 @@ public class EDPStatic extends EDP {
     /**
      * Abstract method that removes a local Reader from the discovery method
      *
-     * @param R Pointer to the Reader to remove.
+     * @param R Reference to the Reader to remove.
      * @return True if correctly removed.
      */
     @Override
@@ -134,7 +134,7 @@ public class EDPStatic extends EDP {
     /**
      * Abstract method that removes a local Writer from the discovery method
      *
-     * @param W Pointer to the Writer to remove.
+     * @param W Reference to the Writer to remove.
      * @return True if correctly removed.
      */
     @Override
@@ -162,7 +162,7 @@ public class EDPStatic extends EDP {
      * Abstract method that assigns remote endpoints when a new
      * RTPSParticipantProxyData is discovered.
      *
-     * @param pdata Pointer to the ParticipantProxyData.
+     * @param pdata Reference to the ParticipantProxyData.
      */
     @Override
     public void assignRemoteEndpoints(ParticipantProxyData pdata) {
@@ -209,7 +209,7 @@ public class EDPStatic extends EDP {
      * New Remote Reader has been found and this method process it and calls the
      * pairing methods.
      *
-     * @param pdata Pointer to the RTPSParticipantProxyData object.
+     * @param pdata Reference to the RTPSParticipantProxyData object.
      * @param userId UserId.
      * @param entId EntityId.
      * @return true if correct.
@@ -248,7 +248,7 @@ public class EDPStatic extends EDP {
      * New Remote Writer has been found and this method process it and calls the
      * pairing methods.
      *
-     * @param pdata Pointer to the RTPSParticipantProxyData object.
+     * @param pdata Reference to the RTPSParticipantProxyData object.
      * @param userId UserId.
      * @param entId EntityId.
      * @return True if correct.
@@ -287,7 +287,7 @@ public class EDPStatic extends EDP {
      * This method checks the provided entityId against the topic type to see if
      * it matches
      *
-     * @param rdata Pointer to the readerProxyData
+     * @param rdata Reference to the readerProxyData
      * @return True if its correct.
      *
      */
@@ -305,7 +305,7 @@ public class EDPStatic extends EDP {
      * This method checks the provided entityId against the topic type to see if
      * it matches
      *
-     * @param wdata Pointer to the writerProxyData
+     * @param wdata Reference to the writerProxyData
      * @return True if its correct.
      *
      */

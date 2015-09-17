@@ -533,7 +533,7 @@ public class ReaderProxyData {
     /**
      * Copy ALL the information from another object.
      *
-     * @param rdata Pointer to the object from where the information must be
+     * @param rdata Reference to the object from where the information must be
      * copied.
      */
     public void copy(ReaderProxyData rdata) {

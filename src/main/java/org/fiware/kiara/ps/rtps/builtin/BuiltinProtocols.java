@@ -190,7 +190,7 @@ public class BuiltinProtocols {
     /**
      * Add a local Writer to the BuiltinProtocols.
      *
-     * @param writer Pointer to the RTPSWriter.
+     * @param writer Reference to the RTPSWriter.
      * @param topicAtt topic attributes
      * @param wqos writer QoS
      * @return True if correct.
@@ -216,7 +216,7 @@ public class BuiltinProtocols {
     /**
      * Add a local Reader to the BuiltinProtocols.
      *
-     * @param reader Pointer to the RTPSReader.
+     * @param reader Reference to the RTPSReader.
      * @param topicAtt topic attributes
      * @param rqos reader QoS
      * @return True if correct.
@@ -274,7 +274,7 @@ public class BuiltinProtocols {
     /**
      * Remove a local Writer from the builtinProtocols.
      *
-     * @param writer Pointer to the writer.
+     * @param writer Reference to the writer.
      * @return True if correctly removed.
      */
     public boolean removeLocalWriter(RTPSWriter writer) {
@@ -298,7 +298,7 @@ public class BuiltinProtocols {
     /**
      * Remove a local Reader from the builtinProtocols.
      *
-     * @param reader Pointer to the reader.
+     * @param reader Reference to the reader.
      * @return True if correctly removed.
      */
     public boolean removeLocalReader(RTPSReader reader) {

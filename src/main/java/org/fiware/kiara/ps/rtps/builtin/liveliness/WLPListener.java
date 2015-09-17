@@ -113,10 +113,10 @@ public class WLPListener extends ReaderListener {
     }
 
     /**
-     * Separate the Key between the GuidPrefix_t and the liveliness Kind
+     * Separate the Key between the GUIDPrefix and the liveliness Kind
      *
      * @param key InstanceHandle_t to separate.
-     * @param guidP GuidPrefix_t pointer to store the info.
+     * @param guidP GUIDPrefix reference to store the info.
      * @return True if correctly separated.
      */
     public LivelinessQosPolicyKind separateKey(InstanceHandle key, GUIDPrefix guidP) {

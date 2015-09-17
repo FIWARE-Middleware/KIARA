@@ -24,6 +24,8 @@ import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.util.Pair;
 
 /**
+ * Class EDPStaticProperty, used to read and write the strings from the
+ * properties used to transmit the EntityId_t.
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
@@ -50,6 +52,9 @@ public class EDPStaticProperty {
      */
     public final EntityId entityId;
 
+    /**
+     * Main Constructor
+     */
     public EDPStaticProperty() {
         endpointType = "";
         status = "";
