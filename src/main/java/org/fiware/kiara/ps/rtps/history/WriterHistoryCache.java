@@ -24,15 +24,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class WriterHistoryCache, container of the different CacheChange 
+ * objects of a writer
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class WriterHistoryCache extends HistoryCache {
 
+    /**
+     * Last CacheChange SequenceNumber added to the History.
+     */
     public SequenceNumber m_lastCacheChangeSeqNum;
 
+    /**
+     * Reference to the associated RTPSWriter;
+     */
     public RTPSWriter m_writer;
     
+    /**
+     * Log object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterHistoryCache.class);
 
     public WriterHistoryCache(HistoryCacheAttributes att) {
@@ -41,6 +52,11 @@ public class WriterHistoryCache extends HistoryCache {
         this.m_lastCacheChangeSeqNum = new SequenceNumber();
     }
 
+    /**
+     * CacheChange to be added to the HistoryCache
+     * @param change CacheChange to be added
+     * @return true if the CacheChange can be added; false otherwise
+     */
     public boolean addChange(CacheChange change) {
         this.m_mutex.lock();
         try {
@@ -74,6 +90,9 @@ public class WriterHistoryCache extends HistoryCache {
         return true;
     }
 
+    /**
+     * Removes the CacheChange in thie HistoryCache
+     */
     @Override
     public boolean removeChange(CacheChange change) {
         this.m_mutex.lock();
@@ -103,6 +122,10 @@ public class WriterHistoryCache extends HistoryCache {
         return false;
     }
 
+    /**
+     * Removed the CacheChange with the minimum SequenceNumber
+     * @return true if the change can be removed; false otherwise
+     */
     public boolean removeMinChange() {
         this.m_mutex.lock();
         try {

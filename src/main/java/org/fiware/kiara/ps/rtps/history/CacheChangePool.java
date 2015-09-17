@@ -30,20 +30,47 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class CacheChangePool, used by the HistoryCache to pre-reserve 
+ * a number of CacheChange_t to avoid dynamically reserving memory 
+ * in the middle of execution loops.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class CacheChangePool {
 
+    /**
+     * The payload size associated with the pool.
+     */
     private int m_payloadSize;
+    
+    /**
+     * The initial pool size
+     */
     private int m_poolSize;
+    
+    /**
+     * Maximum payload size. If set to 0 the pool will keep reserving until something breaks.
+     */
     private int m_maxPoolSize;
 
+    /**
+     * List of free {@link CacheChange} objects
+     */
     private List<CacheChange> m_freeChanges;
+    
+    /**
+     * List of {@link CacheChange} objects
+     */
     private List<CacheChange> m_allChanges;
 
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
-    
+
+    /**
+     * Log instance
+     */
     private static final Logger logger = LoggerFactory.getLogger(CacheChangePool.class);
 
     public CacheChangePool(int poolSize, int payloadSize, int maxPoolSize) {
@@ -68,6 +95,12 @@ public class CacheChangePool {
 
     }
 
+    /**
+     * Allocates free spaces for CacheChange objects
+     * 
+     * @param groupSize The number of slots to be reserved
+     * @return true if space can be reserved; false otherwise
+     */
     private boolean allocateGroup(int groupSize) {
 
         boolean added = false;
@@ -98,6 +131,11 @@ public class CacheChangePool {
         return added;
     }
 
+    /**
+     * Allocates a new CacheChange
+     * 
+     * @return The reserved CacheChange object
+     */
     public CacheChange reserveCache() {
         this.m_mutex.lock();
         try {
@@ -113,6 +151,11 @@ public class CacheChangePool {
         }
     }
 
+    /**
+     * Frees a used CacheChange
+     * 
+     * @param change CacheChange to be freed
+     */
     public void releaseCache(CacheChange change) {
         //synchronized(this) {
         this.m_mutex.lock();
@@ -130,10 +173,20 @@ public class CacheChangePool {
         this.m_mutex.unlock();
     }
 
+    /**
+     * Get the payload size
+     * 
+     * @return The size of the payload
+     */
     public int getPayloadSize() {
         return m_payloadSize;
     }
 
+    /**
+     * Set the payload size
+     * 
+     * @param m_payloadSize The payload size to be set
+     */
     public void setPayloadSize(int m_payloadSize) {
         this.m_payloadSize = m_payloadSize;
     }

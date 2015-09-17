@@ -33,17 +33,32 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class ReaderHistoryCache, container of the different CacheChanges 
+ * of a reader
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ReaderHistoryCache extends HistoryCache {
 
+    /**
+     * Pointer to the {@link RTPSReader}
+     */
     protected RTPSReader m_reader;
 
+    /**
+     * Pointer to the {@link Semaphore}, used to halt execution until new 
+     * message arrives.
+     */
     protected final Semaphore m_semaphore = new Semaphore(0); 
 
+    /**
+     * Information about changes already in History
+     */
     protected Map<GUID,Set<SequenceNumber>> m_historyRecord; // TODO Comparison functions in GUID
 
+    /**
+     * Log object
+     */
     private static final Logger logger = LoggerFactory.getLogger(ReaderHistoryCache.class);
 
     public ReaderHistoryCache(HistoryCacheAttributes att) {
@@ -52,10 +67,22 @@ public class ReaderHistoryCache extends HistoryCache {
         this.m_historyRecord = new HashMap<GUID,Set<SequenceNumber>>();
     }
 
+    /**
+     * Add the received CacheChange to the HistoryCache
+     * 
+     * @param change The received CacheChange
+     * @return true is the change can be added; false otherwise
+     */
     public boolean receivedChange(CacheChange change) {
         return this.addChange(change);
     }
 
+    /**
+     * Adds a new CacheChange to the HistoryCache
+     * 
+     * @param change The CacheChange to be added
+     * @return true if the change can be added; false otherwise
+     */
     public boolean addChange(CacheChange change) {
         this.m_mutex.lock();
         try {
@@ -94,6 +121,9 @@ public class ReaderHistoryCache extends HistoryCache {
         return false;
     }
 
+    /**
+     * Removes a CacheChange from the HistoryCache
+     */
     @Override
     public boolean removeChange(CacheChange change) {
         this.m_mutex.lock();
@@ -112,7 +142,6 @@ public class ReaderHistoryCache extends HistoryCache {
                     this.m_changes.remove(it);
                     i--;
                     updateMaxMinSeqNum();
-                    //this.m_mutex.unlock();
                     return true;
                 }
     
@@ -123,19 +152,27 @@ public class ReaderHistoryCache extends HistoryCache {
         return false;
     }
 
+    /**
+     * Sorts all the allocated CacheChange objects
+     */
     public void sortCacheChanges() {
         Collections.sort(this.m_changes);
     }
 
+    /**
+     * Releases the Semaphore
+     */
     public void postChange() {
         this.m_semaphore.release();
     }
 
+    /**
+     * Waits for the Semaphore to be released
+     */
     public void waitChange() {
         try {
             this.m_semaphore.wait();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
             // TODO Log this
             e.printStackTrace();
         }
