@@ -37,6 +37,11 @@ public enum ChangeForReaderStatus {
         this.m_value = value;
     }
 
+    /**
+     * Creates a new ChangeForReaderStatus object from its integer value.
+     * @param value The ordinal value of the enumeration
+     * @return ChangeForReaderStatus
+     */
     public static ChangeForReaderStatus createFromValue(int value) {
         switch (value) {
         case 0:

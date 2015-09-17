@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
+* Reliability enum used for internal purposes
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

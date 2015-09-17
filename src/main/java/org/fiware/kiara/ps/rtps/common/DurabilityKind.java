@@ -18,6 +18,8 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
+* Enumeration representing the durability of the messages
+* dent over the wire.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

@@ -20,15 +20,30 @@ package org.fiware.kiara.ps.rtps.common;
 import java.util.Arrays;
 
 /**
+ * Class Locator, uniquely identifies a address+port combination.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class Locator {
 
+    /**
+     * A {@link LocatorKind} object indicating the kind of the Locator
+     */
     private LocatorKind m_kind;
+    
+    /**
+     * Integer value representing the Locator port
+     */
     private int m_port;
+    
+    /**
+     * IP Address of the Locator
+     */
     private byte[] m_address;
 
+    /**
+     * Initialized the Locator attributes to their default values
+     */
     private void initAddr() {
         this.m_address = new byte[16];
         for (int i=0; i < 16; ++i) {
@@ -55,38 +70,81 @@ public class Locator {
         System.arraycopy(other.m_address, 0, this.m_address, 0, other.m_address.length);
     }
 
+    /**
+     * Get the validation status of the locator
+     * 
+     * @return True if the Locator is valid
+     */
     public boolean isValid() {
         return true;
     }
 
+    /**
+     * Get the LocatorKind value
+     * 
+     * @return The kind of the Locator
+     */
     public LocatorKind getKind() {
         return m_kind;
     }
 
+    /**
+     * Set the LocatorKind value 
+     * 
+     * @param m_kind LocatorKind to be set
+     */
     public void setKind(LocatorKind m_kind) {
         this.m_kind = m_kind;
     }
 
+    /**
+     * Get the Locator port
+     * 
+     * @return The Locator port
+     */
     public int getPort() {
         return m_port;
     }
 
+    /**
+     * Set the Locator port
+     * 
+     * @param m_port The port to be set
+     */
     public void setPort(int m_port) {
         this.m_port = m_port;
     }
 
+    /**
+     * Increases the value of the port in 1 unit
+     */
     public void increasePort() {
         ++this.m_port;
     }
 
+    /**
+     * Get the Locator address
+     * 
+     * @return The Locator address
+     */
     public byte[] getAddress() {
         return m_address;
     }
 
+    /**
+     * Set the Locator address
+     * 
+     * @param m_address The address to be set
+     */
     public void setAddress(byte[] m_address) {
         this.m_address = m_address;
     }
 
+    /**
+     * Set the Locator address (in String format) as an IPv4 address
+     * 
+     * @param m_address The address to be set (in String format)
+     */
     public void setIPv4Address(String m_address) {
         String[] splitted = m_address.split("\\.");
         if (splitted.length != 4) {
@@ -98,6 +156,9 @@ public class Locator {
         this.m_address[15] = (byte) Integer.parseInt(splitted[3]);
     }
 
+    /**
+     * Compares two Locator instances 
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof Locator) {
@@ -107,6 +168,11 @@ public class Locator {
         return false;
     }
 
+    /**
+     * Returns whether the address of the Locator has been defined or not.
+     * 
+     * @return true if the address has been defined; false otherwise.
+     */
     public boolean isAddressDefined() {
         if (this.m_address.length == 16) {
             if (this.m_kind == LocatorKind.LOCATOR_KIND_UDPv4) {
@@ -126,6 +192,11 @@ public class Locator {
         return false;
     }
 
+    /**
+     * Converts the address into its String IPv4 representation
+     * 
+     * @return String IPv4 representation of the address
+     */
     public String toIPv4String() {
         return new String(
                 (this.m_address[12] & 0xFF) + "." + 
@@ -134,6 +205,11 @@ public class Locator {
                 (this.m_address[15] & 0xFF));
     }
 
+    /**
+     * Converts the address into its String IPv5 representation
+     * 
+     * @return String IPv5 representation of the address
+     */
     public String toIPv6String() {
         return new String(
                 (this.m_address[0] & 0xFF) + "." + 
@@ -154,12 +230,20 @@ public class Locator {
                 (this.m_address[15] & 0xFF));
     }
 
+    /**
+     * Copies the content of the Locator reference
+     * 
+     * @param locator A reference to other Locator
+     */
     public void copy(Locator locator) {
         m_kind = locator.m_kind;
         m_port = locator.m_port;
         System.arraycopy(locator.m_address, 0, this.m_address, 0, locator.m_address.length);
     }
 
+    /**
+     * Converts the Locator into its String representation
+     */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer();
@@ -172,8 +256,7 @@ public class Locator {
             sb.append(":" + this.m_port);
             sb.append(" (UDPv6)");
         }
-        //return this.m_kind + " - " + sb.toString() + ":"+ this.m_port;
-        //return sb.toString() + ":"+ this.m_port;
+
         return sb.toString();
     }
 

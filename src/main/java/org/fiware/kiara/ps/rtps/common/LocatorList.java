@@ -22,11 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+* Class LocatorList, a {@link Locator} vector that doesn't avoid duplicates.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class LocatorList implements Iterable<Locator> {
 
+    /**
+     * List containing all the {@link Locator} elements
+     */
     private List<Locator> m_locators;
 
     public LocatorList() {
@@ -41,6 +45,11 @@ public class LocatorList implements Iterable<Locator> {
         }
     }
 
+    /**
+     * Copies the content of a LocatorList reference
+     * 
+     * @param other LocatorList reference to be copied
+     */
     public void copy(LocatorList other) {
         this.m_locators.clear();
         for (Locator loc : other.m_locators) {
@@ -48,10 +57,18 @@ public class LocatorList implements Iterable<Locator> {
         }
     }
 
+    /**
+     * Empties the Locator list
+     */
     public void clear() {
         this.m_locators.clear();
     }
 
+    /**
+     * Returns the Locator object at the begining of the list
+     * 
+     * @return A reference to the first Locator in the list
+     */
     public Locator begin() {
         if (this.m_locators.size() > 0) {
             return this.m_locators.get(0);
@@ -59,16 +76,31 @@ public class LocatorList implements Iterable<Locator> {
         return null;
     }
 
+    /**
+     * Get the list of Locator objects
+     * 
+     * @return The list of Locators
+     */
     public List<Locator> getLocators() {
         return this.m_locators;
     }
 
+    /**
+     * Creates a new list to store Locators with an initial size
+     * 
+     * @param size The initial size of the list
+     */
     public void reserve(int size) {
         List<Locator> newList = new ArrayList<Locator>(size);
         newList.addAll(this.m_locators);
         this.m_locators = newList;
     }
 
+    /**
+     * Resized the list of Locator objects
+     * 
+     * @param size The size to which the list will be changed
+     */
     public void resize(int size) {
         if (size > this.m_locators.size()) {
             ArrayList<Locator> newList = new ArrayList<Locator>(size);
@@ -86,6 +118,11 @@ public class LocatorList implements Iterable<Locator> {
         }
     }
 
+    /**
+     * Adds a Locator object at the end of the list
+     * 
+     * @param locator The new Locator object to be added
+     */
     public void pushBack(Locator locator) {
         boolean already = false;
         for (Locator it: this.m_locators) {
@@ -99,20 +136,41 @@ public class LocatorList implements Iterable<Locator> {
         }
     }
 
+    /**
+     * Pushes an entire Locator list at the end of the current list
+     * 
+     * @param locatorList The list of Locators to be added
+     */
     public void pushBack(LocatorList locatorList) {
         for (Locator it: locatorList.m_locators) {
             this.pushBack(it);
         }
     }
 
+    /**
+     * Get the emptinnes status of the list
+     * 
+     * @return true if the list is empty; false otherwise
+     */
     public boolean isEmpty() {
         return this.m_locators.isEmpty();
     }
 
+    /**
+     * Checks whether the LocatorList contains a specific Locator object
+     * 
+     * @param loc The Locator object to be searched
+     * @return true if the object exists inside the list; false otherwise
+     */
     public boolean contains(Locator loc) {
         return this.m_locators.contains(loc);
     }
 
+    /**
+     * Get if the LocatorList is valid
+     * 
+     * @return true if the LocatorList is valid; false otherwise
+     */
     public boolean isValid() {
         for (Locator it : this.m_locators) {
             if (!it.isValid()) {
@@ -122,11 +180,17 @@ public class LocatorList implements Iterable<Locator> {
         return true;
     }
 
+    /**
+     * Creates a new iterafor for the LocatorList
+     */
     @Override
     public Iterator<Locator> iterator() {
         return m_locators.iterator();
     }
     
+    /**
+     * Converts the LocatorList to its String representation
+     */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("");
