@@ -54,8 +54,15 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class ReaderProxyData, used to represent all the information on a Reader
+ * (both local and remote) with the purpose of implementing the discovery.
+ */
 public class ReaderProxyData {
 
+    /**
+     * GUID
+     */
     private final GUID m_guid;
     private boolean m_expectsInlineQos;
     /**
@@ -126,106 +133,243 @@ public class ReaderProxyData {
         m_remoteAtt = new RemoteReaderAttributes();
     }
 
+    /**
+     * Get GUID
+     *
+     * @return GUID
+     * @see GUID
+     */
     public GUID getGUID() {
         return this.m_guid;
     }
 
+    /**
+     * Set GUID
+     *
+     * @param value GUID
+     * @see GUID
+     */
     public void setGUID(GUID value) {
         m_guid.copy(value);
     }
 
+    /**
+     * Set key
+     *
+     * @param value GUID
+     */
     public void setKey(GUID value) {
         m_key.setGuid(m_guid);
     }
 
+    /**
+     * Set key
+     *
+     * @param value instance handle
+     */
     public void setKey(InstanceHandle value) {
         m_key.copy(value);
     }
 
+    /**
+     * Get RTPS participant key
+     *
+     * @return RTPS participant key
+     */
     public InstanceHandle getRTPSParticipantKey() {
         return m_RTPSParticipantKey;
     }
 
+    /**
+     * Set RTPS participant key
+     *
+     * @param value GUID
+     * @see GUID
+     */
     public void setRTPSParticipantKey(GUID value) {
         m_RTPSParticipantKey.setGuid(m_guid);
     }
 
+    /**
+     * Set RTPS participant key
+     *
+     * @param value instance handle
+     * @see InstanceHandle
+     */
     public void setRTPSParticipantKey(InstanceHandle value) {
         m_RTPSParticipantKey.copy(value);
     }
 
+    /**
+     * Get expectsInlineQos flag
+     *
+     * @return expectsInlineQos flag
+     */
     public boolean getExpectsInlineQos() {
         return m_expectsInlineQos;
     }
 
+    /**
+     * Set expectsInlineQos flag
+     *
+     * @param value expectsInlineQos flag
+     */
     public void setExpectsInlineQos(boolean value) {
         m_expectsInlineQos = value;
     }
 
+    /**
+     * Get isAlive flag
+     *
+     * @return isAlive flag
+     */
     public boolean getIsAlive() {
         return m_isAlive;
     }
 
+    /**
+     * Set isAlive flag
+     *
+     * @param value isAlive flag
+     */
     public void setIsAlive(boolean value) {
         m_isAlive = value;
     }
 
+    /**
+     * Get unicast locator list
+     *
+     * @return unicast locator list
+     * @see LocatorList
+     */
     public LocatorList getUnicastLocatorList() {
         return m_unicastLocatorList;
     }
 
+    /**
+     * Set unicast locator list
+     *
+     * @param unicastLocatorList unicast locator list
+     * @see LocatorList
+     */
     public void setUnicastLocatorList(LocatorList unicastLocatorList) {
         this.m_unicastLocatorList.copy(unicastLocatorList);
     }
 
+    /**
+     * Get multicast locator list
+     *
+     * @return multicast locator list
+     */
     public LocatorList getMulticastLocatorList() {
         return m_multicastLocatorList;
     }
 
+    /**
+     * Set multicast locator list
+     *
+     * @param m_multicastLocatorList multicast locator list
+     */
     public void setMulticastLocatorList(LocatorList m_multicastLocatorList) {
         this.m_multicastLocatorList.copy(m_multicastLocatorList);
     }
 
+    /**
+     * Get topic name
+     *
+     * @return topic name
+     */
     public String getTopicName() {
         return m_topicName;
     }
 
+    /**
+     * Set topic name
+     *
+     * @param value topic name
+     */
     public void setTopicName(String value) {
         m_topicName = value;
     }
 
+    /**
+     * Get type name
+     *
+     * @return type name
+     */
     public String getTypeName() {
         return m_typeName;
     }
 
+    /**
+     * Set type name
+     *
+     * @param value type name
+     */
     public void setTypeName(String value) {
         m_typeName = value;
     }
 
+    /**
+     * Get topic kind
+     *
+     * @return topic kind
+     */
     public TopicKind getTopicKind() {
         return m_topicKind;
     }
 
+    /**
+     * Set topic kind
+     *
+     * @param value topic kind
+     */
     public void setTopicKind(TopicKind value) {
         m_topicKind = value;
     }
 
+    /**
+     * Get reader QoS
+     *
+     * @return reader QoS
+     */
     public ReaderQos getQos() {
         return m_qos;
     }
 
+    /**
+     * Set reader QoS
+     *
+     * @param value reader QoS
+     */
     public void setQos(ReaderQos value) {
         m_qos.copy(value);
     }
 
+    /**
+     * Get user defined ID
+     *
+     * @return user defined ID
+     */
     public short getUserDefinedId() {
         return m_userDefinedId;
     }
 
+    /**
+     * Set user defined ID
+     *
+     * @param value user defined ID
+     */
     public void setUserDefinedId(short value) {
         m_userDefinedId = value;
     }
 
+    /**
+     * Convert the data to a parameter list to send this information as a RTPS
+     * message.
+     *
+     * @return true if correct.
+     */
     public boolean toParameterList() {
         m_parameterList.deleteParams();
         for (Locator lit : m_unicastLocatorList) {
@@ -265,7 +409,7 @@ public class ReaderProxyData {
             m_parameterList.addParameter(p);
         }
         {
-            ParameterVendorId p = new ParameterVendorId(PID_VENDORID, (short)4);
+            ParameterVendorId p = new ParameterVendorId(PID_VENDORID, (short) 4);
             m_parameterList.addParameter(p);
         }
         if (m_qos.durability.parent.getSendAlways() || m_qos.durability.parent.hasChanged) {

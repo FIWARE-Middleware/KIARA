@@ -54,8 +54,15 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class WriterProxyData, used to represent all the information on a Writer
+ * (both local and remote) with the purpose of implementing the discovery.
+ */
 public class WriterProxyData {
 
+    /**
+     * GUID
+     */
     private final GUID m_guid;
     /**
      * Unicast locator list
@@ -66,11 +73,11 @@ public class WriterProxyData {
      */
     private final LocatorList m_multicastLocatorList;
     /**
-     * GUID_t of the Reader converted to InstanceHandle_t
+     * GUID of the Reader converted to InstanceHandle_t
      */
     private final InstanceHandle m_key;
     /**
-     * GUID_t of the participant converted to InstanceHandle
+     * GUID of the participant converted to InstanceHandle
      */
     private final InstanceHandle m_RTPSParticipantKey;
     /**
@@ -113,6 +120,9 @@ public class WriterProxyData {
 
     private static final Logger logger = LoggerFactory.getLogger(WriterProxyData.class);
 
+    /**
+     * Main Constructor
+     */
     public WriterProxyData() {
         this.m_guid = new GUID();
         m_unicastLocatorList = new LocatorList();
@@ -179,6 +189,8 @@ public class WriterProxyData {
 
     /**
      * Convert the information to a parameter list to be send in a CDRMessage.
+     *
+     * @return true if operation was successful
      */
     public boolean toParameterList() {
         m_parameterList.deleteParams();
@@ -219,7 +231,7 @@ public class WriterProxyData {
             m_parameterList.addParameter(p);
         }
         {
-            ParameterVendorId p = new ParameterVendorId(PID_VENDORID, (short)4);
+            ParameterVendorId p = new ParameterVendorId(PID_VENDORID, (short) 4);
             m_parameterList.addParameter(p);
         }
         if (m_qos.durability.parent.getSendAlways() || m_qos.durability.parent.hasChanged) {
@@ -306,66 +318,153 @@ public class WriterProxyData {
         return true;
     }
 
+    /**
+     * Get GUID
+     *
+     * @return GUID
+     * @see GUID
+     */
     public GUID getGUID() {
         return m_guid;
     }
 
+    /**
+     * Set GUID
+     *
+     * @param guid GUID
+     * @see GUID
+     */
     public void setGUID(GUID guid) {
         m_guid.copy(guid);
     }
 
+    /**
+     * Get unicast locator list
+     *
+     * @return unicast locator list
+     * @see LocatorList
+     */
     public LocatorList getUnicastLocatorList() {
         return m_unicastLocatorList;
     }
 
+    /**
+     * Set unicast locator list
+     *
+     * @param unicastLocatorList unicast locator list
+     * @see LocatorList
+     */
     public void setUnicastLocatorList(LocatorList unicastLocatorList) {
         this.m_unicastLocatorList.copy(unicastLocatorList);
     }
 
+    /**
+     * Get multicast locator list
+     *
+     * @return multicast locator list
+     */
     public LocatorList getMulticastLocatorList() {
         return m_multicastLocatorList;
     }
 
+    /**
+     * Set multicast locator list
+     *
+     * @param m_multicastLocatorList multicast locator list
+     */
     public void setMulticastLocatorList(LocatorList m_multicastLocatorList) {
         this.m_multicastLocatorList.copy(m_multicastLocatorList);
     }
 
+    /**
+     * Get key
+     *
+     * @return instance handle
+     * @see InstanceHandle
+     */
     public InstanceHandle getKey() {
         return m_key;
     }
 
+    /**
+     * Set key
+     *
+     * @param key instance handle
+     */
     public void setKey(InstanceHandle key) {
         m_key.copy(key);
     }
 
+    /**
+     * Set key
+     *
+     * @param value GUID
+     */
     public void setKey(GUID value) {
         m_key.setGuid(m_guid);
     }
 
+    /**
+     * Get RTPS participant key
+     *
+     * @return RTPS participant key
+     */
     public InstanceHandle getRTPSParticipantKey() {
         return m_RTPSParticipantKey;
     }
 
+    /**
+     * Set RTPS participant key
+     *
+     * @param RTPSParticipantKey instance handle
+     * @see InstanceHandle
+     */
     public void setRTPSParticipantKey(InstanceHandle RTPSParticipantKey) {
         this.m_RTPSParticipantKey.copy(RTPSParticipantKey);
     }
 
+    /**
+     * Set RTPS participant key
+     *
+     * @param value GUID
+     * @see GUID
+     */
     public void setRTPSParticipantKey(GUID value) {
         this.m_RTPSParticipantKey.setGuid(m_guid);
     }
 
+    /**
+     * Get type name
+     *
+     * @return type name
+     */
     public String getTypeName() {
         return m_typeName;
     }
 
+    /**
+     * Set type name
+     *
+     * @param typeName type name
+     */
     public void setTypeName(String typeName) {
         this.m_typeName = typeName;
     }
 
+    /**
+     * Get topic name
+     *
+     * @return topic name
+     */
     public String getTopicName() {
         return m_topicName;
     }
 
+    /**
+     * Set topic name
+     *
+     * @param topicName topic name
+     */
     public void setTopicName(String topicName) {
         this.m_topicName = topicName;
     }
@@ -394,34 +493,74 @@ public class WriterProxyData {
         this.m_isAlive = value;
     }
 
+    /**
+     * Get topic kind
+     *
+     * @return topic kind
+     */
     public TopicKind getTopicKind() {
         return m_topicKind;
     }
 
+    /**
+     * Set topic kind
+     *
+     * @param value topic kind
+     */
     public void setTopicKind(TopicKind value) {
         this.m_topicKind = value;
     }
 
+    /**
+     * Get user defined ID
+     *
+     * @return user defined ID
+     */
     public short getUserDefinedId() {
         return m_userDefinedId;
     }
 
+    /**
+     * Set user defined ID
+     *
+     * @param value user defined ID
+     */
     public void setUserDefinedId(short value) {
         m_userDefinedId = value;
     }
 
+    /**
+     * Get parameter list
+     *
+     * @return parameter list
+     */
     public ParameterList getParameterList() {
         return m_parameterList;
     }
 
+    /**
+     * Set parameter list
+     *
+     * @param parameterList parameter list
+     */
     public void setParameterList(ParameterList parameterList) {
         this.m_parameterList = parameterList;
     }
 
+    /**
+     * Get remote writer attributes
+     *
+     * @return remote writer attributes
+     */
     public RemoteWriterAttributes getRemoteAtt() {
         return m_remoteAtt;
     }
 
+    /**
+     * Set remote writer attributes
+     *
+     * @param remoteAtt remote writer attributes
+     */
     public void setRemoteAtt(RemoteWriterAttributes remoteAtt) {
         this.m_remoteAtt = remoteAtt;
     }

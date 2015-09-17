@@ -164,7 +164,7 @@ public class RTPSDomain {
      * Remove a RTPSParticipant and delete all its associated Writers, Readers,
      * resources, etc.
      *
-     * @param p Pointer to the RTPSParticipant;
+     * @param p Reference to the RTPSParticipant;
      * @return True if correct.
      */
     public static boolean removeRTPSParticipant(RTPSParticipant p) {

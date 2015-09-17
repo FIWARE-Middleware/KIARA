@@ -30,7 +30,7 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
  * RTPS specification in this implementation the RTPSParticipant class DOESN'T
  * inherit from this class. The elements needed where added directly to the
  * RTPSParticipant class. This way each instance of our class (Endpoint) has a
- * pointer to the RTPSParticipant they belong to.
+ * reference to the RTPSParticipant they belong to.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */

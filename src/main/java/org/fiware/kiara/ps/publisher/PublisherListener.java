@@ -31,7 +31,7 @@ public abstract class PublisherListener {
      * This method is called when the Publisher is matched (or unmatched)
      * against an endpoint.
      *
-     * @param pub Pointer to the associated Publisher
+     * @param pub Reference to the associated Publisher
      * @param info Information regarding the matched subscriber
      */
     public abstract void onPublicationMatched(Publisher pub, MatchingInfo info);

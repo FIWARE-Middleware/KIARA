@@ -39,12 +39,12 @@ import org.slf4j.LoggerFactory;
 public abstract class EDP {
 
     /**
-     * Pointer to the PDPSimple object that contains the endpoint discovery
+     * Reference to the PDPSimple object that contains the endpoint discovery
      * protocol.
      */
     protected PDPSimple m_PDP;
     /**
-     * Pointer to the RTPSParticipant.
+     * Reference to the RTPSParticipant.
      */
     protected RTPSParticipant m_RTPSParticipant;
 
@@ -53,8 +53,8 @@ public abstract class EDP {
     /**
      * Constructor.
      *
-     * @param p Pointer to the PDPSimple
-     * @param part Pointer to the RTPSParticipantImpl
+     * @param p Reference to the PDPSimple
+     * @param part Reference to the RTPSParticipantImpl
      */
     public EDP(PDPSimple p, RTPSParticipant part) {
         m_PDP = p;
@@ -80,7 +80,7 @@ public abstract class EDP {
     /**
      * Remove remote endpoints from the endpoint discovery protocol
      *
-     * @param pdata Pointer to the ParticipantProxyData to remove
+     * @param pdata Reference to the ParticipantProxyData to remove
      */
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
     }
@@ -88,7 +88,7 @@ public abstract class EDP {
     /**
      * Abstract method that removes a local Reader from the discovery method
      *
-     * @param R Pointer to the Reader to remove.
+     * @param R Reference to the Reader to remove.
      * @return True if correctly removed.
      */
     public abstract boolean removeLocalReader(RTPSReader R);
@@ -96,7 +96,7 @@ public abstract class EDP {
     /**
      * Abstract method that removes a local Writer from the discovery method
      *
-     * @param W Pointer to the Writer to remove.
+     * @param W Reference to the Writer to remove.
      * @return True if correctly removed.
      */
     public abstract boolean removeLocalWriter(RTPSWriter W);
@@ -105,7 +105,7 @@ public abstract class EDP {
      * After a new local ReaderProxyData has been created some processing is
      * needed (depends on the implementation).
      *
-     * @param rdata Pointer to the ReaderProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
      * @return True if correct.
      */
     public abstract boolean processLocalReaderProxyData(ReaderProxyData rdata);
@@ -114,7 +114,7 @@ public abstract class EDP {
      * After a new local WriterProxyData has been created some processing is
      * needed (depends on the implementation).
      *
-     * @param wdata Pointer to the Writer ProxyData object.
+     * @param wdata Reference to the Writer ProxyData object.
      * @return True if correct.
      */
     public abstract boolean processLocalWriterProxyData(WriterProxyData wdata);
@@ -122,7 +122,7 @@ public abstract class EDP {
     /**
      * Create a new ReaderPD for a local Reader.
      *
-     * @param reader Pointer to the RTPSReader.
+     * @param reader Reference to the RTPSReader.
      * @param att
      * @param rqos
      * @return True if correct.
@@ -163,7 +163,7 @@ public abstract class EDP {
     /**
      * Create a new ReaderPD for a local Writer.
      *
-     * @param writer Pointer to the RTPSWriter.
+     * @param writer Reference to the RTPSWriter.
      * @param att
      * @param wqos
      * @return True if correct.
@@ -203,7 +203,7 @@ public abstract class EDP {
     /**
      * A previously created Reader has been updated
      *
-     * @param reader Pointer to the reader;
+     * @param reader Reference to the reader;
      * @param rqos
      * @return True if correctly updated
      */
@@ -224,7 +224,7 @@ public abstract class EDP {
     /**
      * A previously created Writer has been updated
      *
-     * @param writer Pointer to the Writer
+     * @param writer Reference to the Writer
      * @param wqos
      * @return True if correctly updated
      */
@@ -280,7 +280,7 @@ public abstract class EDP {
     /**
      * Unpair a WriterProxyData object from all local readers.
      *
-     * @param wdata Pointer to the WriterProxyData object.
+     * @param wdata Reference to the WriterProxyData object.
      * @return True if correct.
      */
     public boolean unpairWriterProxy(WriterProxyData wdata) {
@@ -308,7 +308,7 @@ public abstract class EDP {
     /**
      * Unpair a ReaderProxyData object from all local writers.
      *
-     * @param rdata Pointer to the ReaderProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
      * @return True if correct.
      */
     public boolean unpairReaderProxy(ReaderProxyData rdata) {
@@ -337,8 +337,8 @@ public abstract class EDP {
      * Check the validity of a matching between a RTPSWriter and a
      * ReaderProxyData object.
      *
-     * @param wdata Pointer to the WriterProxyData object.
-     * @param rdata Pointer to the ReaderProxyData object.
+     * @param wdata Reference to the WriterProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
      * @return True if the two can be matched.
      */
     public boolean validMatching(WriterProxyData wdata, ReaderProxyData rdata) {
@@ -417,8 +417,8 @@ public abstract class EDP {
      * Check the validity of a matching between a RTPSReader and a
      * WriterProxyData object.
      *
-     * @param rdata Pointer to the ReaderProxyData object.
-     * @param wdata Pointer to the WriterProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
+     * @param wdata Reference to the WriterProxyData object.
      * @return True if the two can be matched.
      */
     public boolean validMatching(ReaderProxyData rdata, WriterProxyData wdata) {
@@ -491,7 +491,7 @@ public abstract class EDP {
     /**
      * Try to pair/unpair a local Reader against all possible writerProxy Data.
      *
-     * @param R Pointer to the Reader
+     * @param R Reference to the Reader
      * @return True
      */
     public boolean pairingReader(RTPSReader R) {
@@ -542,7 +542,7 @@ public abstract class EDP {
     /**
      * Try to pair/unpair a local Writer against all possible readerProxy Data.
      *
-     * @param W Pointer to the Writer
+     * @param W Reference to the Writer
      * @return True
      */
     public boolean pairingWriter(RTPSWriter W) {
@@ -594,7 +594,7 @@ public abstract class EDP {
     /**
      * Try to pair/unpair ReaderProxyData.
      *
-     * @param rdata Pointer to the ReaderProxyData object.
+     * @param rdata Reference to the ReaderProxyData object.
      * @return True.
      */
     public boolean pairingReaderProxy(ReaderProxyData rdata) {
@@ -641,7 +641,7 @@ public abstract class EDP {
     /**
      * Try to pair/unpair WriterProxyData.
      *
-     * @param wdata Pointer to the WriterProxyData.
+     * @param wdata Reference to the WriterProxyData.
      * @return True.
      */
     public boolean pairingWriterProxy(WriterProxyData wdata) {

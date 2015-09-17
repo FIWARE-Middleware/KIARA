@@ -213,8 +213,8 @@ public class PublisherHistory extends WriterHistoryCache {
     /**
      * Remove a change by the publisher History.
      *
-     * @param change Pointer to the CacheChange_t.
-     * @param vit Pointer to the iterator of the Keyed history vector.
+     * @param change Reference to the CacheChange_t.
+     * @param vit Reference to the iterator of the Keyed history vector.
      * @return True if removed.
      */
     private boolean removeChangePub(CacheChange change, Pair<InstanceHandle, List<CacheChange>> v_it) {
