@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
+* This enumeration represents the kind of an {@link org.fiware.kiara.ps.rtps.Endpoint}.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

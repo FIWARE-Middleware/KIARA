@@ -17,9 +17,9 @@
  */
 package org.fiware.kiara.ps.rtps.common;
 
-import org.fiware.kiara.ps.rtps.messages.common.types.SubmessageId;
-
 /**
+* Enumeraton representing the kind of encapsulation that is going to
+* be used within an RTPS messgae.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
@@ -36,10 +36,21 @@ public enum EncapsulationKind {
 		this.m_value = value;
 	}
 	
+	/**
+	 * Get the EncapsulationKind enumeration value
+	 * 
+	 * @return The EncapsulationKind enumeration value
+	 */
 	public byte getValue() {
 		return this.m_value;
 	}
 	
+	/**
+	 * Creates a new EncapsulationKind object from its ordinal value
+	 * 
+	 * @param value A byte integer indicating the enumeration value
+	 * @return A new EncapsulationKind object according to the received value
+	 */
 	public static EncapsulationKind createFromValue(byte value) {
 		switch (value) {
 		case 0x00:

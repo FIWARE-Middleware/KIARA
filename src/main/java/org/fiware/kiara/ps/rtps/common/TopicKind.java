@@ -18,7 +18,8 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-*
+* This enumeration represents the kind of a specific {@link org.fiware.kiara.ps.topic.TopicDataType} 
+* 
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public enum TopicKind {

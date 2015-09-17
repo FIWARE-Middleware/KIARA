@@ -108,6 +108,11 @@ public class ChangeForReader {
         m_change = null;
     }
 
+    /**
+     * Get the isValid attribute.
+     * 
+     * @return The value indicating whether the ChangeForReader is valid or not  
+     */
     public boolean isValid() {
         return m_isValid;
     }

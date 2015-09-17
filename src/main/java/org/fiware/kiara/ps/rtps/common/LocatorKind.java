@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
+* This enumeration represents the kind of a {@link Locator}
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
@@ -34,6 +35,11 @@ public enum LocatorKind {
 		this.m_value = value;
 	}
 	
+	/**
+	 * Gets the LocatorKind value
+	 * 
+	 * @return The LocatorKind value
+	 */
 	public int getValue() {
 		return this.m_value;
 	}

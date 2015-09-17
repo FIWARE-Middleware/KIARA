@@ -18,6 +18,8 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
+* MatchingStatus, indicates whether the matched publication/subscription method of the PublisherListener or SubscriberListener has
+* been called for a matching or a removal of a remote endpoint.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

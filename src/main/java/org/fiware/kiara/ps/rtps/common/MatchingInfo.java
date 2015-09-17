@@ -20,17 +20,25 @@ package org.fiware.kiara.ps.rtps.common;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class MatchingInfo contains information about the matching between two endpoints. 
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class MatchingInfo {
-	
-	public MatchingStatus status;
-	public GUID remoteEndpointGuid;
-	
-	public MatchingInfo(MatchingStatus status, GUID guid) {
-		this.status = status;
-		this.remoteEndpointGuid = guid;
-	}
+
+    /**
+     * The {@link MatchingStatus} of the MatchingInfo object
+     */
+    public MatchingStatus status;
+    
+    /**
+     * The {@link GUID} of the MatchingInfo object
+     */
+    public GUID remoteEndpointGuid;
+
+    public MatchingInfo(MatchingStatus status, GUID guid) {
+        this.status = status;
+        this.remoteEndpointGuid = guid;
+    }
 
 }
