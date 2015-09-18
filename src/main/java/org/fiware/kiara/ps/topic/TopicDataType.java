@@ -27,11 +27,15 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
  */
 public abstract class TopicDataType<T> {
 
-    //! Data Type Name.
+    /**
+     *  Data Type Name.
+     */
     private String m_topicDataTypeName;
 
-    //! Maximum Type size in bytes. (If the type includes a string the user MUST ensure that the maximum
-    //! size of the string respect the maximum defined size.).
+    /**
+     *  Maximum Type size in bytes. (If the type includes a string the user MUST ensure that the maximum
+     *  size of the string respect the maximum defined size.).
+     */
     protected int m_typeSize;
 
     //! Indicates whether the method to obtain the key has been implemented.
@@ -95,10 +99,20 @@ public abstract class TopicDataType<T> {
         return m_topicDataTypeName;
     }
 
+    /**
+     * Checks if the key has been defined for this TopicDataType
+     * 
+     * @return true if the key has been defined; false otherwise
+     */
     public boolean isGetKeyDefined() {
         return m_isGetKeyDefined;
     }
 
+    /**
+     * Get the type size
+     * 
+     * @return The type size
+     */
     public int getTypeSize() {
         return m_typeSize;
     }

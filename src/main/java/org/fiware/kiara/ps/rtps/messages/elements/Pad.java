@@ -25,41 +25,63 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class representing the Pad submessage of an RTPS message. It
+ * contains the lenght of the padding to be added.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class Pad extends RTPSSubmessageElement {
-	
-	private short m_length;
-	
-	public Pad(short length) {
-		this.m_length = length;
-	}
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		for (int i=0; i < this.m_length; ++i) {
-			impl.serializeByte(message, name, (byte) 0);
-		}
-	}
+    /**
+     * Length of the padding
+     */
+    private short m_length;
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		for (int i=0; i < this.m_length; ++i) {
-			impl.deserializeByte(message, name);
-		}
-	}
+    /**
+     * Default constructor
+     * 
+     * @param length The lenght of the padding
+     */
+    public Pad(short length) {
+        this.m_length = length;
+    }
 
-	@Override
-	public short getSerializedSize() {
-		return this.m_length;
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		return true;
-	}
-	
-	
+    /**
+     * Serializes a Pad object
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        for (int i=0; i < this.m_length; ++i) {
+            impl.serializeByte(message, name, (byte) 0);
+        }
+    }
+
+    /**
+     * Deserializes a Pad object
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        for (int i=0; i < this.m_length; ++i) {
+            impl.deserializeByte(message, name);
+        }
+    }
+
+    /**
+     * Get the Pad serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return this.m_length;
+    }
+
+    /**
+     * Compares two Pad objects
+     */
+    @Override
+    public boolean equals(Object other) {
+        return true;
+    }
+
+
 
 }

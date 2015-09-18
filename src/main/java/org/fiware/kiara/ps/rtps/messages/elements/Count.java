@@ -25,56 +25,88 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * The Count class represents an integer count
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class Count extends RTPSSubmessageElement {
-	
-	private int m_value;
-	
-	public Count(int value) {
-		this.m_value = value;
-	}
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		impl.serializeI32(message, name, this.m_value);
-	}
+    /**
+     * Count value
+     */
+    private int m_value;
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		this.m_value = impl.deserializeI32(message, name);
-	}
+    public Count(int value) {
+        this.m_value = value;
+    }
 
-	@Override
-	public short getSerializedSize() {
-		return 4;
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof Count) {
-			if (this.m_value == ((Count) other).m_value) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Serializes the Count object
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeI32(message, name, this.m_value);
+    }
 
-	public int getValue() {
-		return m_value;
-	}
+    /**
+     * Deserializes the Count object
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_value = impl.deserializeI32(message, name);
+    }
 
-	public void setValue(int m_value) {
-		this.m_value = m_value;
-	}
-	
-	public void increase() {
-	    this.m_value++;
-	}
-	
-	public void decrease() {
-            this.m_value--;
+    /**
+     * Get the Count serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return 4;
+    }
+
+    /**
+     * Compares two Count objects
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Count) {
+            if (this.m_value == ((Count) other).m_value) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    /**
+     * Get the value of the Count class
+     * 
+     * @return
+     */
+    public int getValue() {
+        return m_value;
+    }
+
+    /**
+     * Set the Count value
+     * 
+     * @param m_value
+     */
+    public void setValue(int m_value) {
+        this.m_value = m_value;
+    }
+
+    /**
+     * Increases the Count value
+     */
+    public void increase() {
+        this.m_value++;
+    }
+
+    /**
+     * Decreases the Count value
+     */
+    public void decrease() {
+        this.m_value--;
+    }
 
 }

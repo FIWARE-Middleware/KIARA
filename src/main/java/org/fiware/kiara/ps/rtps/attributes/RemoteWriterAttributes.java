@@ -70,7 +70,7 @@ public class RemoteWriterAttributes {
     /**
      * Copies the content of the RemoteWriterAttributes reference
      * 
-     * @param locator A reference to other RemoteWriterAttributes
+     * @param value A reference to other RemoteWriterAttributes
      */
     public void copy(RemoteWriterAttributes value) {
         endpoint.copy(value.endpoint);
