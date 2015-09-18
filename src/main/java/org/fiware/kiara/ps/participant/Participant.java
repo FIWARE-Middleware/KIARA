@@ -150,6 +150,12 @@ public class Participant {
     @SuppressWarnings("unchecked")
     public <T> Publisher<T> createPublisher(PublisherAttributes att, PublisherListener listener) {
         //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
+        
+        if (att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
+            throw new UnsupportedOperationException("ReliabilityKind.RELIABLE not supported in "
+                    + "this KIARA version, only BEST_EFFORT communication can be stablished.");
+        }
+        
         TopicDataType<T> type = null;
 
         try {
@@ -242,6 +248,11 @@ public class Participant {
     public <T> Subscriber<T> createSubscriber(SubscriberAttributes att, SubscriberListener listener) {
 
         logger.info("Creating Subscriber in Topic: " + att.topic.topicName);
+        
+        if (att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
+            throw new UnsupportedOperationException("ReliabilityKind.RELIABLE not supported in "
+                    + "this KIARA version, only BEST_EFFORT communication can be stablished.");
+        }
 
         //TopicDataType type = getRegisteredType(att.topic.topicDataTypeName);
         //SerializableDataType<?> type = getRegisteredType(att.topic.topicDataTypeName);
