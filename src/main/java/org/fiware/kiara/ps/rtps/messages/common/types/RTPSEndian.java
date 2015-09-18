@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.common.types;
 
 /**
+* Class representing the endian of an RTPS message
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

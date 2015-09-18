@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.common.types;
 
 /**
+* The ChangeKind representing the status of a CacheChange
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */

@@ -25,44 +25,65 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
-public class Unused  extends RTPSSubmessageElement {
-	
-	private byte[] m_gap;
-	
-	public Unused(int nBytes) {
-		this.m_gap = new byte[nBytes];
-	}
+ * Class that represents the Unused RTPS submessage element.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
+public class Unused extends RTPSSubmessageElement {
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		for (int i=0; i < m_gap.length; ++i) {
-			impl.serializeByte(message, name, (byte) 0); 
-		}
-	}
+    /**
+     * Number of bytes to add as a gap
+     */
+    private byte[] m_gap;
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		for (int i=0; i < m_gap.length; ++i) {
-			impl.deserializeByte(message, name); 
-		}
-	}
-	
-	@Override
-	public boolean equals(Object other) {
-		if (other instanceof Unused) {
-			if (m_gap.length == ((Unused) other).m_gap.length) {
-				return true;
-			}
-		}
-		return false;
-	}
+    /**
+     * Default constructor
+     * 
+     * @param nBytes Number of unused bytes
+     */
+    public Unused(int nBytes) {
+        this.m_gap = new byte[nBytes];
+    }
 
-	@Override
-	public short getSerializedSize() {
-		return (short) this.m_gap.length;
-	}
+    /**
+     * Serializes an Unused object
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        for (int i=0; i < m_gap.length; ++i) {
+            impl.serializeByte(message, name, (byte) 0); 
+        }
+    }
+
+    /**
+     * Deserializes an Unused object
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        for (int i=0; i < m_gap.length; ++i) {
+            impl.deserializeByte(message, name); 
+        }
+    }
+
+    /**
+     * Compares two Unused objects
+     */
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Unused) {
+            if (m_gap.length == ((Unused) other).m_gap.length) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Get the Unused serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return (short) this.m_gap.length;
+    }
 
 }

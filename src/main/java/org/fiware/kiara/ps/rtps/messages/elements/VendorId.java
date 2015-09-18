@@ -25,14 +25,25 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
+ * Class that represents the RTPS VendorId submessage element.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class VendorId extends RTPSSubmessageElement {
 
+    /**
+     * First byte of the ID
+     */
     byte m_id_0;
+    
+    /**
+     * Second byte of the ID
+     */
     byte m_id_1;
 
+    /**
+     * Default constructor
+     */
     public VendorId() {
         m_id_0 = (byte) 0x0;
         m_id_1 = (byte) 0x0;
@@ -43,18 +54,31 @@ public class VendorId extends RTPSSubmessageElement {
         m_id_1 = id_1;
     }
 
+    /**
+     * Set the VendorId to unknown
+     * 
+     * @return The object in which the method has been invoked
+     */
     public VendorId setVendorUnknown() {
         this.m_id_0 = (byte) 0x00;
         this.m_id_1 = (byte) 0x00;
         return this;
     }
 
+    /**
+     * Set the VendorId to eProsima
+     * 
+     * @return The object in which the method has been invoked
+     */
     public VendorId setVendoreProsima() {
         this.m_id_0 = (byte) 0x01;
         this.m_id_1 = (byte) 0x0F;
         return this;
     }
 
+    /**
+     * Compares two VendorId objects
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof VendorId) {
@@ -69,33 +93,37 @@ public class VendorId extends RTPSSubmessageElement {
         return false;
     }
 
-    /*public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
-		try {
-			ser.serializeByte(bos, "", this.m_id_0);
-			ser.serializeByte(bos, "", this.m_id_1);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-
+    /**
+     * Serializes a VendorId object
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         impl.serializeByte(message, "", this.m_id_0);
         impl.serializeByte(message, "", this.m_id_1);
     }
 
+    /**
+     * Deserializes a VendorId object
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.m_id_0 = impl.deserializeByte(message, "");
         this.m_id_1 = impl.deserializeByte(message, "");
     }
 
+    /**
+     * Get the VendorId serialized size
+     */
     @Override
     public short getSerializedSize() {
         return 2;
     }
 
+    /**
+     * Copies the content of a VendorId object
+     * 
+     * @param vendorId The VendorId to be copied
+     */
     public void copy(VendorId vendorId) {
         this.m_id_0 = vendorId.m_id_0;
         this.m_id_1 = vendorId.m_id_1;

@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.common.types;
 
 /**
+* Enumeration that represents the submessage identifier
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
@@ -43,6 +44,12 @@ public enum SubmessageId {
 		this.m_value = value;
 	}
 	
+	/**
+	 * Creates a new SubmessageId according to the received value
+	 * 
+	 * @param value byte to create the SubmessageId value from
+	 * @return The new created SubmessageId
+	 */
 	public static SubmessageId createFromValue(byte value) {
 		switch(value) {
 		case 0x01:
@@ -74,6 +81,11 @@ public enum SubmessageId {
 		}
 	}
 	
+	/**
+	 * Get the SubmessageId value
+	 * 
+	 * @return The SubmessageId value
+	 */
 	public byte getValue() {
 		return this.m_value;
 	}

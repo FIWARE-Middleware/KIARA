@@ -34,7 +34,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  * writer liveliness assertion in networks with high latency or with lots of
  * communication errors. kind: Default value AUTOMATIC_LIVELINESS_QOS
  * lease_duration: Default value c_TimeInfinite. announcement_period: Default
- * value c_TimeInfinite (must be < lease_duration).
+ * value c_TimeInfinite (must be lower than lease_duration).
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */

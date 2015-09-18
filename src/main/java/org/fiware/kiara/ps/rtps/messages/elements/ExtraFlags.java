@@ -25,36 +25,34 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Extra flags submessage of the RTPS message
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class ExtraFlags extends RTPSSubmessageElement {
 
-	/*@Override
-	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
-		try {
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
+    /**
+     * Get the ExtraFlags serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return 2;
+    }
 
-	@Override
-	public short getSerializedSize() {
-		return 2;
-	}
+    /**
+     * Serializes an ExtraFlags object
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeUI16(message, "", (short) 0);
+    }
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		impl.serializeUI16(message, "", (short) 0);
-	}
+    /**
+     * Deserializes an ExtraFlags object
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        // TODO Not supported in this version
+    }
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message,
-			String name) throws IOException {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }

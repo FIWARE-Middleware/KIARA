@@ -25,13 +25,20 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
+ * Structure GuidPrefix, Guid Prefix of the GUID.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class GUIDPrefix extends RTPSSubmessageElement {
 
+    /**
+     * GUIDPrefix value (it's a byte array with 12 positions)
+     */
     byte[] m_value;
 
+    /**
+     * Default constructor
+     */
     public GUIDPrefix() {
         m_value = new byte[12];
         for (int i=0; i < 12; ++i) {
@@ -39,18 +46,40 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         }
     }
 
+    /**
+     * Set the GUIDPrefix value
+     * 
+     * @param index The index in which the value will de stored
+     * @param value The value to be stored
+     */
     public void setValue(int index, byte value) {
         this.m_value[index] = value;
     }
 
+    /**
+     * Get the GUIDPrefix value
+     * 
+     * @return The GuidPrefix value
+     */
     public byte[] getValue() {
         return m_value;
     }
 
+    /**
+     * Get the byte value in a certain position of the GUIDPrefix value
+     * 
+     * @param index The position of the value to be returned
+     * @return The value of the GUIDPrefix in that position
+     */
     public byte getValue(int index) {
         return this.m_value[index];
     }
 
+    /**
+     * 
+     * @param value
+     * @throws Exception
+     */
     public GUIDPrefix(byte[] value) throws Exception {
         if (value.length != 12) {
             throw new Exception();
@@ -61,12 +90,20 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         }
     }
 
+    /**
+     * Copies the content of a GUIDPrefix object
+     * 
+     * @param value The GUIDPrefix to be copied
+     */
     public void copy(GUIDPrefix value) {
         for (int i = 0; i < 12; ++i) {
             m_value[i] = value.m_value[i];
         }
     }
 
+    /**
+     * Serializes a GUIDPrefix object
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         for (int i=0; i < 12; ++i) {
@@ -74,6 +111,9 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         }
     }
 
+    /**
+     * Deserializes a GUIDPrefix object
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         for (int i=0; i < 12; ++i) {
@@ -81,11 +121,17 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         }
     }
 
+    /**
+     * Get the GUIDPrefix serialized size
+     */
     @Override
     public short getSerializedSize() {
         return 12;
     }
 
+    /**
+     * Compares two GUIDPrefix objects
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof GUIDPrefix) {
@@ -98,6 +144,9 @@ public class GUIDPrefix extends RTPSSubmessageElement {
         return false;
     }
 
+    /**
+     * Converts a GUIDPrefix to its String representation
+     */
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("");
@@ -105,11 +154,6 @@ public class GUIDPrefix extends RTPSSubmessageElement {
             sb.append(b);
         }
         return sb.toString();
-    }
-
-    public byte getValueAt(byte i) {
-        // TODO Auto-generated method stub
-        return 0;
     }
 
 }

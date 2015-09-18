@@ -25,44 +25,59 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class representing the field octetsToInlineQos contained 
+ * in every RTPS DATA submessage. It holds the number of Bytes
+ * remaining until the InlineQos submessage element.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class OctectsToInlineQos extends RTPSSubmessageElement {
-	
-	private short m_value;
-	
-	public OctectsToInlineQos(short value) {
-		this.m_value = value;
-	}
 
-	/*@Override
-	public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
-		try {
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}*/
-	
-	public short getValue() {
-		return this.m_value;
-	}
+    /**
+     * The OctectsToInlineQos value
+     */
+    private short m_value;
 
-	@Override
-	public short getSerializedSize() {
-		return 2;
-	}
+    /**
+     * Default constructor
+     * 
+     * @param value The value of the field
+     */
+    public OctectsToInlineQos(short value) {
+        this.m_value = value;
+    }
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		impl.serializeI16(message, "", this.m_value);
-	}
+    /**
+     * Get the value of the OctectsToInlineQos object
+     * 
+     * @return The number of octets to the InlineQos field
+     */
+    public short getValue() {
+        return this.m_value;
+    }
 
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		this.m_value = impl.deserializeI16(message, "");
-	}
+    /**
+     * Get the OctectsToInlineQos serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return 2;
+    }
+
+    /**
+     * Serializes an OctectsToInlineQos object
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        impl.serializeI16(message, "", this.m_value);
+    }
+
+    /**
+     * Deserializes an OctectsToInlineQos object
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_value = impl.deserializeI16(message, "");
+    }
 
 }
