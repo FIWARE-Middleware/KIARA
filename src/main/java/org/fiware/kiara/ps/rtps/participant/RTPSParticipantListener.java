@@ -18,11 +18,19 @@
 package org.fiware.kiara.ps.rtps.participant;
 
 /**
+* Class RTPSParticipantListener, used by the user to define certain 
+* methods to program behaviour to certain events.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public abstract class RTPSParticipantListener {
     
+    /**
+     * Method to be called when a new RTPSParticipant is discovered
+     * 
+     * @param participant The RTPSParticipant that discovered a new RTPSParticipant
+     * @param info The information about the new RTPSParticipant
+     */
     public abstract void onRTPSParticipantDiscovery(RTPSParticipant participant, RTPSParticipantDiscoveryInfo info); 
 
 }

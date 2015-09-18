@@ -76,7 +76,6 @@ public class Publisher<T> {
 
     private PublisherListener m_listener;
 
-    //private Publisher<T> m_userPublisher;
     private RTPSParticipant m_rtpsParticipant;
 
     private PublisherWriterListener m_writerListener;
@@ -91,7 +90,6 @@ public class Publisher<T> {
         this.m_history = new PublisherHistory(this, dataType.getTypeSize(), att.topic.historyQos, att.topic.resourceLimitQos);
         this.m_listener = listener;
         this.m_writerListener = new PublisherWriterListener(this);
-        //this.m_userPublisher = null;
         this.m_rtpsParticipant = null;
     }
 

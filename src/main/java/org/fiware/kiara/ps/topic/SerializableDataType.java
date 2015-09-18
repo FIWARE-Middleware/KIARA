@@ -25,14 +25,27 @@ import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
+ * Class to use as a Topic definition for the user's data types. This 
+ * will be used to register said types.
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
 public class SerializableDataType<T extends Serializable> extends TopicDataType<T> {
 
+    /**
+     * Class definition of the user data type
+     */
     private Class<T> dataClass;
 
+    /**
+     * SerializableDataType constructor
+     * 
+     * @param dataClass The class reference to the user's data type
+     * @param name The name of the type
+     * @param typeSize The type's data size
+     * @param isGetKeyDefined Indicates whether the type is keyed or not
+     */
     public SerializableDataType(Class<T> dataClass, String name, int typeSize, boolean isGetKeyDefined) {
         if (dataClass == null) {
             throw new NullPointerException("dataClass");
@@ -43,6 +56,9 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
         setName(name);
     }
 
+    /**
+     * Serializes the user data type
+     */
     @Override
     public boolean serialize(T data, SerializedPayload payload) {
         BinaryOutputStream bos = new BinaryOutputStream();
@@ -56,6 +72,9 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
         return true;
     }
 
+    /**
+     * Deserializes the user data type
+     */
     @Override
     public T deserialize(SerializedPayload payload) throws InstantiationException, IllegalAccessException {
         BinaryInputStream bis = new BinaryInputStream(payload.getBuffer(), 0, payload.getLength());
@@ -67,6 +86,9 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
         }
     }
 
+    /**
+     * Creates a new instance of the user data type
+     */
     @Override
     public T createData() {
         try {
@@ -76,8 +98,4 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
         }
     }
     
-   /* public static int getMaxSize() {
-        return SerializedPayload.PAYLOAD_MAX_SIZE;
-    }*/
-
 }

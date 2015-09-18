@@ -1,6 +1,22 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.subscriber;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,14 +34,17 @@ import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.reader.WriterProxy;
-import org.fiware.kiara.ps.topic.SerializableDataType;
-import org.fiware.kiara.ps.topic.TopicDataType;
-import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.util.Pair;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class that represents the Subscriber's HistoryCache.
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class SubscriberHistory extends ReaderHistoryCache {
     
     private long m_unreadCacheCount;
@@ -44,6 +63,14 @@ public class SubscriberHistory extends ReaderHistoryCache {
     
     private static final Logger logger = LoggerFactory.getLogger(SubscriberHistory.class);
 
+    /**
+     * SubscriberHistory constructor
+     * 
+     * @param subscriber The Subscriber to which this HistoryCache belongs
+     * @param payloadMaxSize Maximum payload size
+     * @param history HistoryQosPolicy for this HistoryCache
+     * @param resource ResourceLimitsQosPolicy to be applied
+     */
     public SubscriberHistory(Subscriber subscriber, int payloadMaxSize, HistoryQosPolicy history, ResourceLimitsQosPolicy resource) {
         super(new HistoryCacheAttributes(payloadMaxSize, resource.allocatedSamples, resource.maxSamples));
         this.m_unreadCacheCount = 0;
@@ -55,6 +82,10 @@ public class SubscriberHistory extends ReaderHistoryCache {
     }
     
     @SuppressWarnings("unchecked")
+    /*
+     * (non-Javadoc)
+     * @see org.fiware.kiara.ps.rtps.history.ReaderHistoryCache#receivedChange(org.fiware.kiara.ps.rtps.history.CacheChange)
+     */
     public boolean receivedChange(CacheChange change) {
         this.m_mutex.lock();
         try {
@@ -186,16 +217,28 @@ public class SubscriberHistory extends ReaderHistoryCache {
         }
     }
     
+    /**
+     * Increaes the number of unread samples
+     */
     public void increaseUnreadCount() {
         ++this.m_unreadCacheCount;
     }
     
+    /**
+     * Decreases the number of unread samples
+     */
     public void decreaseUnreadCount() {
         if (this.m_unreadCacheCount > 0) {
             --this.m_unreadCacheCount;
         }
     }
     
+    /**
+     * Finds a InstanceHandle in the SubscriberHistory and returns its associated CacheChange references
+     * 
+     * @param change Che CacheChange to fe found
+     * @return A Pair formed by the InstanceHandle and its list of CacheChange references
+     */
     private Pair<InstanceHandle, List<CacheChange>> findKey(CacheChange change) {
         for (Pair<InstanceHandle, List<CacheChange>> entry : this.m_keyedChanges) {
             if (change.getInstanceHandle().equals(entry.getFirst())) {
@@ -225,6 +268,13 @@ public class SubscriberHistory extends ReaderHistoryCache {
         return null;
     }
     
+    /**
+     * Removes the CacheChange list associated to a specific InstanceHandle
+     * 
+     * @param change
+     * @param vit_in
+     * @return
+     */
     public boolean removeChangeSub(CacheChange change, Pair<InstanceHandle, List<CacheChange>> vit_in) {
         this.m_mutex.lock();
         try {
@@ -262,10 +312,21 @@ public class SubscriberHistory extends ReaderHistoryCache {
         }
     }
 
+    /**
+     * Get the number of unread changes
+     * 
+     * @return The number of CacheChange elements that are unread
+     */
     public long getUnreadCount() {
         return this.m_unreadCacheCount;
     }
     
+    /**
+     * Reads next data in the SubscriberHistory
+     * 
+     * @param info The associated SampleInfo
+     * @return The read data
+     */
     public <T> T readNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
@@ -311,51 +372,12 @@ public class SubscriberHistory extends ReaderHistoryCache {
         }
     }
 
-    /*public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
-        this.m_mutex.lock();
-        try {
-            
-            CacheChange change = new CacheChange();
-            WriterProxy proxy = new WriterProxy();
-            
-            if (this.m_reader.nextUnreadCache(change, proxy)) {
-                change.setRead(true);
-                this.decreadeUnreadCount();
-                logger.info(this.m_reader.getGuid().getEntityId() + ": reading " + change.getSequenceNumber().toLong());
-                if (change.getKind() == ChangeKind.ALIVE) {
-                    try {
-                        this.m_subscriber.getType().deserialize(change.getSerializedPayload());
-                    } catch (InstantiationException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    } catch (IllegalAccessException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-                if (info != null) {
-                    info.sampleKind = change.getKind();
-                    info.writerGUID = change.getWriterGUID();
-                    info.sourceTimestamp = change.getSourceTimestamp();
-                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = proxy.att.ownershipStrength;
-                    }
-                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) &&
-                            change.getKind() == ChangeKind.ALIVE) {
-                        
-                    }
-                    info.handle = change.getInstanceHandle();
-                }
-                //return this.m_subscriber.getType();
-            }
-            return null;
-            
-        } finally {
-            this.m_mutex.unlock();
-        }
-    }*/
-    
+    /**
+     * Reads and removes the next data from the SubscriberHistory
+     * 
+     * @param info The associated SampleInfo
+     * @return The read data
+     */
     public <T> T takeNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
@@ -399,48 +421,4 @@ public class SubscriberHistory extends ReaderHistoryCache {
         return null;
     }
     
-    /*public Serializable takeNextData(SampleInfo info) {
-        this.m_mutex.lock();
-        try {
-            Serializable retVal = null;
-            CacheChange change = new CacheChange();
-            WriterProxy wp = new WriterProxy();
-            if (this.m_reader.nextUntakenCache(change, wp)) {
-                if (!change.isRead()) {
-                    this.decreadeUnreadCount();
-                }
-                change.setRead(true);
-                logger.debug("Taking seqNum {} from writer {}", change.getSequenceNumber().toLong(), change.getWriterGUID());
-                if (change.getKind() == ChangeKind.ALIVE) {
-                    try {
-                        retVal = this.m_subscriber.getType().deserialize(change.getSerializedPayload());
-                    } catch (InstantiationException | IllegalAccessException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                 }
-                if (info != null) {
-                    info.sampleKind = change.getKind();
-                    info.writerGUID = change.getWriterGUID();
-                    info.sourceTimestamp = change.getSourceTimestamp();
-                    if (this.m_subscriber.getAttributes().qos.ownership.kind == OwnershipQosPolicyKind.EXCLUSIVE_OWNERSHIP_QOS) {
-                        info.ownershipStrength = wp.value.att.ownershipStrength;
-                    }
-                    if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
-                            change.getInstanceHandle().equals(new InstanceHandle()) &&
-                            change.getKind() == ChangeKind.ALIVE) {
-                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.getInstanceHandle()); // TODO Check this
-                    }
-                    info.handle = change.getInstanceHandle();
-                }
-                this.removeChangeSub(change, null);
-                return retVal;
-            }
-        } finally {
-            this.m_mutex.unlock();
-        }
-        return null;
-    }*/
-
-    
-}
+    }
