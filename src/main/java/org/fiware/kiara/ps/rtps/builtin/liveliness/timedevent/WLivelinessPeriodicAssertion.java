@@ -64,6 +64,12 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
      */
     private final GUIDPrefix m_guidP;
 
+    /**
+     * Constructor
+     *
+     * @param pwlp Pointer to the WLP object.
+     * @param kind Kind of the periodic assertion timed event
+     */
     public WLivelinessPeriodicAssertion(WLP pwlp, LivelinessQosPolicyKind kind) {
         super(0);
         m_guidP = new GUIDPrefix();
@@ -77,7 +83,14 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
         }
         m_iHandle.setValue(15, (byte) (m_livelinessKind.getValue() + 0x01));
     }
-    
+
+    /**
+     * Constructor
+     *
+     * @param pwlp Pointer to the WLP object.
+     * @param kind Kind of the periodic assertion timed event
+     * @param milliseconds Interval in milliseconds
+     */
     public WLivelinessPeriodicAssertion(WLP pwlp, LivelinessQosPolicyKind kind, double milliseconds) {
         super(milliseconds);
         m_guidP = new GUIDPrefix();
@@ -110,7 +123,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
                 }
             }
             m_WLP.getBuiltinProtocols().getPDP().assertLocalWritersLiveliness(m_livelinessKind);
-           // restartTimer();
+            // restartTimer();
         } else if (code == EVENT_ABORT) {
             logger.info("RTPS LIVELINESS: Liveliness Periodic Assertion aborted");
             stopSemaphorePost();
@@ -121,6 +134,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
 
     /**
      * Assert the liveliness of AUTOMATIC kind Writers.
+     * @return true on success
      */
     public boolean automaticLivelinessAssertion() {
         final Lock mutex = m_WLP.getMutex();
@@ -163,6 +177,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
 
     /**
      * Assert the liveliness of MANUAL_BY_PARTICIPANT kind writers.
+     * @return true on success
      */
     public boolean manualByRTPSParticipantLivelinessAssertion() {
         final Lock mutex = m_WLP.getMutex();

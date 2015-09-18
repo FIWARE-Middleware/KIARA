@@ -84,7 +84,7 @@ public class WLP {
     private StatefulReader m_builtinReader;
 
     /**
-     * Hist
+     * History
      */
     WriterHistoryCache m_builtinWriterHistory;
     ReaderHistoryCache m_builtinReaderHistory;
@@ -331,10 +331,10 @@ public class WLP {
             if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
                 if (m_livelinessAutomatic == null) {
                     /*
-                    m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
-                    m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                    m_livelinessAutomatic.restartTimer();
-                    */
+                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
+                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
+                     m_livelinessAutomatic.restartTimer();
+                     */
                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
@@ -483,10 +483,10 @@ public class WLP {
             if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
                 if (m_livelinessAutomatic == null) {
                     /*
-                    m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
-                    m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                    m_livelinessAutomatic.restartTimer();
-                    */
+                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
+                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
+                     m_livelinessAutomatic.restartTimer();
+                     */
                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
@@ -501,10 +501,10 @@ public class WLP {
             } else if (wqos.liveliness.kind == MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
                 if (m_livelinessManRTPSParticipant == null) {
                     /*
-                    m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS);
-                    m_livelinessManRTPSParticipant.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                    m_livelinessManRTPSParticipant.restartTimer();
-                    */
+                     m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS);
+                     m_livelinessManRTPSParticipant.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
+                     m_livelinessManRTPSParticipant.restartTimer();
+                     */
                     m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
                     m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
                 } else if (m_minManRTPSParticipant_MilliSec > wAnnouncementPeriodMilliSec) {
@@ -541,18 +541,38 @@ public class WLP {
         return m_mutex;
     }
 
+    /**
+     * Get the builtin writer
+     *
+     * @return Builtin writer
+     */
     public StatefulWriter getBuiltinWriter() {
         return m_builtinWriter;
     }
 
+    /**
+     * Get the list of writers using automatic liveness
+     *
+     * @return List of writers using automatic liveness
+     */
     public List<RTPSWriter> getLivAutomaticWriters() {
         return m_livAutomaticWriters;
     }
 
+    /**
+     * Get the list of writers using manual by RTPSParticipant liveliness.
+     *
+     * @return List of writers using manual by RTPSParticipant liveliness.
+     */
     public List<RTPSWriter> getLivManRTPSParticipantWriters() {
         return m_livManRTPSParticipantWriters;
     }
 
+    /**
+     * Get the builtin writer history
+     *
+     * @return Builtin writer history
+     */
     public WriterHistoryCache getBuiltinWriterHistory() {
         return m_builtinWriterHistory;
     }
