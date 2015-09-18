@@ -29,21 +29,25 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
-import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
-import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.eprosima.log.Log;
-
 /**
+ * Class Subscriber, contains the public API that allows the user to control the reception of messages.
+ * This class should not be instantiated directly. DomainRTPSParticipant class should be used to correctly create this element.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  * @param <T>
  */
 public class Subscriber<T> {
 
+    /**
+     * Reader listener for the Subscriber
+     * 
+     * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+     *
+     */
     private class SubscriberReaderListener extends ReaderListener {
 
         private Subscriber<T> m_subscriber;
@@ -52,6 +56,9 @@ public class Subscriber<T> {
             this.m_subscriber = s;
         }
 
+        /**
+         * Method to be executed when a new Reader matches with the Writer
+         */
         @Override
         public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
             if (this.m_subscriber.m_listener != null) {
@@ -60,6 +67,9 @@ public class Subscriber<T> {
 
         }
 
+        /**
+         * Method to be executed when a new CacheChange has been added
+         */
         @Override
         public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
             if (this.m_subscriber.m_listener != null) {
@@ -71,10 +81,6 @@ public class Subscriber<T> {
 
     private Participant m_participant;
 
-    private TopicDataType<T> m_type_old;
-    
-    //private SerializableDataType<T> m_type;
-    
     private TopicDataType<T> m_type;
 
     private SubscriberAttributes m_att;
@@ -88,11 +94,17 @@ public class Subscriber<T> {
     private RTPSReader m_reader;
 
     private RTPSParticipant m_rtpsParticipant;
-    
+
     private static final Logger logger = LoggerFactory.getLogger(Subscriber.class);
 
-    //private Subscriber m_userSubscriber;
-
+    /**
+     * Publisher constructor
+     * 
+     * @param p {@link Participant} that creates the Subscriber 
+     * @param type {@link TopicDataType} associated to the Subscriber
+     * @param att {@link SubscriberAttributes} of the Subscriber
+     * @param listener {@link SubscriberListener} reference to be called when an event occurs
+     */
     public Subscriber(Participant p, TopicDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
         this.m_participant = p;
         this.m_readerListener = null;
@@ -106,6 +118,9 @@ public class Subscriber<T> {
 
     }
 
+    /**
+     * Commands the Subscriber to wait for unsead messages
+     */
     public void waitForUnreadMessage() {
         if (this.m_history.getUnreadCount() == 0) {
             while (true) {
@@ -117,26 +132,36 @@ public class Subscriber<T> {
         }
     }
 
+    /**
+     * Reads and returns next data from the HistoryCache
+     * 
+     * @param info The SampleInfo
+     * @return The sample data type
+     */
     public T readNextData(SampleInfo info) {
         return this.m_history.readNextData(info);
     }
 
+    /**
+     * Takes and removes the next data from the HistoryCache
+     * 
+     * @param info The SampleInfo
+     * @return The sample data type
+     */
     public T takeNextData(SampleInfo info) {
         return this.m_history.takeNextData(info);
     }
-    
-    /*public <T extends Serializable> SerializableDataType<T> readNextData(SampleInfo info) {
-        return this.m_history.readNextData(info);
-    }
 
-    public Serializable takeNextData(SampleInfo info) {
-        return this.m_history.takeNextData(info);
-    }*/
-    
+    /**
+     * Updated the SubscriberAttributes reference
+     * 
+     * @param att The SubscriberAttributes with the new changes
+     * @return true if the SubscriberAttributes can be updated; false otherwise
+     */
     public boolean updateAttributes(SubscriberAttributes att) {
         boolean updated = true;
         boolean missing = true;
-        
+
         if (att.unicastLocatorList.getLocators().size() != this.m_att.unicastLocatorList.getLocators().size() ||
                 att.multicastLocatorList.getLocators().size() != this.m_att.multicastLocatorList.getLocators().size()) {
             logger.warn("Locator Lists cannot be changed or updated in this version");
@@ -169,14 +194,14 @@ public class Subscriber<T> {
                 }
             }
         }
-        
+
         // Topic Attributes
-        
+
         if (!this.m_att.topic.equals(att.topic)) {
             logger.warn("Topic Attributes cannot be updated");
             updated &= false;
         }
-        
+
         if (updated) {
             this.m_att.expectsInlineQos = att.expectsInlineQos;
             if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
@@ -186,46 +211,85 @@ public class Subscriber<T> {
             this.m_att.qos.setQos(att.qos, false);
             this.m_rtpsParticipant.updateReader(this.m_reader, this.m_att.qos);
         }
-        
+
         return updated;
     }
 
+    /**
+     * Get the GUID
+     * 
+     * @return The GUID
+     */
     public GUID getGuid() {
         return this.m_reader.getGuid();
     }
 
+    /**
+     * Get the registered TopicDataType
+     * 
+     * @return The registered TopicDataType 
+     */
     public TopicDataType<T> getType() {
         return this.m_type;
     }
-    
-    /*public SerializableDataType<T> getType_old() {
-        return this.m_type;
-    }*/
-    
+
+    /**
+     * Get the SubscriberAttributes of the Subscriber
+     * 
+     * @return The SubscriberAttributes
+     */
     public SubscriberAttributes getAttributes() {
         return this.m_att;
     }
-    
+
+    /**
+     * Set the RTPSParticipant reference
+     * 
+     * @param participant The RTPSParticipant to be set
+     */
     public void setRTPSParticipant(RTPSParticipant participant) {
         this.m_rtpsParticipant = participant;
     }
-    
+
+    /**
+     * Get the SubscriberHistory of the Subscriber
+     * 
+     * @return The SubscriberHistory
+     */
     public SubscriberHistory getHistory() {
         return this.m_history;
     }
 
+    /**
+     * Get the ReaderListener reference
+     * 
+     * @return The ReaderListener
+     */
     public ReaderListener getReaderListener() {
         return this.m_readerListener;
     }
 
+    /**
+     * Set the RTPSReader reference
+     * 
+     * @param reader The RTPSReader to be set
+     */
     public void setReader(RTPSReader reader) {
         this.m_reader = reader;
     }
-    
+
+    /**
+     * Get the RTPSReader reference
+     * 
+     * @return The RTPSReader
+     */
     public RTPSReader getReader() {
         return this.m_reader;
     }
 
+    /**
+     * Destroy the information in the Subscriber
+     */
     public void destroy() {
         logger.info("Destroying Subscriber (Reader GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSReader(this.m_reader);

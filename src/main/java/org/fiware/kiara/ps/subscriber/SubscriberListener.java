@@ -20,13 +20,26 @@ package org.fiware.kiara.ps.subscriber;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 
 /**
+* Class representing the listener that will be invoked when a certain
+* event should occur.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public abstract class SubscriberListener {
     
+    /**
+     * Method to be called when a new data message has arrived
+     * 
+     * @param sub The Subscriber entity that received the sample
+     */
     public abstract void onNewDataMessage(Subscriber<?> sub);
     
+    /**
+     * Method to be called when a new Publisher matches (or unmatches) the Subscriber
+     * 
+     * @param sub The Subscriber to which the Publishes has matched (or unmatched)
+     * @param info The associated MatchingInfo
+     */
     public abstract void onSubscriptionMatched(Subscriber<?> sub, MatchingInfo info);
 
 }

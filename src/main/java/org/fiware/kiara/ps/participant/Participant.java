@@ -32,7 +32,6 @@ import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
-import static org.fiware.kiara.ps.rtps.common.EndpointKind.WRITER;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
@@ -45,9 +44,7 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
-import org.fiware.kiara.ps.topic.SerializableDataType;
 import org.fiware.kiara.ps.topic.TopicDataType;
-import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
-public class Participant /*<T extends Serializable>*/ {
+public class Participant {
 
     private static final Logger logger = LoggerFactory.getLogger(Participant.class);
 
@@ -75,15 +72,28 @@ public class Participant /*<T extends Serializable>*/ {
 
     private List<TopicDataType<?>> m_types;
 
-    //private List<SerializableDataType> m_types_old;
+    /**
+     * RTPSParticipantListener implementation to be used in the Participant class
+     * 
+     * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+     *
+     */
     public class MyRTPSParticipantListener extends RTPSParticipantListener {
 
         private Participant m_participant;
 
+        /**
+         * MyRTPSParticipantListener constructor
+         * 
+         * @param part The associated Participant 
+         */
         public MyRTPSParticipantListener(Participant part) {
             this.m_participant = part;
         }
 
+        /**
+         * Method to be executed when a new RTPSParticipant is discovered
+         */
         @Override
         public void onRTPSParticipantDiscovery(RTPSParticipant participant, RTPSParticipantDiscoveryInfo rtpsinfo) {
             if (this.m_participant.m_listener != null) {
@@ -96,6 +106,12 @@ public class Participant /*<T extends Serializable>*/ {
 
     }
 
+    /**
+     * Participant constructor
+     * 
+     * @param participantAttributes The ParticipantAttributes of the Participant
+     * @param listener The ParticipantListener associated to the Participant
+     */
     public Participant(ParticipantAttributes participantAttributes, ParticipantListener listener) {
         this.m_att = participantAttributes;
         this.m_rtpsParticipant = null;
@@ -108,6 +124,9 @@ public class Participant /*<T extends Serializable>*/ {
         this.m_rtpsListener = new MyRTPSParticipantListener(this);
     }
 
+    /**
+     * Destroys the Participant and all the associated Endpoints
+     */
     public void destroy() {
         this.m_rtpsParticipant.destroy();
 

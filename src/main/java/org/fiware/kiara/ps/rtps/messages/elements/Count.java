@@ -36,6 +36,11 @@ public class Count extends RTPSSubmessageElement {
      */
     private int m_value;
 
+    /**
+     * Default constructor
+     * 
+     * @param value The Count value
+     */
     public Count(int value) {
         this.m_value = value;
     }
