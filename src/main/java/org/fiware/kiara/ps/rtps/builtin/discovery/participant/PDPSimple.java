@@ -72,28 +72,65 @@ public class PDPSimple {
 
     private final BuiltinProtocols m_builtin;
 
+    /**
+     * Reference to the local RTPSParticipant.
+     */
     private RTPSParticipant m_RTPSParticipant;
 
+    /**
+     * Discovery attributes.
+     */
     private BuiltinAttributes m_discovery;
 
+    /**
+     * Reference to the SPDPWriter.
+     */
     private StatelessWriter m_SPDPWriter;
 
+    /**
+     * Reference to the SPDPReader.
+     */
     private StatelessReader m_SPDPReader;
 
+    /**
+     * Reference to the EDP object.
+     */
     private EDP m_EDP;
 
+    /**
+     * Registered RTPSParticipants (including the local one, that is the first
+     * one.)
+     */
     private final List<ParticipantProxyData> m_participantProxies;
 
+    /**
+     * Variable to indicate if any parameter has changed.
+     */
     private boolean m_hasChangedLocalPDP;
 
+    /**
+     * TimedEvent to periodically resend the local RTPSParticipant information.
+     */
     private ResendParticipantProxyDataPeriod m_resendParticipantTimer;
 
+    /**
+     * Listener for the SPDP messages.
+     */
     private PDPSimpleListener m_listener;
 
+    /**
+     * Writer History Cache
+     */
     private WriterHistoryCache m_SPDPWriterHistory;
 
+    /**
+     * Reader History Cache
+     */
     private ReaderHistoryCache m_SPDPReaderHistory;
 
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
 
     private static final Logger logger = LoggerFactory.getLogger(PDPSimple.class);
@@ -372,8 +409,8 @@ public class PDPSimple {
     }
 
     /**
-     * This method returns a reference to a RTPSParticipantProxyData object if it
-     * is found among the registered RTPSParticipants.
+     * This method returns a reference to a RTPSParticipantProxyData object if
+     * it is found among the registered RTPSParticipants.
      *
      * @param pguid GUID of the RTPSParticipant we are looking for.
      * @return RTPSParticipantProxyData object.
@@ -483,8 +520,8 @@ public class PDPSimple {
      * @param rdata Reference to the ReaderProxyData object to add.
      * @param copyData Boolean variable indicating the need to copy the passed
      * object.
-     * @param returnReaderProxyData Reference to reference in case you wanted the
-     * data copied.
+     * @param returnReaderProxyData Reference to reference in case you wanted
+     * the data copied.
      * @param pdata Reference to the associated ParticipantProxyData.
      * @return True if correct.
      */
@@ -524,10 +561,24 @@ public class PDPSimple {
         }
     }
 
+    /**
+     * Add a WriterProxyData to the correct ParticipantProxyData.
+     *
+     * @param wdata Reference to the WriterProxyData object to add.
+     * @return True if correct.
+     */
     public boolean addWriterProxyData(WriterProxyData wdata) {
         return addWriterProxyData(wdata, false, null, null);
     }
 
+    /**
+     * Add a WriterProxyData to the correct ParticipantProxyData.
+     *
+     * @param wdata Reference to the WriterProxyData object to add.
+     * @param copyData Boolean variable indicating the need to copy the passed
+     * object.
+     * @return True if correct.
+     */
     public boolean addWriterProxyData(WriterProxyData wdata, boolean copyData) {
         return addWriterProxyData(wdata, copyData, null, null);
     }
@@ -538,8 +589,8 @@ public class PDPSimple {
      * @param wdata Reference to the WriterProxyData object to add.
      * @param copyData Boolean variable indicating the need to copy the passed
      * object.
-     * @param returnWriterProxyData Reference to reference in case you wanted the
-     * data copied.
+     * @param returnWriterProxyData Reference to reference in case you wanted
+     * the data copied.
      * @param pdata Reference to the associated ParticipantProxyData.
      * @return True if correct.
      */
