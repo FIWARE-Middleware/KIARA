@@ -1,13 +1,17 @@
-Kiara Architecture
-==================
+Advanced Middleware Architecture
+================================
 
 Copyright
 =========
--   Copyright © 2015 by [ eProsima](EPROS "wikilink"), [ZHAW](ZHAW "wikilink"), [DFKI](DFKI "wikilink")
+- Copyright © 2015 by [eProsima][EPROS], [ZHAW][ZHAW], [DFKI][DFKI]
+
+[EPROS]: http://eprosima.com/index.php/en/ "eProsima - The Middleware Experts"
+[DFKI]: http://www.dfki.de/ "German Research Center for Artificial Intelligence"
+[ZHAW]: http://blog.zhaw.ch/icclab "ZHAW - School of Engineering (ICCLab)"
 
 Legal Notice
 ============
-Please check the following [ Legal Notice](FI-WARE Open Specification Legal Notice (implicit patents license) "wikilink") to understand the rights to use these specifications.
+Please check the following [Legal Notice](http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_(implicit_patents_license) ) to understand the rights to use these specifications.
 
 Overview
 ========
