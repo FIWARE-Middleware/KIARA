@@ -275,6 +275,7 @@ public abstract class HistoryCache {
         } else {
             this.m_minSeqCacheChange = this.m_changes.get(0);
             this.m_maxSeqCacheChange = this.m_changes.get(this.m_changes.size()-1);
+            //System.out.println("MIN SeqNum: " + this.m_minSeqCacheChange.getSequenceNumber() + "; MAX SeqNum: " + this.m_maxSeqCacheChange.getSequenceNumber());
         }
     }
 

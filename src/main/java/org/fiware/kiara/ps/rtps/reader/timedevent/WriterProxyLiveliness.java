@@ -16,6 +16,8 @@ public class WriterProxyLiveliness extends TimedEvent {
      * Reference to the WriterProxy associated with this specific event.
      */
     public WriterProxy writerProxy;
+    
+    private boolean recentlyCreated = true;
 
     public WriterProxyLiveliness(WriterProxy p_WP, double interval) {
         super(interval);
@@ -25,16 +27,22 @@ public class WriterProxyLiveliness extends TimedEvent {
     @Override
     public void event(EventCode code, String msg) {
         if (code == EventCode.EVENT_SUCCESS) {
-            logger.info("Deleting writer {}", this.writerProxy.att.guid);
-            if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
-                if (this.writerProxy.statefulReader.getListener() != null) {
-                    MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
-                    this.writerProxy.statefulReader.getListener().onReaderMatched((RTPSReader) this.writerProxy.statefulReader, info);
+            if (recentlyCreated) {
+                recentlyCreated = false;
+             // Now delete objects
+            } else {
+                System.out.println("OUCH");
+                logger.info("Deleting writer {}", this.writerProxy.att.guid);
+                if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
+                    if (this.writerProxy.statefulReader.getListener() != null) {
+                        MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
+                        this.writerProxy.statefulReader.getListener().onReaderMatched((RTPSReader) this.writerProxy.statefulReader, info);
+                    }
                 }
+                // Now delete objects
+                this.writerProxy.writerProxyLiveliness = null;
+                this.writerProxy.destroy();
             }
-            // Now delete objects
-            this.writerProxy.writerProxyLiveliness = null;
-            this.writerProxy.destroy();
             //this.stopTimer();
         } else if (code == EventCode.EVENT_ABORT) {
             this.stopSemaphorePost();

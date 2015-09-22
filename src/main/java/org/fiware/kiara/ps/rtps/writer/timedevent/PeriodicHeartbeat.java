@@ -97,12 +97,12 @@ public class PeriodicHeartbeat extends TimedEvent {
                             firstSeq,
                             lastSeq,
                             m_SFW.getHeartbeatCount(),
-                            true,
-                            true);
+                            false,
+                            false);
 
-                    logger.info("RTPS WRITER: {} Sending Heartbeat ({} - {})",
-                            m_SFW.getGuid().getEntityId(), firstSeq, lastSeq
-                    );
+//                    logger.info("RTPS WRITER: {} Sending Heartbeat ({} - {})",
+//                            m_SFW.getGuid().getEntityId(), firstSeq, lastSeq
+//                    );
                     rtpsMessage.serialize();
                     for (Locator lit : locList) {
                         m_SFW.getRTPSParticipant().sendSync(rtpsMessage, lit);
