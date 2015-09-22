@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.messages;
 
 import java.io.IOException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -50,6 +51,9 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
+import org.fiware.kiara.ps.rtps.writer.ReaderProxy;
+import org.fiware.kiara.ps.rtps.writer.StatefulWriter;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -588,7 +592,7 @@ public class MessageReceiver {
             GUID readerGUID = new GUID();
             EntityId readerId = new EntityId();
             readerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-            readerGUID.setGUIDPrefix(this.m_destGuidPrefix);
+            readerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
             readerGUID.setEntityId(readerId);
             subMsg.addSubmessageElement(readerId);
 
@@ -596,7 +600,7 @@ public class MessageReceiver {
             GUID writerGUID = new GUID();
             EntityId writerId = new EntityId();
             writerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-            writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
+            writerGUID.setGUIDPrefix(this.m_destGuidPrefix);
             writerGUID.setEntityId(writerId);
             subMsg.addSubmessageElement(writerId);
 
@@ -610,7 +614,47 @@ public class MessageReceiver {
             count.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(count);
 
-            // TODO Status changes
+            for (RTPSWriter it : this.m_listenResource.getAssocWriters()) {
+                Lock mutex = it.getMutex();
+                mutex.lock();
+                try {
+                    
+                    if (it.getGuid().equals(writerGUID)) {
+                        if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                            StatefulWriter statefulWriter = (StatefulWriter) it;
+                            for (ReaderProxy readerProxy : statefulWriter.getMatchedReaders()) {
+                                Lock proxyMutex = readerProxy.getMutex();
+                                proxyMutex.lock();
+                                try {
+                                    if (readerProxy.att.guid.equals(readerGUID)) {
+                                        if (readerProxy.getLastAcknackCount() < count.getValue()) {
+                                            readerProxy.setLastAcknackCount(count.getValue());
+                                            readerProxy.ackedChangesSet(readerSNState.getBase());
+                                            List<SequenceNumber> set_list = readerSNState.getSet();
+                                            readerProxy.requestedChangesSet(set_list);
+                                            if (!readerProxy.isRequestedChangesEmpty|| !finalFlag) {
+                                                readerProxy.getNackResponseDelay().restartTimer();
+                                            }
+                                        }
+                                        break;
+                                    }
+                                } finally {
+                                    proxyMutex.unlock();
+                                }
+                            }
+                            return true;
+                        } else {
+                            logger.info("Acknack msg received by a NOT stateful writer");
+                            return false;
+                        }
+                    }
+                    
+                } finally {
+                    mutex.unlock();
+                }
+            }
+            logger.info("Acknack msg to UNKNOWN writer (a total of {} writers have been checked", this.m_listenResource.getAssocWriters().size());
+            return false;
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -619,7 +663,6 @@ public class MessageReceiver {
             return false;
         }
 
-        return true;
     }
 
     private boolean processSubmessageHeartbeat(RTPSMessage msg, RTPSSubmessage subMsg) {
@@ -696,7 +739,7 @@ public class MessageReceiver {
                                         if (!finalFlag) {
                                             wp.startHeartbeatResponse();
                                         } else if (finalFlag && !livelinessFlag) {
-                                            if (wp.isMissingChangesEmpty) {
+                                            if (!wp.isMissingChangesEmpty) {
                                                 wp.startHeartbeatResponse();
                                             }
                                         }
@@ -726,8 +769,6 @@ public class MessageReceiver {
             logger.error(e.getStackTrace().toString());
             return false;
         }
-
-        // TODO Writer changes
 
         return true;
     }

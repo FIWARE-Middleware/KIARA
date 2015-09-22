@@ -11,6 +11,7 @@ import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.ps.rtps.messages.elements.Count;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
 import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
@@ -29,7 +30,7 @@ public class HeartbeatResponseDelay extends TimedEvent {
     private final Lock m_mutex = new ReentrantLock(true);
     
     public HeartbeatResponseDelay(WriterProxy proxy, double interval) {
-        super(interval); // TODO Check what to do with IO_SERVICE equivalent
+        super(interval); 
         this.writerProxy = proxy;
     }
     
@@ -43,45 +44,51 @@ public class HeartbeatResponseDelay extends TimedEvent {
             } finally {
                 this.m_mutex.unlock();
             }
-            if (!changeList.isEmpty() || this.writerProxy.hearbeatFinalFlag) {
-                SequenceNumberSet sns = new SequenceNumberSet();
-                if (this.writerProxy.getAvailableChangesMax() == null) { // No changes available
-                    logger.error("No available changes");
-                }
-                sns.getBase().increment();
-                
-                for (ChangeFromWriter cit : changeList) {
-                    if (!sns.add(cit.seqNum)) {
-                        logger.warn("Error sending seqNum " + cit.seqNum.toLong() + " with SeqNumSet Base: " + sns.getBase().toLong());
-                        break;
+            if (changeList != null) {
+                if (!changeList.isEmpty() || !this.writerProxy.hearbeatFinalFlag) {
+                    SequenceNumberSet sns = new SequenceNumberSet();
+                    SequenceNumber base = this.writerProxy.getAvailableChangesMax();
+                    if (base == null) { // No changes available
+                        logger.error("No available changes");
                     }
-                }
-                
-                this.writerProxy.acknackCount++;
-                logger.info("Sending ACKNACK");
-                
-                boolean isFinal = false;
-                if (sns.isSetEmpty()) {
-                    isFinal = true;
-                }
-                
-                RTPSMessage rtpsMessage = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN); // TODO Think about default endian
-                RTPSMessageBuilder.addHeader(rtpsMessage, this.writerProxy.statefulReader.getGuid().getGUIDPrefix());
-                RTPSMessageBuilder.addSubmessageAckNack(
-                    rtpsMessage, 
-                    this.writerProxy.statefulReader.getGuid().getEntityId(), 
-                    this.writerProxy.att.guid.getEntityId(), 
-                    sns, 
-                    new Count(this.writerProxy.acknackCount), 
-                    isFinal
-                );
-                
-                for (Locator lit : this.writerProxy.att.endpoint.unicastLocatorList.getLocators()) {
-                    this.writerProxy.statefulReader.getRTPSParticipant().sendSync(rtpsMessage, lit);
-                }
-                
-                for (Locator lit : this.writerProxy.att.endpoint.multicastLocatorList.getLocators()) {
-                    this.writerProxy.statefulReader.getRTPSParticipant().sendSync(rtpsMessage, lit);
+                    sns.setBase(base);
+                    sns.getBase().increment();
+                    
+                    for (ChangeFromWriter cit : changeList) {
+                        if (!sns.add(cit.seqNum)) {
+                            logger.warn("Error adding seqNum " + cit.seqNum.toLong() + " with SeqNumSet Base: " + sns.getBase().toLong());
+                            break;
+                        }
+                    }
+                    
+                    this.writerProxy.acknackCount++;
+                    logger.info("Sending ACKNACK");
+                    
+                    boolean isFinal = false;
+                    if (sns.isSetEmpty()) {
+                        isFinal = true;
+                    }
+                    
+                    RTPSMessage rtpsMessage = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN); // TODO Think about default endian
+                    RTPSMessageBuilder.addHeader(rtpsMessage, this.writerProxy.statefulReader.getGuid().getGUIDPrefix());
+                    RTPSMessageBuilder.addSubmessageAckNack(
+                        rtpsMessage, 
+                        this.writerProxy.statefulReader.getGuid().getEntityId(), 
+                        this.writerProxy.att.guid.getEntityId(), 
+                        sns, 
+                        new Count(this.writerProxy.acknackCount), 
+                        isFinal
+                    );
+                    
+                    rtpsMessage.serialize();
+                    
+                    for (Locator lit : this.writerProxy.att.endpoint.unicastLocatorList.getLocators()) {
+                        this.writerProxy.statefulReader.getRTPSParticipant().sendSync(rtpsMessage, lit);
+                    }
+                    
+                    for (Locator lit : this.writerProxy.att.endpoint.multicastLocatorList.getLocators()) {
+                        this.writerProxy.statefulReader.getRTPSParticipant().sendSync(rtpsMessage, lit);
+                    }
                 }
             }
         } else if (code == EventCode.EVENT_ABORT) {
@@ -90,6 +97,8 @@ public class HeartbeatResponseDelay extends TimedEvent {
         } else {
             logger.info("Response message " + msg);
         }
+        
+        this.stopTimer();
         
     }
 

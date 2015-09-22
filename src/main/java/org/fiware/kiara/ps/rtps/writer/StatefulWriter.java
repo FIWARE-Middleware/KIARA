@@ -63,6 +63,9 @@ public class StatefulWriter extends RTPSWriter {
      */
     private PeriodicHeartbeat m_periodicHB;
 
+    /**
+     * {@link WriterTimes} containing time configuration for the StatefulWriter
+     */
     private final WriterTimes m_times;
 
     /**
@@ -139,7 +142,12 @@ public class StatefulWriter extends RTPSWriter {
                     uniLocList.pushBack(it.att.endpoint.unicastLocatorList);
                     multiLocList.pushBack(it.att.endpoint.multicastLocatorList);
                     //it.getNackSupression().restartTimer();
-                    it.startNackSupression();
+                    //it.startNackSupression();
+                    if (it.getNackSupression() == null) {
+                        it.startNackSupression();
+                    } else {
+                        it.getNackSupression().restartTimer();
+                    }
                 }
                 RTPSMessageGroup.sendChangesAsData(this, changeV, uniLocList, multiLocList, expectsInlineQos, EntityId.createUnknown());
                 if (this.m_periodicHB == null) { // TODO Review this

@@ -79,7 +79,12 @@ public class WriterHistoryCache extends HistoryCache {
             }
     
             this.m_lastCacheChangeSeqNum.increment();
-            change.setSequenceNumber(this.m_lastCacheChangeSeqNum);
+            
+            //change.setSequenceNumber(this.m_lastCacheChangeSeqNum);
+            
+            SequenceNumber changeSeqNum = new SequenceNumber(this.m_lastCacheChangeSeqNum);
+            change.setSequenceNumber(changeSeqNum);
+            
             this.m_changes.add(change);
             logger.debug("Change {} added with {} bytes", change.getSequenceNumber().toLong(), change.getSerializedPayload().getSerializedSize());
             updateMaxMinSeqNum();

@@ -265,6 +265,8 @@ public class RTPSMessageBuilder {
         submessageAckNack.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageAckNack);
+        
+        submessageAckNack.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
     }

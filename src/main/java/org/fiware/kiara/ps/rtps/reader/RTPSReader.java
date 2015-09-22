@@ -113,7 +113,7 @@ public abstract class RTPSReader extends Endpoint {
         if (readerId.equals(this.m_guid.getEntityId())) {
             return true;
         }
-        if (this.m_acceptMessagesToUnknownReaders && readerId.equals(new EntityId())) {
+        if (this.m_acceptMessagesToUnknownReaders && readerId.equals(EntityId.createUnknown())) {
             return true;
         } 
         return false;

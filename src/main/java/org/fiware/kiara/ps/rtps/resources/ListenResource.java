@@ -224,6 +224,10 @@ public class ListenResource {
     public List<RTPSReader> getAssocReaders() {
         return this.m_assocReaders;
     }
+    
+    public List<RTPSWriter> getAssocWriters() {
+        return this.m_assocWriters;
+    }
 
     public LocatorList getListenLocators() {
         return this.m_listenLocators;

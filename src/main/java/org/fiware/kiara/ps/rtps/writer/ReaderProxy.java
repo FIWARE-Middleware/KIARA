@@ -122,7 +122,8 @@ public class ReaderProxy {
             for (ChangeForReader it : this.m_changesForReader) {
                 if (it.getSequenceNumber().isLowerThan(seq)) {
                     it.status = ChangeForReaderStatus.ACKNOWLEDGED;
-                    logger.debug("Change {} set to ACKNOWLEDGED", seq.toLong());
+                    logger.debug("Change {} set to ACKNOWLEDGED", it.seqNum);
+                    System.out.println("Change " + it.seqNum + " set to ACKNOWLEDGED");
                 }
             }
         } finally {
@@ -290,6 +291,14 @@ public class ReaderProxy {
     public void copy(ReaderProxy other) {
         //this.att.copy(other.att);
         //this.m_SFW
+    }
+    
+    public int getLastAcknackCount() {
+        return this.m_lastAckNackCount;
+    }
+    
+    public void setLastAcknackCount(int count) {
+        this.m_lastAckNackCount = count;
     }
 
 }

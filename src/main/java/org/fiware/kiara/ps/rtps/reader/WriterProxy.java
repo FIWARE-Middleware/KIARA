@@ -76,8 +76,7 @@ public class WriterProxy {
         //Create Events
         //heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         if (att.livelinessLeaseDuration.isLowerThan(new Timestamp().timeInfinite())) {
-            writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble());
-            //writerProxyLiveliness.restartTimer();
+            //writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         }
         lastRemovedSeqNum = new SequenceNumber();
         m_maxAvailableSeqNum = new SequenceNumber();
@@ -108,10 +107,14 @@ public class WriterProxy {
                 seqNum.setLow(0);
                 for (ChangeFromWriter it : changesFromWriter) {
                     if (it.status == ChangeFromWriterStatus.RECEIVED) {
-                        seqNum.copy(it.seqNum);
-                        m_minAvailableSeqNum.copy(it.seqNum);
-                        hasMinAvailableSeqNumChanged = false;
-                        return seqNum;
+                        if (it.isValid()) {
+                            seqNum.copy(it.seqNum);
+                            m_minAvailableSeqNum.copy(it.seqNum);
+                            hasMinAvailableSeqNumChanged = false;
+                            return seqNum;
+                        } else {
+                            continue;
+                        }
                     } else if (it.status == ChangeFromWriterStatus.LOST) {
                         continue;
                     } else {
@@ -175,10 +178,11 @@ public class WriterProxy {
     }
 
     public List<ChangeFromWriter> getMissingChanges() {
+        List<ChangeFromWriter> missing = new ArrayList<>();
         if (!this.changesFromWriter.isEmpty()) {
             this.m_mutex.lock();
             try {
-                List<ChangeFromWriter> missing = new ArrayList<>();
+                
                 for (ChangeFromWriter it : this.changesFromWriter) {
                     if (it.status == ChangeFromWriterStatus.MISSING && it.isRelevant) {
                         missing.add(it);
@@ -188,21 +192,23 @@ public class WriterProxy {
                     this.isMissingChangesEmpty = true;
                     //printChangesFromWriterTest(); Debugging purposes (not implemented in Java version)
                 }
-                return missing;
+                //return missing;
             } finally {
                 this.m_mutex.unlock();
             }
         }
-        return null;
+        return missing;
     }
 
     public void assertLiveliness() { // TODO Review this (whole lievliness behaviour)
         logger.info("Liveliness asserted");
         this.m_isAlive = true;
-        if (this.writerProxyLiveliness.isWaiting()) {
-            this.writerProxyLiveliness.stopTimer();
+        if (this.writerProxyLiveliness != null) {
+            if (this.writerProxyLiveliness.isWaiting()) {
+                this.writerProxyLiveliness.stopTimer();
+            }
+            this.writerProxyLiveliness.restartTimer();
         }
-        this.writerProxyLiveliness.restartTimer();
     }
 
     public boolean receivedChangeSet(CacheChange change) {
@@ -252,17 +258,20 @@ public class WriterProxy {
         } else {
             firstSN.copy(changesFromWriter.get(changesFromWriter.size() - 1).seqNum);
         }
-        while (true) {
-            firstSN.increment();
+        
+        firstSN.increment();
+        while (firstSN.isLowerOrEqualThan(seq)) {
+            /*firstSN.increment();
             if (firstSN.isGreaterThan(seq)) {
                 break;
-            }
+            }*/
             ChangeFromWriter chw = new ChangeFromWriter();
             chw.seqNum.copy(firstSN);
             chw.status = ChangeFromWriterStatus.UNKNOWN;
             chw.isRelevant = true;
             logger.info("RTPS READER: WP {} adding unknown changes up to: {}", att.guid, chw.seqNum.toLong());
             changesFromWriter.add(chw);
+            firstSN.increment();
         }
         return true;
     }
@@ -335,6 +344,7 @@ public class WriterProxy {
             this.hasMinAvailableSeqNumChanged = true;
             printChangesFromWriterTest2();
         } finally {
+            System.out.println("MISSING EMPTY?: " + this.changesFromWriter.isEmpty());
             this.m_mutex.unlock();
         }
         return true;
@@ -342,7 +352,7 @@ public class WriterProxy {
     
     public void startHeartbeatResponse() {
         if (this.heartBeatResponse == null) {
-            heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble() * WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
+            heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble());
         } else {
             this.heartBeatResponse.restartTimer();
         }

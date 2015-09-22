@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -66,6 +67,15 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
      */
     public SequenceNumber getBase() {
         return this.m_base;
+    }
+    
+    /**
+     * Get the SequenceNumber set
+     * 
+     * @return The SequenceNumber set
+     */
+    public List<SequenceNumber> getSet() {
+        return this.m_set;
     }
 
     /**

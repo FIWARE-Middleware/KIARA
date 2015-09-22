@@ -30,10 +30,11 @@ public class NackSupressionDuration extends TimedEvent {
             Lock guardW = this.m_RP.getSFW().getMutex();
             guardW.lock();
             try {
-                
+                System.out.println("ChangesForReader Size: " + this.m_RP.getChangesForReader().size());
                 for (ChangeForReader cit : this.m_RP.getChangesForReader()) {
                     if (cit.status == ChangeForReaderStatus.UNDERWAY) {
                         if (this.m_RP.att.endpoint.reliabilityKind == ReliabilityKind.RELIABLE) {
+                            System.out.println("Change " + cit.getSequenceNumber().toLong() + " Set to UNACKNOWLEDGED");
                             cit.status = ChangeForReaderStatus.UNACKNOWLEDGED;
                         } else {
                             cit.status = ChangeForReaderStatus.ACKNOWLEDGED;

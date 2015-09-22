@@ -139,6 +139,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     public boolean automaticLivelinessAssertion() {
         final Lock mutex = m_WLP.getMutex();
         mutex.lock();
+        System.out.println("AUTO LIVELINESS");
         try {
             if (m_WLP.getLivAutomaticWriters().size() > 0) {
                 CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, new InstanceHandle());
