@@ -628,7 +628,7 @@ End to End Testing
 
 Finally you can checkout, compile and run our demo application:
 
-:: .. code-block:: shell
+:: code:: shell
 
     $ git clone https://github.com/FIWARE-Middleware/Examples.git
     $ gradle build
@@ -648,7 +648,7 @@ Finally you can checkout, compile and run our demo application:
 
 Run the server:
 
-:: .. code-block:: shell
+:: code:: shell
 
     $ gradle runServer
     :compileJava UP-TO-DATE
@@ -665,7 +665,7 @@ Run the server:
 
 Open a new Terminal session and start the client:
 
-:: .. .. code-block:: shell
+:: code:: shell
 
     $ runClient
     :compileJava UP-TO-DATE
