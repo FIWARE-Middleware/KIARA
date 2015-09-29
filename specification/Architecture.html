@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced Middleware Architecture &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FIWARE Advanced Middleware KIARA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Manuals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">FIWARE Advanced Middleware KIARA</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Advanced Middleware Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/specification/Architecture.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-middleware-architecture">
+<h1>Advanced Middleware Architecture<a class="headerlink" href="#advanced-middleware-architecture" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="copyright">
+<h1>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>Copyright © 2015 by <a class="reference external" href="http://eprosima.com/index.php/en/">eProsima</a>,
+<a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW</a>, <a class="reference external" href="http://www.dfki.de/">DFKI</a></li>
+</ul>
+</div>
+<div class="section" id="legal-notice">
+<h1>Legal Notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h1>
+<p>Please check the following <a class="reference external" href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_(implicit_patents_license)">Legal
+Notice</a>
+to understand the rights to use these specifications.</p>
+</div>
+<div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>This specification describes the Advanced Middleware GE, which enables
+flexible, efficient, scalable, and secure communication between
+distributed applications and to/between FIWARE GEs.</p>
+<p>Middleware in general provides a software layer between the application
+and the communication network and allows application to abstract from
+the intricacies of how to send a piece of data to a service offered by a
+another application and possibly return results. The middleware offers
+functionality to find and establish a connection to a service, negotiate
+the best wire and transport protocols, access the applications data
+structures and encode the necessary data in a format suitable for the
+chosen protocol, and finally send that data and possibly receive results
+in return. In a similar way an application can use the middleware also
+to offer services to other applications by registering suitable service
+functionality and interfaces, which can then be used as targets of
+communication.</p>
+<div class="section" id="general-note">
+<h2>General Note<a class="headerlink" href="#general-note" title="Permalink to this headline">¶</a></h2>
+<p>In contrast to other GEs, the Advanced Middleware GE is not a standalone
+service running in the network, but a set of compile-/runtime tools and
+a communication library to be integrated with the application.</p>
+<p>The Advanced Middleware (AMi) architecture presented here offers a
+number of key advantages over other available middleware
+implementations:</p>
+<ul class="simple">
+<li><strong>High-Level Service Architecture:</strong> AMi offers applications a
+high-level architecture that can shield them from the complexities
+and dangers of network programming. When applications declare
+services and data structures they can annotate them with the QoS,
+security, and other requirements while AMi automatically implement
+them. Thus application developers can exclusively focus on the
+application functionality.</li>
+<li><strong>Security:</strong> The network is the main security threat to most
+applications today but existing middleware has offered only limited
+security functionality that has often been added as an afterthought
+and requires the application developer (who are often not security
+experts) to configure the security functionality. Instead, AMi offers
+<em>Security by Design</em> where security has been designed into the
+architecture from the start. Applications can simply declare their
+security needs in the form of security policies (security rules) and
+apply them to data structures and service at development time or even
+later during deployment definitions. AMi then makes sure that these
+requirements are met before any communication takes place and applies
+any suitable security measures (e.g. encryption, signatures, etc.)
+during the communication.</li>
+<li><strong>Dynamic Multi-Protocol support:</strong> The AMi architecture can select
+at run-time the best way to communicate with a remote service. Thus,
+an AMi application can simultaneously talk with legacy services via
+their predefined protocols (e.g. DDS). It also supports various
+communication patterns, like Publish-/Subscribe (PubSub),
+Point-To-Point, or Request-/Reply (RPC).</li>
+<li><strong>QoS and Software Defined networking:</strong> Where possible the QoS
+annotations are also used to configure the network using modern
+Software Defined networking functionality, e.g. to reserve bandwidth.</li>
+</ul>
+</div>
+<div class="section" id="the-advanced-middleware-ge-components">
+<h2>The Advanced Middleware GE components<a class="headerlink" href="#the-advanced-middleware-ge-components" title="Permalink to this headline">¶</a></h2>
+<p>The following layer diagram shows the main components of the Advanced
+Communication Middleware GE.</p>
+<center><p><img alt="I2ND Middleware Architecture Overview" src="../_images/I2ND-Middleware-Architecture.png" /></p>
+</center><center><p><strong>Advanced Middleware Architecture Overview</strong></p>
+</center><p>In the diagram the main communication flow goes from top to bottom for
+sending data, respectively and from bottom to top for receiving data. As
+in a typical layer diagram each layer is responsible for specific
+features and builds on top of the layers below. Some modules are cross
+cutting and go therefore over several layers (e.g. Security).</p>
+<p>Here are some of the highlights of the AMi architecture shown in above
+diagram:</p>
+<ul class="simple">
+<li>AMi clearly separates the definition of WHAT data must be
+communicated (the communication contract via one of many interface
+definition languages (IDLs)) from WHERE that data comes from in the
+application and from HOW that data is transmitted. This <em>separation
+of concerns</em> is critical to support some advanced functionality and
+be portable to a wide range of services and their communication
+mechanisms.</li>
+<li>AMi supports multiple IDLs to define what data needs to be
+communicated. On establishing the connection the interface definition
+of a service are obtained (explicitly or implicitly).</li>
+<li>AMi offers annotations for QoS, security, or other features that can
+be added to the data declared by the application, to the IDL, as well
+as later during deployment. They are used by the middleware to
+automatically implement its functionality by requesting QoS
+functionality from the network layer or automatically enforcing
+security measures.</li>
+<li>As the connection to a service is established, both sides choose a
+common mechanism and protocol (negotiation) to best communicate with
+each other.</li>
+</ul>
+<p>The most efficient transport and protocol method supported by both sides
+will be selected. AMi has been designed to also support Software Defined
+Networking in order to configure QOS parameters in the network.</p>
+<ul class="simple">
+<li>AMi offers an efficient dispatching mechanism for scheduling incoming
+request to the correct service implementation.</li>
+</ul>
+<p>Below we give a short description of the different layers and
+components.</p>
+<div class="section" id="api-data-access">
+<h3>API &amp; Data Access<a class="headerlink" href="#api-data-access" title="Permalink to this headline">¶</a></h3>
+<p>The application accesses the communication middleware using a set of
+defined function calls provided by the API-layer. They may vary
+depending on the communication pattern (see below).</p>
+<p>The main functionality of the Data Access Layer is to provide the
+mapping of data types and Function Stubs/Skeletons (request/response
+pattern) or DataReaders/-Writers (publish/subscribe or point-to-point
+pattern).</p>
+<p>The Advanced Middleware GE provides two variants of this functionality:</p>
+<ul class="simple">
+<li>A <strong>basic static compile-time Data-Mapping and generation of Function
+Stubs/Skeletons or DataReaders/-Writers</strong>, created by a compile time
+IDL-Parser/Generator from the remote service description, which is
+provided in an <em>Interface Definition Language (IDL)</em> syntax based on
+the Object Management Group (OMG) IDL (see below), which is submitted
+as a W3C draft.</li>
+<li>A <strong>dynamic runtime Data-Mapping and invocation of Function or
+DataReader/-Writer proxies</strong>, by parsing the IDL description of the
+remote service at runtime and map it to the function/data definition
+provided by the developer when setting up the connection.</li>
+</ul>
+<p>Quality of Service (QoS) parameters and Security Policies may be
+provided through the API and/or IDL-Annotations. This information will
+be used by the QoS and Security modules to ensure the requested
+guarantees.</p>
+<p>Depending on the communication pattern, different communication
+mechanisms will be used.</p>
+<ul class="simple">
+<li>For <strong>publish/subscribe</strong> and <strong>point-to-point</strong> scenarios, the DDS
+services and operations will be provided. When opening connections, a
+<strong>DataWriter</strong> for publishers/sender and a <strong>DataReader</strong> for
+subscribers/receivers will be created, which can be used by the
+application to send or receive DDS messages.</li>
+<li>For <strong>request/reply</strong> scenarios the <strong>Function Stubs/Skeletons</strong>
+created at compile-time can be used to send or receive
+requests/replies.</li>
+</ul>
+</div>
+<div class="section" id="marshalling">
+<h3>Marshalling<a class="headerlink" href="#marshalling" title="Permalink to this headline">¶</a></h3>
+<p>Depending on configuration, communication pattern and type of end-points
+the data will be serialized to the required transmission format when
+sending and deserialized to the application data structures when
+receiving.</p>
+<ul class="simple">
+<li><strong>Common Data Representation (CDR)</strong> an OMG specification used for
+all DDS/RTPS and high-speed communication.</li>
+<li><strong>Extensible Markup Language (XML)</strong> for WebService compatibility.</li>
+<li><strong>JavaScript Object Notation (JSON)</strong> for WebService compatibility.</li>
+</ul>
+</div>
+<div class="section" id="wire-protocols">
+<h3>Wire Protocols<a class="headerlink" href="#wire-protocols" title="Permalink to this headline">¶</a></h3>
+<p>Depending on configuration, communication pattern and type of end-points
+the matching Wire-Protocol will be chosen.</p>
+<ul class="simple">
+<li>For <strong>publish/subscribe</strong> and <strong>point-to-point</strong> patterns the <strong>Real
+Time Publish Subscribe (RTPS)</strong> Protocol is used.</li>
+<li>For <strong>request/reply</strong> pattern with WebService compatibility the
+<strong>HTTP</strong> Protocol is used.</li>
+<li>For <strong>request/reply</strong> pattern between DDS end-points the <strong>Real Time
+Publish Subscribe (RTPS)</strong> Protocol is used.</li>
+</ul>
+</div>
+<div class="section" id="dispatching">
+<h3>Dispatching<a class="headerlink" href="#dispatching" title="Permalink to this headline">¶</a></h3>
+<p>The dispatching module is supporting various threading models and
+scheduling mechanisms. The module is providing single-threaded,
+multi-threaded and thread-pool operation and allows synchronous and
+asynchronous operation. Priority or time constraint scheduling
+mechanisms can be specified through QoS parameters.</p>
+</div>
+<div class="section" id="transport-mechanisms">
+<h3>Transport Mechanisms<a class="headerlink" href="#transport-mechanisms" title="Permalink to this headline">¶</a></h3>
+<p>Based on the QoS parameters and the runtime-environment the <strong>QoS
+module</strong> will decide which transport mechanisms and protocols to choose
+for data transmission.</p>
+<p>In Software Defined Networking (SDN) environments, the <strong>QoS module</strong>
+will interface with the Netfloc GE to get additional network information
+or even provision the network components to provide the requested
+quality of service or privacy.</p>
+</div>
+<div class="section" id="transport-protocols">
+<h3>Transport Protocols<a class="headerlink" href="#transport-protocols" title="Permalink to this headline">¶</a></h3>
+<p>All standard transport protocols (TCP, UDP) as well as encrypted tunnels
+(TLS, DTLS) are supported.</p>
+</div>
+<div class="section" id="security">
+<h3>Security<a class="headerlink" href="#security" title="Permalink to this headline">¶</a></h3>
+<p>The security module is responsible for authentication of communication
+partners and will ensure in the whole middleware stack, the requested
+data security and privacy. The required information can be provided with
+Security Annotations in the IDL and by providing a security policy via
+the API.</p>
+</div>
+<div class="section" id="negotiation">
+<h3>Negotiation<a class="headerlink" href="#negotiation" title="Permalink to this headline">¶</a></h3>
+<p>The negotiation module provides mechanisms to discover or negotiate the
+optimal transmission format and protocols when peers are connecting. It
+discovers automatically the participants in the distributed system,
+searching through the different transports available (shared memory and
+UDP by default, TCP for WebService compatibility) and evaluates the
+communication paradigms and and the corresponding associated QoS
+parameters and security policies.</p>
+</div>
+</div>
+</div>
+<div class="section" id="basic-concepts">
+<h1>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h1>
+<p>In this section several basic concepts of the Advanced Communication
+Middleware are explained. We assume that the reader is familiar with the
+basic functionality of communication middleware like CORBA or
+WebServices.</p>
+<div class="section" id="communication-patterns">
+<h2>Communication Patterns<a class="headerlink" href="#communication-patterns" title="Permalink to this headline">¶</a></h2>
+<p>We can distinguish between three main different messaging patterns,
+Publish/Subscribe, Point-to-Point, and Request/Reply, shown
+schematically below:</p>
+<center><p><img alt="Publish/Subscribe Pattern" src="../_images/AdvMiddlewarePatternPubSub.png" /></p>
+</center><center><p><strong>Publish/Subscribe Pattern</strong></p>
+</center><center><p><img alt="Point-To-Point Pattern" src="../_images/AdvMiddlewarePatternPoint2Point.png" /></p>
+</center><center><p><strong>Point-To-Point Pattern</strong></p>
+</center><center><p><img alt="Request/Reply Pattern" src="../_images/AdvMiddlewarePatternRequestReply.png" /></p>
+</center><center><p><strong>Request/Reply Pattern</strong></p>
+</center><p>All available middleware technologies implement one or more of these
+messaging patterns and may incorporate more advanced patterns on top of
+them. Most RPC middleware is based on the Request/Reply pattern and more
+recently, is extended towards support of Publish/Subscribe and/or the
+Point-To-Point pattern.</p>
+<p>W3C Web Service standards define a Request/Reply and a Publish/Subscribe
+pattern which is built on top on that (WS-Notification). CORBA, in a
+similar way, build its Publish/Subscribe pattern (Notification Service)
+on top of a Request/Reply infrastructure. In either case the adopted
+architecture is largely ruled by historical artifacts instead of
+performance or functional efficiency. The adopted approach is to emulate
+the Publish/Subscribe pattern on top of the more complex pattern thus
+inevitably leading to poor performance and complex implementations.</p>
+<p>The approach of the Advanced Middleware takes the other direction. It
+provides native Publish/Subscribe and implements the Request/Reply
+pattern on top of this infrastructure. Excellent results can be achieved
+since the Publish/Subscribe is a meta-pattern, in other words a pattern
+generator for Point-To-Point and Request/Reply and potential
+alternatives.</p>
+</div>
+<div class="section" id="interface-definition-language-idl">
+<h2>Interface Definition Language (IDL)<a class="headerlink" href="#interface-definition-language-idl" title="Permalink to this headline">¶</a></h2>
+<p>The Advanced Middleware GE supports a novel IDL to describe the Data
+Types and Operations. Following is a list of the main features it
+supports:</p>
+<ul class="simple">
+<li><strong>IDL, Dynamic Types &amp; Application Types</strong>: It support the usual
+schema of IDL compilation to generate support code for the data
+types.</li>
+<li><strong>IDL Grammar</strong>: An OMG-like grammar for the IDL as in DDS, Thrift,
+ZeroC ICE, CORBA, etc.</li>
+<li><strong>Types</strong>: Support of simple set of basic types, structs, and various
+high level types such as lists, sets, and dictionaries (maps).</li>
+<li><strong>Type inheritance, Extensible Types, Versioning</strong>: Advanced data
+types, extensions, and inheritance, and other advanced features will
+be supported.</li>
+<li><strong>Annotation Language</strong>: The IDL is extended with an annotation
+language to add properties to the data types and operations. These
+will, for example, allows adding security policies and QoS
+requirements.</li>
+<li><strong>Security</strong>: The IDL allows for annotating operations and data types
+though the annotation feature of our IDL, allowing setting up
+security even at the field level.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="main-interactions">
+<h1>Main Interactions<a class="headerlink" href="#main-interactions" title="Permalink to this headline">¶</a></h1>
+<p>As explained above, the middleware can be used in different
+communication scenarios. Depending on the scenario, the interaction
+mechanisms and the set of API-functions for application developers may
+vary.</p>
+<div class="section" id="api-versions">
+<h2>API versions<a class="headerlink" href="#api-versions" title="Permalink to this headline">¶</a></h2>
+<p>There will be two versions of APIs provided:</p>
+<ul>
+<li><div class="first line-block">
+<div class="line"><strong>RPC Static API</strong></div>
+<div class="line">Static compile-time parsing of IDL and generation of
+Stub-/Skeletons and DataReader/DataWriter</div>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>RPC Dynamic API</strong></div>
+<div class="line">Dynamic runtime parsing of IDL and run-time invocation of
+operations.</div>
+</div>
+</li>
+</ul>
+<p>Additionally following features will be provided as API extensions:</p>
+<ul class="simple">
+<li>Advanced security policy and QoS parameters</li>
+<li>Publish/subscribe functionality compatible to RPC-DDS and DDS
+applications</li>
+</ul>
+</div>
+<div class="section" id="classification-of-functions">
+<h2>Classification of functions<a class="headerlink" href="#classification-of-functions" title="Permalink to this headline">¶</a></h2>
+<p>The API-Functions can be classified in the following groups:</p>
+<ul class="simple">
+<li><strong>Preparation:</strong> statically at compile-time (Static API) or
+dynamically at run-time (Dynamic API)<ul>
+<li>Declare the local applications datatypes/functions (Dynamic API
+only)</li>
+<li>Parsing the Interface Definition of the remote side (IDL-Parser)</li>
+<li>Generate Stubs-/Skeletons, DataReader-/Writer</li>
+<li>Build your application against the Stubs-/Skeletons,
+DataReader-/Writer (Static API only)</li>
+</ul>
+</li>
+<li><strong>Initialization:</strong><ul>
+<li>Create the context (set up the environment, global
+QoS/Transport/Security policy,...)</li>
+<li>Open connection (provide connection specific parameters:
+QoS/Transport/Security policy, Authentication, Tunnel encryption,
+Threading policy,...)</li>
+</ul>
+</li>
+<li><strong>Communication</strong><ul>
+<li>Send Message/Request/Response (sync/async, enforce security)</li>
+<li>Receive Message/Request/Response (sync/async, enforce security)</li>
+<li>Exception Handling</li>
+</ul>
+</li>
+<li><strong>Shutdown</strong><ul>
+<li>Close connection (cleanup topics, subscribers, publishers)</li>
+<li>Close the context (Free resources)</li>
+</ul>
+</li>
+</ul>
+<p>Detailed description of the APIs and tools can be found in the User and
+Developer Guide, which will be updated for every release of the Advanced
+Middleware GE.</p>
+</div>
+</div>
+<div class="section" id="basic-design-principles">
+<h1>Basic Design Principles<a class="headerlink" href="#basic-design-principles" title="Permalink to this headline">¶</a></h1>
+<p>Implementations of the Advanced Middleware GE have to comply to the
+following basic design principles:</p>
+<ul class="simple">
+<li>All modules have to provide defined and documented APIs.</li>
+<li>Modules may only be accessed through these documented APIs and not
+use any internal undocumented functions of other modules.</li>
+<li>Modules in the above layer model may only depend on APIs of lower
+level modules and never access APIs of higher level modules.</li>
+<li>All information required by lower level modules has to be provided by
+the higher levels modules through the API or from a common
+configuration.</li>
+<li>If a module provides variants of internal functionalities (e.g.
+Protocols, Authentication Mechanisms, ...) these should be
+encapsulated as Plugins with a defined interface.</li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, eProsima, DFKI, ZHAW.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

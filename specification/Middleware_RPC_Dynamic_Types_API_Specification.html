@@ -1,0 +1,3885 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced Middleware RPC Dynamic Types API Specification &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
+        <link rel="next" title="Advanced Middleware IDL Specification" href="Middleware_IDL_Specification.html"/>
+        <link rel="prev" title="Advanced Middleware RPC API Specification" href="Middleware_RPC_API_Specification.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FIWARE Advanced Middleware KIARA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Manuals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware RPC Dynamic Types API Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#abstract">Abstract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#status-of-this-document">Status of this Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference-material">Reference Material</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#a-quick-example">A quick Example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loading-the-services-definitions">Loading the services’ definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#creating-a-client">Creating a client</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api-overview">API Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-entry-point">Main entry point</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-kiara">org.fiware.kiara.Kiara</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#serialization-mechanisms">Serialization mechanisms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-serialization-serializer">org.fiware.kiara.serialization.Serializer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-serialization-impl-serializable">org.fiware.kiara.serialization.impl.Serializable</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#client-api">Client API</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-client-connection">org.fiware.kiara.client.Connection</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#typedescriptor">TypeDescriptor</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-typedescriptorbuilder">org.fiware.kiara.typecode.TypeDescriptorBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-typedescriptor">org.fiware.kiara.typecode.TypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-datatypedescriptor">org.fiware.kiara.typecode.data.DataTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-primitivetypedescriptor">org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-containertypedescriptor">org.fiware.kiara.typecode.data.ContainerTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-arraytypedescriptor">org.fiware.kiara.typecode.data.ArrayTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-listtypedescriptor">org.fiware.kiara.typecode.data.ListTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-settypedescriptor">org.fiware.kiara.typecode.data.SetTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-maptypedescriptor">org.fiware.kiara.typecode.data.MapTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-memberedtypedescriptor">org.fiware.kiara.typecode.data.MemberedTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-structtypedescriptor">org.fiware.kiara.typecode.data.StructTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-enumtypedescriptor">org.fiware.kiara.typecode.data.EnumTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-uniontypedescriptor">org.fiware.kiara.typecode.data.UnionTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-exceptiontypedescriptor">org.fiware.kiara.typecode.data.ExceptionTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-member">org.fiware.kiara.typecode.data.Member</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-enummember">org.fiware.kiara.typecode.data.EnumMember</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-data-unionmember">org.fiware.kiara.typecode.data.UnionMember</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-services-functiontypedescriptor">org.fiware.kiara.typecode.services.FunctionTypeDescriptor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-typecode-services-servicetypedescriptor">org.fiware.kiara.typecode.services.ServiceTypeDescriptor</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#dynamic">Dynamic</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-dynamicvaluebuilder">org.fiware.kiara.dynamic.DynamicValueBuilder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-dynamicvalue">org.fiware.kiara.dynamic.DynamicValue</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicdata">org.fiware.kiara.dynamic.data.DynamicData</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicprimitive">org.fiware.kiara.dynamic.data.DynamicPrimitive</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamiccontainer">org.fiware.kiara.dynamic.data.DynamicContainer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicarray">org.fiware.kiara.dynamic.data.DynamicArray</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamiclist">org.fiware.kiara.dynamic.data.DynamicList</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicset">org.fiware.kiara.dynamic.data.DynamicSet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicmap">org.fiware.kiara.dynamic.data.DynamicMap</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicmembered">org.fiware.kiara.dynamic.data.DynamicMembered</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicstruct">org.fiware.kiara.dynamic.data.DynamicStruct</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicenum">org.fiware.kiara.dynamic.data.DynamicEnum</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicunion">org.fiware.kiara.dynamic.data.DynamicUnion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicexception">org.fiware.kiara.dynamic.data.DynamicException</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-data-dynamicmember">org.fiware.kiara.dynamic.data.DynamicMember</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-service-dynamicfunctionrequest">org.fiware.kiara.dynamic.service.DynamicFunctionRequest</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-service-dynamicfunctionresponse">org.fiware.kiara.dynamic.service.DynamicFunctionResponse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-service-dynamicproxy">org.fiware.kiara.dynamic.service.DynamicProxy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-dynamic-service-dynamicfunctionhandler">org.fiware.kiara.dynamic.service.DynamicFunctionHandler</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#detailed-api">Detailed API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Main entry point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Client API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">TypeDescriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Dynamic</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">FIWARE Advanced Middleware KIARA</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Advanced Middleware RPC Dynamic Types API Specification</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/specification/Middleware_RPC_Dynamic_Types_API_Specification.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-middleware-rpc-dynamic-types-api-specification">
+<h1>Advanced Middleware RPC Dynamic Types API Specification<a class="headerlink" href="#advanced-middleware-rpc-dynamic-types-api-specification" title="Permalink to this headline">¶</a></h1>
+<p><strong>*Date: 8th April 2015*</strong></p>
+<div class="line-block">
+<div class="line">This version: <a class="reference external" href="#">*0.2.0*</a></div>
+<div class="line">Previous version: n/a</div>
+<div class="line">Latest version:
+<a class="reference external" href="Middleware_RPC_Dynamic_Types_Specification.html">*latest*</a></div>
+</div>
+<p>Editors:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://eprosima.com/index.php/en/">eProsima - The Middleware
+Experts</a></li>
+<li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
+Intelligence</a></li>
+<li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
+(ICCLab)</a></li>
+</ul>
+<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
+<hr class="docutils" />
+<div class="section" id="abstract">
+<h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>Ahe Advanced Middleware GE enables flexible, efficient, scalable, and
+secure communication between distributed applications and to/between
+FIWARE GEs. The <strong>Middleware RPC Dynamic Types API Specification</strong>
+describes the extensions to the <strong>Middleware RPC API Specification</strong> to
+do <em>dynamic</em> Request/Reply type Remote Procedure Calls (RPC).</p>
+<p>It provides a <em>dynamic runtime Data-Mapping and invocation of Function
+proxies</em>, by parsing the IDL description of the remote service at
+runtime and map it to the function/data definition provided by the
+developer when setting up the connection.</p>
+</div>
+<div class="section" id="status-of-this-document">
+<h2>Status of this Document<a class="headerlink" href="#status-of-this-document" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Date</strong></th>
+<th class="head"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>30-January-2015</td>
+<td>Frist release</td>
+</tr>
+<tr class="row-odd"><td>04-February-2015</td>
+<td>Update after review meeting</td>
+</tr>
+<tr class="row-even"><td>08-April-2015</td>
+<td>Release 0.2.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="purpose">
+<h3>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h3>
+<p>The purpose of this document is to specify the dynamic Remote Procedure
+Call (RPC) Application Programming Interface (API) for the Advanced
+Middleware GE.</p>
+</div>
+<div class="section" id="reference-material">
+<h3>Reference Material<a class="headerlink" href="#reference-material" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><a class="reference external" href="./Middleware_IDL_Specification.md">*Advanced Middleware IDL
+Specification*</a></li>
+<li><a class="reference external" href="./Middleware_RPC_API_Specification.md">*Advanced Middleware RPC API
+Specification*</a></li>
+</ul>
+</div>
+</div>
+<div class="section" id="a-quick-example">
+<h2>A quick Example<a class="headerlink" href="#a-quick-example" title="Permalink to this headline">¶</a></h2>
+<p>Before the description of the public Advanced Middleware RPC Dynamic
+Types API, a quick example is provided. This example shows how a client
+should use this dynamic API framework to call a remote server and how a
+server can send the response.</p>
+<p>First of all, let’s bear in mind that the server provides an IDL
+defining the services and their functions. The example uses the
+following Advanced Middleware interface definition:</p>
+<div class="highlight-python"><div class="highlight"><pre>service Calculator
+{
+    i32 add(i32 num1, i32 num2);
+};
+</pre></div>
+</div>
+<div class="section" id="loading-the-services-definitions">
+<h3>Loading the services’ definitions<a class="headerlink" href="#loading-the-services-definitions" title="Permalink to this headline">¶</a></h3>
+<p>To be able to call remote functions dynamically, it is required to know
+the services and what functions they offer. The use case is to load the
+<code class="docutils literal"><span class="pre">TypeCode</span></code>elements when creating the connection, so it will be the
+<code class="docutils literal"><span class="pre">Connection</span></code> class which offers an API to get all the data definitions
+from the server.</p>
+</div>
+<div class="section" id="creating-a-client">
+<h3>Creating a client<a class="headerlink" href="#creating-a-client" title="Permalink to this headline">¶</a></h3>
+<p>On the client side, there is no differnce between the dynamic and the
+static API from the developers point of view in terms of creating the
+connection. In the dynamic case this connection will be used to obtain
+all the types and functions offered by the server.</p>
+<p>This means, the user has to create a connection and then use it to get a
+definition of the function he wants to execute. Let’s walk through it
+based on the following example.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Create context and connect with the server
+Context context = Kiara.createContext();
+Connection connection = context.connect(&quot;kiara://127.0.0.1:8080/service&quot;);
+
+// Get a generic proxy based on the service interface
+ DynamicProxy client = connection.getDynamicProxy(&quot;Calculator&quot;);
+</pre></div>
+</div>
+<p>When connecting to the server, the scheme specified in the URI is used
+by the Context to decide from where to download the information. In this
+example, the scheme “kiara” means the connection information is going to
+be downloaded from the server and then used in the negotiation process.
+Otherwise, information such as the transport protocol and serialization
+mechanism must be specified in the URI itself.</p>
+<p>Before being able to call remotely a function on the server, the client
+will need to have access to its functions, and in a typical RPC
+framework, this can be done by using a Proxy. The class named
+<code class="docutils literal"><span class="pre">DynamicProxy</span></code> allows the user to have access to this information from
+the data that has been downloaded from the server.</p>
+<p>To do so, the <code class="docutils literal"><span class="pre">Connection</span></code> object offers a function called
+<code class="docutils literal"><span class="pre">getDynamicProxy</span></code>, which looks inside the dynamic data types created
+when connecting to the server and retrieves a <code class="docutils literal"><span class="pre">DynamicProxy</span></code> whose
+name is the same as the service name specified as a parameter.</p>
+<p>Once the user has obtained this <code class="docutils literal"><span class="pre">DynamicProxy</span></code>, all the functions
+defined inside the service are available. To use them, two objects are
+necessary, the <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> and the
+<code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code>.</p>
+<p>The <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> object is created at run-time by using
+the name of the function the user wants to execute on the server’s side.
+If there is a function whose name fits the one specified, this object
+will be filled with all the <code class="docutils literal"><span class="pre">DynamicValue</span></code> objects necessary to
+execute the function.</p>
+<p>On the other hand, the DynamicFunctionResponse object will be created
+and filled with the response obtained from the server after the
+execution is finished (either if it finished properly or not).</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Create the function request
+DynamicFunctionRequest request = dclient.createFunctionRequest(&quot;add&quot;);
+((DynamicPrimitive) request.getParameterAt(0)).set(3.5);
+((DynamicPrimitive) request.getParameterAt(1)).set(5.2);
+
+// Execute the Remote Procedure Call
+DynamicFunctionResponse response = drequest.execute();
+</pre></div>
+</div>
+<p>In this example, the <code class="docutils literal"><span class="pre">createFunctionRequest</span></code> method has been executed
+specifying “add as” the function name. Therefore, the
+<code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> object will have two primitive
+<code class="docutils literal"><span class="pre">DynamicValue</span></code> objects (<code class="docutils literal"><span class="pre">DynamicPrimitive</span></code>) inside (one for each
+parameter defined in the IDL description of the function). The user can
+easily modify these values and call the execute method on the request
+object, obtaining this way a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> which holds the
+result of the function execution.</p>
+<p>The <code class="docutils literal"><span class="pre">execute</span></code> method will have all the business logic so that the
+service name, the operation name, message ID, etc. as well as all the
+parameters are serialized properly according to the function that is
+going to be executed.</p>
+<p>The same thing happens with the return type of each function. Depending
+on the <code class="docutils literal"><span class="pre">DynamicValue</span></code> that defines it, a different deserialization
+method will be executed. By using this method, the user only has to
+specify which function must be executed on the server’s side, and all
+the information will be (de)serialized automatically.</p>
+<p>In order to know if the function finished the way it should, the
+<code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object offers a function named
+<code class="docutils literal"><span class="pre">isException</span></code>, which will return true if and only if the function did
+raise an exception. The following code snippet shows this behaviour:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Check RPC result
+if (dresponse.isException()) {
+    DynamicData result = dresponse.getReturnValue();
+    System.out.println(&quot;Exception = &quot; + (DynamicPrimitive) result);
+} else {
+    DynamicData result = dresponse.getReturnValue();
+    System.out.println(&quot;Result = &quot; + ((DynamicPrimitive) result).get());
+}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="api-overview">
+<h2>API Overview<a class="headerlink" href="#api-overview" title="Permalink to this headline">¶</a></h2>
+<p>This section enumerates and describes the classes provided by Advanced
+Middleware Dynamic Types RPC API.</p>
+<div class="section" id="main-entry-point">
+<h3>Main entry point<a class="headerlink" href="#main-entry-point" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="org-fiware-kiara-kiara">
+<h4>org.fiware.kiara.Kiara<a class="headerlink" href="#org-fiware-kiara-kiara" title="Permalink to this headline">¶</a></h4>
+<p>This class is the main entry point to use Advanced Middleware
+middleware. It creates or provides implementation of top level Advanced
+Middleware interfaces, especially <code class="docutils literal"><span class="pre">Context</span></code>.</p>
+<p><strong>Functions</strong>:</p>
+<ul class="simple">
+<li><strong>getTypeDescriptorBuilder</strong>: This function returns an instance of
+the type <code class="docutils literal"><span class="pre">DescriptorBuilder</span></code> described below.</li>
+<li><strong>getDynamicValueBuilder</strong>: This function returns an instance of the
+<code class="docutils literal"><span class="pre">DynamicValueBuilder</span></code> described below.</li>
+<li><strong>createContext</strong>: This function creates a new instance of the
+Context class, which is part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC
+API</a> .</li>
+<li><strong>shutdown</strong>: This function closes releases all internal Advanced
+Middleware structures, and is a part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced
+Middleware RPC API</a>.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="serialization-mechanisms">
+<h3>Serialization mechanisms<a class="headerlink" href="#serialization-mechanisms" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="org-fiware-kiara-serialization-serializer">
+<h4>org.fiware.kiara.serialization.Serializer<a class="headerlink" href="#org-fiware-kiara-serialization-serializer" title="Permalink to this headline">¶</a></h4>
+<p>This interface is part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC
+API</a>.</p>
+</div>
+<div class="section" id="org-fiware-kiara-serialization-impl-serializable">
+<h4>org.fiware.kiara.serialization.impl.Serializable<a class="headerlink" href="#org-fiware-kiara-serialization-impl-serializable" title="Permalink to this headline">¶</a></h4>
+<p>This interface is the one that must be implemented by all the used
+defined data types in order to be serializable. It defines the methods
+<code class="docutils literal"><span class="pre">serialize</span></code> and <code class="docutils literal"><span class="pre">deserialize</span></code> for each data type. This class will
+not be described in this document, for more information take a look at
+the <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC API
+Specification</a> document.</p>
+</div>
+</div>
+<div class="section" id="client-api">
+<h3>Client API<a class="headerlink" href="#client-api" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="org-fiware-kiara-client-connection">
+<h4>org.fiware.kiara.client.Connection<a class="headerlink" href="#org-fiware-kiara-client-connection" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">Connection</span></code> interface manages the connection to the server. It
+holds the required <code class="docutils literal"><span class="pre">Transport</span></code> objects and <code class="docutils literal"><span class="pre">Serialization</span></code> objects.
+Also it can create these object automatically depending on the server
+information. The connection provides the service proxy interfaces, which
+will be used by the application to call remote functions.</p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getDynamicProxy</strong>: This function looks in the endpoint for a
+service whose name is the same as the one specified as a parameter,
+and creates a new <code class="docutils literal"><span class="pre">DynamicProxy</span></code> representing that service. This
+<code class="docutils literal"><span class="pre">DynamicProxy</span></code> will provide the user with all the functions defined
+in such a service.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="typedescriptor">
+<h3>TypeDescriptor<a class="headerlink" href="#typedescriptor" title="Permalink to this headline">¶</a></h3>
+<p>This subsection contains the interfaces and classes that are dependent
+on the user. This section will use the example in section API Usage
+Examples to define them.</p>
+<p><img alt="Figure: Class Diagram TypeDescriptor" src="../_images/MiddlewareClassDiagramTypeDescriptor.png" /></p>
+<center><p>Figure: Class Diagram TypeDescriptor</p>
+</center><hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-typedescriptorbuilder">
+<h4>org.fiware.kiara.typecode.TypeDescriptorBuilder<a class="headerlink" href="#org-fiware-kiara-typecode-typedescriptorbuilder" title="Permalink to this headline">¶</a></h4>
+<p>This interface defined the operations used to create type-describing
+objects. It allows the users to create every supported data type inside
+Advanced Middleware by acting as a single access builder.</p>
+<p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>createVoidType:</strong> This function creates a new
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> representing a void data type..</li>
+<li><strong>createPrimitiveType:</strong> This function returns a new
+<code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> whose kind is the same specified as a
+parameter.</li>
+<li><strong>createArrayType</strong>: Function that creates a new
+<code class="docutils literal"><span class="pre">ArrayTypeDescriptor</span></code> object representing an array.</li>
+<li><strong>createListType</strong>: This function creates a new
+<code class="docutils literal"><span class="pre">ListTypeDescriptor</span></code> object representing a list of objects.</li>
+<li><strong>createSetType</strong>: Function that creates a new <code class="docutils literal"><span class="pre">SetTypeDescriptor</span></code>
+object representing a set. A set is defined as a list with no
+repeated objects.</li>
+<li><strong>createMapType</strong>: This function is used to create a
+<code class="docutils literal"><span class="pre">MapTypeDescriptor</span></code> object that represents a map data type.</li>
+<li><strong>createStructType</strong>: This function creates a new
+<code class="docutils literal"><span class="pre">StructTypeDescriptor</span></code> object representing a struct data type.</li>
+<li><strong>createEnumType</strong>: Function that creates a new
+<code class="docutils literal"><span class="pre">EnumTypeDescriptor</span></code> object representing an enumeration.</li>
+<li><strong>createUnionType</strong>: This function can be used to create a new
+<code class="docutils literal"><span class="pre">UnionTypeDescriptor</span></code> that represents a union data type.</li>
+<li><strong>createExceptionType</strong>: Function that creates a new
+<code class="docutils literal"><span class="pre">ExceptionTypeDescriptor</span></code> used to represent an exception data type.</li>
+<li><strong>createFunctionType</strong>: This function can be used to create a new
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> representing a Remote Procedure Call
+(RPC).</li>
+<li><strong>createServiceType</strong>: Function that creates a new
+<code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code> object used to represent a service defined
+in the server’s side.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-typedescriptor">
+<h4>org.fiware.kiara.typecode.TypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-typedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>This class is used to manipulate the objects used to describe the data
+types. It allows the users to know what type of data an object
+represents.</p>
+<p><img alt="Figure: Interface TypeDescriptor" src="../_images/MiddlewareInterfaceTypeDescriptor.png" /></p>
+<center><p>Figure: Interface TypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getKind:</strong> Function that returns the <code class="docutils literal"><span class="pre">TypeKind</span></code> of a
+<code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object.</li>
+<li><strong>isData:</strong> This function returns true if and only if the
+<code class="docutils literal"><span class="pre">TypeDescriptor</span></code> represented by the object in which is invoked
+describes a data type. Functions and services are not considered data
+types.</li>
+<li><strong>isPrimitive:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeCode</span></code> object is a
+description of a primitive data type.</li>
+<li><strong>isVoid:</strong> This function returns true if the <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>
+object represents a void data type.</li>
+<li><strong>isContainer:</strong> This function can be used to check if a
+<code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is representing a container type. The types
+considered as container data types are arrays, lists, sets and maps.</li>
+<li><strong>isArray:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is
+a description of an array data type.</li>
+<li><strong>isList:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is a
+description of a list data type.</li>
+<li><strong>isMap:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is a
+description of a map data type.</li>
+<li><strong>isSet:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is a
+description of a set data type.</li>
+<li><strong>isMembered:</strong> This function is used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>
+object is a description of a membered data type. <code class="docutils literal"><span class="pre">Membered</span></code> types
+are structs, enumerations, unions and exceptions.</li>
+<li><strong>isStruct:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is
+a description of a struct data type.</li>
+<li><strong>isEnum:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is a
+description of an enumeration data type.</li>
+<li><strong>isUnion:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object is
+a description of a union data type.</li>
+<li><strong>isException:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object
+is a description of an exception data type.</li>
+<li><strong>isFunction:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object
+is a description of a function.</li>
+<li><strong>isService:</strong> Function used to know if a <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object
+is a description of a service.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-datatypedescriptor">
+<h4>org.fiware.kiara.typecode.data.DataTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-datatypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents the top level class of the data type
+hierarchy. It is used as a generic type to englobe only and exclusively
+data type descriptors.</p>
+<p><img alt="Figure: Interface DataTypeDescriptor" src="../_images/MiddlewareInterfaceDataTypeDescriptor.png" /></p>
+<center><p>Figure: Interface DataTypeDescriptor</p>
+</center><p><strong>Functions</strong>: None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-primitivetypedescriptor">
+<h4>org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-primitivetypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a primitive data type. Primitive types include
+<strong>boolean</strong>, <strong>byte</strong>, <strong>i16</strong>, <strong>ui16</strong>, <strong>i32</strong>, <strong>ui32</strong>, <strong>i64</strong>,
+<strong>ui64</strong>, <strong>float32</strong>, <strong>float64</strong>, <strong>char</strong> and <strong>string</strong>.</p>
+<p><img alt="Figure: Interface PrimitiveTypeDescriptor" src="../_images/MiddlewareInterfacePrimitiveTypeDescriptor.png" /></p>
+<center><p>Figure: Interface PrimitiveTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>isString</strong>: This function returns true if and only if the
+<code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> object represents a string data type.</li>
+<li><strong>setMaxFixedLength</strong>: This function can only be used with string
+types. It sets the maximum length value for a specific string
+represented by the <code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> object.</li>
+<li><strong>getMaxFixedLength</strong>: This function returns the maximum length
+specified when creating the <code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> object if it
+represents a string data type.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-containertypedescriptor">
+<h4>org.fiware.kiara.typecode.data.ContainerTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-containertypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a container data type. Container data types
+are <strong>arrays</strong>, <strong>lists</strong>, <strong>maps</strong> and <strong>sets</strong>.</p>
+<p><img alt="Figure: Interface ContainerTypeDescriptor" src="../_images/MiddlewareInterfaceContainerTypeDescriptor.png" /></p>
+<center><p>Figure: Interface ContainerTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>setMaxSize</strong>: This function sets the maximum size of a container
+data type.</li>
+<li><strong>getMaxSize</strong>: This function returns the maximum size of a container
+data type.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-arraytypedescriptor">
+<h4>org.fiware.kiara.typecode.data.ArrayTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-arraytypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents an array data type. Arrays can hold multiple
+repeated objects of the same data type inside.</p>
+<p><img alt="Figure: Interface ArrayTypeDescriptor" src="../_images/MiddlewareInterfaceArrayTypeDescriptor.png" /></p>
+<center><p>Figure: Interface ArrayTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the array.</li>
+<li><strong>setElementType</strong>: This function sets the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the array.</li>
+<li><strong>setDimensions</strong>: This method sets the dimensions of the array.</li>
+<li><strong>getDimensions</strong>: This method returns the different dimensions of
+the array.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-listtypedescriptor">
+<h4>org.fiware.kiara.typecode.data.ListTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-listtypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a list data type. Lists can hold multiple
+repeated objects of the same data type inside.</p>
+<p><img alt="Figure: Interface ListTypeDescriptor" src="../_images/MiddlewareInterfaceListTypeDescriptor.png" /></p>
+<center><p>Figure: Interface ListTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the list.</li>
+<li><strong>setElementType</strong>: This function sets the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the list.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-settypedescriptor">
+<h4>org.fiware.kiara.typecode.data.SetTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-settypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a set data type. Sets can have non repeated
+objects of the same data type inside.</p>
+<p><img alt="Figure: Interface SetTypeDescriptor" src="../_images/MiddlewareInterfaceSetTypeDescriptor.png" /></p>
+<center><p>Figure: Interface SetTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the set.</li>
+<li><strong>setElementType</strong>: This function sets the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object describing the content type of the set.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-maptypedescriptor">
+<h4>org.fiware.kiara.typecode.data.MapTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-maptypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a map data type. Maps can hold multiple
+key-object pairs inside if and only if the key objects are unique.</p>
+<p><img alt="Figure: Interface MapTypeDescriptor" src="../_images/MiddlewareInterfaceMapTypeDescriptor.png" /></p>
+<center><p>Figure: Interface MapTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getKeyTypeDescriptor</strong>: This function returns the
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object describing the key type of the map.</li>
+<li><strong>setKeyTypeDescriptor</strong>: This function sets the
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object describing the key type of the map.</li>
+<li><strong>getValueTypeDescriptor</strong>: This function returns the
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object describing the value type of the map.</li>
+<li><strong>setValueTypeDescriptor</strong>: This function sets the
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object describing the value type of the map.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-memberedtypedescriptor">
+<h4>org.fiware.kiara.typecode.data.MemberedTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-memberedtypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a membered data type. <code class="docutils literal"><span class="pre">Membered</span></code> data types
+are <strong>structs</strong>, <strong>enumerations</strong>, <strong>unions</strong> and <strong>exceptions</strong>.</p>
+<p><img alt="Figure: Interface MemberedTypeDescriptor" src="../_images/MiddlewareInterfaceMemberedTypeDescriptor.png" /></p>
+<center><p>Figure: Interface MemberedTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getMembers</strong>: This function returns the list of member objects
+stored in a <code class="docutils literal"><span class="pre">ContainerTypeDescriptor</span></code> object.</li>
+<li><strong>getName</strong>: This function returns the name of the
+<code class="docutils literal"><span class="pre">ContainerTypeDescriptor</span></code> object.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-structtypedescriptor">
+<h4>org.fiware.kiara.typecode.data.StructTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-structtypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a struct data type. Structs can have multiple
+different <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> objects inside stored as members. Every
+struct member is identified by a unique name.</p>
+<p><img alt="Figure: Interface StructTypeDescriptor" src="../_images/MiddlewareInterfaceStructTypeDescriptor.png" /></p>
+<center><p>Figure: Interface StructTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
+a member using a specific name.</li>
+<li><strong>getMember</strong>: This function returns a <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object
+identified by the name introduced as a parameter.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-enumtypedescriptor">
+<h4>org.fiware.kiara.typecode.data.EnumTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-enumtypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents an enumeration data type. Enumerations are
+formed by a group of different string values.</p>
+<p><img alt="Figure: Interface EnumTypeDescriptor" src="../_images/MiddlewareInterfaceEnumTypeDescriptor.png" /></p>
+<center><p>Figure: Interface EnumTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>addValue</strong>: This function adds a new value to the enumeration using
+the string object received as a parameter.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-uniontypedescriptor">
+<h4>org.fiware.kiara.typecode.data.UnionTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-uniontypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a union data type. Unions are formed by a
+group of members identified by their names and the labels of the
+discriminator to which they are assigned.</p>
+<p><img alt="Figure: Interface UnionTypeDescriptor" src="../_images/MiddlewareInterfaceUnionTypeDescriptor.png" /></p>
+<center><p>Figure: Interface UnionTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
+a member using a specific name and the labels of the discriminator.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-exceptiontypedescriptor">
+<h4>org.fiware.kiara.typecode.data.ExceptionTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-exceptiontypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a struct data type. Exceptions can have
+multiple different <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> objects inside stored as
+members. Every struct member is identified by a unique name.</p>
+<p><img alt="Figure: Interface ExceptionTypeDescriptor" src="../_images/MiddlewareInterfaceExceptionTypeDescriptor.png" /></p>
+<center><p>Figure: Interface ExceptionTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
+a member using a specific name.</li>
+<li><strong>getMember</strong>: This function returns a <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object
+identified by the name introduced as a parameter.</li>
+<li><strong>getMd5</strong>: This function returns the Md5 hash string of the
+exception name.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-member">
+<h4>org.fiware.kiara.typecode.data.Member<a class="headerlink" href="#org-fiware-kiara-typecode-data-member" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a member of a <code class="docutils literal"><span class="pre">MemberedTypeDescriptor</span></code>
+object. Each member is identified by its name and the <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>
+object that it holds.</p>
+<p><img alt="Figure: Interface Member" src="../_images/MiddlewareInterfaceMember.png" /></p>
+<center><p>Figure: Interface Member</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getName</strong>: This function returns the member’s name.</li>
+<li><strong>getTypeDescriptor</strong>: This function returns a <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+object stored inside the member.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-enummember">
+<h4>org.fiware.kiara.typecode.data.EnumMember<a class="headerlink" href="#org-fiware-kiara-typecode-data-enummember" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a member of a <code class="docutils literal"><span class="pre">EnumTypeDescriptor</span></code> object.
+It inherits from <code class="docutils literal"><span class="pre">Member</span></code> interface and therefore it has no new
+methods.</p>
+<p><img alt="Figure: Interface EnumMember" src="../_images/MiddlewareInterfaceMember.png" /></p>
+<center><p>Figure: Interface EnumMember</p>
+</center><p><strong>Functions:</strong> None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-data-unionmember">
+<h4>org.fiware.kiara.typecode.data.UnionMember<a class="headerlink" href="#org-fiware-kiara-typecode-data-unionmember" title="Permalink to this headline">¶</a></h4>
+<p>Interface that represents a member of a <code class="docutils literal"><span class="pre">UnionTypeDescriptor</span></code> object.
+It inherits from Member interface and therefore it has no new methods.</p>
+<p><img alt="Figure: Interface UnionMember" src="../_images/MiddlewareInterfaceUnionMember.png" /></p>
+<center><p>Figure: Interface UnionMember</p>
+</center><p><strong>Functions:</strong> None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-services-functiontypedescriptor">
+<h4>org.fiware.kiara.typecode.services.FunctionTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-services-functiontypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>This interface represents a function, providing methods to easily
+describe it by setting its return type, parameters and exceptions that
+it might throw.</p>
+<p><img alt="Figure: Interface FunctionTypeDescriptor" src="../_images/MiddlewareInterfaceFunctionTypeDescriptor.png" /></p>
+<center><p>Figure: Interface FunctionTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getReturnType</strong>:This function returns the return
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> of the function.</li>
+<li><strong>setReturnType</strong>: This function sets the return
+<code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> of the function.</li>
+<li><strong>getParameter</strong>: This function returns a <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
+representing a parameter whose name is the same as the one indicated.</li>
+<li><strong>addParameter</strong>: This function adds a new <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> to
+the parameters list with the name indicated.</li>
+<li><strong>getException</strong>: This function returns an
+<code class="docutils literal"><span class="pre">ExceptionTypeDescriptor</span></code> whose name is the same as the one
+specified as a parameter.</li>
+<li><strong>addException</strong>: This function adds a new
+<code class="docutils literal"><span class="pre">ExceptionTypeDescriptor</span></code> to the exceptions list.</li>
+<li><strong>getName</strong>: This function returns the function name.</li>
+<li><strong>getServiceName</strong>: This function returns the name of the
+<code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code> in which the <code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> is
+defined.</li>
+<li><strong>setServiceName</strong>: This function sets the name of the
+<code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code> in which the <code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> is
+defined.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-typecode-services-servicetypedescriptor">
+<h4>org.fiware.kiara.typecode.services.ServiceTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-services-servicetypedescriptor" title="Permalink to this headline">¶</a></h4>
+<p>This interface represents a service, providing methods to add the
+FunctionTypeDescriptor objects representing every function defined in a
+specific service.</p>
+<p><img alt="Figure: Interface ServiceTypeDescriptor" src="../_images/MiddlewareInterfaceServiceTypeDescriptor.png" /></p>
+<center><p>Figure: Interface ServiceTypeDescriptor</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getName</strong>: This function returns the service name.</li>
+<li><strong>getScopedName</strong>: This function returns the service scoped name.</li>
+<li><strong>getFunctions</strong>: This function returns the list of
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> objects stored inside the
+<code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code>.</li>
+<li><strong>addFunction</strong>: This function adds a <code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> to
+the list of functions defined inside the service.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="dynamic">
+<h3>Dynamic<a class="headerlink" href="#dynamic" title="Permalink to this headline">¶</a></h3>
+<p>This subsection contains the interfaces and classes that are designed to
+provide the developer with functions to create and manage dynamic data
+types.</p>
+<p><img alt="Figure: Class Diagramm DynamicValue" src="../_images/MiddlewareClassDiagramDynamicValue.png" /></p>
+<center><p>Figure: Class Diagramm DynamicValue</p>
+</center><hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-dynamicvaluebuilder">
+<h4>org.fiware.kiara.dynamic.DynamicValueBuilder<a class="headerlink" href="#org-fiware-kiara-dynamic-dynamicvaluebuilder" title="Permalink to this headline">¶</a></h4>
+<p>This class allows the users to create new data types based on their
+<code class="docutils literal"><span class="pre">TypeCode</span></code> descriptions.</p>
+<p><img alt="Figure: Interface DynamicValueBuilder" src="../_images/MiddlewareInterfaceDynamicValueBuilder.png" /></p>
+<center><p>Figure: Interface DynamicValueBuilder</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>createData:</strong> This function allows the user to create new
+<code class="docutils literal"><span class="pre">DynamicData</span></code> objects by using their <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>.</li>
+<li><strong>createFunctionRequest:</strong> This function receives a
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> object describing a function, and it
+generates a new <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> (which inherits from
+<code class="docutils literal"><span class="pre">DynamicData</span></code>) object representing it.</li>
+<li><strong>createFunctionResponse:</strong> This function receives a
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> object describing a function, and it
+generates a new <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> (which inherits from
+<code class="docutils literal"><span class="pre">DynamicData</span></code>) object representing it.</li>
+<li><strong>createService:</strong> This function receives a <code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code>
+object describing a function, and it creates a new <code class="docutils literal"><span class="pre">DynamicService</span></code>
+object representing it.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-dynamicvalue">
+<h4>org.fiware.kiara.dynamic.DynamicValue<a class="headerlink" href="#org-fiware-kiara-dynamic-dynamicvalue" title="Permalink to this headline">¶</a></h4>
+<p>Interface that acts as a supertype for every dynamic value that can be
+managed. Every <code class="docutils literal"><span class="pre">DynamicValue</span></code> object is defined by using a
+<code class="docutils literal"><span class="pre">TypeDescriptor</span></code> which is used to describe the data. It defines the
+common serialization functions as well as a function to retrieve the
+<code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object it was created from.</p>
+<p><img alt="Figure: Interface DynamicValue" src="../_images/MiddlewareInterfaceDynamicValue.png" /></p>
+<center><p>Figure: Interface DynamicValue</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getTypeDescriptor</strong>: This function returns the TypeDescriptor used
+when creating the DynamicValue object.</li>
+<li><strong>serialize:</strong> This function serializes the content of the
+DynamicValue object inside a BinaryOutputStream message.</li>
+<li><strong>deserialize:</strong> This function deserializes the content of a
+BinaryInputStream message into a DynamicValue object.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicdata">
+<h4>org.fiware.kiara.dynamic.data.DynamicData<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicdata" title="Permalink to this headline">¶</a></h4>
+<p>Interface that is used to group all the <code class="docutils literal"><span class="pre">DynamicValues</span></code> representing
+data types.</p>
+<p><img alt="Figure: Interface DynamicData" src="../_images/MiddlewareInterfaceDynamicData.png" /></p>
+<center><p>Figure: Interface DynamicData</p>
+</center><p><strong>Functions:</strong> None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicprimitive">
+<h4>org.fiware.kiara.dynamic.data.DynamicPrimitive<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicprimitive" title="Permalink to this headline">¶</a></h4>
+<p>This class allows the users to manipulate <code class="docutils literal"><span class="pre">DynamicData</span></code> objects made
+from <code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> objects.</p>
+<p><img alt="Figure: Interface DynamicPrimitive" src="../_images/MiddlewareInterfaceDynamicPrimitive.png" /></p>
+<center><p>Figure: Interface DynamicPrimitive</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>set:</strong> This function sets the inner value of a <code class="docutils literal"><span class="pre">DynamicPrimitive</span></code>
+object according to the <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> specified when creating
+it.</li>
+<li><strong>get</strong>: This function returns the value of a <code class="docutils literal"><span class="pre">DynamicPrimitive</span></code>
+object.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamiccontainer">
+<h4>org.fiware.kiara.dynamic.data.DynamicContainer<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamiccontainer" title="Permalink to this headline">¶</a></h4>
+<p>This class holds the data values of a <code class="docutils literal"><span class="pre">DynamicData</span></code> object created
+from a <code class="docutils literal"><span class="pre">ContainerTypeDescriptor</span></code>.</p>
+<p><img alt="Figure: Interface DynamicContainer" src="../_images/MiddlewareInterfaceDynamicContainer.png" /></p>
+<center><p>Figure: Interface DynamicContainer</p>
+</center><p><strong>Functions:</strong> None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicarray">
+<h4>org.fiware.kiara.dynamic.data.DynamicArray<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicarray" title="Permalink to this headline">¶</a></h4>
+<p>This class holds the data values of a <code class="docutils literal"><span class="pre">DynamicData</span></code> object created
+from an <code class="docutils literal"><span class="pre">ArrayTypeDescriptor</span></code>. A <code class="docutils literal"><span class="pre">DynamicArray</span></code> contains a group of
+<code class="docutils literal"><span class="pre">DynamicData</span></code> objects (all must be the same type) stored in single or
+multi dimensional matrixes.</p>
+<p><img alt="Figure: Interface DynamicArray" src="../_images/MiddlewareInterfaceDynamicArray.png" /></p>
+<center><p>Figure: Interface DynamicArray</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getElementAt:</strong> This function returns <code class="docutils literal"><span class="pre">DynamicData</span></code> object stored
+in a certain position or coordinate..</li>
+<li><strong>setElementAt</strong>: This function sets a <code class="docutils literal"><span class="pre">DynamicData</span></code> object in a
+specific position inside the array. If the array has multiple
+dimensions, the object will be set in a specific coordinate.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamiclist">
+<h4>org.fiware.kiara.dynamic.data.DynamicList<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamiclist" title="Permalink to this headline">¶</a></h4>
+<p>This class holds the data values of a DynamicData object created from a
+ListTypeDescriptor. A list can only have one dimension and it has a
+maximum length. All the DynamicData objects stored inside a DynamicList
+must have been created from the same TypeDescriptor definition.</p>
+<p><img alt="Figure: Interface DynamicList" src="../_images/MiddlewareInterfaceDynamicList.png" /></p>
+<center><p>Figure: Interface DynamicList</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>add:</strong> This function adds a <code class="docutils literal"><span class="pre">DynamicData</span></code> object into the list in
+the last position or in the position specified via parameter.</li>
+<li><strong>get</strong>: This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object stored is a
+specific position in the list.</li>
+<li><strong>isEmpty</strong>: This function returns true if the <code class="docutils literal"><span class="pre">DynamicList</span></code> is
+empty.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicset">
+<h4>org.fiware.kiara.dynamic.data.DynamicSet<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicset" title="Permalink to this headline">¶</a></h4>
+<p>This class holds the data values of a DynamicData object created from a
+SetTypeDescriptor. A set can only have one dimension and it has a
+maximum length. All the DynamicData objects stored inside a DynamicSet
+must have been created from the same TypeDescriptor definition and it
+cannot be duplicated objects.</p>
+<p><img alt="Figure: Interface DynamicSet" src="../_images/MiddlewareInterfaceDynamicSet.png" /></p>
+<center><p>Figure: Interface DynamicSet</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>add:</strong> This function adds a <code class="docutils literal"><span class="pre">DynamicData</span></code> object into the list in
+the last position or in the position specified via parameter.</li>
+<li><strong>get</strong>: This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object stored is a
+specific position in the list.</li>
+<li><strong>isEmpty</strong>: This function returns true if the <code class="docutils literal"><span class="pre">DynamicSet</span></code> is
+empty.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicmap">
+<h4>org.fiware.kiara.dynamic.data.DynamicMap<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicmap" title="Permalink to this headline">¶</a></h4>
+<p>This class holds a list of pairs key-value instances of DynamicData. In
+a DynamicMap, the key values cannot be duplicated.</p>
+<p><img alt="Figure: Interface DynamicMap" src="../_images/MiddlewareInterfaceDynamicMap.png" /></p>
+<center><p>Figure: Interface DynamicMap</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>put:</strong> This function adds a new key-value pair using the
+DynamicData objets introduces as parameters. It will return false if
+the key value already exists in the map.</li>
+<li><strong>containsKey</strong>: This function returns true if the DynamicMap
+contains at least one key-value pair in which the key DynamicData
+object is equal to the one introduced as a parameter.</li>
+<li><strong>containsValue</strong>: This function returns true if the DynamicMap
+contains at least one key-value pair in which the value DynamicData
+object is equal to the one introduced as a parameter.</li>
+<li><strong>get</strong>: This function returns a DynamicData object from a key-value
+pair whose key is equal to the one introduced as a parameter.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicmembered">
+<h4>org.fiware.kiara.dynamic.data.DynamicMembered<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicmembered" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a <code class="docutils literal"><span class="pre">DynamicData</span></code> type formed by multiple
+<code class="docutils literal"><span class="pre">DynamicData</span></code> objects stored into a class named <code class="docutils literal"><span class="pre">DynamicMember</span></code>.</p>
+<p><img alt="Figure: Interface DynamicMembered" src="../_images/MiddlewareInterfaceDynamicMembered.png" /></p>
+<center><p>Figure: Interface DynamicMembered</p>
+</center><p><strong>Functions:</strong> None</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicstruct">
+<h4>org.fiware.kiara.dynamic.data.DynamicStruct<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicstruct" title="Permalink to this headline">¶</a></h4>
+<p>This class holds group of <code class="docutils literal"><span class="pre">DynamicData</span></code> objects acting as members of a
+stucture. Each member is identified by its name.</p>
+<p><img alt="Figure: Interface DynamicStruct" src="../_images/MiddlewareInterfaceDynamicStruct.png" /></p>
+<center><p>Figure: Interface DynamicStruct</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getMember:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object (acting
+as a member of the structure) whose name is the same as the one
+introduced as a parameter.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicenum">
+<h4>org.fiware.kiara.dynamic.data.DynamicEnum<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicenum" title="Permalink to this headline">¶</a></h4>
+<p>This class is used to dynamically manipulate enumerations described by a
+specific <code class="docutils literal"><span class="pre">EnumTypeDescriptor</span></code> object.</p>
+<p><img alt="Figure: Interface DynamicEnum" src="../_images/MiddlewareInterfaceDynamicEnum.png" /></p>
+<center><p>Figure: Interface DynamicEnum</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>set:</strong> This function sets the actual value of the DynamicEnum
+object to the one specified as a parameter.</li>
+<li><strong>get</strong>: This function returns the actual value of the DynamicEnum
+object.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicunion">
+<h4>org.fiware.kiara.dynamic.data.DynamicUnion<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicunion" title="Permalink to this headline">¶</a></h4>
+<p>This class is used to dynamically manipulate unions described by a
+specific <code class="docutils literal"><span class="pre">UnionTypeDescriptor</span></code> object. A union is formed by some
+<code class="docutils literal"><span class="pre">DynamicData</span></code> objects, and the valid one is selected by using a
+discriminator.</p>
+<p><img alt="Figure: Interface DynamicUnion" src="../_images/MiddlewareInterfaceDynamicUnion.png" /></p>
+<center><p>Figure: Interface DynamicUnion</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>_d:</strong> This function either returns the discriminator or sets a new
+one, depending on the existence of an object parameter indicating a
+new value.</li>
+<li><strong>getMember</strong>: This function returns valid <code class="docutils literal"><span class="pre">DynamicData</span></code> value
+depending on the selected discriminator.</li>
+<li><strong>setMember</strong>: This function sets the <code class="docutils literal"><span class="pre">DynamicData</span></code> object received
+as a parameter in the member whose name is the same as the one
+introduced (if and only if the discriminator value is correct).</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicexception">
+<h4>org.fiware.kiara.dynamic.data.DynamicException<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicexception" title="Permalink to this headline">¶</a></h4>
+<p>This class holds group of <code class="docutils literal"><span class="pre">DynamicData</span></code> objects acting as members of
+an exception. Each member is identified by its own name.</p>
+<p><img alt="Figure: Interface DynamicException" src="../_images/MiddlewareInterfaceDynamicException.png" /></p>
+<center><p>Figure: Interface DynamicException</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getMember:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object whose
+name is the same as the one introduced as a parameter.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-data-dynamicmember">
+<h4>org.fiware.kiara.dynamic.data.DynamicMember<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicmember" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a dynamic member of any DynamicMembered object. It
+is used to store the DynamicData objects inside structures, unions,
+enumerations and exceptions.</p>
+<p><img alt="Figure: Interface DynamicMember" src="../_images/MiddlewareInterfaceDynamicMember.png" /></p>
+<center><p>Figure: Interface DynamicMember</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getName:</strong> This function returns the member’s name.</li>
+<li><strong>getDynamicData</strong>: This function returns the <code class="docutils literal"><span class="pre">DynamicData</span></code> stored
+inside a <code class="docutils literal"><span class="pre">DynamicMember</span></code> object.</li>
+<li><strong>equals</strong>: It returns true if two <code class="docutils literal"><span class="pre">DynamicMember</span></code> objects are
+equal.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-service-dynamicfunctionrequest">
+<h4>org.fiware.kiara.dynamic.service.DynamicFunctionRequest<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicfunctionrequest" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a dynamic function request. This class is used to
+create objects whose objective is to invoke functions remotely.</p>
+<p><img alt="Figure: Interface DynamicFunctionRequest" src="../_images/MiddlewareInterfaceDynamicFunctionRequest.png" /></p>
+<center><p>Figure: Interface DynamicFunctionRequest</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getParameter:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object
+stored in the parameter list depending on its name or its position in
+such list.</li>
+<li><strong>execute</strong>: This function executes a function remotely. It
+serializes all the necessary information and sends the request over
+the wire. It returns a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> with the result.</li>
+<li><strong>executeAsync</strong>: This function behaves the same way as the function
+<code class="docutils literal"><span class="pre">execute</span></code>. The only difference is that it needs a callback to be
+executed when the response arrives from the server.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-service-dynamicfunctionresponse">
+<h4>org.fiware.kiara.dynamic.service.DynamicFunctionResponse<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicfunctionresponse" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a dynamic function response. This class is used to
+retrieve the information sent from the server after a remote procedure
+call.</p>
+<p><img alt="Figure: Interface DynamicFunctionResponse" src="../_images/MiddlewareInterfaceDynamicFunctionResponse.png" /></p>
+<center><p>Figure: Interface DynamicFunctionResponse</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>isException:</strong> This function returns true if the server raised an
+exception when executing the function.</li>
+<li><strong>setException</strong>: This method sets the attribute indicating that an
+exception has been thrown on the server side.</li>
+<li><strong>setReturnValue</strong>: This function sets a <code class="docutils literal"><span class="pre">DynamicData</span></code> object as a
+return value for the remote call.</li>
+<li><strong>getReturnValue</strong>: This function returns the <code class="docutils literal"><span class="pre">DynamicData</span></code>
+representing the result of the remote call.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-service-dynamicproxy">
+<h4>org.fiware.kiara.dynamic.service.DynamicProxy<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicproxy" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a proxy than can be dynamically used to create an
+instance of DynamicFunctionRequest or a DynamicFunctionResponse
+depending if the user wants an object to execute a remote call or to
+store the result.</p>
+<p><img alt="Figure: Interface DynamicProxy" src="../_images/MiddlewareInterfaceDynamicProxy.png" /></p>
+<center><p>Figure: Interface DynamicProxy</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>getServiceName:</strong> This function returns the service name.</li>
+<li><strong>createFunctionRequest</strong>: This function creates a new object
+instance of <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> according to the
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> that was used to describe it.</li>
+<li><strong>createFunctionResponse</strong>: This function creates a new object
+instance of <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> according to the
+<code class="docutils literal"><span class="pre">FunctionTypeDescriptor</span></code> that was used to describe it.</li>
+</ul>
+</div>
+<hr class="docutils" />
+<div class="section" id="org-fiware-kiara-dynamic-service-dynamicfunctionhandler">
+<h4>org.fiware.kiara.dynamic.service.DynamicFunctionHandler<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicfunctionhandler" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a dynamic object used to hold the implementation
+of a specific function. Its process method must be defined by the user
+when creating the object, and it will be used to register the service’s
+functions on the server’s side.</p>
+<p><img alt="Figure: Interface DynamicFunctionHandler" src="../_images/MiddlewareInterfaceDynamicFunctionHandler.png" /></p>
+<center><p>Figure: Interface DynamicFunctionHandler</p>
+</center><p><strong>Functions:</strong></p>
+<ul class="simple">
+<li><strong>process:</strong> This function is the one that will be registered to be
+executed when a client invokes remotely a function. It must be
+implemented by the user.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="detailed-api">
+<h2>Detailed API<a class="headerlink" href="#detailed-api" title="Permalink to this headline">¶</a></h2>
+<p>This section defines in detail the API provided by the classes defined
+above.</p>
+<div class="section" id="id1">
+<h3>Main entry point<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="19%" />
+<col width="30%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.Kiara</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getTypeDescriptorBuilder</td>
+<td>&nbsp;</td>
+<td>TypeDescriptorBuilder</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getDynamicValueBuilder</td>
+<td>&nbsp;</td>
+<td>DynamicValueBuilder</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createContext</td>
+<td>&nbsp;</td>
+<td>Context</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>shutdown</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id2">
+<h3>Client API<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>This classes are those related to the client side API. This section
+includes all the relevant classes, attributes and methods.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="20%" />
+<col width="20%" />
+<col width="14%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.client.Connection</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getTransport</td>
+<td>&nbsp;</td>
+<td>Transport</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getSerializer</td>
+<td>&nbsp;</td>
+<td>Serializer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getServiceProxy</td>
+<td>&nbsp;</td>
+<td>T</td>
+<td>Exception</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>interfaceClass</td>
+<td>Class&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getDynamicProxy</td>
+<td>&nbsp;</td>
+<td>DynamicProxy</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h3>TypeDescriptor<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>This classes are those related to the client’s side API. This section
+includes all the relevant classes, attributes and methods.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="18%" />
+<col width="23%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.TypeDescriptorBuilder</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>createVoidType</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createPrimitiveType</td>
+<td>&nbsp;</td>
+<td>PrimitiveTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>kind</td>
+<td>TypeKind</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createArrayType</td>
+<td>&nbsp;</td>
+<td>ArrayTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>contentDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>dimensions</td>
+<td>int[]</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createListType</td>
+<td>&nbsp;</td>
+<td>ListTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>contentDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>maxSize</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createSetType</td>
+<td>&nbsp;</td>
+<td>SetTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>contentDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>maxSize</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createMapType</td>
+<td>&nbsp;</td>
+<td>MapTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>keyDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>valueDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>maxSize</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createStructType</td>
+<td>&nbsp;</td>
+<td>StructTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createEnumType</td>
+<td>&nbsp;</td>
+<td>EnumTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>values</td>
+<td>String[]</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createUnionType</td>
+<td>&nbsp;</td>
+<td>UnionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>discriminatorDesc</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createExceptionType</td>
+<td>&nbsp;</td>
+<td>ExceptionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createFunctionType</td>
+<td>&nbsp;</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createServiceType</td>
+<td>&nbsp;</td>
+<td>ServiceTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>scopedName</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.TypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getKind</td>
+<td>&nbsp;</td>
+<td>TypeKind</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isData</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isPrimitive</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isVoid</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isContainer</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isArray</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isList</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isMap</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isSet</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isMembered</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isEnum</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isUnion</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isStruct</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isException</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>isService</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isFunction</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="55%" />
+<col width="16%" />
+<col width="17%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.DataTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="14%" />
+<col width="23%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>isString</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setMaxFixedLength</td>
+<td>&nbsp;</td>
+<td>PrimitiveTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>length</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getMaxFixedLength</td>
+<td>&nbsp;</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="15%" />
+<col width="17%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.ContainerTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>setMaxSize</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>length</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getMaxSize</td>
+<td>&nbsp;</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="15%" />
+<col width="20%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.ArrayTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getElementType</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setElementType</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>contentType</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setDimensions</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>dimensions</td>
+<td>int[]</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getDimensions</td>
+<td>&nbsp;</td>
+<td>List&lt;Integer&gt;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="15%" />
+<col width="21%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.ListTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getElementType</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setElementType</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>contentType</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="15%" />
+<col width="21%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.SetTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getElementType</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setElementType</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>contentType</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="20%" />
+<col width="19%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.MapTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>setKeyTypeDescriptor</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>keyTypeDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getKeyTypeDescriptor</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setValueTypeDescriptor</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>valueTypeDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getValueTypeDescriptor</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="57%" />
+<col width="15%" />
+<col width="17%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.MemberedTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getMembers</td>
+<td>&nbsp;</td>
+<td>List&lt;Member&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="15%" />
+<col width="20%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.StructTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>addMember</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>member</td>
+<td>TypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getMember</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="55%" />
+<col width="16%" />
+<col width="17%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.EnumTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>addValue</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>value</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="16%" />
+<col width="21%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.UnionTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>addMember</td>
+<td>&nbsp;</td>
+<td>UnionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>typeDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>isDefault</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>labels</td>
+<td>Object[]</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="14%" />
+<col width="23%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.FunctionTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getReturnType</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setReturnType</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>returnType</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getParameter</td>
+<td>&nbsp;</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>addParameter</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>parameter</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getException</td>
+<td>&nbsp;</td>
+<td>ExceptionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>addException</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>exception</td>
+<td>ExceptionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getServiceName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setServiceName</td>
+<td>&nbsp;</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>serviceName</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="48%" />
+<col width="16%" />
+<col width="26%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.typecode.data.ServiceTypeDescriptor</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getScopedName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getFunctions</td>
+<td>&nbsp;</td>
+<td>List&lt;FunctionTypeDescriptor&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>addFunction</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>functionTypeDesc</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h3>Dynamic<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>The following classes are those related to creation and management of
+dynamic types, including data definition and function description and
+execution.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="19%" />
+<col width="24%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.DynamicValueBuilder</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>createData</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>dataDescriptor</td>
+<td>DataTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createFunctionRequest</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionRequest</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>functionDescriptor</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>serializer</td>
+<td>Serializer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>transport</td>
+<td>Transport</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createFunctionRequest</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionRequest</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>functionDescriptor</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createFunctionResponse</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionResponse</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>functionDescriptor</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>serializer</td>
+<td>Serializer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>transport</td>
+<td>Transport</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createFunctionResponse</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionResponse</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>functionDescriptor</td>
+<td>FunctionTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createService</td>
+<td>&nbsp;</td>
+<td>DynamicProxy</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>serviceDescriptor</td>
+<td>ServiceTypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>serializer</td>
+<td>Serializer</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>transport</td>
+<td>Transport</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="16%" />
+<col width="22%" />
+<col width="15%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.DynamicValue</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getTypeDescriptor</td>
+<td>&nbsp;</td>
+<td>TypeDescriptor</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>serialize</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>IOException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>impl</td>
+<td>SerializerImpl</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>message</td>
+<td>BinaryOutputStream</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>deserialize</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>IOException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>impl</td>
+<td>SerializerImpl</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>message</td>
+<td>BinaryInputStream</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicData</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="16%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicPrimitive</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>set</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>value</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>get</td>
+<td>&nbsp;</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>set</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>value</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="16%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicContainer</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicArray</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getElement</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>position</td>
+<td>int[]</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setElementAt</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>value</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>position</td>
+<td>int[]</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicList</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>add</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>element</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>add</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>index</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>element</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>get</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>index</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isEmpty</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicSet</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>add</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>element</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>add</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>index</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>element</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>get</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>index</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>isEmpty</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="51%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicMap</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>put</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>key</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>value</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>containsKey</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>key</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>containsValue</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>value</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>get</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>key</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="16%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicMembered</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="16%" />
+<col width="19%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicStruct</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getMember</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="17%" />
+<col width="19%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicEnum</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>set</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>value</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>get</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="18%" />
+<col width="20%" />
+<col width="13%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.Dynamic</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>_d</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>value</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>_d</td>
+<td>&nbsp;</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getMember</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setMember</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>data</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="54%" />
+<col width="16%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicException</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getMember</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="17%" />
+<col width="18%" />
+<col width="12%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.data.DynamicMember</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getDynamicData</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>equals</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>anotherObject</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="12%" />
+<col width="32%" />
+<col width="9%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionRequest</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getParameter</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getParameterAt</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>index</td>
+<td>int</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>execute</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionResponse</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>executeAsync</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>callback</td>
+<td>AsyncCallback&lt;DynamicFunctionResponse&gt;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="15%" />
+<col width="16%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionResponse</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>isException</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setException</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>isException</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setReturnValue</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>returnType</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getReturnValue</td>
+<td>&nbsp;</td>
+<td>DynamicData</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="49%" />
+<col width="15%" />
+<col width="25%" />
+<col width="11%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.service.DynamicProxy</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>getServiceName</td>
+<td>&nbsp;</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createFunctionRequest</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionRequest</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createFunctionReqponse</td>
+<td>&nbsp;</td>
+<td>DynamicFunctionResponse</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>name</td>
+<td>String</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="53%" />
+<col width="14%" />
+<col width="23%" />
+<col width="10%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.dynamic.service.DynamicFunctionRequest</strong></th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+<th class="head">&nbsp;</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><em>Name</em></td>
+<td><em>Type</em></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>n/a</td>
+<td>n/a</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td><em>Name</em></td>
+<td><em>Parameters</em></td>
+<td><em>Returns/Type</em></td>
+<td><em>Raises</em></td>
+</tr>
+<tr class="row-odd"><td>process</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>request</td>
+<td>DynamicFunctionRequest</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>response</td>
+<td>DynamicFunctionResponse</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Middleware_IDL_Specification.html" class="btn btn-neutral float-right" title="Advanced Middleware IDL Specification" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Middleware_RPC_API_Specification.html" class="btn btn-neutral" title="Advanced Middleware RPC API Specification" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, eProsima, DFKI, ZHAW.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

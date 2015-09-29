@@ -1,0 +1,961 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>KIARA User and Developer Guide &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
+        <link rel="next" title="Advanced Middleware RPC API Specification" href="../specification/Middleware_RPC_API_Specification.html"/>
+        <link rel="prev" title="KIARA Installation and Admin Guide" href="Installation_and_Admin_Guide.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FIWARE Advanced Middleware KIARA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Manuals</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">KIARA User and Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#middleware-operation-modes">Middleware Operation Modes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#idl-derived-operation-mode">IDL derived operation mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#application-derived-operation-mode">Application derived operation mode</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mapped-operation-mode">Mapped operation mode</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#a-quick-example">A quick example</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#calculator">Calculator</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-procedure">Basic procedure</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#idl-derived-application-process">IDL derived application process</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#application-derived-application-example">Application derived application example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mapping-application-example">Mapping application example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#using-kiara-advanced-middleware-to-create-an-rpc-application">Using KIARA Advanced Middleware to create an RPC application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">IDL derived operation mode</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-a-kiara-rpc-application">Building a KIARA RPC application</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl">Defining a set of remote procedures using the KIARA IDL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generating-remote-procedure-call-support-code">Generating remote procedure call support code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generate-support-code-manually-using-kiaragen">Generate support code manually using kiaragen</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#servant-implementation">Servant implementation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-the-server">Implementing the server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementing-the-client">Implementing the client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling-the-client-and-the-server">Compiling the client and the server</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#building-a-kiara-rpc-application-using-the-dynamic-api">Building a KIARA RPC application using the dynamic API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#declaring-the-remote-calls-and-data-types-at-runtime">Declaring the remote calls and data types at runtime</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#loading-the-idl-definition">Loading the IDL definition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-service-functionality">Implementing the service functionality</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Implementing the server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Implementing the client</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">FIWARE Advanced Middleware KIARA</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>KIARA User and Developer Guide</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/manuals/User_and_Programmer_Guide.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="kiara-user-and-developer-guide">
+<h1>KIARA User and Developer Guide<a class="headerlink" href="#kiara-user-and-developer-guide" title="Permalink to this headline">¶</a></h1>
+<p>Version 0.2.0</p>
+<!--TOC max2--><div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>KIARA Advanced Middleware is a Java based communication middleware for
+modern, efficient and secure applications. It is an implementation of
+the FIWARE Advanced Middleware Generic Enabler.</p>
+<p>This first release focuses on the basic features of RPC communication:</p>
+<ul class="simple">
+<li>Modern Interface Definition Language (IDL) with a syntax based on the
+Corba IDL.</li>
+<li>Easy to use and extensible Application Programmer Interface (API).</li>
+<li>IDL derived operation mode providing Stubs and Skeletons for RPC
+Client/Server implementations.</li>
+<li>Synchronous and Asynchronous function calls.</li>
+</ul>
+<p>Later versions will include additional features like:</p>
+<ul class="simple">
+<li>Application derived and Mapped operation mode providing dynamic
+declaration of functions and data type mapping.</li>
+<li>Advanced security features like field encryption and authentication.</li>
+<li>Additional communication patterns like publish/subscribe.</li>
+</ul>
+<p>KIARA Advanced Middleware is essentially a library which is incorporated
+into the developed applications, the requirements are rather minimal. In
+particular it requires no service running in the background.</p>
+<div class="section" id="middleware-operation-modes">
+<h3>Middleware Operation Modes<a class="headerlink" href="#middleware-operation-modes" title="Permalink to this headline">¶</a></h3>
+<p>The KIARA Advanced Middleware supports multiple operation modes. From
+traditional IDL-based approaches like Corba, DDS, Thrift up to newer
+approaches which start with the application data structure and
+automatically create the wire format.</p>
+<p>We therefore differentiate three operation modes.</p>
+<div class="section" id="idl-derived-operation-mode">
+<h4>IDL derived operation mode<a class="headerlink" href="#idl-derived-operation-mode" title="Permalink to this headline">¶</a></h4>
+<p>The IDL derived operation mode is similar to the traditional middleware
+approaches.</p>
+<p>Based on the IDL definition we generate with a precompiler stub- and
+skeleton-classes, which have to be used by the application to implement
+the server and client (or Publisher/Subscriber) application parts.</p>
+<div class="line-block">
+<div class="line"><strong>Prerequisite:</strong> IDL definition</div>
+<div class="line"><strong>Generated:</strong> Stubs and Skeletons (at compile time) which have to be
+used by the application</div>
+<div class="line"><strong>Examples:</strong> Corba, DDS, Thrift, …</div>
+</div>
+</div>
+<div class="section" id="application-derived-operation-mode">
+<h4>Application derived operation mode<a class="headerlink" href="#application-derived-operation-mode" title="Permalink to this headline">¶</a></h4>
+<p>This mode is typical for some modern (e.g. RMI, WebService,...)
+frameworks. Based on an application specific interface definitions, the
+framework automatically generates Server- and Client-Proxy-Classes,
+which serialize the application internal data structures and send them
+over the wire. Using Annotations, the required serialization and
+transport mechanisms and type mappings can be influenced.</p>
+<p>This mode implicitly generates an IDL definition based on the Java
+interfaces definition and provide this IDL through a “service registry”
+for remote partners.</p>
+<div class="line-block">
+<div class="line"><strong>Prerequisite:</strong> Application-Interface-Definition (has to be the same
+on client and server side)</div>
+<div class="line"><strong>Generated:</strong> Server-/Client-Proxies (generated at runtime)</div>
+<div class="line"><strong>Examples:</strong> RMI, JAX-RS, Spring REST, …</div>
+</div>
+</div>
+<div class="section" id="mapped-operation-mode">
+<h4>Mapped operation mode<a class="headerlink" href="#mapped-operation-mode" title="Permalink to this headline">¶</a></h4>
+<p>Goal of the mapped operation mode is to separate the application
+interfaces from the data structure used to transport the data over the
+wire. Therefore the middleware has to map the application internal data
+structure and interfaces to a common IDL definition. Advantage is, that
+the application interface on client and server (or publisher/subscriber)
+side can be different.</p>
+<div class="line-block">
+<div class="line"><strong>Prerequisite:</strong> Application-Interface-Definition (can be different
+on server and client side) IDL Definition</div>
+<div class="line"><strong>Generated:</strong> Server-/Client-Proxis (generated at runtime, which map
+the attributes &amp; operations</div>
+<div class="line"><strong>Examples:</strong> KIARA</div>
+</div>
+<blockquote>
+<div>The first release of KIARA will provide support for the traditional
+IDL derived operation mode. Application derived and mapped operation
+mode will follow in a future release.</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="a-quick-example">
+<h2>A quick example<a class="headerlink" href="#a-quick-example" title="Permalink to this headline">¶</a></h2>
+<p>In the next chapters we will use the following example application to
+explain the basic concepts of building an application using KIARA.</p>
+<div class="section" id="calculator">
+<h3>Calculator<a class="headerlink" href="#calculator" title="Permalink to this headline">¶</a></h3>
+<p>The KIARA Calculator example application provides an API to ask for
+simple mathematics operations over two numbers. It is a common used
+example when trying to understand how an RPC framework works.</p>
+<p>Basically the service provides two functions:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">float</span> <span class="pre">add</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> : Returns the result of adding the
+two numbers introduced as parameters (n1 and n2).</li>
+<li><code class="docutils literal"><span class="pre">float</span> <span class="pre">subtract</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> : Returns the result of
+subtracting the two numbers introduced as parameters (n1 and n2).</li>
+</ul>
+<p>The KIARA Calculator example is provided within this distribution, so it
+can be used as starting point.</p>
+</div>
+<div class="section" id="basic-procedure">
+<h3>Basic procedure<a class="headerlink" href="#basic-procedure" title="Permalink to this headline">¶</a></h3>
+<p>Before diving into the details describing the features and configure
+your projectfor KIARA, the following quick example should show the basic
+steps to create a simple client and server application in the different
+operation modes.</p>
+<p>Detailed instructions on how to execute the particular steps are given
+in chapter <a class="reference external" href="#building-a-kiara-rpc-application">Building a KIARA RPC
+application</a>.</p>
+<div class="section" id="idl-derived-application-process">
+<h4>IDL derived application process<a class="headerlink" href="#idl-derived-application-process" title="Permalink to this headline">¶</a></h4>
+<p>In the IDL derived approach, first the IDL definition has to be created:</p>
+<div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
+{
+    float32 add (float32 n1, float32 n2);
+    float32 subtract (float32 n1, float32 n2);
+};
+</pre></div>
+</div>
+<p>The developer has to implement the functions inside the class
+<code class="docutils literal"><span class="pre">CalculatorServantImpl</span></code>:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public static class CalculatorServantImpl extends CalculatorServant
+{
+    @Override
+    public float add (/*in*/ float n1, /*in*/ float n2) {
+        return (float) n1 + n2;
+    }
+
+    @Override
+    public float subtract (/*in*/ float n1, /*in*/ float n2) {
+        return (float) n1 - n2;
+    }
+    ...
+}
+</pre></div>
+</div>
+<p>Now the server can be started:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>Context context = Kiara.createContext();
+Server server = context.createServer();
+Service service = context.createService();
+
+// Create and register an instance of the CalculatorServant implementation.
+CalculatorServant Calculator_impl = new CalculatorServantImpl();
+service.register(Calculator_impl);
+
+// register the service on port 9090 using CDR serialization
+server.addService(service, &quot;tcp://0.0.0.0:9090&quot;, &quot;cdr&quot;);
+
+// run the server
+server.run();
+</pre></div>
+</div>
+<p>The client can connect and call the remote functions via the proxy
+class:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>Context context = Kiara.createContext();
+
+// setup the connection to the server
+Connection connection = context.connect(&quot;tcp://192.168.1.18:9090?serialization=cdr&quot;);
+
+// get the client Proxy implementation
+CalculatorClient client = connection.getServiceProxy(CalculatorClient.class);
+
+// call the remote methods
+float result = client.add(3, 5);
+</pre></div>
+</div>
+</div>
+<div class="section" id="application-derived-application-example">
+<h4>Application derived application example<a class="headerlink" href="#application-derived-application-example" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div>This example will be added, when the feature is implemented.</div></blockquote>
+</div>
+<div class="section" id="mapping-application-example">
+<h4>Mapping application example<a class="headerlink" href="#mapping-application-example" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div>This example will be added, when the feature is implemented.</div></blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="using-kiara-advanced-middleware-to-create-an-rpc-application">
+<h2>Using KIARA Advanced Middleware to create an RPC application<a class="headerlink" href="#using-kiara-advanced-middleware-to-create-an-rpc-application" title="Permalink to this headline">¶</a></h2>
+<p>KIARA Advanced Middleware allows the developer to easily implement a
+distributed application using remote procedure invocations. In
+client/server paradigm, a server offers a set of remote procedures that
+the client can remotely call. How the client calls these procedures
+should be transparent.</p>
+<p>For the developer, a proxy object represents the remote server, and this
+object offers the remote procedures implemented by the server. In the
+same way, how the server obtains a request from the network and how it
+sends the reply should also be transparent. The developer just writes
+the behaviour of the remote procedures.</p>
+<p>KIARA Advanced Middleware offers this transparency and facilitates the
+development.</p>
+<div class="section" id="id1">
+<h3>IDL derived operation mode<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>The general steps to build an application in IDL derived operation mode
+are:</p>
+<ol class="arabic simple">
+<li>Define a set of remote procedures: using the KIARA Interface
+Definition Language.</li>
+<li>Generation of specific remote procedure call support code: a
+Client-Proxy and a Server-Skeleton.</li>
+<li>Implement the servant: with the needed behaviour.</li>
+<li>Implement the server: filling the server skeleton with the behaviour
+of the procedures.</li>
+<li>Implement the client: using the client proxy to invoke the remote
+procedures.</li>
+</ol>
+<p>This section describes the basic concepts of these four steps that a
+developer has to follow to implement a distributed application. The
+advanced concepts are described in section Advanced Concepts.</p>
+</div>
+</div>
+<div class="section" id="building-a-kiara-rpc-application">
+<h2>Building a KIARA RPC application<a class="headerlink" href="#building-a-kiara-rpc-application" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="defining-a-set-of-remote-procedures-using-the-kiara-idl">
+<h3>Defining a set of remote procedures using the KIARA IDL<a class="headerlink" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl" title="Permalink to this headline">¶</a></h3>
+<p>The KIARA Interface Definition Language (IDL) is used to define the
+remote procedures (operations) the server will offer. Simple and Complex
+Data Types used as parameter types in these remote procedures are also
+defined in the IDL file. In addition the KIARA IDL supports the
+declaration and application of Annotations to add metadata to almost any
+IDL element. These can be used by the code generator, when implementing
+the service functionality or configure some specific runtime
+functionality. The IDL syntax is based on the OMG IDL 3.5. The basic
+structure of an IDL File is shown in the following picture.</p>
+<p><img alt="GitHub Workflow" src="../_images/IDLFileStructure.png" /></p>
+<p>Following a short overview of the supported KIARA IDL elements. For a
+detailed description please see the chapter <a class="reference external" href="#kiara-interface-definition-language">KIARA Interface Definition
+Language</a>.</p>
+<ul class="simple">
+<li><strong>Import Declarations</strong>: Definitions can be split into multiple files
+and/or share common elements among multiple definitions using the
+import statement.</li>
+<li><strong>Namespace Declarations</strong>: Within a definition file the declarations
+can be grouped into modules. Modules are used to define scopes for
+IDL identifiers. KIARA supports the modern keyword namespace.
+Namespaces can be nested to support multi-level namespaces.</li>
+<li><strong>Constant Declarations</strong>: A constant declarations allows the
+definition of literals, which can be used as values in other
+definitions (e.g. as return values, default parameters, etc.)</li>
+<li><strong>Type Declarations</strong><ul>
+<li><strong>Basic Types</strong>: KIARA IDL supports the OMG IDL basic data types
+like float, double, (unsigned) short/int/long, char, wchar,
+boolean, octet, etc. Additionally it supports modern aliases like
+float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte</li>
+<li><strong>Constructed Types</strong>: Constructed Types are combinations of other
+types like. The following constructs are supported:</li>
+<li><strong>Structures</strong> (struct)</li>
+<li><strong>Template Types</strong>: Template types are frequently used data
+structures like the various forms of collections. The following
+Template Types are supported:</li>
+<li><strong>List</strong>: Ordered collection of elements of the same type “list”
+is the modern variant of the OMG IDL keyword “sequence”</li>
+<li><strong>Strings</strong>: collection of chars, will be mapped to the String
+representation of the language.</li>
+<li><strong>Complex Declarations</strong>: In addition to the above Type
+declarations, KIARA supports ultidimensional Arrays using the
+bracket notation (e.g. <code class="docutils literal"><span class="pre">int</span> <span class="pre">monthlyRevenue[12][10]</span></code>)</li>
+</ul>
+</li>
+<li><strong>Service Declarations</strong>: KIARA supports interface and service
+declarations via IDL. Meaning that the user can declare different
+services where the operations are going to be placed.</li>
+<li><strong>Operation Declarations</strong>: Operations can be declared within the
+services following the standard OMG IDL notation.</li>
+</ul>
+<p>The IDL file (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) for our example application shows the
+usage of some of the above elements.</p>
+<div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
+{
+    float32 add (float32 n1, float32 n2);
+    float32 substract (float32 n1, float32 n2);
+};
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-remote-procedure-call-support-code">
+<h3>Generating remote procedure call support code<a class="headerlink" href="#generating-remote-procedure-call-support-code" title="Permalink to this headline">¶</a></h3>
+<p>KIARA Advanced Middleware includes a Java application named
+<code class="docutils literal"><span class="pre">kiaragen</span></code>. This application parses the IDL file and generates Java
+code for the defined set of remote procedures.</p>
+<p>All support classes will be generated (e.g. for structs):</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">x.y.&lt;StructName&gt;</span></code>: Support classes containing the definition of
+the data types as well as the serialization code.</li>
+</ul>
+<p>Using the <code class="docutils literal"><span class="pre">-example</span></code> option (described below), kiaragen will generate
+the following files for each of your module/service definitions:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;</span></code>: Interface exposing the defined synchronous
+service operation calls.</li>
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Async</span></code>: Interface exposing the asynchronous
+operation calls.</li>
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Client</span></code>: Interface exposing all client side
+calls (sync &amp; async).</li>
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Proxy</span></code>: This class encapsulates all the logic
+needed to call the remote operations. (Client side proxy → stub).</li>
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Servant</span></code>: This abstract class provides all
+the mechanisms (transport, un/marshalling, etc.) the server requires
+to call the server functions.</li>
+<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample</span></code>: This class will be extended
+to implement the server side functions (see <a class="reference external" href="#servant-implementation">Servant
+Implementation</a>.</li>
+<li><code class="docutils literal"><span class="pre">x.y.ClientExample</span></code>: This class contains the code needed to run a
+possible example of the client side application.</li>
+<li><code class="docutils literal"><span class="pre">x.y.ServerExample</span></code>: This class contains the code needed to run a
+possible example of the server side application.</li>
+</ul>
+<p>The package name <code class="docutils literal"><span class="pre">x.y.</span></code> can be declared when generating the support
+code using <code class="docutils literal"><span class="pre">kiaragen</span></code> (see <code class="docutils literal"><span class="pre">-package</span></code> option below).</p>
+<div class="section" id="generate-support-code-manually-using-kiaragen">
+<h4>Generate support code manually using kiaragen<a class="headerlink" href="#generate-support-code-manually-using-kiaragen" title="Permalink to this headline">¶</a></h4>
+<p>To call <code class="docutils literal"><span class="pre">kiaragen</span></code> manually it has to be installed and in your run
+path. Instructions to install the kiaragen tool can be found in the
+<a class="reference external" href="Installation_and_Admin_Guide.md">KIARA Installation and Administration
+Guide</a></p>
+<p>The usage syntax is:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ kiaragen [options] &lt;IDL file&gt; [&lt;IDL file&gt; …]
+</pre></div>
+</div>
+<p>Options:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-help</span></code></td>
+<td>Shows help information</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-version</span></code></td>
+<td>Shows the current version of KIARA / kiaragen</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-package</span></code></td>
+<td>Defines the package prefix of the generated Java classes. Default: no package</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;path&gt;</span></code></td>
+<td>Specify the output directory for the generated files. Default: current working dir</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-replace</span></code></td>
+<td>Replaces existing generated files.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-example</span> <span class="pre">&lt;platform&gt;</span></code></td>
+<td>Generates the support files (interfaces, stubs, skeletons,...) for the given target platform. These classes will be used to by the developer to implement both client and server part or the application. Supported values: gradle (creates also build.gradle files)</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--ppDisable</span></code></td>
+<td>Disables the preprocessor.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ppPath</span> <span class="pre">&lt;path&gt;</span></code></td>
+<td>Specifies the path of the preprocessor. Default: Systems C++ preprocessor</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;path&gt;</span></code></td>
+<td>Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path</td>
+</tr>
+</tbody>
+</table>
+<p>For our example the call could be:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ kiaragen -example gradle -package com.example src/main/idl/calculator.idl
+Loading templates...
+org.fiware.kiara.generator.kiaragen
+org.fiware.kiara.generator.idl.grammar.Context
+Processing the file calculator.idl...
+Creating destination source directory... OK
+Generating Type support classes...
+Generating application main entry files for interface Calculator... OK
+Generating specific server side files for interface Calculator... OK
+Generating specific client side files for interface Calculator... OK
+Generating common server side files... OK
+Generating common client side files... OK
+</pre></div>
+</div>
+<p>This would generate the following files:</p>
+</div>
+</div>
+<div class="section" id="servant-implementation">
+<h3>Servant implementation<a class="headerlink" href="#servant-implementation" title="Permalink to this headline">¶</a></h3>
+<p>Please note that the code inside the file
+<code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample.java</span></code> (which in this case is
+<code class="docutils literal"><span class="pre">CalculatorServantExample.java</span></code>) has to be modified in order to
+specify the behaviour of each declared function.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>class CalculatorServantExample extends CalculatorServant {
+
+  public float add (/*in*/ float n1, /*in*/ float n2) {
+        return (float) n2 + n2;
+    }
+
+    public float substract (/*in*/ float n1, /*in*/ float n2) {
+        return (float) n1 - n2;
+    }
+
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-the-server">
+<h3>Implementing the server<a class="headerlink" href="#implementing-the-server" title="Permalink to this headline">¶</a></h3>
+<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code>
+option) contains a simple implementation of a server. This
+implementation can obviously be extended as far as the user wants, this
+is just a very simple server capable of executing remote procedures.</p>
+<p>The class containing the mentioned code is named ServerExample, and its
+code is shown below:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class ServerExample {
+
+    public static void main (String [] args) throws Exception {
+
+        System.out.println(&quot;CalculatorServerExample&quot;);
+
+        Context context = Kiara.createContext();
+        Server server = context.createServer();
+
+        CalculatorServant Calculator_impl = new CalculatorServantExample();
+
+        Service service = context.createService();
+
+        service.register(Calculator_impl);
+
+        //Add service waiting on TCP with CDR serialization
+        server.addService(service, &quot;tcp://0.0.0.0:9090&quot;, &quot;cdr&quot;);
+
+        server.run();
+
+    }
+
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-the-client">
+<h3>Implementing the client<a class="headerlink" href="#implementing-the-client" title="Permalink to this headline">¶</a></h3>
+<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code>
+option) contains a simple implementation of a client. This
+implementation must be extended in order to show the output received
+from the server.</p>
+<p>In the KIARA Calculator example, as we have defined first the add
+function in the IDL file, this will be the one used by default in the
+generated code. The code for doing this is shown in the following
+snippet:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class ClientExample {
+    public static void main (String [] args) throws Exception {
+        System.out.println(&quot;CalculatorClientExample&quot;);
+
+    float n1 = (float) 3.0;
+    float n2 = (float) 5.0;
+
+        float ret = (float) 0.0;
+
+        Context context = Kiara.createContext();
+
+        Connection connection =
+                     context.connect(&quot;tcp://127.0.0.1:9090?serialization=cdr&quot;);
+        Calculator client = connection.getServiceProxy(CalculatorClient.class);
+
+    try {
+            ret = client.add(n1, n2);
+            System.out.println(&quot;Result: &quot; + ret);
+        } catch (Exception ex) {
+            System.out.println(&quot;Exception: &quot; + ex.getMessage());
+            return;
+        }
+    }
+}
+</pre></div>
+</div>
+<p>The previous code has been shown exactly the way it is generated, with
+only two differences:</p>
+<ul class="simple">
+<li>Parameter initialization: Both of the parameters n1 and n2 have been
+initialized to random values (in this case 3 and 5).</li>
+<li>Result printing: To have feedback of the response sent by the server
+when the remote procedure is executed.</li>
+</ul>
+</div>
+<div class="section" id="compiling-the-client-and-the-server">
+<h3>Compiling the client and the server<a class="headerlink" href="#compiling-the-client-and-the-server" title="Permalink to this headline">¶</a></h3>
+<p>For the client and server examples to compile, some jar files are
+needed. These files are located under the lib directory provided with
+this distribution, and they must be placed in the root working
+directory, under the lib folder:</p>
+<p>To compile the client using gradle, the call would be the next (changing
+the file build_client.gradle to build_server.gradle will compile the
+server):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ gradle -b build_client.gradle build
+:compileJava
+:processResources UP-TO-DATE
+:classes
+:jar
+:assemble
+:compileTestJava UP-TO-DATE
+:processTestResources UP-TO-DATE
+:testClasses UP-TO-DATE
+:test UP-TO-DATE
+:check UP-TO-DATE
+:build
+
+BUILD SUCCESSFUL
+
+Total time: 3.426 secs
+</pre></div>
+</div>
+<p>After compiling both of them the following files will be generated:</p>
+<p>In order to execute the examples, copy them to the same locations where
+the libraries mentioned before are placed (lib directory), and execute
+them using the command <code class="docutils literal"><span class="pre">java</span> <span class="pre">-jar</span> <span class="pre">file_to_execute.jar</span></code> All the files
+needed to compile and execute this project are located under the
+examples/Calculator directory included with this distribution.</p>
+</div>
+</div>
+<div class="section" id="building-a-kiara-rpc-application-using-the-dynamic-api">
+<h2>Building a KIARA RPC application using the dynamic API<a class="headerlink" href="#building-a-kiara-rpc-application-using-the-dynamic-api" title="Permalink to this headline">¶</a></h2>
+<p>The &#8220;KIARA RPC Dynamic API&#8221; allows the developers to easily execute
+calls in an RPC framework without having to statically generate code to
+support them. In the following sections, the different concepts of this
+feature will be explained.</p>
+<p>Using the dynamic API we still need the IDL file, which declares the
+&#8220;contract&#8221; between server and client by defining the data types and
+services (operations) the server offers.</p>
+<p>For the dynamic API the IDL format is identical to the one used for the
+static/compile time version. For example the IDL file for our demo
+application (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) is identical to the static use-case:</p>
+<div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
+{
+    float32 add (float32 n1, float32 n2);
+    float32 substract (float32 n1, float32 n2);
+};
+</pre></div>
+</div>
+<div class="section" id="declaring-the-remote-calls-and-data-types-at-runtime">
+<h3>Declaring the remote calls and data types at runtime<a class="headerlink" href="#declaring-the-remote-calls-and-data-types-at-runtime" title="Permalink to this headline">¶</a></h3>
+<p>In the dynamic approach, the comple time <code class="docutils literal"><span class="pre">kiaragen</span></code> code-generator
+will not be required anymore. Instead, the middleware provides a
+function to load the IDL definition from a String object. The generation
+of the IDL String has to be done by the developer. For example it can be
+loaded from a File, from a URL or generated by an algorithm.</p>
+<p>The process to declare the dynamic part is as follows:</p>
+<ul class="simple">
+<li>The server loads the IDL String (e.g. from a file).</li>
+<li>The IDL definition will then be provided to the clients connecting
+with the server.</li>
+<li>On the server the developer has to provide objects to act as servants
+and execute code depending on the function the client has requested.</li>
+</ul>
+<div class="section" id="loading-the-idl-definition">
+<h4>Loading the IDL definition<a class="headerlink" href="#loading-the-idl-definition" title="Permalink to this headline">¶</a></h4>
+<p>On the server side, in order to provide the user with a definition of
+the functions that the server offers, the first thing to be done is to
+load the IDL definition into the application.</p>
+<p>Therefore, the <code class="docutils literal"><span class="pre">Service</span></code> class provides a public function that can be
+used to load the IDL information from a String object. It is the
+developers responsibility to load the String from the source (e.g. from
+a file). The following snippet shows an example on how to do this:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Load IDL content string from file
+String idlString = new String(Files.readAllBytes(Paths.get(&quot;calculator.idl&quot;)));
+/* This is just one way to do it. Developer decides how to do it */
+
+// Load service information dynamically from IDL
+Service service = context.createService();
+service.loadServiceIDLFromString(idlString);
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-the-service-functionality">
+<h4>Implementing the service functionality<a class="headerlink" href="#implementing-the-service-functionality" title="Permalink to this headline">¶</a></h4>
+<p>Unlike in the static approach, in the dynamic version exists no Servant
+class to code the behaviour of the functions. To deal with this, KIARA
+provides a functional interface <code class="docutils literal"><span class="pre">DynamicFunctionHandler</span></code> that acts as
+a servant implementation. This class must be used to implement the
+function and register it with the service, which means to map the
+business logic of each function with its registered name.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Create type descriptor and dynamic builder
+final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
+final DynamicValueBuilder dvbuilder = Kiara.getDynamicValueBuilder();
+// Create type descriptor int (used for the return value)
+final PrimitiveTypeDescriptor intType =
+                        tdbuilder.createPrimitiveType(TypeKind.INT_32_TYPE);
+
+// Implement the functional interface for the add function
+DynamicFunctionHandler addHandler = new DynamicFunctionHandler() {
+     @Override
+     public void process(
+          DynamicFunctionRequest request,
+          DynamicFunctionResponse response
+     ) {
+          // read the parameters
+          int a = (Integer)((DynamicPrimitive)request.getParameterAt(0)).get();
+          int b = (Integer)((DynamicPrimitive)request.getParameterAt(1)).get();
+          // create the return value
+          final DynamicPrimitive intValue =
+                              (DynamicPrimitive)dvbuilder.createData(intType);
+          intValue.set(a+b);    // implmement the function
+          response.setReturnValue(intValue);
+     }
+}
+
+// Register function and map handler (do this for every function)
+service.register(&quot;Calculator.add&quot;, addHandler);
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Implementing the server<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Because the server functionality is not encapsuled in generated Servant
+classes, the server implmentation is a bit more extensive. It still
+follows the same pattern as in the static API, but the implementation
+and registration of the dynamic functions has to be done completely by
+the developer.</p>
+<p>The following ServerExample class shows, how this would look like:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class ServerExample {
+    public static void main (String [] args) throws Exception {
+        System.out.println(&quot;CalculatorServerExample&quot;);
+
+        Context context = Kiara.createContext();
+        Server server = context.createServer();
+
+        // Enable negotiation with clients
+        server.enableNegotiationService(&quot;0.0.0.0&quot;, 8080, &quot;/service&quot;);
+
+        Service service = context.createService();
+        String idlContent =
+        new String(Files.readAllBytes(Paths.get(&quot;calculator.idl&quot;)))
+        service.loadServiceIDLFromString(idlContent);
+
+        // Create descriptor and dynamic builder
+        final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
+        final DynamicValueBuilder dvbuilder = Kiara.getDynamicValueBuilder();
+
+        // Declare handlers
+        DynamicFunctionHandler addHandler;
+        DynamicFunctionHandler substractHandler;
+        addHandler = /* Implement handler for the add function */;
+        substractHandler = /* Implement handler for the substract function */;
+
+        // Register services
+        service.register(“Calculator.add”, addHandler);
+        service.register(“Calculator.substract”, substractHandler);
+
+        //Add service waiting on TCP with CDR serialization
+        server.addService(service, &quot;tcp://0.0.0.0:9090&quot;, &quot;cdr&quot;);
+
+        server.run();
+    }
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Implementing the client<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>On the client side the key point is the negotiation with the server to
+download the IDL it provides. After downloading, it will automatically
+parse the content and generate the necessary information to create the
+dynamic objects. When the <code class="docutils literal"><span class="pre">DynamicProxy</span></code> is created the functions
+provided by the server can be executed by using
+<code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> objects. The parameters of the functions have
+to be set in the request using <code class="docutils literal"><span class="pre">DynamicData</span></code> objects. The call of the
+request function <code class="docutils literal"><span class="pre">execute()</span></code> will finally perform the call to the
+server and return the result in a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object.
+The following code shows the client implementation:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class ClientExample {
+    public static void main (String [] args) throws Exception {
+        System.out.println(&quot;CalculatorClientExample&quot;);
+
+        Context context = Kiara.createContext();
+
+        // Create connection indicating the negotiation service
+        Connection connection =
+                     context.connect(&quot;kiara://127.0.0.1:9090/service&quot;);
+
+        // Create client by using the proxy’s name
+        DynamicProxy client = connection.getDynamicProxy(“Calculator”);
+
+        // Create request object
+        DynamicFunctionRequest request = client.createFunctionRequest(“add”);
+        ((DynamicPrimitive) request.getParameterAt(0)).set(8);
+        ((DynamicPrimitive) request.getParameterAt(1)).set(5);
+
+        // Create response object and execute RPC
+        DynamicFunctionResponse response = request.execute();
+        if (response.isException()) {
+            DynamicData result = response.getReturnValue();
+            System.out.println(“Exception = “ + (DynamicException) result);
+        } else {
+            DynamicData result = response.getReturnValue();
+            System.out.println(“Result = “ + (DynamicPrimitive) result);
+        }
+    // shutdown the client
+        Kiara.shutdown();
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../specification/Middleware_RPC_API_Specification.html" class="btn btn-neutral float-right" title="Advanced Middleware RPC API Specification" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Installation_and_Admin_Guide.html" class="btn btn-neutral" title="KIARA Installation and Admin Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, eProsima, DFKI, ZHAW.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
