@@ -1,9 +1,9 @@
-# KIARA Advanced Middleware
-
-## Introduction
+Welcome to FIWARE Advanced Middleware KIARA documentation!
+============================================================
 
 KIARA Advanced Middleware is a Java based communication middleware for modern,
 efficient and secure applications.
+
 It is an implementation of the FIWARE Advanced Middleware Generic Enabler.
 
 This first release focuses on the basic features of RPC communication:
@@ -25,15 +25,32 @@ KIARA Advanced Middleware is essentially a library which is incorporated into
 the developed applications, the requirements are rather minimal.
 In particular it requires no service running in the background.
 
-## Documentation
+The documentation for this site is organized in multiple sections:
 
-The following Manuals are available in the docs section:
+* :ref:`manual`
+* :ref:`specification`
 
-* [KIARA Installation and Admin Guide](doc/manuals/Installation_and_Admin_Guide.rst)
-* [KIARA User and Developer Guide](doc/manuals/User_and_Developer_Guide.rst)
+Please also check out our `Github repository`_
 
-### Architecture and Specification
-* [Architecture](doc/specification/Architecture.rst)
-* [IDL Specification](doc/specification/Middleware_IDL_Specification.rst)
-* [RPC API Specification](doc/specification/Middleware_RPC_API_Specification.rst)
-* [RPC Dynamic Types API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.rst)
+.. _Github repository: https://github.com/FIWARE-Middleware/KIARA
+
+.. _manual:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Manuals
+
+   manuals/Installation_and_Admin_Guide
+   manuals/User_and_Programmer_Guide
+
+
+.. _specification:
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Architecture and API Specification
+
+   specification/Middleware_RPC_API_Specification
+   specification/Middleware_RPC_Dynamic_Types_API_Specification
+   specification/Middleware_IDL_Specification
+

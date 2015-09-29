@@ -38,6 +38,7 @@ It provides basic static compile-time Data-Mapping and generation of Function St
 
 Introduction
 ------------
+
 ### Purpose
 
 This document attempts to describe the Advanced Middleware RPC API.
@@ -133,6 +134,7 @@ This interface provides a basic abstraction for network transport implementation
 - **getTransportFactory**: This function returns an instance of the factory class used to create this transport instance.
  
 ---
+
 #### org.fiware.kiara.transport.ServerTransport
 
 This interface provides an abstraction for a server-side connection endpoint waiting for incoming connections.
@@ -204,6 +206,7 @@ The connection interface manages the connection to the server. It holds the requ
 - **getDynamicProxy**: This function provides a new dynamic proxy instance to be uses to call remote procedures. This proxy uses the `Connection` instance to send the requests to the server.
 
 ---
+
 #### org.fiware.kiara.client.AsyncCallback
 
 This interface provides an abstraction used by the client to return the server’s reply when the call was asynchronous.
@@ -228,6 +231,7 @@ Using this interface, users can start up multiple services on different ports. T
 - **run**: Starts the server.
 
 ---
+
 #### org.fiware.kiara.server.Service
 
 This interface represent a service that can be registered with the server.
@@ -238,6 +242,7 @@ This interface represent a service that can be registered with the server.
 - **loadServiceIDLFromString:** Load the service IDL from a string. This function is only required when the service is handled via dynamic handlers.
 
 ---
+
 #### org.fiware.kiara.server.Servant
 
 This interface provides an abstraction used by the server to execute the provided functions when a client request is received.
@@ -253,6 +258,7 @@ This subsection contains the interfaces and classes that are dependent from the 
 This section uses the example in section [*API Usage Examples*](#api-usage-examples).
 
 ---
+
 ####x.y.\<IDL-ServiceName\>
 
 This interface is a mapping of the Advanced Middleware IDL service. It exposes the service’s procedures. All classes that implement these service’s procedures, have to inherit from this interface. For example the imlementation of the servant have to inherit from this interface, allowing the user to implement the service’s procedures.
@@ -262,6 +268,7 @@ This interface is a mapping of the Advanced Middleware IDL service. It exposes t
 - **add**: This function is the mapping of the Advanced Middleware IDL service procedure `add()`.
 
 ---
+
 #### x.y.\<IDL-ServiceName\>Async
 
 This interface is a mapping of the Advanced Middleware IDL service. It exposes the asynchronous version of the service’s procedures. All classes that that implement these service’s asynchronous procedures have to inherit from this interface.
@@ -271,6 +278,7 @@ This interface is a mapping of the Advanced Middleware IDL service. It exposes t
 - **add**: This function is the asynchronous version of the Advanced Middleware IDL service’s procedure `add()`. It has no return value.
 
 ---
+
 #### x.y.\<IDL-ServiceName\>Process
 
 This class is a mapping of the Advanced Middleware IDL service. It provides the asynchronous version of the service’s processing procedures.
@@ -280,6 +288,7 @@ This class is a mapping of the Advanced Middleware IDL service. It provides the 
 - **add_processAsync**: This function is the asynchronous version of the Advanced Middleware IDL service’s process procedure. It has no return value.
 
 ---
+
 #### x.y.\<IDL-ServiceName\>Client
 
 This interface provides the synchronous and asynchronous version of the Advanced Middleware IDL service, because it implements the previously described interfaces x.y.\<IDL-ServiceName\> and x.y.\<IDL-ServiceInterface\>Async. The Advanced Middleware IDL service proxy will implement this interface, allowing the user to call the service’s remote procedures synchronously or asynchronously. It is only used on the client side in order to make the Proxy to implement all the functions for this service (both synchronous and asynchronous).
@@ -290,6 +299,7 @@ This interface provides the synchronous and asynchronous version of the Advanced
 - **add**: Function inherited from *x.y.\<IDL-ServiceName\>Async* interface. This function is the asynchronous version of the Advanced Middleware IDL service’s procedure.
 
 ---
+
 #### x.y.\<IDL-ServiceName\>Proxy
 
 This class encapsulates the implementation of the interface *x.y.\<IDL-ServiceName\>Client*. It provides the logic to call the Advanced Middleware IDL service’s remote procedures, synchronously or asynchronously.
@@ -300,6 +310,7 @@ This class encapsulates the implementation of the interface *x.y.\<IDL-ServiceNa
 -   **add**: Function inherited from *x.y.\<IDL-ServiceName\>Client* interface. This function is the asynchronous version of the Advanced Middleware IDL service’s procedure.
 
 ---
+
 #### x.y.\<IDL-ServiceName\>Servant
 
 This abstract class can be used by users to implement the Advanced Middleware IDL service’s procedures. This class implements the interface *org.fiware.kiara.server.Servant*, providing the mechanism the server will use to call the user’s procedure implementations. Also it inherits from the interface *x.y.\<IDL-ServiceName\>* leaving the implementation of this functions to the user.
