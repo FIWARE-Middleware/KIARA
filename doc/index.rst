@@ -16,8 +16,7 @@ This first release focuses on the basic features of RPC communication:
 
 Later versions will include additional features like:
 
-* Application derived and Mapped operation mode providing dynamic declaration 
-of functions and data type mapping.
+* Application derived and Mapped operation mode providing dynamic declaration of functions and data type mapping.
 * Advanced security features like field encryption and authentication.
 * Additional communication patterns like publish/subscribe.
 

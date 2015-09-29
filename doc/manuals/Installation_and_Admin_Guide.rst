@@ -89,7 +89,7 @@ distribution:
    (Linux, Windows, AIX, z/OS)
 
 Verify Java installation
-^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 To verify that the installation is correct please open a
 terminal/shell/command line interface (cmd.exe, sh/bash/zsh) and check,
@@ -624,7 +624,7 @@ To verify correct installation please execute all the verifications described in
 * `Verify Maven installation`_ if you are using Maven
 
 End to End Testing
-^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~
 
 Finally you can checkout, compile and run our demo application:
 
@@ -677,12 +677,13 @@ Open a new Terminal session and start the client:
 
 
 List of Running Processes
-^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 KIARA Advanced Middleware itself does not install any kind of permanently running daemon or service. There are no running processes, but libraries to link to your applications.
 
 Network interfaces Up & Open
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 The KIARA Advanced Middleware itself does not open or provide services, therefore has no open Ports or Interfaces. Applications using KIARA can open any ports or interfaces and firewalls have to be configured accordingly.
 The above Example Application is opening and listening by default on Port 9090.
 
@@ -691,11 +692,12 @@ Diagnosis Procedures
 --------------------
 
 Resource availability
-^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~
+
 The middleware itself requires very few resources, any typical PC capable to run Java is enough to run the demo examples.
 
 Resource consumption
-^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~
 
 Resource consumption is mainly defined by the application using the KIARA middleware. The compiled library is about 270kB in size. 
 
