@@ -1309,4 +1309,4 @@ In order for the Participant to stop succesfully, it must be removed from the Do
 
     }
 
-... |GitHub Workflow| image:: ./images/IDLFileStructure.png
+.. |GitHub Workflow| image:: ./images/IDLFileStructure.png
