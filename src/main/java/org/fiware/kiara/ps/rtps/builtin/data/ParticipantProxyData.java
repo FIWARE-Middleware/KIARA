@@ -423,6 +423,8 @@ public class ParticipantProxyData {
         this.m_properties.copy(pdata.m_properties);
         this.m_userData.clear();
         this.m_userData.addAll(pdata.m_userData);
+        this.m_readers.addAll(pdata.getReaders());
+        this.m_writers.addAll(pdata.getWriters());
     }
 
     /**

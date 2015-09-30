@@ -178,8 +178,6 @@ public class ListenResource {
                 if (!found) {
                     this.m_assocReaders.add((RTPSReader) endpoint);
                     logger.debug("Endpoint {} added to listen locators list", endpoint.getGuid().getEntityId());
-                    //System.out.println("Endpoint {} added to listen locators list" + this.m_assocReaders.size());
-                    //this.m_mutex.unlock();
                     return true;
                 }
             }
@@ -297,11 +295,6 @@ public class ListenResource {
 
         try {
 
-            /*this.m_listenChannel = DatagramChannelBuilder.getInstance(loc.getKind(), listenSocketSize);
-            if (this.m_listenChannel == null) {
-                Thread.currentThread().interrupt();
-            }*/
-            
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
                 //this.m_listenChannel = DatagramChannel.open(StandardProtocolFamily.INET);
                 this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
@@ -309,16 +302,11 @@ public class ListenResource {
                 this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET6);
             }
 
-            //this.m_listenChannel.configureBlocking(false);
             this.m_listenChannel.setOption(StandardSocketOptions.SO_RCVBUF, listenSocketSize);
             if (isMulticast) {
                 this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
             }
-            //this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-             
-            //this.m_listenSocket = new java.net.MulticastSocket(null this.m_listenEndpoint.port, this.m_listenEndpoint.address);
-            //this.m_listenSocket.setReceiveBufferSize(listenSocketSize);
-            //this.m_listenSocket.setReuseAddress(true);
+     
         } catch (SocketException e) {
             e.printStackTrace();
             Thread.currentThread().interrupt();
@@ -348,40 +336,17 @@ public class ListenResource {
                 e.printStackTrace();
                 Thread.currentThread().interrupt();
             }
-
-
         } else {
             boolean binded = false;
             for (int i=0; i < 1000; ++i) {
                 
                 try {
-                    /*if (this.m_listenChannel.socket().isConnected()) {
-                        if (!this.m_listenChannel.socket().getInetAddress().equals(sockAddr)) {
-                            this.m_listenChannel.socket().bind(sockAddr);
-                            binded = true;
-                            break;
-                        }
-                    } else {*/
                     this.m_listenChannel.socket().bind(sockAddr);
                     binded = true;
                     break;
-                   //}
-                    
-                    /*this.m_listenChannel = java.nio.channels.DatagramChannel.open(StandardProtocolFamily.INET);
-                    this.m_listenChannel.setOption(StandardSocketOptions.SO_RCVBUF, listenSocketSize);
-                    this.m_listenChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-                    this.m_listenChannel.socket().bind(sockAddr);*/
-                    
-                    /*if (this.m_listenChannel.socket().isConnected() && !this.m_listenChannel.socket().getInetAddress().equals(sockAddr)) {
-                        this.m_listenChannel.socket().bind(sockAddr);
-                        binded = true;
-                        break;
-                    }*/
+                   
                 } catch (IOException e) {
-                    // TODO Auto-generated catch block
                     logger.debug("Tried port {}, trying next...", this.m_listenEndpoint.port);
-                    e.printStackTrace();
-                    //Thread.currentThread().interrupt();
                 }
                 this.m_listenEndpoint.port += 2;
                 sockAddr = new InetSocketAddress(this.m_listenEndpoint.address, this.m_listenEndpoint.port); // TODO: Delete addr

@@ -68,6 +68,7 @@ public class PublisherHistory extends WriterHistoryCache {
         this.m_historyQos = history;
         this.m_resourceLimitsQos = resource;
         this.m_publisher = publisher;
+        this.m_keyedChanges = new ArrayList<Pair<InstanceHandle,List<CacheChange>>>();
     }
 
     /**
@@ -138,7 +139,7 @@ public class PublisherHistory extends WriterHistoryCache {
 
                     if (add) {
                         if (this.addChange(change)) {
-                            logger.info("Change added");
+                            logger.debug("Change added");
                             vit.getSecond().add(change);
                             if (this.m_historyQos.kind == HistoryQosPolicyKind.KEEP_ALL_HISTORY_QOS) {
                                 if (this.m_changes.size() == this.m_resourceLimitsQos.maxSamples) {

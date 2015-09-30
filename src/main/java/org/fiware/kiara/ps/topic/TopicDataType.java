@@ -17,8 +17,15 @@
  */
 package org.fiware.kiara.ps.topic;
 
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.CDRSerializer;
+import org.fiware.kiara.serialization.impl.Serializable;
 
 /**
  *
@@ -69,18 +76,7 @@ public abstract class TopicDataType<T> {
      * @return Void reference to the created object.
      */
     public abstract T createData();
-
-    /**
-     * Get the key associated with the data.
-     *
-     * @param data Reference to the data.
-     * @param ihandle Reference to the Handle.
-     * @return True if correct.
-     */
-    public boolean getKey(T data, InstanceHandle ihandle) {
-        return false;
-    }
-
+    
     /**
      * Set topic data type name
      *
@@ -107,6 +103,14 @@ public abstract class TopicDataType<T> {
     public boolean isGetKeyDefined() {
         return m_isGetKeyDefined;
     }
+    
+    /**
+     * Set if the key has been defined for this TopicDataType
+     * 
+     */
+    public void setGetKeyDefined(boolean defined) {
+        m_isGetKeyDefined = defined;
+    }
 
     /**
      * Get the type size
@@ -116,4 +120,40 @@ public abstract class TopicDataType<T> {
     public int getTypeSize() {
         return m_typeSize;
     }
+    
+    public abstract boolean getKey(T data, InstanceHandle ihandle);
+    
+//    public boolean getKey(T data, InstanceHandle ihandle) {
+//        if (this.m_isGetKeyDefined) {
+//            BinaryOutputStream bos = new BinaryOutputStream();
+//            CDRSerializer ser = new CDRSerializer(false);
+//    
+//            try {
+//                //System.out.println(data.getClass().getSuperclass().getName());
+//                System.out.println(data instanceof Serializable);
+//                System.out.println(data instanceof KeyedType);
+//                System.out.println(data instanceof HelloWorldType);
+//                ((KeyedType) data).serializeKey(ser, bos, "");
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//    
+//            try {
+//                MessageDigest dig = MessageDigest.getInstance("MD5");
+//                byte[] md5 = dig.digest(bos.getBuffer());
+//                for (int i=0; i < md5.length; ++i) {
+//                    ihandle.setValue(i, md5[i]);
+//                }
+//    
+//            } catch (NoSuchAlgorithmException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//    
+//            return true;
+//        }
+//
+//        return false;
+//    }
 }

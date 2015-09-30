@@ -67,7 +67,8 @@ public class DurabilityQosPolicy extends Parameter {
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.kind = DurabilityQosPolicyKind.values()[impl.deserializeByte(message, name)];
+        message.skipBytes(3);
     }
 
 }

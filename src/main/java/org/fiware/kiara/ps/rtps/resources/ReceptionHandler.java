@@ -20,11 +20,14 @@ package org.fiware.kiara.ps.rtps.resources;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.DatagramPacket;
+
 import java.net.InetSocketAddress;
+
 import org.fiware.kiara.netty.Buffers;
 
 /**
@@ -49,8 +52,6 @@ public class ReceptionHandler extends SimpleChannelInboundHandler<DatagramPacket
     @Override
     public void channelRead0(ChannelHandlerContext ctx, DatagramPacket packet) throws Exception {
 
-        //System.out.println(((InetSocketAddress) ctx.channel().localAddress()).getPort());
-        
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.BIG_ENDIAN);
 
         msg.setBuffer(Buffers.toByteArray(packet.content()));

@@ -16,9 +16,9 @@ import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
-import org.fiware.kiara.ps.types.TopicHelloWorldType;
 
 public class SubscriberTest {
     
@@ -418,7 +418,7 @@ public class SubscriberTest {
     
     public static void newTypesTest() {
         
-        TopicHelloWorldType type = new TopicHelloWorldType();
+        HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         
         hw.setInnerLongAtt(10);
@@ -477,7 +477,7 @@ public class SubscriberTest {
     
     public static void discoveryTest() {
         
-        TopicHelloWorldType type = new TopicHelloWorldType();
+        HelloWorldType type = new HelloWorldType();
         HelloWorld hw = type.createData();
         
         hw.setInnerLongAtt(10);

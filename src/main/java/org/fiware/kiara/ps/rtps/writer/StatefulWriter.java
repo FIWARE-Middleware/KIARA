@@ -98,7 +98,7 @@ public class StatefulWriter extends RTPSWriter {
     }
 
     public void destroy() {
-        logger.info("RTPS WRITER: StatefulWriter destructor");
+        logger.debug("RTPS WRITER: StatefulWriter destructor");
         if (m_periodicHB != null)
             m_periodicHB.destroy();
 	for (ReaderProxy it : m_matchedReaders) {
@@ -127,7 +127,9 @@ public class StatefulWriter extends RTPSWriter {
             changeV.add(change);
             
             boolean expectsInlineQos = false;
+            
             this.setLivelinessAsserted(true);
+            
             if (!this.m_matchedReaders.isEmpty()) {
                 for (ReaderProxy it : this.m_matchedReaders) {
                     ChangeForReader changeForReader = new ChangeForReader();
@@ -149,6 +151,7 @@ public class StatefulWriter extends RTPSWriter {
                         it.getNackSupression().restartTimer();
                     }
                 }
+                
                 RTPSMessageGroup.sendChangesAsData(this, changeV, uniLocList, multiLocList, expectsInlineQos, EntityId.createUnknown());
                 if (this.m_periodicHB == null) { // TODO Review this
                     this.m_periodicHB = new PeriodicHeartbeat(this, this.m_times.heartBeatPeriod.toMilliSecondsDouble());
@@ -156,7 +159,7 @@ public class StatefulWriter extends RTPSWriter {
                     this.m_periodicHB.restartTimer();
                 }
             } else {
-                logger.info("No reader proxy to add change.");
+                logger.debug("No reader proxy to add change.");
             }
         } finally {
             this.m_mutex.unlock();
@@ -168,7 +171,7 @@ public class StatefulWriter extends RTPSWriter {
     public boolean changeRemovedByHistory(CacheChange change) {
         this.m_mutex.lock();
         try {
-            logger.info("Change {} to be removed", change.getSequenceNumber().toLong());
+            logger.debug("Change {} to be removed", change.getSequenceNumber().toLong());
             for (ReaderProxy it : this.m_matchedReaders) {
                 for (ChangeForReader chit : it.getChangesForReader()) {
                     if (chit.getSequenceNumber().equals(change.getSequenceNumber())) {
@@ -264,7 +267,7 @@ public class StatefulWriter extends RTPSWriter {
         } finally {
             this.m_mutex.unlock();
         }
-        logger.info("Finished sending unsent changes");
+        logger.debug("Finished sending unsent changes");
     }
     
     /*
@@ -281,7 +284,7 @@ public class StatefulWriter extends RTPSWriter {
             }
             for (ReaderProxy it : this.m_matchedReaders) {
                 if (it.att.guid.equals(ratt.guid)) {
-                    logger.info("Attempting to add existing reader");
+                    logger.debug("Attempting to add existing reader");
                     return false;
                 }
             }
@@ -303,7 +306,7 @@ public class StatefulWriter extends RTPSWriter {
                 }
             }
             this.m_matchedReaders.add(rp);
-            logger.info(
+            logger.debug(
                     "Reader Proxy {} added to {} with {}(u) - {}(m) locators", 
                     rp.att.guid, 
                     this.m_guid, 
@@ -380,7 +383,7 @@ public class StatefulWriter extends RTPSWriter {
             if (changeForReader != null) {
                 if (changeForReader.isRelevant) {
                     if (changeForReader.status == ChangeForReaderStatus.ACKNOWLEDGED) {
-                        logger.info("Change not acked. Relevant: {}; status: ", changeForReader.isRelevant, changeForReader.status);
+                        logger.debug("Change not acked. Relevant: {}; status: ", changeForReader.isRelevant, changeForReader.status);
                         return false;
                     }
                 }

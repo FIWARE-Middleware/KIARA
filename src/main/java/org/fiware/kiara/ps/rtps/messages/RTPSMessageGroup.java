@@ -41,9 +41,9 @@ import org.slf4j.LoggerFactory;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class RTPSMessageGroup {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(WriterHistoryCache.class);
-    
+
     public static void sendChangesAsData(RTPSWriter rtpsWriter, List<CacheChange> changes, LocatorList unicastLocatorList, LocatorList multicastLocatorList, boolean expectsInlineQos, EntityId entityId) {
 
         short dataMsgSize = 0;
@@ -52,8 +52,10 @@ public class RTPSMessageGroup {
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
         RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
         RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-        msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
-        
+
+        // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
+        msg.checkPadding(false); 
+
         Iterator<CacheChange> cit = changes.iterator();
         if (cit.hasNext()) {
             int initialPos = msg.getBinaryOutputStream().getPosition();
@@ -63,14 +65,14 @@ public class RTPSMessageGroup {
                 logger.error("The Data messages are larger than max size");
                 return;
             }
-            msg.checkPadding();
+            msg.checkPadding(true);
         }
         boolean first = true;
 
         do {
 
             boolean added = false;
-            
+
             if (first) {
                 first = false;
                 added = true;
@@ -78,7 +80,7 @@ public class RTPSMessageGroup {
                 msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
                 RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
                 RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+                msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
             }
 
             while (cit.hasNext()) {
@@ -86,7 +88,7 @@ public class RTPSMessageGroup {
                     added = true;
                     ++changeIndex;
                     RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-                    msg.checkPadding();
+                    msg.checkPadding(true);
                 } else {
                     break;
                 }
@@ -144,8 +146,8 @@ public class RTPSMessageGroup {
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
         RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
         RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-        msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
-        
+        msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+
         Iterator<CacheChange> cit = changes.iterator();
         if (cit.hasNext()) {
             int initialPos = msg.getBinaryOutputStream().getPosition();
@@ -155,14 +157,14 @@ public class RTPSMessageGroup {
                 logger.error("The Data messages are larger than max size");
                 return;
             }
-            msg.checkPadding();
+            msg.checkPadding(true);
         }
         boolean first = true;
 
         do {
 
             boolean added = false;
-            
+
             if (first) {
                 first = false;
                 added = true;
@@ -170,7 +172,7 @@ public class RTPSMessageGroup {
                 msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
                 RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
                 RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+                msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
             }
 
             while (cit.hasNext()) {
@@ -178,7 +180,7 @@ public class RTPSMessageGroup {
                     added = true;
                     ++changeIndex;
                     RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-                    msg.checkPadding();
+                    msg.checkPadding(true);
                 } else {
                     break;
                 }
@@ -194,44 +196,18 @@ public class RTPSMessageGroup {
         } while (changeIndex < changes.size());
 
     }
-    
-    /*public static void sendChangesAsData_old(RTPSWriter rtpsWriter, List<CacheChange> changes, Locator locator, boolean expectsInlineQos, EntityId entityId) {
-        System.out.println("Executed other SEND");
-        //short dataMsgSize = 0;
-        //short changeN = 1;
-
-         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-        RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-        boolean added = false;
-
-        for (CacheChange cit : changes) {
-
-            RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false);
-
-            RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit, expectsInlineQos, entityId);
-
-            added = true;
-
-        }
-
-        msg.serialize();
-
-        if (added) {
-            rtpsWriter.getRTPSParticipant().sendSync(msg, locator);
-        }
-
-    }*/
 
     public static void sendChangesAsGap(RTPSWriter rtpsWriter, List<SequenceNumber> changesSeqNum, EntityId readerId, LocatorList unicastLocatorList, LocatorList multicastLocatorList) {
-        
+
         short gapMsgSize = 0;
         short changeIndex = 1;
 
         RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
         RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
         RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-        msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
-        
+        // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+        msg.checkPadding(false); 
+
         List<Pair<SequenceNumber, SequenceNumberSet>> sequences = RTPSMessageGroup.prepareSequenceNumberSet(changesSeqNum);
         Iterator<Pair<SequenceNumber, SequenceNumberSet>> seqit = sequences.iterator();
         if (seqit.hasNext()) {
@@ -243,37 +219,32 @@ public class RTPSMessageGroup {
                 logger.error("The Gap messages are larger than max size");
                 return;
             }
-            msg.checkPadding();
+            msg.checkPadding(false);
         }
         boolean first = true;
 
         do {
 
             boolean added = false;
-            
+
             if (first) {
                 first = false;
                 added = true;
             } else {
                 msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
                 RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-                //RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+                // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
+                msg.checkPadding(false); 
             }
 
-            System.out.println("Data MSG Size: " + gapMsgSize);
             while (seqit.hasNext()) {
                 Pair<SequenceNumber, SequenceNumberSet> pair = seqit.next();
                 if (msg.getBinaryOutputStream().getPosition() + gapMsgSize < msg.getMaxSize()) {
                     added = true;
                     ++changeIndex;
-                    System.out.println("Message n: " + changeIndex);
-                    System.out.println("Pos: " + msg.getBinaryOutputStream().getPosition());
-                    System.out.println("Size: " + msg.getMaxSize());
                     RTPSMessageBuilder.addSubmessageGap(msg, pair.getFirst(), pair.getSecond(), readerId, rtpsWriter.getGuid().getEntityId());
-                    msg.checkPadding();
+                    msg.checkPadding(false);
                 } else {
-                    System.out.println("Breaking");
                     break;
                 }
             }
@@ -291,7 +262,7 @@ public class RTPSMessageGroup {
             }
 
         } while (changeIndex < sequences.size());
-        
+
     }
 
     private static void prepareSubmessageData(RTPSMessage msg, RTPSWriter rtpsWriter, CacheChange change, boolean expectsInlineQos, EntityId entityId) {

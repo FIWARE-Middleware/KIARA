@@ -10,6 +10,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.nio.NioDatagramChannel;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
@@ -30,9 +31,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
-import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
-import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
-import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.ProtocolVersion;
@@ -40,6 +38,9 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
 
 public class NettyClientTest {
 

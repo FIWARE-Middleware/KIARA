@@ -372,5 +372,14 @@ public class EntityId extends RTPSSubmessageElement {
         }
         return sb.toString();
     }
+    
+    /**
+     * Get a hash associated with the EntityId
+     */
+    @Override
+    public int hashCode() {
+        ByteBuffer wrapped = ByteBuffer.wrap(m_value);
+        return wrapped.getInt();
+    }
 
 }

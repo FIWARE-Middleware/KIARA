@@ -63,7 +63,7 @@ public abstract class RTPSReader extends Endpoint {
         
         logger.debug("RTPSReader created successfully");
     }
-
+    
     public abstract boolean matchedWriterAdd(RemoteWriterAttributes wdata);
     
     public abstract boolean matchedWriterRemove(RemoteWriterAttributes wdata);

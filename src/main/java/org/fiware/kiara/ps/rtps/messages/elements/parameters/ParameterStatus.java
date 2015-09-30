@@ -34,6 +34,11 @@ public class ParameterStatus extends Parameter {
 
     private byte m_status;
 
+    public ParameterStatus() {
+        super(ParameterId.PID_STATUS_INFO, (short) 4);
+        this.m_status = 0;
+    }
+
     public ParameterStatus(ChangeKind kind) {
         super(ParameterId.PID_STATUS_INFO, (short) 4);
         switch (kind) {
@@ -51,7 +56,7 @@ public class ParameterStatus extends Parameter {
             break;
         }
     }
-
+    
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);

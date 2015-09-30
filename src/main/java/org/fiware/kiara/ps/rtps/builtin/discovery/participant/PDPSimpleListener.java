@@ -55,21 +55,20 @@ public class PDPSimpleListener extends ReaderListener {
 
     @Override
     public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
-        // TODO Auto-generated method stub
-        System.out.println("PDPSimpleListener: READER MATCHED");
+        // Do Nothing
     }
 
     /**
      * New added cache
      * @param reader
-     * @param change
+     * @param change_in
      */
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change_in) {
         try {
             CacheChange change = change_in;
             logger.debug("PDP Message Received");
-
+            
             if (change.getInstanceHandle().equals(new InstanceHandle())) {
                 if (!this.getKey(change)) {
                     logger.warn("Problem getting the key of the change, removing.");

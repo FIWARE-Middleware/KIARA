@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.common;
 
 import static org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus.UNSENT;
+
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 

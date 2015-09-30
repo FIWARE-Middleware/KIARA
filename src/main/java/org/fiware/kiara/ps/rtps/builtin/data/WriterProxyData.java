@@ -1,6 +1,5 @@
 package org.fiware.kiara.ps.rtps.builtin.data;
 
-import org.fiware.kiara.ps.qos.WriterQos;
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_ENDPOINT_GUID;
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_KEY_HASH;
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_MULTICAST_LOCATOR;
@@ -11,10 +10,23 @@ import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_TYPE_MAX_SIZE_SE
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_TYPE_NAME;
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_UNICAST_LOCATOR;
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_VENDORID;
+import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
+import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
+import static org.fiware.kiara.ps.rtps.common.DurabilityKind.VOLATILE;
+import static org.fiware.kiara.ps.rtps.common.EndpointKind.WRITER;
+import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
+import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
+import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUID_LENGTH;
+import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
+
+import java.io.IOException;
+
+import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicy;
-import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
 import org.fiware.kiara.ps.qos.policies.DurabilityServiceQosPolicy;
 import org.fiware.kiara.ps.qos.policies.GroupDataQosPolicy;
 import org.fiware.kiara.ps.qos.policies.LatencyBudgetQosPolicy;
@@ -25,25 +37,20 @@ import org.fiware.kiara.ps.qos.policies.OwnershipStrengthQosPolicy;
 import org.fiware.kiara.ps.qos.policies.PartitionQosPolicy;
 import org.fiware.kiara.ps.qos.policies.PresentationQosPolicy;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicy;
-import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
 import org.fiware.kiara.ps.qos.policies.TimeBasedFilterQosPolicy;
 import org.fiware.kiara.ps.qos.policies.TopicDataQosPolicy;
 import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
-import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
-import static org.fiware.kiara.ps.rtps.common.DurabilityKind.VOLATILE;
-import static org.fiware.kiara.ps.rtps.common.EndpointKind.WRITER;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
-import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.BEST_EFFORT;
-import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
-import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
-import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUID_LENGTH;
-import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
+import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
+import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBool;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
@@ -51,6 +58,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterPort;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterProtocolVersion;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterString;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,11 +83,11 @@ public class WriterProxyData {
     /**
      * GUID of the Reader converted to InstanceHandle_t
      */
-    private final InstanceHandle m_key;
+    private InstanceHandle m_key;
     /**
      * GUID of the participant converted to InstanceHandle
      */
-    private final InstanceHandle m_RTPSParticipantKey;
+    private InstanceHandle m_RTPSParticipantKey;
     /**
      * Type name
      */
@@ -188,11 +196,11 @@ public class WriterProxyData {
     }
 
     /**
-     * Convert the information to a parameter list to be send in a CDRMessage.
-     *
-     * @return true if operation was successful
+     * Get the ParameterList
+     * 
+     * @return The ParameterList
      */
-    public boolean toParameterList() {
+    public ParameterList toParameterList() {
         m_parameterList.deleteParams();
         for (Locator lit : m_unicastLocatorList) {
             ParameterLocator p = new ParameterLocator(PID_UNICAST_LOCATOR, PARAMETER_LOCATOR_LENGTH, lit);
@@ -314,8 +322,9 @@ public class WriterProxyData {
             p.copy(m_qos.groupData);
             m_parameterList.addParameter(p);
         }
-        logger.info("RTPS_PROXY_DATA: with {} parameters", m_parameterList.getParameters().size());
-        return true;
+        this.m_parameterList.addSentinel();
+        logger.debug("RTPS_PROXY_DATA: with {} parameters", m_parameterList.getParameters().size());
+        return this.m_parameterList;
     }
 
     /**
@@ -582,5 +591,179 @@ public class WriterProxyData {
         m_remoteAtt.endpoint.multicastLocatorList.copy(this.m_multicastLocatorList);
         return m_remoteAtt;
     }
+
+    public boolean readFromCDRMessage(CacheChange change) {
+
+        SerializedPayload payload = change.getSerializedPayload();
+        if (payload != null && payload.getBuffer() != null) {
+            payload.updateSerializer();
+            BinaryInputStream bis = new BinaryInputStream(payload.getBuffer());
+            ParameterList parameterList = new ParameterList();
+            try {
+                parameterList.deserialize(payload.getSerializer(), bis, "");
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+                return false;
+                //e.printStackTrace();
+            }
+            for (Parameter param : parameterList.getParameters()) {
+                switch (param.getParameterId()) {
+                case PID_DURABILITY: 
+                {
+                    DurabilityQosPolicy p = (DurabilityQosPolicy) param;
+                    this.m_qos.durability.copy(p);
+                    break;
+                }
+                case PID_DURABILITY_SERVICE:
+                {
+                    DurabilityServiceQosPolicy p = (DurabilityServiceQosPolicy) param;
+                    this.m_qos.durabilityService.copy(p);
+                    break;
+                }
+                case PID_DEADLINE:
+                {
+                    DeadLineQosPolicy p = (DeadLineQosPolicy) param;
+                    this.m_qos.deadline.copy(p);
+                    break;
+                }
+                case PID_LATENCY_BUDGET:
+                {
+                    LatencyBudgetQosPolicy p = (LatencyBudgetQosPolicy) param;
+                    this.m_qos.latencyBudget.copy(p);
+                    break;
+                }
+                case PID_LIVELINESS:
+                {
+                    LivelinessQosPolicy p = (LivelinessQosPolicy) param;
+                    this.m_qos.liveliness.copy(p);
+                    break;
+                }
+                case PID_RELIABILITY:
+                {
+                    ReliabilityQosPolicy p = (ReliabilityQosPolicy) param;
+                    this.m_qos.reliability.copy(p);
+                    break;
+                }
+    
+                case PID_LIFESPAN:
+                {
+                    LifespanQosPolicy p = (LifespanQosPolicy) param;
+                    this.m_qos.lifespan.copy(p);
+                    break;
+                }
+                case PID_USER_DATA:
+                {
+                    UserDataQosPolicy p = (UserDataQosPolicy) param;
+                    this.m_qos.userData.copy(p);
+                    break;
+                }
+                case PID_TIME_BASED_FILTER:
+                {
+                    TimeBasedFilterQosPolicy p = (TimeBasedFilterQosPolicy) param;
+                    this.m_qos.timeBasedFilter.copy(p);
+                    break;
+                }
+                case PID_OWNERSHIP:
+                {
+                    OwnershipQosPolicy p = (OwnershipQosPolicy) param;
+                    this.m_qos.ownership.copy(p);
+                    break;
+                }
+                case PID_OWNERSHIP_STRENGTH:
+                {
+                    OwnershipStrengthQosPolicy p = (OwnershipStrengthQosPolicy) param;
+                    this.m_qos.ownershipStrength.copy(p);
+                    break;
+                }
+                case PID_DESTINATION_ORDER:
+                {
+                    DestinationOrderQosPolicy p = (DestinationOrderQosPolicy) param;
+                    this.m_qos.destinationOrder.copy(p);
+                    break;
+                }
+                case PID_PRESENTATION:
+                {
+                    PresentationQosPolicy p = (PresentationQosPolicy) param;
+                    this.m_qos.presentation.copy(p);
+                    break;
+                }
+                case PID_PARTITION:
+                {
+                    PartitionQosPolicy p = (PartitionQosPolicy) param;
+                    this.m_qos.partition.copy(p);
+                    break;
+                }
+                case PID_TOPIC_DATA:
+                {
+                    TopicDataQosPolicy p = (TopicDataQosPolicy) param;
+                    this.m_qos.topicData.copy(p);
+                    break;
+                }
+                case PID_GROUP_DATA:
+                {
+                    GroupDataQosPolicy p = (GroupDataQosPolicy) param;
+                    this.m_qos.groupData.copy(p);
+                    break;
+                }
+                case PID_TOPIC_NAME:
+                {
+                    ParameterString p = (ParameterString) param;
+                    this.m_topicName = new String(p.getString());
+                    break;
+                }
+                case PID_TYPE_NAME:
+                {
+                    ParameterString p = (ParameterString) param;
+                    this.m_typeName = new String(p.getString());
+                    break;
+                }
+                case PID_PARTICIPANT_GUID:
+                {
+                    ParameterGuid pGuid = (ParameterGuid) param;
+                    this.m_RTPSParticipantKey = new InstanceHandle(pGuid.getGUID());
+                    break;
+                }
+                case PID_ENDPOINT_GUID:
+                {
+                    ParameterGuid pGuid = (ParameterGuid) param;
+                    this.m_guid.copy(pGuid.getGUID());
+                    break;
+                }
+                case PID_UNICAST_LOCATOR:
+                {
+                    ParameterLocator p = (ParameterLocator) param;
+                    this.m_unicastLocatorList.pushBack(p.getLocator());
+                    break;
+                }
+                case PID_MULTICAST_LOCATOR:
+                {
+                    ParameterLocator p = (ParameterLocator) param;
+                    this.m_multicastLocatorList.pushBack(p.getLocator());
+                    break;
+                }
+                case PID_KEY_HASH:
+                {
+                    ParameterKey p = (ParameterKey) param;
+                    this.m_key.copy(p.getKey());
+                    this.m_guid.copy(this.m_key.toGUID());
+                    break;
+                }
+                default:
+                    logger.debug("Parameter with ID {} NOT CONSIDERED", param.getParameterId());
+                    break;
+                }
+            }
+        
+    
+        if (this.m_guid.getEntityId().getValue(3) == 0x04) {
+            this.m_topicKind = NO_KEY;
+        } else if (this.m_guid.getEntityId().getValue(3) == 0x02) {
+            this.m_topicKind = TopicKind.WITH_KEY;
+        }
+    }
+
+    return true;
+
+}
 
 }

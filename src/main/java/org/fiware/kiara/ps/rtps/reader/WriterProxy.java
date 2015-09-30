@@ -10,12 +10,11 @@ import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus;
 import org.fiware.kiara.ps.rtps.common.ChangeFromWriter;
 import org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus;
-
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.reader.timedevent.HeartbeatResponseDelay;
 import org.fiware.kiara.ps.rtps.reader.timedevent.WriterProxyLiveliness;
-import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,12 +75,12 @@ public class WriterProxy {
         //Create Events
         //heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         if (att.livelinessLeaseDuration.isLowerThan(new Timestamp().timeInfinite())) {
-            //writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
+            writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         }
         lastRemovedSeqNum = new SequenceNumber();
         m_maxAvailableSeqNum = new SequenceNumber();
         m_minAvailableSeqNum = new SequenceNumber();
-        logger.info("RTPS READER: Writer Proxy created in reader: {}", statefulReader.getGuid().getEntityId());
+        logger.debug("RTPS READER: Writer Proxy created in reader: {}", statefulReader.getGuid().getEntityId());
     }
 
     public SequenceNumber getAvailableChangesMin() {
@@ -200,19 +199,19 @@ public class WriterProxy {
         return missing;
     }
 
-    public void assertLiveliness() { // TODO Review this (whole lievliness behaviour)
-        logger.info("Liveliness asserted");
+    public void assertLiveliness() { // TODO Review this (whole liveliness behaviour)
+        logger.debug("Liveliness asserted");
         this.m_isAlive = true;
         if (this.writerProxyLiveliness != null) {
-            if (this.writerProxyLiveliness.isWaiting()) {
-                this.writerProxyLiveliness.stopTimer();
-            }
+//            if (this.writerProxyLiveliness.isWaiting()) {
+//                this.writerProxyLiveliness.stopTimer();
+//            }
             this.writerProxyLiveliness.restartTimer();
         }
     }
 
     public boolean receivedChangeSet(CacheChange change) {
-        logger.info("RTPS READER: {}: seqNum: {}", att.guid.getEntityId(), change.getSequenceNumber().toLong());
+        logger.debug("RTPS READER: {}: seqNum: {}", att.guid.getEntityId(), change.getSequenceNumber().toLong());
         m_mutex.lock();
         try {
             hasMaxAvailableSeqNumChanged = true;
@@ -269,7 +268,7 @@ public class WriterProxy {
             chw.seqNum.copy(firstSN);
             chw.status = ChangeFromWriterStatus.UNKNOWN;
             chw.isRelevant = true;
-            logger.info("RTPS READER: WP {} adding unknown changes up to: {}", att.guid, chw.seqNum.toLong());
+            logger.debug("RTPS READER: WP {} adding unknown changes up to: {}", att.guid, chw.seqNum.toLong());
             changesFromWriter.add(chw);
             firstSN.increment();
         }
@@ -286,7 +285,7 @@ public class WriterProxy {
             sb.append(it.seqNum.toLong()).append("(").append(it.isValid()).append(",").append(it.status).append(")-");
         }
 
-        logger.info("RTPS READER: {}", sb.toString());
+        logger.debug("RTPS READER: {}", sb.toString());
     }
 
     public CacheChange getChange(final SequenceNumber seq) {
@@ -304,7 +303,7 @@ public class WriterProxy {
     }
 
     public boolean lostChangesUpdate(SequenceNumber seqNum) {
-        logger.info("{} up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
+        logger.debug("{} up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
         this.m_mutex.lock();
         try {
             this.addChangesFromWriterUpTo(seqNum);
@@ -325,7 +324,7 @@ public class WriterProxy {
     }
 
     public boolean missingChangesUpdate(SequenceNumber seqNum) {
-        logger.info("{} changes up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
+        logger.debug("{} changes up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
         this.m_mutex.lock();
         try {
             this.addChangesFromWriterUpTo(seqNum);
@@ -344,7 +343,6 @@ public class WriterProxy {
             this.hasMinAvailableSeqNumChanged = true;
             printChangesFromWriterTest2();
         } finally {
-            System.out.println("MISSING EMPTY?: " + this.changesFromWriter.isEmpty());
             this.m_mutex.unlock();
         }
         return true;

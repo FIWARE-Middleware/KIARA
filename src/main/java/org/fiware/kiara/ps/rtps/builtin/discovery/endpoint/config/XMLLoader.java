@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 
 /**

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
@@ -228,9 +229,9 @@ public class MessageReceiver {
 
             case ACKNACK:
                 if (!this.m_destGuidPrefix.equals(RTPSParticipantGuidPrefix)) {
-                    logger.info("Acknack Submsg ignored, DST is another RTPSParticipant");
+                    logger.debug("Acknack Submsg ignored, DST is another RTPSParticipant");
                 } else {
-                    logger.info("Acknack Submsg received, processing...");
+                    logger.debug("Acknack Submsg received, processing...");
                     valid = processSubmessageAcknack(msg, subMsg);
                     msg.addSubmessage(subMsg);
                 }
@@ -238,9 +239,9 @@ public class MessageReceiver {
 
             case HEARTBEAT:
                 if (!this.m_destGuidPrefix.equals(RTPSParticipantGuidPrefix)) {
-                    logger.info("Heartbeat Submsg ignored, DST is another RTPSParticipant");
+                    logger.debug("Heartbeat Submsg ignored, DST is another RTPSParticipant");
                 } else {
-                    logger.info("Heartbeat Submsg received, processing...");
+                    logger.debug("Heartbeat Submsg received, processing...");
                     valid = processSubmessageHeartbeat(msg, subMsg);
                     msg.addSubmessage(subMsg);
                 }
@@ -295,7 +296,7 @@ public class MessageReceiver {
                 logger.info("Unsupported message, ignored.");
                 logger.info(header.getSubmessageId().toString());
             }
-            
+
             if (!valid) {
                 break;
             }
@@ -362,6 +363,8 @@ public class MessageReceiver {
 
         try {
 
+            int initialDataMsgPos = msg.getBinaryInputStream().getPosition();
+            
             // Extra flags don't matter for now
             msg.getBinaryInputStream().skipBytes(2);
 
@@ -399,7 +402,8 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(readerId);
 
             // Reader has been found
-            CacheChange ch = this.m_change;
+            //CacheChange ch = this.m_change;
+            CacheChange ch = new CacheChange();
             GUID writerGUID = new GUID();
             writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
             EntityId writerId = new EntityId();
@@ -441,7 +445,7 @@ public class MessageReceiver {
             }
 
             if (dataFlag || keyFlag) {
-                
+
                 int payloadSize;
                 if (subMsg.m_submessageHeader.m_octectsToNextHeader > 0) {
                     payloadSize = subMsg.m_submessageHeader.m_octectsToNextHeader - (RTPSMessage.DATA_EXTRA_INLINEQOS_SIZE + otiQos.getValue() + inlineQosSize);
@@ -457,13 +461,32 @@ public class MessageReceiver {
                     ch.setSerializedPayload(payload);
                     ch.setKind(ChangeKind.ALIVE);
                     subMsg.addSubmessageElement(payload);
-                    //payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
                 } else if (keyFlag) {
                     // TODO Complete this
-                    logger.error("COMPLETE THIS");
-                    
+                    SerializedPayload payload = new SerializedPayload();
+                    payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
+                    payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                    RTPSEndian previousEndian = msg.getEndiannes();
+                    ch.setSerializedPayload(payload);
+                    if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_BE) {
+                        msg.setEndiannes(RTPSEndian.BIG_ENDIAN);
+                    } else if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_LE) {
+                        msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
+                    } else {
+                        logger.error("Bad encapsulation for KeyHash and status parameter list");
+                        return false;
+                    }
+                    msg.setEndiannes(previousEndian);
+                    subMsg.addSubmessageElement(payload);
                 }
 
+            } else {
+                int finalDataMsgPosition = msg.getBinaryInputStream().getPosition();
+                int bytesToSkip = 0;
+                if (finalDataMsgPosition - initialDataMsgPos < 24) {
+                    bytesToSkip = 24 - (finalDataMsgPosition - initialDataMsgPos);
+                }
+                msg.getBinaryInputStream().skipBytes(bytesToSkip);
             }
 
             logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
@@ -507,7 +530,7 @@ public class MessageReceiver {
                             if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
                                 this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(this.m_sourceGuidPrefix);
                             }
-                        }
+                        } 
                     }
                 }
             }
@@ -551,7 +574,7 @@ public class MessageReceiver {
             writerGUID.setEntityId(writerId);
             subMsg.addSubmessageElement(writerId);
 
-            
+
 
             SequenceNumberSet gapList = new SequenceNumberSet();
             gapList.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
@@ -618,7 +641,7 @@ public class MessageReceiver {
                 Lock mutex = it.getMutex();
                 mutex.lock();
                 try {
-                    
+
                     if (it.getGuid().equals(writerGUID)) {
                         if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
                             StatefulWriter statefulWriter = (StatefulWriter) it;
@@ -633,7 +656,7 @@ public class MessageReceiver {
                                             List<SequenceNumber> set_list = readerSNState.getSet();
                                             readerProxy.requestedChangesSet(set_list);
                                             if (!readerProxy.isRequestedChangesEmpty|| !finalFlag) {
-                                                readerProxy.getNackResponseDelay().restartTimer();
+                                                readerProxy.startNackResponseDelay();
                                             }
                                         }
                                         break;
@@ -644,16 +667,16 @@ public class MessageReceiver {
                             }
                             return true;
                         } else {
-                            logger.info("Acknack msg received by a NOT stateful writer");
+                            logger.debug("Acknack msg received by a NOT stateful writer");
                             return false;
                         }
                     }
-                    
+
                 } finally {
                     mutex.unlock();
                 }
             }
-            logger.info("Acknack msg to UNKNOWN writer (a total of {} writers have been checked", this.m_listenResource.getAssocWriters().size());
+            logger.debug("Acknack msg to UNKNOWN writer (a total of {} writers have been checked", this.m_listenResource.getAssocWriters().size());
             return false;
 
         } catch (IOException e) {
@@ -705,7 +728,7 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(lastSN);
 
             if (lastSN.isLowerThan(firstSN)) {
-                logger.info("HB Received with lastSN < firstSN, ignoring");
+                logger.debug("HB Received with lastSN < firstSN, ignoring");
                 return false;
             }
 
@@ -713,11 +736,11 @@ public class MessageReceiver {
             Count count = new Count(0);
             count.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(count);
-            
+
             int hbCount = count.getValue();
 
             // Status changes
-            
+
             for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
                 Lock lock = it.getMutex();
                 lock.lock();
@@ -734,16 +757,16 @@ public class MessageReceiver {
                                         wp.lostChangesUpdate(firstSN);
                                         wp.missingChangesUpdate(lastSN);
                                         wp.hearbeatFinalFlag = finalFlag;
-                                        
+
                                         // Analyze whether if an ACKNACK message is needed
                                         if (!finalFlag) {
                                             wp.startHeartbeatResponse();
-                                        } else if (finalFlag && !livelinessFlag) {
+                                        } else if (!livelinessFlag) {
                                             if (!wp.isMissingChangesEmpty) {
                                                 wp.startHeartbeatResponse();
                                             }
                                         }
-                                        
+
                                         if (livelinessFlag) {
                                             wp.assertLiveliness();
                                         }
@@ -752,7 +775,7 @@ public class MessageReceiver {
                                     this.m_guardWriterMutex.unlock();
                                 }
                             } else {
-                                logger.info("HB received is NOT from an associated writer");
+                                logger.debug("HB received is NOT from an associated writer");
                             }
                         }
                     }
@@ -760,8 +783,6 @@ public class MessageReceiver {
                     lock.unlock();
                 }
             }
-            
-            
 
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -790,7 +811,7 @@ public class MessageReceiver {
             Pad pad = new Pad((short) subMsg.m_submessageHeader.m_octectsToNextHeader);
             pad.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(pad);
-       
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             //e.printStackTrace();

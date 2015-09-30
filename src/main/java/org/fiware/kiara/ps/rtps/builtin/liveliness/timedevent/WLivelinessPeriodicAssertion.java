@@ -19,19 +19,21 @@ package org.fiware.kiara.ps.rtps.builtin.liveliness.timedevent;
 
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
-import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
+
 import static org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
 import static org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
+import static org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind.ALIVE;
+import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_ABORT;
+import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_SUCCESS;
+
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.rtps.builtin.liveliness.WLP;
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
-import static org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind.ALIVE;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
-import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_ABORT;
-import static org.fiware.kiara.ps.rtps.resources.TimedEvent.EventCode.EVENT_SUCCESS;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +116,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     @Override
     public void event(EventCode code, String msg) {
         if (code == EVENT_SUCCESS) {
-            logger.info("RTPS LIVELINESS: Period: {}", getIntervalMilliSec());
+            logger.debug("RTPS LIVELINESS: Period: {}", getIntervalMilliSec());
             if (m_WLP.getBuiltinWriter().getMatchedReadersSize() > 0) {
                 if (m_livelinessKind == AUTOMATIC_LIVELINESS_QOS) {
                     automaticLivelinessAssertion();
@@ -125,10 +127,10 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
             m_WLP.getBuiltinProtocols().getPDP().assertLocalWritersLiveliness(m_livelinessKind);
             // restartTimer();
         } else if (code == EVENT_ABORT) {
-            logger.info("RTPS LIVELINESS: Liveliness Periodic Assertion aborted");
+            logger.debug("RTPS LIVELINESS: Liveliness Periodic Assertion aborted");
             stopSemaphorePost();
         } else {
-            logger.info("RTPS LIVELINESS: Boost message: {}", msg);
+            logger.debug("RTPS LIVELINESS: Boost message: {}", msg);
         }
     }
 
@@ -139,12 +141,11 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     public boolean automaticLivelinessAssertion() {
         final Lock mutex = m_WLP.getMutex();
         mutex.lock();
-        System.out.println("AUTO LIVELINESS");
         try {
             if (m_WLP.getLivAutomaticWriters().size() > 0) {
-                CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, new InstanceHandle());
+                CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, this.m_iHandle);
                 if (change != null) {
-                    change.setInstanceHandle(m_iHandle);
+                    //change.setInstanceHandle(m_iHandle);
 
                     SerializedPayload sp = change.getSerializedPayload();
 

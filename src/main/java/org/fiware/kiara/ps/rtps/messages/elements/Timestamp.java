@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
+
 import static java.lang.Math.pow;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;

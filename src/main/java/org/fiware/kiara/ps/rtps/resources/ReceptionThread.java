@@ -74,7 +74,7 @@ public class ReceptionThread implements Runnable {
             logger.debug("Thread {} listening in IP {}:{}", Thread.currentThread().getId(), this.m_channel.socket().getLocalAddress().getHostAddress(), this.m_channel.socket().getLocalPort());
             //logger.info(String.format("Thread {} listening in IP <blue>%s</blue>", this.m_channel.socket().getLocalAddress().getHostAddress()));
 
-            while(running) {
+            while(running && this.m_channel.isOpen()) {
                 
                 dp.setLength(buf.length);
                 this.m_channel.socket().receive(dp);
@@ -110,7 +110,9 @@ public class ReceptionThread implements Runnable {
             }
 
             try {
-                logger.debug("Received {} bytes FROM {} TO {}", msg.getSize(), this.m_listenResource.getSenderEndpoint().toString(), this.m_channel.getLocalAddress());
+                if (this.m_channel.isOpen()) {
+                    logger.debug("Received {} bytes FROM {} TO {}", msg.getSize(), this.m_listenResource.getSenderEndpoint().toString(), this.m_channel.getLocalAddress());
+                }
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

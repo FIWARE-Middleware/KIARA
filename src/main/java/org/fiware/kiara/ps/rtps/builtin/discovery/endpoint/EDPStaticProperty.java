@@ -20,6 +20,7 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.util.Pair;
 

@@ -73,7 +73,7 @@ public class RTPSMessageBuilder {
         header.m_guidPrefix = prefix;
 
         message.setHeader(header);
-        
+
         // NEW 
         try {
             header.serialize(message.getSerializer(), message.getBinaryOutputStream(), "");
@@ -120,9 +120,9 @@ public class RTPSMessageBuilder {
 
         // Add submessage
         message.addSubmessage(infoTs);
-        
+
         // NEW 
-        
+
         infoTs.serialize(message.getSerializer(), message.getBinaryOutputStream()/*, isLast*/);
 
         return true;
@@ -230,7 +230,7 @@ public class RTPSMessageBuilder {
         submessageHeartbeat.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageHeartbeat);
-        
+
         submessageHeartbeat.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
@@ -265,7 +265,7 @@ public class RTPSMessageBuilder {
         submessageAckNack.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageAckNack);
-        
+
         submessageAckNack.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
@@ -296,7 +296,7 @@ public class RTPSMessageBuilder {
         submessageGap.setSubmessageHeader(subHeader);
 
         message.addSubmessage(submessageGap);
-        
+
         submessageGap.serialize(message.getSerializer(), message.getBinaryOutputStream());
 
         return true;
@@ -322,9 +322,14 @@ public class RTPSMessageBuilder {
         boolean dataFlag = false;
         boolean keyFlag = false;
         boolean inlineQosFlag = false;
-        boolean isDataOrParamList = (change.getSerializedPayload().getLength() > 0 || change.getSerializedPayload().getParameterListLength() > 0);
+        boolean hasSerializedPayload = false;
+        boolean isDataOrParamList = (change.getSerializedPayload().getLength() > 0 || change.getSerializedPayload().getParameterListLength() > 0); // FIXME
         boolean existsDataOrParamList = (change.getSerializedPayload().getData() != null || change.getSerializedPayload().getParameterList() != null);
-        if (change.getKind() == ChangeKind.ALIVE && isDataOrParamList && existsDataOrParamList) {
+        if (change.getSerializedPayload().getBuffer() != null) {
+            hasSerializedPayload = change.getSerializedPayload().getBuffer().length != 0;
+        }
+
+        if (change.getKind() == ChangeKind.ALIVE && isDataOrParamList && (existsDataOrParamList || hasSerializedPayload)) {
             dataFlag = true;
             keyFlag = false;
         } else {
@@ -388,14 +393,11 @@ public class RTPSMessageBuilder {
 
         // Add SerializedPayload
         if (dataFlag) {
-
-            //SerializedPayload payload = new SerializedPayload();
-            //payload.setEncapsulationKind(change.getSerializedPayload().getEncapsulation());
-            // payload.options are serialized automatically (no existing attribute)
-            //payload.setData(change.getSerializedPayload().getData(), change.getSerializedPayload().getSerializedSize());
-            //submessageData.setSubmessageEndian(change.getSerializedPayload().getEncapsulation());
             submessageData.addSubmessageElement(change.getSerializedPayload());
-
+        } else {
+            if (hasSerializedPayload) {
+                submessageData.addSubmessageElement(change.getSerializedPayload());
+            }
         }
 
         if (keyFlag) {
@@ -417,25 +419,19 @@ public class RTPSMessageBuilder {
 
         }
 
-        subHeader.setOctectsToNextHeader(submessageData.getLength() /*(short) 24*/);
+        short octectsToNextHeader = submessageData.getLength();
+        if (octectsToNextHeader < 24) {
+            octectsToNextHeader = 24;
+        }
+
+        subHeader.setOctectsToNextHeader(octectsToNextHeader);
+
         submessageData.setSubmessageHeader(subHeader);
 
-
-        /*byte status = 0;
-		if (change.getKind() == ChangeKind.NOT_ALIVE_DISPOSED) {
-			status = (byte) (status | 0x1);
-		} else if (change.getKind() == ChangeKind.NOT_ALIVE_UNREGISTERED) {
-			status = (byte) (status | 0x2);
-		} else if (change.getKind() == ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED) {
-			status = (byte) (status | 0x3);
-		}*/
-
-
-
         message.addSubmessage(submessageData);
-        
+
         submessageData.serialize(message.getSerializer(), message.getBinaryOutputStream());
-        
+
         return true;
     }
 

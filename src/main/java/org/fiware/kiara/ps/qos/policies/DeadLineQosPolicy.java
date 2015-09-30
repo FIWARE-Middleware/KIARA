@@ -23,6 +23,7 @@ import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
@@ -40,7 +41,7 @@ public class DeadLineQosPolicy extends Parameter {
     public Timestamp period;
 
     public DeadLineQosPolicy() {
-        super(ParameterId.PID_DEADLINE, Parameter.PARAMETER_KIND_LENGTH);
+        super(ParameterId.PID_DEADLINE, Parameter.PARAMETER_DEADLINE_QOS_LENGTH);
         this.parent = new QosPolicy(true);
         this.period = new Timestamp().timeInfinite();
     }
@@ -51,9 +52,20 @@ public class DeadLineQosPolicy extends Parameter {
     }
 
     @Override
-    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        super.serialize(impl, message, name);
+        this.period.serialize(impl, message, name);
+    }
 
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        super.deserialize(impl, message, name);
+        this.period.deserialize(impl, message, name);
+    }
+
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.period.deserialize(impl, message, name);
     }
 
 }

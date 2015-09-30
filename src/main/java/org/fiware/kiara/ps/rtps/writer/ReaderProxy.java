@@ -30,6 +30,7 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
+import org.fiware.kiara.ps.rtps.reader.timedevent.HeartbeatResponseDelay;
 import org.fiware.kiara.ps.rtps.resources.TimedEvent;
 import org.fiware.kiara.ps.rtps.writer.timedevent.NackResponseDelay;
 import org.fiware.kiara.ps.rtps.writer.timedevent.NackSupressionDuration;
@@ -123,7 +124,6 @@ public class ReaderProxy {
                 if (it.getSequenceNumber().isLowerThan(seq)) {
                     it.status = ChangeForReaderStatus.ACKNOWLEDGED;
                     logger.debug("Change {} set to ACKNOWLEDGED", it.seqNum);
-                    System.out.println("Change " + it.seqNum + " set to ACKNOWLEDGED");
                 }
             }
         } finally {
@@ -285,9 +285,11 @@ public class ReaderProxy {
     public void startNackResponseDelay() {
         if (this.m_nackResponse == null) {
             this.m_nackResponse = new NackResponseDelay(this, this.m_nackResponseTimestamp.toMilliSecondsDouble());
+        } else {
+            this.m_nackResponse.restartTimer();
         }
     }
-
+    
     public void copy(ReaderProxy other) {
         //this.att.copy(other.att);
         //this.m_SFW

@@ -28,12 +28,10 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
     private static final Logger logger = LoggerFactory.getLogger(RemoteParticipantLeaseDuration.class);
 
     /**
-     * Constructor
-     *
-     * @param p_SPDP Reference to the PDPSimple object.
-     * @param pdata Reference to the ParticipantProxyData associated with this
-     * TimedEvent.
-     * @param interval Interval in ms.
+     * 
+     * @param PDP
+     * @param pData
+     * @param interval
      */
     public RemoteParticipantLeaseDuration(PDPSimple PDP, ParticipantProxyData pData, double interval) {
         super(interval);

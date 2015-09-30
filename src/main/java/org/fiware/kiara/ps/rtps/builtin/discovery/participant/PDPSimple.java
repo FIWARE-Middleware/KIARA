@@ -35,6 +35,7 @@ import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDP;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPSimple;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStatic;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.timedevent.ResendParticipantProxyDataPeriod;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
@@ -51,11 +52,13 @@ import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
-import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
+import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
+import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.utils.InfoEndianness;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.StatelessWriter;
@@ -180,8 +183,8 @@ public class PDPSimple {
             }
 
             /*if (this.m_listener != null) {
-             this.m_listener.destroy();
-             }*/
+                this.m_listener.destroy();
+            }*/
             while (this.m_participantProxies.size() > 0) {
                 this.m_participantProxies.get(0).destroy();
                 this.m_participantProxies.remove(0);
@@ -215,15 +218,16 @@ public class PDPSimple {
 
             // Init EDP
             if (this.m_discovery.useStaticEDP) {
-                this.m_EDP = new EDPStatic(this, this.m_RTPSParticipant);// TODO Uncomment
+                this.m_EDP = new EDPStatic(this, this.m_RTPSParticipant);
                 if (!this.m_EDP.initEDP(this.m_discovery)) {
                     return false;
                 }
             } else if (this.m_discovery.useSimpleEDP) {
-                //this.m_EDP = new EDPSimple(this, this.m_RTPSParticipant);
-                //this.m_EDP.initEDP(this.m_discovery);
+                this.m_EDP = new EDPSimple(this, this.m_RTPSParticipant);
+                this.m_EDP.initEDP(this.m_discovery);
             } else {
                 logger.warn("No EndpointDiscoveryProtocol has been defined");
+                destroy();
                 return false;
             }
 
@@ -416,7 +420,7 @@ public class PDPSimple {
      * @return RTPSParticipantProxyData object.
      */
     public ParticipantProxyData lookupParticipantProxyData(GUID pguid) {
-        logger.info("Lookup ParticipantProxyData " + pguid);
+        logger.debug("Lookup ParticipantProxyData " + pguid);
         this.m_mutex.lock();
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
@@ -688,7 +692,7 @@ public class PDPSimple {
      * @param pdata Reference to the ParticipantProxyData to remove
      */
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
-        logger.info("For RTPSParticipant: " + pdata.getGUID());
+        logger.debug("For RTPSParticipant: " + pdata.getGUID());
         this.m_mutex.lock();
         try {
             for (RemoteReaderAttributes it : pdata.getBuiltinReaders()) {
@@ -714,7 +718,7 @@ public class PDPSimple {
      * @return true if correct.
      */
     public boolean removeRemoteParticipant(GUID partGUID) {
-        logger.info("Removing RemoteParticipant: " + partGUID);
+        logger.debug("Removing RemoteParticipant: " + partGUID);
         synchronized (this.m_guardW) {
             synchronized (this.m_guardR) {
                 ParticipantProxyData pdata = null;
@@ -776,7 +780,7 @@ public class PDPSimple {
             for (ParticipantProxyData it : this.m_participantProxies) {
                 synchronized (this.m_guardMutex) {
                     if (it.getGUID().getGUIDPrefix().equals(guidPrefix)) {
-                        logger.info("RTPSParticipant " + it.getGUID() + " is Alive");
+                        logger.debug("RTPSParticipant " + it.getGUID() + " is Alive");
                         it.setIsAlive(true);
                     }
                 }
@@ -792,7 +796,7 @@ public class PDPSimple {
      * @param kind LivilinessQosPolicyKind to be asserted.
      */
     public void assertLocalWritersLiveliness(LivelinessQosPolicyKind kind) {
-        logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "")
+        logger.debug("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "")
                 + (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
         this.m_mutex.lock();
         try {
@@ -800,7 +804,7 @@ public class PDPSimple {
             try {
                 for (WriterProxyData wit : this.m_participantProxies.get(0).getWriters()) {
                     if (wit.getQos().liveliness.kind == kind) {
-                        logger.info("Local writer " + wit.getGUID().getEntityId() + " marked as ALIVE");
+                        logger.debug("Local writer " + wit.getGUID().getEntityId() + " marked as ALIVE");
                         wit.setIsAlive(true);
                     }
                 }
@@ -822,7 +826,7 @@ public class PDPSimple {
     public void assertRemoteWritersLiveliness(GUIDPrefix guidP, LivelinessQosPolicyKind kind) {
         this.m_mutex.lock();
         try {
-            logger.info("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "")
+            logger.debug("Asserting liveliness of type " + (kind == LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS ? "AUTOMATIC" : "")
                     + (kind == LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS ? "MANUAL_BY_PARTICIPANT" : ""));
             for (ParticipantProxyData pit : this.m_participantProxies) {
                 pit.getMutex().lock();
@@ -834,13 +838,12 @@ public class PDPSimple {
                             try {
                                 for (RTPSReader rit : this.m_RTPSParticipant.getUserReaders()) {
                                     if (rit.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
-                                        // Not supported in this version
-                                        /*StatefulReader sfr = (StatefulReader) rit;
-                                         WriterProxy wp = new WriterProxy();
-                                         if (sfr.matchedWriterLookup(wit.getGUID(), wp)) {
-                                         wp.assertLiveliness();
-                                         continue;
-                                         }*/
+                                        StatefulReader sfr = (StatefulReader) rit;
+                                        WriterProxy wp = sfr.matchedWriterLookup(wit.getGUID());
+                                        if (wp != null) {
+                                            wp.assertLiveliness();
+                                            continue;
+                                        }
                                     }
                                 }
                             } finally {

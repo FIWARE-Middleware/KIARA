@@ -18,8 +18,10 @@
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 
 /**

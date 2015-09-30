@@ -99,7 +99,9 @@ public class CacheChange implements Comparable<CacheChange> {
      * @return The SerializedPayload contained in the CacheChange
      */
     public SerializedPayload getSerializedPayload() {
-        return this.m_payload;
+        synchronized(this.m_payload) {
+            return this.m_payload;
+        }
     }
 
     /**

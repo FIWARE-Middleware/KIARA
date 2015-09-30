@@ -7,6 +7,7 @@ import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
 import org.fiware.kiara.ps.common.PubListener;
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.publisher.Publisher;
 import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;

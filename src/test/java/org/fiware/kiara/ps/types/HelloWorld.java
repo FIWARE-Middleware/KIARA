@@ -35,6 +35,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 
+import org.fiware.kiara.ps.topic.KeyedType;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.Serializable;
@@ -46,14 +47,14 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  * @author Kiaragen tool.
  *
  */
-public class HelloWorld implements Serializable {
+public class HelloWorld implements KeyedType, Serializable {
 
     /*
      *	Attributes
      */
     private int innerLongAtt;
     private java.lang.String innerStringAtt;
-
+    
     /*
          *      Attribute Serializers
          */
@@ -149,15 +150,11 @@ public class HelloWorld implements Serializable {
         this.innerStringAtt = other.innerStringAtt;
     }
 
-    /*@Override
-    public short getSerializedSize() {
-        short totalSize = 0;
-        
-        totalSize += 4; // i32 
-        totalSize += 4 + this.innerStringAtt.length(); // Sring
-        
-        return totalSize;
-    }*/
+    @Override
+    public void serializeKey(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        // EMPTY IF NO KEYED
+        impl.serializeI32(message, name, this.innerLongAtt);
+        impl.serializeString(message, name, this.innerStringAtt);
+    }
 
-	
 }

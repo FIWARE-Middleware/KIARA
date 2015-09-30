@@ -35,12 +35,23 @@ public enum DestinationOrderQosPolicyKind {
     BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS((byte) 1);
 
     private byte m_value;
-
+    
     private DestinationOrderQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
     public byte getValue() {
         return this.m_value;
+    }
+    
+    public static DestinationOrderQosPolicyKind createFromValue(int i) {
+        switch(i) {
+        case 0:
+            return DestinationOrderQosPolicyKind.BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS;
+        case 1:
+            return DestinationOrderQosPolicyKind.BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS;
+        default:
+            return DestinationOrderQosPolicyKind.BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS;  
+        }
     }
 }

@@ -43,5 +43,16 @@ public enum ReliabilityQosPolicyKind {
     public byte getValue() {
         return this.m_value;
     }
+    
+    public static ReliabilityQosPolicyKind getFromValue(byte value) {
+        switch(value) {
+        case 0:
+            return ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        case 1:
+            return ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
+        default:
+            return ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        }
+    }
 
 }

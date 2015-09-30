@@ -20,6 +20,16 @@ package org.fiware.kiara.ps.rtps.messages.elements.parameters;
 import java.io.IOException;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
+import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
+import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
+import org.fiware.kiara.ps.qos.policies.DurabilityQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LatencyBudgetQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LifespanQosPolicy;
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicy;
+import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicy;
+import org.fiware.kiara.ps.qos.policies.OwnershipStrengthQosPolicy;
+import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicy;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config.OwnershipQos;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
@@ -49,17 +59,35 @@ public class ParameterBuilder {
         case PID_GROUP_DATA:
         case PID_TOPIC_DATA:
         case PID_DURABILITY:
+            param = new DurabilityQosPolicy();
+            break;
         case PID_DURABILITY_SERVICE:
         case PID_DEADLINE:
+            param = new DeadLineQosPolicy();
+            break;
         case PID_LATENCY_BUDGET:
+            param = new LatencyBudgetQosPolicy();
+            break;
         case PID_LIVELINESS:
+            param = new LivelinessQosPolicy();
+            break;
         case PID_RELIABILITY:
+            param = new ReliabilityQosPolicy();
+            break;
         case PID_LIFESPAN:
+            param = new LifespanQosPolicy();
+            break;
         case PID_DESTINATION_ORDER:
+            param = new DestinationOrderQosPolicy();
+            break;
         case PID_HISTORY:
         case PID_RESOURCE_LIMITS:
         case PID_OWNERSHIP:
+            param = new OwnershipQosPolicy();
+            break;
         case PID_OWNERSHIP_STRENGTH:
+            param = new OwnershipStrengthQosPolicy();
+            break;
         case PID_PRESENTATION:
         case PID_PARTITION:
         case PID_TIME_BASED_FILTER:
@@ -127,6 +155,8 @@ public class ParameterBuilder {
             param = new ParameterGuid(ParameterId.PID_GROUP_GUID);
             break;
         case PID_ENDPOINT_GUID:
+            param = new ParameterGuid(ParameterId.PID_ENDPOINT_GUID);
+            break;
         case PID_PARTICIPANT_ENTITYID:
         case PID_GROUP_ENTITYID:
             param = new ParameterEntityId(ParameterId.PID_GROUP_ENTITYID);
@@ -138,10 +168,14 @@ public class ParameterBuilder {
             param = new ParameterPropertyList();
             break;
         case PID_TYPE_MAX_SIZE_SERIALIZED:
+            param = new ParameterMaxSerializedSize();
+            break;
         case PID_KEY_HASH:
             param = new ParameterKey(new InstanceHandle());
             break;
         case PID_STATUS_INFO:
+            param = new ParameterStatus();
+            break;
         }
 
         return param;

@@ -4,6 +4,7 @@ package org.fiware.kiara.ps.oldtests;
 import java.net.SocketException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.fiware.kiara.ps.rtps.attributes.RTPSParticipantAttributes;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;

@@ -312,7 +312,7 @@ public class SerializedPayload extends RTPSSubmessageElement {
     /**
      * Deserializes a SerializedPayload object
      * 
-     * @throws IOException If the deserializion was wrogn
+     * @throws IOException If the deserializion was wrong
      */
     public void deserializeData() throws IOException {
         if (this.m_appData == null) {
@@ -323,6 +323,21 @@ public class SerializedPayload extends RTPSSubmessageElement {
         CDRSerializer impl = new CDRSerializer(checkEndianness());
         BinaryInputStream message = new BinaryInputStream(this.m_buffer);
         this.m_appData.deserialize(impl, message, "");
+    }
+    
+    /**
+     * Deserializes a ParameterList object
+     * 
+     * @throws IOException If the deserializion was wrong
+     */
+    public void deserializeParameterList() throws IOException {
+        if (this.m_parameterList == null) {
+            this.m_parameterList = new ParameterList();
+        }
+
+        CDRSerializer impl = new CDRSerializer(checkEndianness());
+        BinaryInputStream message = new BinaryInputStream(this.m_buffer);
+        this.m_parameterList.deserialize(impl, message, "");
     }
 
     /**
@@ -356,6 +371,12 @@ public class SerializedPayload extends RTPSSubmessageElement {
         if (serializedPayload.m_buffer != null) {
             this.m_buffer = new byte[serializedPayload.m_buffer.length]; // NEW
             System.arraycopy(serializedPayload.m_buffer, 0, this.m_buffer, 0, serializedPayload.m_buffer.length);
+        }
+        if (serializedPayload.m_parameterList != null) {
+            this.m_parameterList = new ParameterList();
+            for (Parameter pit : serializedPayload.m_parameterList.getParameters()) {
+                this.m_parameterList.addParameter(pit);
+            }
         }
         return true;
     }

@@ -1,17 +1,33 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.Objects;
 import java.util.concurrent.locks.Lock;
-
-import org.fiware.kiara.ps.attributes.TopicAttributes;
-import org.fiware.kiara.ps.qos.ReaderQos;
-import org.fiware.kiara.ps.qos.WriterQos;
 
 import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.TRANSIENT_LOCAL_DURABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
 import static org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
 
+import org.fiware.kiara.ps.attributes.TopicAttributes;
+import org.fiware.kiara.ps.qos.ReaderQos;
+import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
@@ -34,6 +50,7 @@ import org.slf4j.LoggerFactory;
  * methods used by the two EDP implemented (EDPSimple and EDPStatic), as well as
  * abstract methods definitions required by the specific implementations.
  *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
  */
 public abstract class EDP {
@@ -49,7 +66,7 @@ public abstract class EDP {
     protected RTPSParticipant m_RTPSParticipant;
 
     private static final Logger logger = LoggerFactory.getLogger(EDP.class);
-
+    
     /**
      * Constructor.
      *
@@ -688,5 +705,7 @@ public abstract class EDP {
     public void destroy() {
         
     }
+
+    
 
 }
