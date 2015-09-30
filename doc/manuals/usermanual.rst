@@ -8,51 +8,33 @@ KIARA User and Developer Guide
 Introduction
 ------------
 
-| KIARA Advanced Middleware is a Java based communication middleware for
-  modern,
-| efficient and secure applications.
-| It is an implementation of the FIWARE Advanced Middleware Generic
-  Enabler.
+KIARA Advanced Middleware is a Java based communication middleware for modern, efficient and secure applications. It is an implementation of the FIWARE Advanced Middleware Generic Enabler.
 
 This first release focuses on the basic features of RPC communication:
 
--  Modern Interface Definition Language (IDL) with a syntax based on the
-   Corba IDL.
+-  Modern Interface Definition Language (IDL) with a syntax based on the Corba IDL.
 -  Easy to use and extensible Application Programmer Interface (API).
--  IDL derived operation mode providing Stubs and Skeletons for RPC
-    Client/Server implementations.
+-  IDL derived operation mode providing Stubs and Skeletons for RPC Client/Server implementations.
 -  Synchronous and Asynchronous function calls.
 
 Later versions will include additional features like:
 
--  Application derived and Mapped operation mode providing dynamic
-   declaration
+-  Application derived and Mapped operation mode providing dynamic declaration
    of functions and data type mapping.
 -  Advanced security features like field encryption and authentication.
 -  Additional communication patterns like publish/subscribe.
 
-| KIARA Advanced Middleware is essentially a library which is
-  incorporated into
-| the developed applications, the requirements are rather minimal.
-| In particular it requires no service running in the background.
+KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.
 
 Background and Detail
 ~~~~~~~~~~~~~~~~~~~~~
 
-| This User and Programmers Guide relates to the Advanced Middleware GE
-  which is part of the `Interface to Networks and Devices (I2ND)
-  chapter <Interface_to_Networks_and_Devices_(I2ND)_Architecture>`__.
-  Please find more information about
-| this Generic Enabler in the related `Open
-  Specification <FIWARE.OpenSpecification.I2ND.Middleware>`__ and
-  `Architecture
-  Description <FIWARE.ArchitectureDescription.I2ND.Middleware>`__.
+This User and Programmers Guide relates to the Advanced Middleware GE which is part of the `Interface to Networks and Devices (I2ND) chapter <Interface_to_Networks_and_Devices_(I2ND)_Architecture>`__. Please find more information about this Generic Enabler in the related `Open Specification <FIWARE.OpenSpecification.I2ND.Middleware>`__ and `Architecture Description <FIWARE.ArchitectureDescription.I2ND.Middleware>`__.
 
 User guide
 ----------
 
-These products are for programmers, who will invoke the APIs
-programmatically and there is no user interface as such.
+These products are for programmers, who will invoke the APIs programmatically and there is no user interface as such.
 
 See the programmers guide section to browse the available documentation.
 
@@ -62,65 +44,43 @@ Programmers guide
 Middleware Operation Modes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-| The KIARA Advanced Middleware supports multiple operation modes. From
-  traditional IDL-based approaches like Corba, DDS, Thrift up to newer
-  approaches which start with the
-| application data structure and automatically create the wire format.
+The KIARA Advanced Middleware supports multiple operation modes. From traditional IDL-based approaches like Corba, DDS, Thrift up to newer approaches which start with the application data structure and automatically create the wire format.
 
 We therefore differentiate three operation modes.
 
 IDL derived operation mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The IDL derived operation mode is similar to the traditional middleware
-approaches.
+The IDL derived operation mode is similar to the traditional middleware approaches.
 
-| Based on the IDL definition we generate with a precompiler stub- and
-  skeleton-classes, which have to be used by the application to
-  implement the server and client (or Pub/Sub)
-| application parts.
+Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, which have to be used by the application to implement the server and client (or Pub/Sub) application parts.
 
-| **Prerequisite:** IDL definition
-| **Generated:** Stubs and Skeletons (at compile time) which have to be
-  used by the application
-| **Examples:** Corba, DDS, Thrift, …
+**Prerequisite:** IDL definition
+**Generated:** Stubs and Skeletons (at compile time) which have to be used by the application
+**Examples:** Corba, DDS, Thrift, …
 
 Application derived operation mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| This mode is typical for some modern (e.g. RMI, WebService,...)
-  frameworks.
-| Based on an application specific interface definitions, the framework
-  automatically generates Server- and Client-Proxy-Classes, which
-  serialize the application internal data structures
-| and send them over the wire. Using Annotations, the required
-  serialization and transport mechanisms and type mappings can be
-  influenced.
+This mode is typical for some modern (e.g. RMI, WebService,...) frameworks.
+Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.
 
 This mode implicitly generates an IDL definition based on the Java
 interfaces definition and provide this IDL through a “service registry”
 for remote partners.
 
-| **Prerequisite:** Application-Interface-Definition (has to be the same
-  on client and server side)
-| **Generated:** Server-/Client-Proxies (generated at runtime)
-| **Examples:** RMI, JAX-RS, Spring REST, …
+**Prerequisite:** Application-Interface-Definition (has to be the same on client and server side)
+**Generated:** Server-/Client-Proxies (generated at runtime)
+**Examples:** RMI, JAX-RS, Spring REST, …
 
 Mapped operation mode
 ^^^^^^^^^^^^^^^^^^^^^
 
-| Goal of the mapped operation mode is to separate the application
-  interfaces from the data structure used to transport the data over the
-  wire. Therefore the middleware has to map the
-| application internal data structure and interfaces to a common IDL
-  definition. Advantage is, that the application interface on client and
-  server (or publisher/subscriber) side can be different.
+Goal of the mapped operation mode is to separate the application interfaces from the data structure used to transport the data over the wire. Therefore the middleware has to map the application internal data structure and interfaces to a common IDL definition. Advantage is, that the application interface on client and server (or publisher/subscriber) side can be different.
 
-| **Prerequisite:** Application-Interface-Definition (can be different
-  on server and client side) IDL Definition
-| **Generated:** Server-/Client-Proxis (generated at runtime, which map
-  the attributes & operations
-| **Examples:** KIARA
+**Prerequisite:** Application-Interface-Definition (can be different on server and client side) IDL Definition
+**Generated:** Server-/Client-Proxis (generated at runtime, which map the attributes & operations
+**Examples:** KIARA
 
     The first release of KIARA will provide support for the traditional
     IDL derived operation mode. Application derived and mapped operation
