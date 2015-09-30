@@ -250,7 +250,7 @@ Following, a short overview of the supported KIARA IDL elements. For a
 detailed description please see the chapter `KIARA Interface Definition
 Language <#kiara-interface-definition-language>`__. 
 
-|KIARA IDL File Structure\|thumb\|400px\|right |
+\ |GitHub Workflow|\ 
 
 -  **Import Declarations**:
     Definitions can be split into multiple files and/or share common elements
@@ -261,21 +261,20 @@ Language <#kiara-interface-definition-language>`__.
 -  **Constant Declarations**:
     A constant declarations allows the definition of literals, which can be used as values in other definitions (e.g. as return values, default parameters, etc.)
 -  **Type Declarations**
+
    -  **Basic Types**:
-       KIARA IDL supports the OMG IDL basic data types like float, double, (unsigned) short/int/long, char, wchar, boolean, octet, etc. Additionally it supports modern aliases like float32, float64,
-      i16, ui16, i32, ui32, i64, ui64 and byte
+    KIARA IDL supports the OMG IDL basic data types like float, double, (unsigned) short/int/long, char, wchar, boolean, octet, etc. Additionally it supports modern aliases like float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte
    -  **Constructed Types**:
-       Constructed Types are combinations of other types like. The following constructs are supported:
+    Constructed Types are combinations of other types like. The following constructs are supported:
    -  **Structures** (struct)
    -  **Template Types**:
-       Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:
+    Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:
    -  **List**:
-       Ordered collection of elements of the same type “list” is the modern
-       variant of the OMG IDL keyword “sequence”
+    Ordered collection of elements of the same type “list” is the modern variant of the OMG IDL keyword “sequence”
    -  **Strings**:
-       collection of chars, will be mapped to the String representation of the language.
+    Collection of chars, will be mapped to the String representation of the language.
    -  **Complex Declarations**:
-       In addition to the above Type declarations, KIARA supports multidimensional Arrays using the bracket notation (e.g. ``int monthlyRevenue[12][10]``)
+    In addition to the above Type declarations, KIARA supports multidimensional Arrays using the bracket notation (e.g. ``int monthlyRevenue[12][10]``)
 
 -  **Service Declarations**:
     KIARA supports interface and service declarations via IDL. Meaning that the user can declare different services where the operations are going to be placed.
@@ -1310,4 +1309,4 @@ In order for the Participant to stop succesfully, it must be removed from the Do
 
     }
 
-.. |KIARA IDL File Structure\|thumb\|400px\|right | image:: ./images/IDLFileStructure.png
+... |GitHub Workflow| image:: ./images/IDLFileStructure.png
