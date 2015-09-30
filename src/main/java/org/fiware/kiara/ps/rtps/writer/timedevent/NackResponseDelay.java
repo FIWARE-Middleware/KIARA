@@ -40,8 +40,7 @@ public class NackResponseDelay extends TimedEvent {
     public void event(EventCode code, String msg) {
         // TODO Check if creating an RTPSMessage inside each if block solves sending all the NACK responses
         if (code == EventCode.EVENT_SUCCESS) {
-            logger.info("Responding to Acknack msg");
-            System.out.println("Responding to Acknack msg");
+            logger.debug("Responding to Acknack msg");
             Lock guardW = this.m_RP.getSFW().getMutex();
             guardW.lock();
             try {
@@ -50,7 +49,7 @@ public class NackResponseDelay extends TimedEvent {
                 try {
                     List<ChangeForReader> vec = this.m_RP.requestedChanges();
                     if (!vec.isEmpty()) {
-                        logger.info("Requested {} changes", vec.size());
+                        logger.debug("Requested {} changes", vec.size());
                         List<CacheChange> relevantChanges = new ArrayList<CacheChange>();
                         List<SequenceNumber> notRelevantChanges = new ArrayList<SequenceNumber>();
                         for (ChangeForReader cit : vec) {
@@ -104,6 +103,7 @@ public class NackResponseDelay extends TimedEvent {
                             
                         }
                     }
+                    this.stopTimer();
                 } finally {
                     guard.unlock();
                 }

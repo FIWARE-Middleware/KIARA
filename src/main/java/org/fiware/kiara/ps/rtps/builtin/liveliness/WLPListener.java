@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.builtin.liveliness;
 
 import java.util.concurrent.locks.Lock;
+
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -68,7 +69,7 @@ public class WLPListener extends ReaderListener {
             mutex2.lock();
             try {
 
-                logger.info("RTPS LIVELINESS");
+                logger.debug("RTPS LIVELINESS");
                 GUIDPrefix guidP = new GUIDPrefix();
                 LivelinessQosPolicyKind livelinessKind;
                 if (!computeKey(change)) {
@@ -88,7 +89,7 @@ public class WLPListener extends ReaderListener {
                         guidP.setValue(i, change.getSerializedPayload().getBuffer()[i]);
                     }
                     livelinessKind = LivelinessQosPolicyKind.fromValue((byte) (change.getSerializedPayload().getBuffer()[15] - 0x01));
-                    logger.info("RTPS LIVELINESS: RTPSParticipant {} assert liveliness of {} {} writers",
+                    logger.debug("RTPS LIVELINESS: RTPSParticipant {} assert liveliness of {} {} writers",
                             guidP, ((livelinessKind.getValue() == 0x00) ? "AUTOMATIC" : ""),
                             ((livelinessKind.getValue() == 0x01) ? "MANUAL_BY_RTPSParticipant" : ""));
                 } else {
@@ -99,7 +100,7 @@ public class WLPListener extends ReaderListener {
                 }
 
                 if (guidP.equals(reader.getGuid().getGUIDPrefix())) {
-                    logger.info("RTPS LIVELINESS: Message from own RTPSParticipant, ignoring");
+                    logger.debug("RTPS LIVELINESS: Message from own RTPSParticipant, ignoring");
                     m_WLP.m_builtinReaderHistory.removeChange(change);
                     return;
                 }

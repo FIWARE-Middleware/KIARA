@@ -18,9 +18,14 @@
 package org.fiware.kiara.ps.topic;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
+import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
+import org.fiware.kiara.serialization.impl.CDRSerializer;
 import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
@@ -31,7 +36,7 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  * @param <T>
  */
-public class SerializableDataType<T extends Serializable> extends TopicDataType<T> {
+public abstract class SerializableDataType<T extends Serializable & KeyedType> extends TopicDataType<T> {
 
     /**
      * Class definition of the user data type
@@ -44,16 +49,17 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
      * @param dataClass The class reference to the user's data type
      * @param name The name of the type
      * @param typeSize The type's data size
-     * @param isGetKeyDefined Indicates whether the type is keyed or not
+     * @param isKeyDefined Indicates whether the type is keyed or not
      */
-    public SerializableDataType(Class<T> dataClass, String name, int typeSize, boolean isGetKeyDefined) {
+    public SerializableDataType(Class<T> dataClass, String name, int typeSize, boolean isKeyDefined) {
         if (dataClass == null) {
             throw new NullPointerException("dataClass");
         }
         this.dataClass = dataClass;
         this.m_typeSize = typeSize;
-        this.m_isGetKeyDefined = isGetKeyDefined;
+        this.m_isGetKeyDefined = isKeyDefined;
         setName(name);
+        setGetKeyDefined(isKeyDefined);
     }
 
     /**
@@ -98,4 +104,39 @@ public class SerializableDataType<T extends Serializable> extends TopicDataType<
         }
     }
     
+    @Override
+    public boolean getKey(T data, InstanceHandle ihandle) {
+        if (this.m_isGetKeyDefined) {
+            BinaryOutputStream bos = new BinaryOutputStream();
+            CDRSerializer ser = new CDRSerializer(false);
+    
+            try {
+                //System.out.println(data.getClass().getSuperclass().getName());
+                Class c = data.getClass();
+                Class<?>[] classes = data.getClass().getClasses();
+                data.serializeKey(ser, bos, "");
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+    
+            try {
+                MessageDigest dig = MessageDigest.getInstance("MD5");
+                byte[] md5 = dig.digest(bos.getBuffer());
+                for (int i=0; i < md5.length; ++i) {
+                    ihandle.setValue(i, md5[i]);
+                }
+    
+            } catch (NoSuchAlgorithmException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+    
+            return true;
+        }
+
+        return false;
+    }
+    
+
 }

@@ -105,7 +105,7 @@ public class Publisher<T> {
      * @return True if correct
      */
     public boolean write(T data) {
-        logger.info("Writing new data");
+        logger.debug("Writing new data");
         return this.createNewChange(ChangeKind.ALIVE, data);
     }
 

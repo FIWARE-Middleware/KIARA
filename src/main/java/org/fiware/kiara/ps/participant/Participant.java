@@ -314,6 +314,8 @@ public class Participant {
         this.m_subscribers.add(subscriber);
 
         this.m_rtpsParticipant.registerReader(reader, att.topic, att.qos);
+        
+        logger.info("Subscriber {} created in topic {}", subscriber.getGuid(), att.topic.topicName);
 
         return subscriber;
     }

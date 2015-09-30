@@ -31,6 +31,8 @@ import java.util.Iterator;
 //import org.fiware.kiara.ps.rtps.BinaryInputStream;
 //import org.fiware.kiara.ps.rtps.BinaryOutputStream;
 //import org.fiware.kiara.ps.rtps.CDRSerializer;
+
+
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -115,7 +117,7 @@ public class RTPSMessage {
     }
     
     // NEW
-    public void checkPadding(/*CDRSerializer ser, BinaryOutputStream bos, boolean isLast*/) {
+    public void checkPadding(/*CDRSerializer ser, BinaryOutputStream bos, boolean isLast*//*boolean dataMsg*/boolean isData) {
 
         try {
 
@@ -126,6 +128,10 @@ public class RTPSMessage {
                 short diff = (short) (4 - (size % 4));
                 size = (short) (size + diff);
                 this.m_ser.addPadding(this.m_bos, diff);
+            } else if (isData && size < 24) {
+                short diff = (short) (24 - size);
+                size = 24;
+                this.m_ser.addPadding(this.m_bos, diff); 
             }
 
             byte newBuffer[] = new byte[2];

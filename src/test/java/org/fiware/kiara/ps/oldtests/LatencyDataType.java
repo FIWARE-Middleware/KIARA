@@ -18,6 +18,8 @@
 package org.fiware.kiara.ps.oldtests;
 
 import java.io.IOException;
+
+import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
@@ -27,7 +29,7 @@ import org.fiware.kiara.serialization.impl.BinaryOutputStream;
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class LatencyDataType extends TopicDataType<LatencyType> {
+public abstract class LatencyDataType extends TopicDataType<LatencyType> {
 
     public LatencyDataType() {
         setName("LatencyType");
@@ -76,5 +78,7 @@ public class LatencyDataType extends TopicDataType<LatencyType> {
     public LatencyType createData() {
         return new LatencyType();
     }
+
+    public abstract boolean getKey(LatencyType data, InstanceHandle ihandle);
 
 }

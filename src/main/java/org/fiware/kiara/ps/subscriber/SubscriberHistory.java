@@ -17,6 +17,7 @@
  */
 package org.fiware.kiara.ps.subscriber;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,8 @@ import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.reader.WriterProxy;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.util.Pair;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
@@ -43,9 +46,10 @@ import org.slf4j.LoggerFactory;
  * Class that represents the Subscriber's HistoryCache.
  * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ * @param <T>
  *
  */
-public class SubscriberHistory extends ReaderHistoryCache {
+public class SubscriberHistory<T> extends ReaderHistoryCache {
     
     private long m_unreadCacheCount;
     
@@ -55,33 +59,33 @@ public class SubscriberHistory extends ReaderHistoryCache {
     
     private ResourceLimitsQosPolicy m_resourceLimitsQos;
     
-    private Subscriber m_subscriber;
+    private Subscriber<T> m_subscriber;
     
-    private Object m_getKeyObject;
+    private T m_getKeyObject;
     
     private final Lock m_mutex = new ReentrantLock(true);
     
     private static final Logger logger = LoggerFactory.getLogger(SubscriberHistory.class);
-
+    
     /**
      * SubscriberHistory constructor
-     * 
+     *
      * @param subscriber The Subscriber to which this HistoryCache belongs
      * @param payloadMaxSize Maximum payload size
      * @param history HistoryQosPolicy for this HistoryCache
      * @param resource ResourceLimitsQosPolicy to be applied
      */
-    public SubscriberHistory(Subscriber subscriber, int payloadMaxSize, HistoryQosPolicy history, ResourceLimitsQosPolicy resource) {
+    public SubscriberHistory(Subscriber<T> subscriber, int payloadMaxSize, HistoryQosPolicy history, ResourceLimitsQosPolicy resource) {
         super(new HistoryCacheAttributes(payloadMaxSize, resource.allocatedSamples, resource.maxSamples));
         this.m_unreadCacheCount = 0;
         this.m_historyQos = history;
         this.m_resourceLimitsQos = resource;
         this.m_subscriber = subscriber;
         this.m_getKeyObject = this.m_subscriber.getType().createData();
+        this.m_keyedChanges = new ArrayList<Pair<InstanceHandle,List<CacheChange>>>();
         
     }
     
-    @SuppressWarnings("unchecked")
     /*
      * (non-Javadoc)
      * @see org.fiware.kiara.ps.rtps.history.ReaderHistoryCache#receivedChange(org.fiware.kiara.ps.rtps.history.CacheChange)
@@ -147,8 +151,15 @@ public class SubscriberHistory extends ReaderHistoryCache {
                 }
                 
             } else if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY) { // History with key
-                if (change.getInstanceHandle().isDefined() && this.m_subscriber.getType() != null) {
+                if (!change.getInstanceHandle().isDefined() && this.m_subscriber.getType() != null) {
                     logger.debug("Getting Key of change with no Key transmitted");
+                    //((T) this.m_getKeyObject)
+                    try {
+                        ((Serializable) this.m_getKeyObject).deserialize(change.getSerializedPayload().getSerializer(), new BinaryInputStream(change.getSerializedPayload().getBuffer()), "");
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                     if (!this.m_subscriber.getType().getKey(this.m_getKeyObject, change.getInstanceHandle())) {
                         return false;
                     }
@@ -327,7 +338,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
      * @param info The associated SampleInfo
      * @return The read data
      */
-    public <T> T readNextData(SampleInfo info) {
+    public T readNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
 
@@ -378,7 +389,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
      * @param info The associated SampleInfo
      * @return The read data
      */
-    public <T> T takeNextData(SampleInfo info) {
+    public T takeNextData(SampleInfo info) {
         this.m_mutex.lock();
         try {
             T retVal = null;
@@ -408,7 +419,7 @@ public class SubscriberHistory extends ReaderHistoryCache {
                     if (this.m_subscriber.getAttributes().topic.topicKind == TopicKind.WITH_KEY &&
                             change.value.getInstanceHandle().equals(new InstanceHandle()) &&
                             change.value.getKind() == ChangeKind.ALIVE) {
-                        this.m_subscriber.getType().getKey(this.m_subscriber.getType(), change.value.getInstanceHandle()); // TODO Check this
+                        this.m_subscriber.getType().getKey(retVal, change.value.getInstanceHandle()); // TODO Check this
                     }
                     info.handle = change.value.getInstanceHandle();
                 }

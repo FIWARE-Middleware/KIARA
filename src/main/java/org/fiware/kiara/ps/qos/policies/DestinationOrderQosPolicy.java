@@ -22,6 +22,7 @@ import java.io.IOException;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
+import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
@@ -51,9 +52,22 @@ public class DestinationOrderQosPolicy extends Parameter {
     }
 
     @Override
-    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
-
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        super.serialize(impl, message, name);
+        impl.serializeUI32(message, name, this.kind.getValue());
     }
+
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        super.deserialize(impl, message, name);
+        this.kind = DestinationOrderQosPolicyKind.createFromValue(impl.deserializeUI32(message, name));
+    }
+
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.kind = DestinationOrderQosPolicyKind.createFromValue(impl.deserializeUI32(message, name));
+    }
+    
+    
 
 }

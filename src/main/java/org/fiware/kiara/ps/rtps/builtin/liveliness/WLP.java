@@ -17,12 +17,24 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.liveliness;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import org.fiware.kiara.ps.qos.WriterQos;
+
 import static org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
 import static org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind.MANUAL_BY_PARTICIPANT_LIVELINESS_QOS;
+import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_READER;
+import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_WRITER;
+import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
+import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
+import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
+import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.WITH_KEY;
+import static org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER;
+import static org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER;
+
+import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
@@ -30,20 +42,13 @@ import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
 import org.fiware.kiara.ps.rtps.builtin.BuiltinProtocols;
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
-import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_READER;
-import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_WRITER;
-import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
-import static org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.builtin.liveliness.timedevent.WLivelinessPeriodicAssertion;
-import static org.fiware.kiara.ps.rtps.common.DurabilityKind.TRANSIENT_LOCAL;
-import static org.fiware.kiara.ps.rtps.common.ReliabilityKind.RELIABLE;
-import static org.fiware.kiara.ps.rtps.common.TopicKind.WITH_KEY;
+import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
-import static org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER;
-import static org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
@@ -143,6 +148,9 @@ public class WLP {
         m_livelinessAutomatic = null;
         m_livelinessManRTPSParticipant = null;
         m_mutex = new ReentrantLock(true);
+        
+        this.m_livAutomaticWriters = new ArrayList<RTPSWriter>();
+        this.m_livManRTPSParticipantWriters = new ArrayList<RTPSWriter>();
     }
 
     /**
@@ -164,34 +172,36 @@ public class WLP {
      */
     public boolean createEndpoints() {
         //CREATE WRITER
-        HistoryCacheAttributes hatt = new HistoryCacheAttributes();
-        hatt.initialReservedCaches = 20;
-        hatt.maximumReservedCaches = 1000;
-        hatt.payloadMaxSize = BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
-        m_builtinWriterHistory = new WriterHistoryCache(hatt);
+        HistoryCacheAttributes wHAtt = new HistoryCacheAttributes();
+        wHAtt.initialReservedCaches = 20;
+        wHAtt.maximumReservedCaches = 1000;
+        wHAtt.payloadMaxSize = BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
+        m_builtinWriterHistory = new WriterHistoryCache(wHAtt);
         WriterAttributes watt = new WriterAttributes();
         watt.endpointAtt.unicastLocatorList.copy(m_builtinProtocols.getMetatrafficUnicastLocatorList());
         watt.endpointAtt.multicastLocatorList.copy(m_builtinProtocols.getMetatrafficMulticastLocatorList());
         //	Wparam.topic.topicName = "DCPSRTPSParticipantMessage";
         //	Wparam.topic.topicDataType = "RTPSParticipantMessageData";
-        watt.endpointAtt.topicKind = WITH_KEY;
+        watt.endpointAtt.topicKind = TopicKind.NO_KEY;
         watt.endpointAtt.durabilityKind = TRANSIENT_LOCAL;
         watt.endpointAtt.reliabilityKind = RELIABLE;
         RTPSWriter wout = m_participant.createWriter(watt, m_builtinWriterHistory, null, new EntityId(EntityId.EntityIdEnum.ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER), true);
         if (wout != null) {
             m_builtinWriter = (StatefulWriter) (wout);
-            logger.info("RTPS LIVELINESS: Builtin Liveliness Writer created");
+            logger.debug("RTPS LIVELINESS: Builtin Liveliness Writer created");
         } else {
             logger.error("RTPS LIVELINESS: Liveliness Writer Creation failed ");
             m_builtinWriterHistory = null;
             return false;
         }
-        hatt.initialReservedCaches = 100;
-        hatt.maximumReservedCaches = 2000;
-        hatt.payloadMaxSize = BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
-        m_builtinReaderHistory = new ReaderHistoryCache(hatt);
+        
+        HistoryCacheAttributes rHAtt = new HistoryCacheAttributes();
+        rHAtt.initialReservedCaches = 100;
+        rHAtt.maximumReservedCaches = 2000;
+        rHAtt.payloadMaxSize = BUILTIN_PARTICIPANT_DATA_MAX_SIZE;
+        m_builtinReaderHistory = new ReaderHistoryCache(rHAtt);
         ReaderAttributes ratt = new ReaderAttributes();
-        ratt.endpointAtt.topicKind = WITH_KEY;
+        ratt.endpointAtt.topicKind = TopicKind.NO_KEY;
         ratt.endpointAtt.durabilityKind = TRANSIENT_LOCAL;
         ratt.endpointAtt.reliabilityKind = RELIABLE;
         ratt.expectsInlineQos = true;
@@ -199,13 +209,13 @@ public class WLP {
         ratt.endpointAtt.multicastLocatorList.copy(m_builtinProtocols.getMetatrafficMulticastLocatorList());
         //Rparam.topic.topicName = "DCPSRTPSParticipantMessage";
         //Rparam.topic.topicDataType = "RTPSParticipantMessageData";
-        ratt.endpointAtt.topicKind = WITH_KEY;
+        //ratt.endpointAtt.topicKind = WITH_KEY;
         //LISTENER CREATION
         m_listener = new WLPListener(this);
         RTPSReader rout = m_participant.createReader(ratt, m_builtinReaderHistory, (ReaderListener) m_listener, new EntityId(ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER), true);
         if (rout != null) {
             m_builtinReader = (StatefulReader) (rout);
-            logger.info("RTPS LIVELINESS: Builtin Liveliness Reader created");
+            logger.debug("RTPS LIVELINESS: Builtin Liveliness Reader created");
         } else {
             logger.error("RTPS LIVELINESS: Liveliness Reader Creation failed.");
             m_builtinReaderHistory = null;
@@ -230,7 +240,7 @@ public class WLP {
             mutex2.lock();
             try {
 
-                logger.info("RTPS LIVELINESS: For remote RTPSParticipant {}", pdata.getGUID());
+                logger.debug("RTPS LIVELINESS: For remote RTPSParticipant {}", pdata.getGUID());
                 int endp = pdata.getAvailableBuiltinEndpoints();
                 int partdet = endp;
                 int auxendp = endp;
@@ -239,7 +249,7 @@ public class WLP {
                 //auxendp = 1;
                 //FIXME: WRITERLIVELINESS PUT THIS BACK TO THE ORIGINAL LINE
                 if ((auxendp != 0 || partdet != 0) && m_builtinReader != null) {
-                    logger.info("RTPS LIVELINESS: Adding remote writer to my local Builtin Reader");
+                    logger.debug("RTPS LIVELINESS: Adding remote writer to my local Builtin Reader");
                     RemoteWriterAttributes watt = new RemoteWriterAttributes();
                     watt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
                     watt.guid.setEntityId(new EntityId(ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER));
@@ -256,7 +266,7 @@ public class WLP {
                 //auxendp = 1;
                 //FIXME: WRITERLIVELINESS PUT THIS BACK TO THE ORIGINAL LINE
                 if ((auxendp != 0 || partdet != 0) && m_builtinWriter != null) {
-                    logger.info("RTPS LIVELINESS: Adding remote reader to my local Builtin Writer");
+                    logger.debug("RTPS LIVELINESS: Adding remote reader to my local Builtin Writer");
                     RemoteReaderAttributes ratt = new RemoteReaderAttributes();
                     ratt.expectsInlineQos = false;
                     ratt.guid.setGUIDPrefix(pdata.getGUID().getGUIDPrefix());
@@ -290,7 +300,7 @@ public class WLP {
             final Lock mutex2 = pdata.getMutex();
             mutex2.lock();
             try {
-                logger.info("RTPS LIVELINESS: for RTPSParticipant: {}", pdata.getGUID());
+                logger.debug("RTPS LIVELINESS: for RTPSParticipant: {}", pdata.getGUID());
 
                 final EntityId c_EntityId_ReaderLiveliness = new EntityId(ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER);
                 final EntityId c_EntityId_WriterLiveliness = new EntityId(ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER);
@@ -326,43 +336,42 @@ public class WLP {
     public boolean addLocalWriter(RTPSWriter writer, WriterQos wqos) {
         m_mutex.lock();
         try {
-            logger.info("RTPS LIVELINESS: {} to Liveliness Protocol", writer.getGuid().getEntityId());
-            double wAnnouncementPeriodMilliSec = wqos.liveliness.announcementPeriod.toMilliSecondsDouble();
-            if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
-                if (m_livelinessAutomatic == null) {
-                    /*
-                     m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS);
-                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                     m_livelinessAutomatic.restartTimer();
-                     */
-                    m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
-                    m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
-                } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
-                    m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
-                    m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                    //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                    if (m_livelinessAutomatic.isWaiting() && m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
-                        m_livelinessAutomatic.stopTimer();
+            logger.debug("RTPS LIVELINESS: {} to Liveliness Protocol", writer.getGuid().getEntityId());
+            if (!wqos.liveliness.announcementPeriod.equals(new Timestamp().timeInfinite())) {
+                double wAnnouncementPeriodMilliSec = wqos.liveliness.announcementPeriod.toMilliSecondsDouble();
+                if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
+                    if (m_livelinessAutomatic == null) {
+                        
+                        m_livelinessAutomatic = new WLivelinessPeriodicAssertion(this, AUTOMATIC_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
+                        m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
+                    
+                    } else if (m_minAutomatic_MilliSec > wAnnouncementPeriodMilliSec) {
+                        m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
+                        m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
+                        //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
+                        if (m_livelinessAutomatic.isWaiting() && m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
+                            m_livelinessAutomatic.stopTimer();
+                        }
+                        m_livelinessAutomatic.restartTimer();
                     }
-                    m_livelinessAutomatic.restartTimer();
-                }
-                m_livAutomaticWriters.add(writer);
-            } else if (wqos.liveliness.kind == MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
-                if (m_livelinessManRTPSParticipant == null) {
-                    m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS);
-                    m_livelinessManRTPSParticipant.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
-                    m_livelinessManRTPSParticipant.restartTimer();
-                    m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
-                } else if (m_minManRTPSParticipant_MilliSec > wAnnouncementPeriodMilliSec) {
-                    m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
-                    m_livelinessManRTPSParticipant.updateIntervalMillisec(m_minManRTPSParticipant_MilliSec);
-                    //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                    if (m_livelinessManRTPSParticipant.isWaiting() && m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
-                        m_livelinessManRTPSParticipant.stopTimer();
+                    m_livAutomaticWriters.add(writer);
+                } else if (wqos.liveliness.kind == MANUAL_BY_PARTICIPANT_LIVELINESS_QOS) {
+                    if (m_livelinessManRTPSParticipant == null) {
+                        m_livelinessManRTPSParticipant = new WLivelinessPeriodicAssertion(this, MANUAL_BY_PARTICIPANT_LIVELINESS_QOS, wAnnouncementPeriodMilliSec);
+                        //m_livelinessManRTPSParticipant.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
+                        //m_livelinessManRTPSParticipant.restartTimer();
+                        m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
+                    } else if (m_minManRTPSParticipant_MilliSec > wAnnouncementPeriodMilliSec) {
+                        m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
+                        m_livelinessManRTPSParticipant.updateIntervalMillisec(m_minManRTPSParticipant_MilliSec);
+                        //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
+                        if (m_livelinessManRTPSParticipant.isWaiting() && m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
+                            m_livelinessManRTPSParticipant.stopTimer();
+                        }
+                        m_livelinessManRTPSParticipant.restartTimer();
                     }
-                    m_livelinessManRTPSParticipant.restartTimer();
+                    m_livManRTPSParticipantWriters.add(writer);
                 }
-                m_livManRTPSParticipantWriters.add(writer);
             }
             return true;
         } finally {
@@ -379,7 +388,7 @@ public class WLP {
     public boolean removeLocalWriter(RTPSWriter writer) {
         m_mutex.lock();
         try {
-            logger.info("RTPS LIVELINESS: {} from Liveliness Protocol", writer.getGuid().getEntityId());
+            logger.debug("RTPS LIVELINESS: {} from Liveliness Protocol", writer.getGuid().getEntityId());
             int wToEraseIndex = -1;
             WriterProxyData wdata = m_builtinProtocols.getPDP().lookupWriterProxyData(writer.getGuid());
             if (wdata != null) {
@@ -478,7 +487,7 @@ public class WLP {
     public boolean updateLocalWriter(RTPSWriter writer, WriterQos wqos) {
         m_mutex.lock();
         try {
-            logger.info("RTPS LIVELINESS: {}", writer.getGuid().getEntityId());
+            logger.debug("RTPS LIVELINESS: {}", writer.getGuid().getEntityId());
             double wAnnouncementPeriodMilliSec = wqos.liveliness.announcementPeriod.toMilliSecondsDouble();
             if (wqos.liveliness.kind == AUTOMATIC_LIVELINESS_QOS) {
                 if (m_livelinessAutomatic == null) {

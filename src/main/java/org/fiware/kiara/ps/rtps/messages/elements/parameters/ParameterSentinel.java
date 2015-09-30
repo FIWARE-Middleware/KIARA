@@ -19,10 +19,10 @@ package org.fiware.kiara.ps.rtps.messages.elements.parameters;
 
 import java.io.IOException;
 
-import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
+import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**

@@ -99,6 +99,23 @@ public abstract class Parameter extends RTPSSubmessageElement {
     public static short PARAMETER_ENTITYID_LENGTH = 4;
     
     /**
+     * Lengh of the DEADLINE_QOS parameter
+     */
+    public static short PARAMETER_DEADLINE_QOS_LENGTH = 8;
+    
+    /**
+     * Lengh of the LIVELINESS_WOS parameter
+     */
+    public static short PARAMETER_LIVELINESS_QOS_LENGTH = 12;
+    
+    /**
+     * Lengh of the TYPE_MAX_SIZE_SERIALIZED parameter
+     */
+    public static short PARAMETER_TYPE_MAX_SIZE_SERIALIZED_LENGTH = 12;
+    
+    
+    
+    /**
      * Parameter identifier
      */
     protected ParameterId m_parameterId;

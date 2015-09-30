@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -154,6 +155,15 @@ public class GUIDPrefix extends RTPSSubmessageElement {
             sb.append(b);
         }
         return sb.toString();
+    }
+    
+    /**
+     * Get a hash associated with the GUIDPrefix
+     */
+    @Override
+    public int hashCode() {
+        ByteBuffer wrapped = ByteBuffer.wrap(m_value);
+        return wrapped.getInt();
     }
 
 }

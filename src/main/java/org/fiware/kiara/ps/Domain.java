@@ -32,6 +32,7 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.subscriber.Subscriber;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,7 +147,7 @@ public class Domain {
      * @param listener reference to the {@link PublisherListener}.
      * @return reference to the created {@link Publisher} (null if not created).
      */
-    public static synchronized <T> Publisher<T> createPublisher(Participant part, PublisherAttributes att, PublisherListener listener) {
+    public static synchronized <T extends Serializable> Publisher<T> createPublisher(Participant part, PublisherAttributes att, PublisherListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.createPublisher(att, listener);
@@ -165,7 +166,7 @@ public class Domain {
      * @param listener reference to the {@link SubscriberListener}.
      * @return reference to the created {@link Subscriber} (null if not created).
      */
-    public static synchronized <T> Subscriber<T> createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
+    public static synchronized <T extends Serializable> Subscriber<T> createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
         for (Participant it : m_participants) {
             if (it.getGuid().equals(part.getGuid())) {
                 return part.createSubscriber(att, listener);

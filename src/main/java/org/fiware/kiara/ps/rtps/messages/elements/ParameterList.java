@@ -58,7 +58,7 @@ public class ParameterList extends RTPSSubmessageElement {
         this.m_hasChanged = true;
         this.m_parameters = new ArrayList<Parameter>();
     }
-
+    
     /**
      * Get the change status of the ParameterList
      * 

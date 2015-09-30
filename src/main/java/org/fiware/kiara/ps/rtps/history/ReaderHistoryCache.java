@@ -94,7 +94,7 @@ public class ReaderHistoryCache extends HistoryCache {
     
             if (change.getSerializedPayload().getSerializedSize() > this.m_attributes.payloadMaxSize) {
                 //this.m_mutex.unlock();
-                logger.error("The Payload length is larger than the maximum payload size"); 
+                logger.error("The Payload length {} is larger than the maximum payload size", change.getSerializedPayload().getSerializedSize()); 
                 return false;
             }
     
@@ -103,12 +103,12 @@ public class ReaderHistoryCache extends HistoryCache {
                 logger.error("The Writer GUID_t must be defined"); 
                 return false;
             }
-    
+            
             if (this.m_historyRecord.get(change.getWriterGUID()) == null) {
                 this.m_historyRecord.put(change.getWriterGUID(), new HashSet<SequenceNumber>());
             }
     
-            if (this.m_historyRecord.get(change.getWriterGUID()).add(change.getSequenceNumber())) {
+            if (this.m_historyRecord.get(change.getWriterGUID()).add(new SequenceNumber(change.getSequenceNumber()))) {
                 this.m_changes.add(change);
                 this.updateMaxMinSeqNum();
                 logger.debug("Change {} added with {} bytes", change.getSequenceNumber().toLong(), change.getSerializedPayload().getSerializedSize());

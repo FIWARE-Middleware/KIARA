@@ -22,15 +22,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
-import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
-import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
-
 import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.LOST;
 import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.RECEIVED;
 
+import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
+import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
+import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
@@ -65,7 +65,7 @@ public class StatefulReader extends RTPSReader {
     }
 
     public void destroy() {
-        logger.info("RTPS READER: StatefulReader destructor.");
+        logger.debug("RTPS READER: StatefulReader destructor.");
         for (WriterProxy it : matchedWriters) {
             it.destroy();
         }
@@ -78,13 +78,13 @@ public class StatefulReader extends RTPSReader {
         try {
             for (WriterProxy it : matchedWriters) {
                 if (it.att.guid.equals(wdata.guid)) {
-                    logger.info("RTPS READER: Attempting to add existing writer");
+                    logger.debug("RTPS READER: Attempting to add existing writer");
                     return false;
                 }
             }
             WriterProxy wp = new WriterProxy(wdata, m_times.heartbeatResponseDelay, this);
             matchedWriters.add(wp);
-            logger.info("RTPS READER: Writer Proxy {} added to {}", wp.att.guid, m_guid.getEntityId());
+            logger.debug("RTPS READER: Writer Proxy {} added to {}", wp.att.guid, m_guid.getEntityId());
             return true;
         } finally {
             m_mutex.unlock();
@@ -98,13 +98,13 @@ public class StatefulReader extends RTPSReader {
             for (Iterator<WriterProxy> it = matchedWriters.iterator(); it.hasNext();) {
                 final WriterProxy wp = it.next();
                 if (wp.att.guid.equals(wdata.guid)) {
-                    logger.info("RTPS READER: Writer Proxy removed: {}", wp.att.guid);
+                    logger.debug("RTPS READER: Writer Proxy removed: {}", wp.att.guid);
                     wp.destroy();
                     it.remove();
                     return true;
                 }
             }
-            logger.info("RTPS READER: Writer Proxy {} doesn't exist in reader {}", wdata.guid, this.getGuid().getEntityId());
+            logger.debug("RTPS READER: Writer Proxy {} doesn't exist in reader {}", wdata.guid, this.getGuid().getEntityId());
             return false;
         } finally {
             m_mutex.unlock();
@@ -132,11 +132,11 @@ public class StatefulReader extends RTPSReader {
         try {
             for (WriterProxy it : matchedWriters) {
                 if (it.att.guid.equals(writerGUID)) {
-                    logger.info("RTPS READER: {} FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
+                    logger.debug("RTPS READER: {} FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
                     return it;
                 }
             }
-            logger.info("RTPS READER: {} NOT FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
+            logger.debug("RTPS READER: {} NOT FINDS writerProxy {} from {}", getGuid().getEntityId(), writerGUID, matchedWriters.size());
             return null;
         } finally {
             m_mutex.unlock();
@@ -211,14 +211,13 @@ public class StatefulReader extends RTPSReader {
     @Override
     public boolean changeReceived(CacheChange change, WriterProxy prox) {
         //First look for WriterProxy in case is not provided
-        System.out.println("BLBLA");
         m_mutex.lock();
         try {
             if (prox == null) {
                 prox = matchedWriterLookup(change.getWriterGUID());
                 if (prox == null) {
                     {
-                        logger.info("RTPS READER: Writer Proxy {} not matched to this Reader {}", change.getWriterGUID(), m_guid.getEntityId());
+                        logger.debug("RTPS READER: Writer Proxy {} not matched to this Reader {}", change.getWriterGUID(), m_guid.getEntityId());
                         return false;
                     }
                 }
@@ -226,12 +225,12 @@ public class StatefulReader extends RTPSReader {
             //WITH THE WRITERPROXY FOUND:
             //Check if we can add it
             if (change.getSequenceNumber().isLowerOrEqualThan(prox.lastRemovedSeqNum)) {
-                logger.info("RTPS READER: Change {} <= than last Removed Seq Number {}", change.getSequenceNumber(), prox.lastRemovedSeqNum);
+                logger.debug("RTPS READER: Change {} <= than last Removed Seq Number {}", change.getSequenceNumber(), prox.lastRemovedSeqNum);
                 return false;
             }
             SequenceNumber maxSeq = prox.getAvailableChangesMax();
             if (maxSeq != null && change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
-                logger.info("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
+                logger.debug("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
                 return false;
             }
             if (m_history.receivedChange(change)) {
@@ -240,7 +239,7 @@ public class StatefulReader extends RTPSReader {
 
                     if (change.getSequenceNumber().isLowerOrEqualThan(maxSeqNumAvailable)) {
                         if (getListener() != null) {
-                            //cout << "CALLING NEWDATAMESSAGE "<<endl;
+                            //System.out.println("CALLING NEWDATAMESSAGE ");
                             getListener().onNewCacheChangeAdded(this, change);
                             //cout << "FINISH CALLING " <<endl;
                         }
@@ -265,7 +264,7 @@ public class StatefulReader extends RTPSReader {
             final SequenceNumber auxSeqNum = new SequenceNumber();
             WriterProxy wp = null;
             boolean available = false;
-            logger.info("RTPS READER: {}: looking through: {} WriterProxies", getGuid().getEntityId(), matchedWriters.size());
+            logger.debug("RTPS READER: {}: looking through: {} WriterProxies", getGuid().getEntityId(), matchedWriters.size());
             for (WriterProxy it : matchedWriters) {
                 //it.getAvailableChangesMax(auxSeqNum);
 

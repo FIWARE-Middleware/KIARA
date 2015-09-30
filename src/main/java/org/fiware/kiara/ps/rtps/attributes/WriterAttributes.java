@@ -42,6 +42,7 @@ public class WriterAttributes {
         this.endpointAtt.endpointKind = EndpointKind.WRITER;
         this.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
         this.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
+        this.times = new WriterTimes();
     }
 
 }

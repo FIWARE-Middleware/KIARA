@@ -30,6 +30,7 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.topic.TopicDataType;
+import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -111,7 +112,7 @@ public class Subscriber<T> {
         this.m_type = type;
         this.m_att = att;
 
-        this.m_history = new SubscriberHistory(this, type.getTypeSize(), att.topic.historyQos, att.topic.resourceLimitQos);
+        this.m_history = new SubscriberHistory<T>(this, type.getTypeSize(), att.topic.historyQos, att.topic.resourceLimitQos);
         this.m_listener = listener;
 
         this.m_readerListener = new SubscriberReaderListener(this);
@@ -138,8 +139,9 @@ public class Subscriber<T> {
      * @param info The SampleInfo
      * @return The sample data type
      */
+    @SuppressWarnings("unchecked")
     public T readNextData(SampleInfo info) {
-        return this.m_history.readNextData(info);
+        return (T) this.m_history.readNextData(info);
     }
 
     /**
@@ -148,8 +150,9 @@ public class Subscriber<T> {
      * @param info The SampleInfo
      * @return The sample data type
      */
+    @SuppressWarnings("unchecked")
     public T takeNextData(SampleInfo info) {
-        return this.m_history.takeNextData(info);
+        return (T) this.m_history.takeNextData(info);
     }
 
     /**

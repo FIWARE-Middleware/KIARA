@@ -1,13 +1,15 @@
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.concurrent.locks.Lock;
+
+import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
+import static org.fiware.kiara.ps.rtps.common.TopicKind.WITH_KEY;
+
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.participant.PDPSimple;
-import static org.fiware.kiara.ps.rtps.common.TopicKind.NO_KEY;
-import static org.fiware.kiara.ps.rtps.common.TopicKind.WITH_KEY;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;

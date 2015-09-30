@@ -1,5 +1,7 @@
 package org.fiware.kiara.ps.rtps.reader.timedevent;
 
+import java.util.concurrent.TimeUnit;
+
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.MatchingStatus;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
@@ -29,10 +31,8 @@ public class WriterProxyLiveliness extends TimedEvent {
         if (code == EventCode.EVENT_SUCCESS) {
             if (recentlyCreated) {
                 recentlyCreated = false;
-             // Now delete objects
             } else {
-                System.out.println("OUCH");
-                logger.info("Deleting writer {}", this.writerProxy.att.guid);
+                logger.debug("Deleting writer {}", this.writerProxy.att.guid);
                 if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
                     if (this.writerProxy.statefulReader.getListener() != null) {
                         MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
@@ -47,8 +47,14 @@ public class WriterProxyLiveliness extends TimedEvent {
         } else if (code == EventCode.EVENT_ABORT) {
             this.stopSemaphorePost();
         } else {
-            logger.info("Message: {}", msg);
+            logger.debug("Message: {}", msg);
         }
+    }
+    
+    @Override
+    public void restartTimer() {
+        this.recentlyCreated = true;
+        super.restartTimer();
     }
 
 }

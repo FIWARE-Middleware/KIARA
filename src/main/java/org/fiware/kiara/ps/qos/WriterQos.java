@@ -202,7 +202,7 @@ public class WriterQos {
             destinationOrder.copy(qos.destinationOrder);
             destinationOrder.parent.hasChanged = true;
         }
-        if (!userData.getDataBuf().equals(qos.userData.getDataBuf())) {
+        if (userData.getDataBuf() != null && !userData.getDataBuf().equals(qos.userData.getDataBuf())) {
             userData.copy(qos.userData);
             userData.parent.hasChanged = true;
         }

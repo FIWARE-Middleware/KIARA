@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 

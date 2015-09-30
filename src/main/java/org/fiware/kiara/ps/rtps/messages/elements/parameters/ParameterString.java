@@ -27,7 +27,7 @@ public class ParameterString extends Parameter {
 
     public ParameterString(ParameterId pid, short length, String str) {
         super(pid, length);
-        m_content = str;
+        setContent(str);
     }
 
     public void setContent(String content) {

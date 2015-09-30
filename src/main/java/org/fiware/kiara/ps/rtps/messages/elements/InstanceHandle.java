@@ -47,6 +47,7 @@ public class InstanceHandle extends RTPSSubmessageElement {
     }
 
     public InstanceHandle(GUID guid) {
+        this.m_value = new byte[16];
         for (int i=0; i < 16; ++i) {
             if (i < 12) {
                 this.m_value[i] = guid.getGUIDPrefix().getValue(i);
@@ -98,8 +99,7 @@ public class InstanceHandle extends RTPSSubmessageElement {
      * Deserializes an InstanceHandle object
      */
     @Override
-    public void deserialize(SerializerImpl impl, BinaryInputStream message,
-            String name) throws IOException {
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         for (int i=0; i < 16; ++i) {
             this.m_value[i] = impl.deserializeByte(message, "");
         }
@@ -171,7 +171,7 @@ public class InstanceHandle extends RTPSSubmessageElement {
             if (i < 12) {
                 guid.getGUIDPrefix().setValue(i, this.m_value[i]);
             } else {
-                guid.getEntityId().setValue(i, this.m_value[i]);
+                guid.getEntityId().setValue(i-12, this.m_value[i]);
             }
         }
         return guid;

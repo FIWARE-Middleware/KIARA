@@ -51,9 +51,9 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
+import org.fiware.kiara.ps.rtps.resources.EventResource;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.ps.rtps.resources.SendResource;
-import org.fiware.kiara.ps.rtps.resources.EventResource;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.StatefulWriter;
 import org.fiware.kiara.ps.rtps.writer.StatelessWriter;
@@ -197,6 +197,7 @@ public class RTPSParticipant {
             this.m_builtinProtocols = new BuiltinProtocols();
             if (!this.m_builtinProtocols.initBuiltinProtocols(this, this.m_att.builtinAtt)) {
                 logger.warn("The builtin protocols were not corecctly initialized"); // TODO Check if this should be logger.error
+                this.destroy();
                 throw new Exception("The builtin protocols were not correctly initialized");
             }
             

@@ -39,4 +39,15 @@ public enum OwnershipQosPolicyKind {
     public byte getValue() {
         return this.m_value;
     }
+    
+    public static OwnershipQosPolicyKind getFromValue(byte value) {
+        switch(value) {
+        case 0:
+            return SHARED_OWNERSHIP_QOS;
+        case 1:
+            return EXCLUSIVE_OWNERSHIP_QOS;
+        default:
+            return EXCLUSIVE_OWNERSHIP_QOS;
+        }
+    }
 }

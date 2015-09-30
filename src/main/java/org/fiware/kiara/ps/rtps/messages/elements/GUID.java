@@ -18,6 +18,7 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
+import java.util.Comparator;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -106,7 +107,8 @@ public class GUID implements Serializable {
     @Override
     public boolean equals(Object other) {
         if (other instanceof GUID) {
-            return this.m_guidPrefix.equals(((GUID) other).m_guidPrefix) && this.m_entityId.equals(((GUID) other).m_entityId);
+            boolean result = this.m_guidPrefix.equals(((GUID) other).m_guidPrefix) && this.m_entityId.equals(((GUID) other).m_entityId); 
+            return result;
         }
         return false;
     }
@@ -147,4 +149,10 @@ public class GUID implements Serializable {
         return retVal;
     }
 
+    @Override
+    public int hashCode() {
+        return this.m_guidPrefix.hashCode() + this.m_entityId.hashCode();
+    }
+
+   
 }

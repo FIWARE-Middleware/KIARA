@@ -49,7 +49,7 @@ public class ParameterBool extends Parameter {
 
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.m_bool = impl.deserializeBoolean(message, name);
     }
 
     public boolean getBool() {

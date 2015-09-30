@@ -62,7 +62,7 @@ public class HeartbeatResponseDelay extends TimedEvent {
                     }
                     
                     this.writerProxy.acknackCount++;
-                    logger.info("Sending ACKNACK");
+                    logger.debug("Sending ACKNACK");
                     
                     boolean isFinal = false;
                     if (sns.isSetEmpty()) {
@@ -92,10 +92,10 @@ public class HeartbeatResponseDelay extends TimedEvent {
                 }
             }
         } else if (code == EventCode.EVENT_ABORT) {
-            logger.info("Response aborted");
+            logger.debug("Response aborted");
             this.stopSemaphorePost();
         } else {
-            logger.info("Response message " + msg);
+            logger.debug("Response message " + msg);
         }
         
         this.stopTimer();

@@ -26,16 +26,9 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.fiware.kiara.ps.rtps.common.Locator;
-import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
-import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
-import org.fiware.kiara.ps.rtps.utils.IPFinder;
-import org.fiware.kiara.ps.rtps.utils.IPTYPE;
-
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
 import org.fiware.kiara.netty.NioDatagramChannelFactory;
-import org.fiware.kiara.ps.rtps.utils.InfoIP;
 import org.fiware.kiara.transport.impl.Global;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +45,13 @@ import java.net.Inet4Address;
 import java.util.Arrays;
 import java.util.logging.Level;
 
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
+import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
+import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.utils.IPFinder;
+import org.fiware.kiara.ps.rtps.utils.IPTYPE;
+import org.fiware.kiara.ps.rtps.utils.InfoIP;
 
 /**
 *

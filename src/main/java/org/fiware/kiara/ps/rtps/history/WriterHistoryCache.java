@@ -80,8 +80,6 @@ public class WriterHistoryCache extends HistoryCache {
     
             this.m_lastCacheChangeSeqNum.increment();
             
-            //change.setSequenceNumber(this.m_lastCacheChangeSeqNum);
-            
             SequenceNumber changeSeqNum = new SequenceNumber(this.m_lastCacheChangeSeqNum);
             change.setSequenceNumber(changeSeqNum);
             
