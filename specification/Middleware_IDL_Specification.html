@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Advanced Middleware IDL Specification &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  <title>Advanced Middleware IDL Specification &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
         <link rel="prev" title="Advanced Middleware RPC Dynamic Types API Specification" href="Middleware_RPC_Dynamic_Types_API_Specification.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -82,11 +82,12 @@
             
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware IDL Specification</a><ul>
@@ -200,14 +201,13 @@
             
   <div class="section" id="advanced-middleware-idl-specification">
 <h1>Advanced Middleware IDL Specification<a class="headerlink" href="#advanced-middleware-idl-specification" title="Permalink to this headline">¶</a></h1>
-<p><em>Date: 8th April 2015</em></p>
-<div class="line-block">
-<div class="line">This version: <a class="reference internal" href=""><em>0.2.0</em></a></div>
-<div class="line">Previous version: n/a</div>
-<div class="line">Latest version: <a class="reference internal" href=""><em>latest</em></a></div>
-<div class="line"><br /></div>
-</div>
-<p><strong>Editors:</strong></p>
+<p><strong>Date: 10th September 2015</strong></p>
+<ul class="simple">
+<li>Version: <a class="reference external" href="#">0.3.0</a></li>
+<li>Previous version: <a class="reference external" href="Middleware_IDL_Specification_0.2.0.html">0.2.0</a></li>
+<li>Latest version: <a class="reference external" href="Middleware_IDL_Specification.html">latest</a></li>
+</ul>
+<p>Editors:</p>
 <ul class="simple">
 <li><a class="reference external" href="http://eprosima.com/index.php/en/">eProsima - The Middleware
 Experts</a></li>
@@ -265,8 +265,8 @@ requirements.</li>
 <div class="section" id="preface">
 <h2>Preface<a class="headerlink" href="#preface" title="Permalink to this headline">¶</a></h2>
 <p>The foundation of the FIWARE Middleware Interface Definition Language
-(IDL) is the Object Management Group (OMG) IDL 3.5. See <a class="reference external" href="#appendix-c-omg-idl-3.5-grammar">Appendix
-C</a> for the OMG IDL 3.5 grammar.</p>
+(IDL) is the Object Management Group (OMG) IDL 3.5. See <a class="reference external" href="#appendix-c-omg-idl-3.5-grammar">*Appendix
+C*</a> for the OMG IDL 3.5 grammar.</p>
 <p>To maintain backward compatibility, the FIWARE Middleware IDL grammar
 embraces all OMG IDL 3.5 features. IDL parsers are not required to
 implement all of the extended OMG features. Check the documentation of
@@ -277,7 +277,7 @@ supported.</p>
 <div class="section" id="related-documentation">
 <h2>Related documentation<a class="headerlink" href="#related-documentation" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="http://www.omg.org/spec/DDS-XTypes/1.0/">OMG DDS-XTypes 1.0</a></li>
+<li><a class="reference external" href="http://www.omg.org/spec/DDS-XTypes/1.0/">*OMG DDS-XTypes 1.0*</a></li>
 </ul>
 </div>
 <div class="section" id="syntax-definition">
@@ -304,32 +304,32 @@ therefore will be ignored by the implmentations.</p>
 </pre></div>
 </div>
 <div class="line-block">
-<div class="line">See section <a class="reference external" href="#import-declaration">Import Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#import-declaration">*Import Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;import&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#module-declaration">Module Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#module-declaration">*Module Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;module\&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#interface-declaration">Interface Declaration</a> for
+<div class="line">See section <a class="reference external" href="#interface-declaration">*Interface Declaration*</a> for
 the specification of <code class="docutils literal"><span class="pre">&lt;interface&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#value-declaration">Value Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#value-declaration">*Value Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;value\&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#constant-declaration">Constant Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#constant-declaration">*Constant Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;const_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#type-declaration">Type Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#type-declaration">*Type Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;type_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#exception-declaration">Exception Declaration</a> for
+<div class="line">See section <a class="reference external" href="#exception-declaration">*Exception Declaration*</a> for
 the specification of <code class="docutils literal"><span class="pre">&lt;except_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#repository-identity-related-declarations">Repository Identity Related
-Declarations</a> for the
+<div class="line">See section <a class="reference external" href="#repository-identity-related-declarations">*Repository Identity Related
+Declarations*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;type_id_dcl&gt;</span></code> and <code class="docutils literal"><span class="pre">&lt;type_prefix_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#event-declaration">Event Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#event-declaration">*Event Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;event&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#component-declaration">Component Declaration</a> for
+<div class="line">See section <a class="reference external" href="#component-declaration">*Component Declaration*</a> for
 the specification of <code class="docutils literal"><span class="pre">&lt;component&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#event-declaration">Event Declaration</a> for the
+<div class="line">See section <a class="reference external" href="#event-declaration">*Event Declaration*</a> for the
 specification of <code class="docutils literal"><span class="pre">&lt;home_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#annotation-declaration">Annotation Declaration</a> for
+<div class="line">See section <a class="reference external" href="#annotation-declaration">*Annotation Declaration*</a> for
 the specification of <code class="docutils literal"><span class="pre">&lt;annotation_dcl&gt;</span></code></div>
-<div class="line">See section <a class="reference external" href="#annotation-application">Annotation Application</a> for
+<div class="line">See section <a class="reference external" href="#annotation-application">*Annotation Application*</a> for
 the specification of <code class="docutils literal"><span class="pre">&lt;</span> <span class="pre">annotation_appl&gt;</span></code></div>
 </div>
 <div class="section" id="import-declaration">
@@ -402,7 +402,7 @@ keyword <code class="docutils literal"><span class="pre">interface</span></code>
 <p>An interface declaration containing the keyword <code class="docutils literal"><span class="pre">abstract</span></code> in its
 header, declares an abstract interface. Abstract interfaces have
 slightly different rules from <em>regular</em> interfaces, as described in
-section <a class="reference external" href="#abstract-interface">Abstract interface</a>.</p>
+section <a class="reference external" href="#abstract-interface">*Abstract interface*</a>.</p>
 <p>An interface declaration containing the keyword <code class="docutils literal"><span class="pre">local</span></code> in its header,
 declares a local interface. Local interfaces are not currently supported
 by the FIWARE Middleware. Any FIWARE Middleware IDL parser has to inform
@@ -427,16 +427,16 @@ defined interface.</p>
 <h4>Interface Body<a class="headerlink" href="#interface-body" title="Permalink to this headline">¶</a></h4>
 <p>The interface body contains the following kind of declarations:</p>
 <ul class="simple">
-<li>Constant declarations whose syntax is described in section <a class="reference external" href="#constant-declaration">Constant
-Declaration</a>.</li>
-<li>Type declarations whose syntax is described in section <a class="reference external" href="#type-declaration">Type
-Declaration</a>.</li>
+<li>Constant declarations whose syntax is described in section <a class="reference external" href="#constant-declaration">*Constant
+Declaration*</a>.</li>
+<li>Type declarations whose syntax is described in section <a class="reference external" href="#type-declaration">*Type
+Declaration*</a>.</li>
 <li>Exception declarations whose syntax is described in section
-<a class="reference external" href="#exception-declaration">Exception Declaration</a>.</li>
+<a class="reference external" href="#exception-declaration">*Exception Declaration*</a>.</li>
 <li>Attribute declarations whose syntax is described in section
-<a class="reference external" href="#attribute-declaration">Attribute Declaration</a>.</li>
+<a class="reference external" href="#attribute-declaration">*Attribute Declaration*</a>.</li>
 <li>Operation declarations whose syntax is described in section
-<a class="reference external" href="#operation-declaration">Operation Declaration</a>.</li>
+<a class="reference external" href="#operation-declaration">*Operation Declaration*</a>.</li>
 </ul>
 </div>
 <div class="section" id="abstract-interface">
@@ -566,7 +566,7 @@ specifiers to represent typed value. The syntax is as follows:</p>
 </div>
 <p>The <code class="docutils literal"><span class="pre">&lt;scoped_name\&gt;</span></code> in <code class="docutils literal"><span class="pre">&lt;simple_type_spec&gt;</span></code> must be a previously
 defined type introduced by a type declaration(<code class="docutils literal"><span class="pre">&lt;type_dcl&gt;</span></code> - see
-section <a class="reference external" href="#type-declaration">Type Declaration</a>).</p>
+section <a class="reference external" href="#type-declaration">*Type Declaration*</a>).</p>
 <p>The next subsections describe basic and constructed type specifiers.</p>
 <div class="section" id="basic-types">
 <h4>Basic Types<a class="headerlink" href="#basic-types" title="Permalink to this headline">¶</a></h4>
@@ -877,22 +877,22 @@ similar to C function declarations. The syntax is as follows:</p>
 <ul class="simple">
 <li>An optional <em>operation attribute</em> that is supported by FIWARE
 Middleware IDL for backward compatibility. Operation attributes are
-described in section <a class="reference external" href="#operation-attribute">Operation
-attribute</a>.</li>
+described in section <a class="reference external" href="#operation-attribute">*Operation
+attribute*</a>.</li>
 <li>The <em>type</em> of the operation’s return result. Operations that do not
 return a result must specify the void type.</li>
 <li>An <em>identifier</em> that names the operation in the scope of the
 interface in which it is defined.</li>
 <li>A <em>parameter list</em> that specifies zero or more parameter declarations
 for the operation. Parameter declaration is described in section
-<a class="reference external" href="#parameter-declarations">Parameter Declarations</a>.</li>
+<a class="reference external" href="#parameter-declarations">*Parameter Declarations*</a>.</li>
 <li>An optional <em>raises expression</em> that indicates which exception may be
 raised as a result of an invocation of this operation. Raises
-expression are described in section <a class="reference external" href="#raises-expressions">Raises
-Expressions</a>.</li>
+expression are described in section <a class="reference external" href="#raises-expressions">*Raises
+Expressions*</a>.</li>
 <li>An optional <em>context expression</em> that is inherited from OMG IDL 3.5,
 but FIWARE Middleware will not use. Context expressions are described
-in section <a class="reference external" href="#context-expressions">Context Expressions</a>.</li>
+in section <a class="reference external" href="#context-expressions">*Context Expressions*</a>.</li>
 </ul>
 <div class="section" id="operation-attribute">
 <h4>Operation attribute<a class="headerlink" href="#operation-attribute" title="Permalink to this headline">¶</a></h4>
@@ -903,7 +903,7 @@ in section <a class="reference external" href="#context-expressions">Context Exp
 <p>This attribute is supported in FIWARE Middleware for backward
 compatibility. But in FIWARE Middleware IDL the preferedby way to define
 a <strong>oneway</strong> function is using the <strong>&#64;Oneway</strong> annotation as described
-in section <a class="reference external" href="#oneway-functions">Oneway functions</a>.</p>
+in section <a class="reference external" href="#oneway-functions">*Oneway functions*</a>.</p>
 </div>
 <div class="section" id="parameter-declarations">
 <h4>Parameter Declarations<a class="headerlink" href="#parameter-declarations" title="Permalink to this headline">¶</a></h4>
@@ -1150,8 +1150,8 @@ members’ declaration</p>
 <p>An annotation may be applied to almost any IDL construct or
 sub-construct. Applying and annotation consists actually in adding the
 related meta-data to the element under annotation. Full FIWARE
-Middleware IDL described in section <a class="reference external" href="#h.h832exl87ix3">Appendix B: FIWARE Middleware IDL
-Grammar</a> shows this.</p>
+Middleware IDL described in section <a class="reference external" href="#h.h832exl87ix3">*Appendix B: FIWARE Middleware IDL
+Grammar*</a> shows this.</p>
 </div>
 <div class="section" id="built-in-annotations">
 <h3>Built-in annotations<a class="headerlink" href="#built-in-annotations" title="Permalink to this headline">¶</a></h3>
@@ -1289,41 +1289,41 @@ namespace ThiefBank {
 3.5 to the FIWARE Middleware IDL:</p>
 <ul class="simple">
 <li>Modern keyword for modules. New keyword is <code class="docutils literal"><span class="pre">namespace</span></code>. See section
-<a class="reference external" href="#module-declaration">Module Declaration</a>.</li>
+<a class="reference external" href="#module-declaration">*Module Declaration*</a>.</li>
 <li>Modern keyword for interfaces. New keyword is <code class="docutils literal"><span class="pre">service</span></code>. See
-section <a class="reference external" href="#interface-header">Interface Header</a>.</li>
-<li>Modern keywords for basic types. See section <a class="reference external" href="#basic-types">Basic
-Types</a>.</li>
-<li>New template types. See section <a class="reference external" href="#template-types">Template
-Types</a>.</li>
+section <a class="reference external" href="#interface-header">*Interface Header*</a>.</li>
+<li>Modern keywords for basic types. See section <a class="reference external" href="#basic-types">*Basic
+Types*</a>.</li>
+<li>New template types. See section <a class="reference external" href="#template-types">*Template
+Types*</a>.</li>
 <li>FIWARE Middleware IDL only uses input parameters. See section
-<a class="reference external" href="#parameter-declarations">Parameter Declarations</a></li>
-<li>FIWARE Middleware IDL adds annotations. See sections <a class="reference external" href="#annotation-declaration">Annotation
-Declaration</a> and <a class="reference external" href="#annotation-application">Annotation
-Application</a>.</li>
+<a class="reference external" href="#parameter-declarations">*Parameter Declarations*</a></li>
+<li>FIWARE Middleware IDL adds annotations. See sections <a class="reference external" href="#annotation-declaration">*Annotation
+Declaration*</a> and <a class="reference external" href="#annotation-application">*Annotation
+Application*</a>.</li>
 </ul>
 <p>Also FIWARE Middleware IDL does <strong>not</strong> use and support (and therefore
 ignores) several OMG IDL 3.5 constructs:</p>
 <ul class="simple">
-<li>Import declarations. See section <a class="reference external" href="#import-declaration">Import
-Declaration</a>.</li>
-<li>Value declarations. See section <a class="reference external" href="#value-declaration">Value
-Declaration</a>.</li>
-<li>&#8216;Any&#8217; type. See section <a class="reference external" href="#basic-types">Basic Types</a>.</li>
-<li>Native types. See section <a class="reference external" href="#native-types">Native Types</a>.</li>
-<li>Context expressions. See section <a class="reference external" href="#context-expressions">Context
-Expressions</a>.</li>
-<li>Attribute declarations. See section <a class="reference external" href="#attribute-declaration">Attribute
-Declaration</a>.</li>
-<li>Repository Identity Related Declarations. See section <a class="reference external" href="#repository-identity-related-declarations">Repository
+<li>Import declarations. See section <a class="reference external" href="#import-declaration">*Import
+Declaration*</a>.</li>
+<li>Value declarations. See section <a class="reference external" href="#value-declaration">*Value
+Declaration*</a>.</li>
+<li>&#8216;Any&#8217; type. See section <a class="reference external" href="#basic-types">*Basic Types*</a>.</li>
+<li>Native types. See section <a class="reference external" href="#native-types">*Native Types*</a>.</li>
+<li>Context expressions. See section <a class="reference external" href="#context-expressions">*Context
+Expressions*</a>.</li>
+<li>Attribute declarations. See section <a class="reference external" href="#attribute-declaration">*Attribute
+Declaration*</a>.</li>
+<li>Repository Identity Related Declarations. See section <a class="reference external" href="#repository-identity-related-declarations">*Repository
 Identity Related
-Declarations</a>.</li>
-<li>Event declarations. See section <a class="reference external" href="#event-declaration">Event
-Declaration</a>.</li>
-<li>Component declarations. See section <a class="reference external" href="#component-declaration">Component
-Declaration</a>.</li>
-<li>Home declarations. See section <a class="reference external" href="#home-declaration">Home
-Declaration</a>.</li>
+Declarations*</a>.</li>
+<li>Event declarations. See section <a class="reference external" href="#event-declaration">*Event
+Declaration*</a>.</li>
+<li>Component declarations. See section <a class="reference external" href="#component-declaration">*Component
+Declaration*</a>.</li>
+<li>Home declarations. See section <a class="reference external" href="#home-declaration">*Home
+Declaration*</a>.</li>
 </ul>
 </div>
 <div class="section" id="appendix-b-fiware-middleware-idl-grammar">
@@ -1992,7 +1992,7 @@ Declaration</a>.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2.0',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

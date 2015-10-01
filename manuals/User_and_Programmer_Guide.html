@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KIARA User and Developer Guide &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  <title>KIARA User and Developer Guide &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -30,9 +30,9 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
-        <link rel="next" title="Advanced Middleware RPC API Specification" href="../specification/Middleware_RPC_API_Specification.html"/>
-        <link rel="prev" title="KIARA Installation and Admin Guide" href="Installation_and_Admin_Guide.html"/> 
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
+        <link rel="next" title="Open Specifiation" href="../specification/OpenSpecification.html"/>
+        <link rel="prev" title="KIARA Installation and Administration Guide" href="Installation_and_Admin_Guide.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -83,51 +83,56 @@
             
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">KIARA User and Developer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#background-and-detail">Background and Detail</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#user-guide">User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#programmers-guide">Programmers guide</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#middleware-operation-modes">Middleware Operation Modes</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#idl-derived-operation-mode">IDL derived operation mode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#application-derived-operation-mode">Application derived operation mode</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#mapped-operation-mode">Mapped operation mode</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#a-quick-example">A quick example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#calculator">Calculator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#basic-procedure">Basic procedure</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#a-quick-example">A quick example</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#calculator">Calculator</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#basic-procedure">Basic procedure</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#idl-derived-application-process">IDL derived application process</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#application-derived-application-example">Application derived application example</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mapping-application-example">Mapping application example</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#using-kiara-advanced-middleware-to-create-an-rpc-application">Using KIARA Advanced Middleware to create an RPC application</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">IDL derived operation mode</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#building-a-kiara-rpc-application">Building a KIARA RPC application</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl">Defining a set of remote procedures using the KIARA IDL</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#generating-remote-procedure-call-support-code">Generating remote procedure call support code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#kiaragen-tool">Kiaragen tool</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#kiaragen-installation">Kiaragen installation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#generate-support-code-manually-using-kiaragen">Generate support code manually using kiaragen</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#servant-implementation">Servant implementation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementing-the-server">Implementing the server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#implementing-the-client">Implementing the client</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#compiling-the-client-and-the-server">Compiling the client and the server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kiara-idl">KIARA IDL</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-kiara-to-create-an-rpc-application">Using KIARA to create an RPC application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#idl-derived-operation-mode-in-rpc">IDL derived operation mode in RPC</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl">Defining a set of remote procedures using the KIARA IDL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generating-remote-procedure-call-support-code">Generating remote procedure call support code</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#servant-implementation">Servant implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-server">Implementing the server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-client">Implementing the client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling-the-client-and-the-server">Compiling the client and the server</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#building-a-kiara-rpc-application-using-the-dynamic-api">Building a KIARA RPC application using the dynamic API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#declaring-the-remote-calls-and-data-types-at-runtime">Declaring the remote calls and data types at runtime</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#loading-the-idl-definition">Loading the IDL definition</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#implementing-the-service-functionality">Implementing the service functionality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-kiara-to-create-an-rpc-application-using-the-dynamic-api">Using KIARA to create an RPC application (using the dynamic API)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#declaring-the-remote-calls-and-data-types-at-runtime">Declaring the remote calls and data types at runtime</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Implementing the server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Implementing the client</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Implementing the server</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Implementing the client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-kiara-to-create-a-pub-sub-application">Using KIARA to create a Pub/Sub application</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#idl-derived-operation-mode-using-pub-sub">IDL derived operation mode using Pub/Sub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#defining-the-application-data-types-using-kiara-idl">Defining the application data types using KIARA IDL</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generate-pub-sub-code-using-kiaragen">Generate Pub/Sub code using kiaragen</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#static-endpoint-discovery-sed-using-xml-files">Static Endpoint Discovery (SED) using XML files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-publisher">Implementing the Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementing-the-subscriber">Implementing the Subscriber</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -135,6 +140,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../specification/OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
@@ -184,122 +190,112 @@
             
   <div class="section" id="kiara-user-and-developer-guide">
 <h1>KIARA User and Developer Guide<a class="headerlink" href="#kiara-user-and-developer-guide" title="Permalink to this headline">¶</a></h1>
-<p>Version 0.2.0</p>
+<p><strong>Date: 10th September 2015</strong></p>
+<ul class="simple">
+<li>Version: <a class="reference external" href="#">0.3.0</a></li>
+<li>Previous version: N/A</li>
+<li>Latest version: <a class="reference external" href="User_and_Programmer_Guide.html">latest</a></li>
+</ul>
+<p>Editors:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.eprosima.com/index.php/en/">eProsima - The Middleware
+Experts</a></li>
+<li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
+Intelligence</a></li>
+<li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
+(ICCLab)</a></li>
+</ul>
+<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
+<hr class="docutils" />
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>KIARA Advanced Middleware is a Java based communication middleware for
-modern, efficient and secure applications. It is an implementation of
-the FIWARE Advanced Middleware Generic Enabler.</p>
+<p>KIARA Advanced Middleware is a Java based communication middleware for modern, efficient and secure applications. It is an implementation of the FIWARE Advanced Middleware Generic Enabler.</p>
 <p>This first release focuses on the basic features of RPC communication:</p>
 <ul class="simple">
-<li>Modern Interface Definition Language (IDL) with a syntax based on the
-Corba IDL.</li>
+<li>Modern Interface Definition Language (IDL) with a syntax based on the Corba IDL.</li>
 <li>Easy to use and extensible Application Programmer Interface (API).</li>
-<li>IDL derived operation mode providing Stubs and Skeletons for RPC
-Client/Server implementations.</li>
+<li>IDL derived operation mode providing Stubs and Skeletons for RPC Client/Server implementations.</li>
 <li>Synchronous and Asynchronous function calls.</li>
 </ul>
 <p>Later versions will include additional features like:</p>
 <ul class="simple">
-<li>Application derived and Mapped operation mode providing dynamic
-declaration of functions and data type mapping.</li>
+<li>Application derived and Mapped operation mode providing dynamic declaration
+of functions and data type mapping.</li>
 <li>Advanced security features like field encryption and authentication.</li>
 <li>Additional communication patterns like publish/subscribe.</li>
 </ul>
-<p>KIARA Advanced Middleware is essentially a library which is incorporated
-into the developed applications, the requirements are rather minimal. In
-particular it requires no service running in the background.</p>
+<p>KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.</p>
+<div class="section" id="background-and-detail">
+<h3>Background and Detail<a class="headerlink" href="#background-and-detail" title="Permalink to this headline">¶</a></h3>
+<p>This User and Programmers Guide relates to the Advanced Middleware GE which is part of the <cite>Interface to Networks and Devices (I2ND) chapter</cite>. Please find more information about this Generic Enabler in the related <a class="reference external" href="../specification/OpenSpecification.html">Open Specification</a> and <a class="reference external" href="../specification/Architecture.html">Architecture Description</a>.</p>
+</div>
+</div>
+<div class="section" id="user-guide">
+<h2>User guide<a class="headerlink" href="#user-guide" title="Permalink to this headline">¶</a></h2>
+<p>These products are for programmers, who will invoke the APIs programmatically and there is no user interface as such.</p>
+<p>See the programmers guide section to browse the available documentation.</p>
+</div>
+<div class="section" id="programmers-guide">
+<h2>Programmers guide<a class="headerlink" href="#programmers-guide" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="middleware-operation-modes">
 <h3>Middleware Operation Modes<a class="headerlink" href="#middleware-operation-modes" title="Permalink to this headline">¶</a></h3>
-<p>The KIARA Advanced Middleware supports multiple operation modes. From
-traditional IDL-based approaches like Corba, DDS, Thrift up to newer
-approaches which start with the application data structure and
-automatically create the wire format.</p>
+<p>The KIARA Advanced Middleware supports multiple operation modes. From traditional IDL-based approaches like Corba, DDS, Thrift up to newer approaches which start with the application data structure and automatically create the wire format.</p>
 <p>We therefore differentiate three operation modes.</p>
 <div class="section" id="idl-derived-operation-mode">
 <h4>IDL derived operation mode<a class="headerlink" href="#idl-derived-operation-mode" title="Permalink to this headline">¶</a></h4>
-<p>The IDL derived operation mode is similar to the traditional middleware
-approaches.</p>
-<p>Based on the IDL definition we generate with a precompiler stub- and
-skeleton-classes, which have to be used by the application to implement
-the server and client (or Publisher/Subscriber) application parts.</p>
-<div class="line-block">
-<div class="line"><strong>Prerequisite:</strong> IDL definition</div>
-<div class="line"><strong>Generated:</strong> Stubs and Skeletons (at compile time) which have to be
-used by the application</div>
-<div class="line"><strong>Examples:</strong> Corba, DDS, Thrift, …</div>
-</div>
+<p>The IDL derived operation mode is similar to the traditional middleware approaches.</p>
+<p>Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, which have to be used by the application to implement the server and client (or Pub/Sub) application parts.</p>
+<p><strong>Prerequisite:</strong> IDL definition</p>
+<p><strong>Generated:</strong> Stubs and Skeletons (at compile time) which have to be used by the application</p>
+<p><strong>Examples:</strong> Corba, DDS, Thrift, …</p>
 </div>
 <div class="section" id="application-derived-operation-mode">
 <h4>Application derived operation mode<a class="headerlink" href="#application-derived-operation-mode" title="Permalink to this headline">¶</a></h4>
-<p>This mode is typical for some modern (e.g. RMI, WebService,...)
-frameworks. Based on an application specific interface definitions, the
-framework automatically generates Server- and Client-Proxy-Classes,
-which serialize the application internal data structures and send them
-over the wire. Using Annotations, the required serialization and
-transport mechanisms and type mappings can be influenced.</p>
-<p>This mode implicitly generates an IDL definition based on the Java
-interfaces definition and provide this IDL through a “service registry”
-for remote partners.</p>
-<div class="line-block">
-<div class="line"><strong>Prerequisite:</strong> Application-Interface-Definition (has to be the same
-on client and server side)</div>
-<div class="line"><strong>Generated:</strong> Server-/Client-Proxies (generated at runtime)</div>
-<div class="line"><strong>Examples:</strong> RMI, JAX-RS, Spring REST, …</div>
-</div>
+<p>This mode is typical for some modern (e.g. RMI, WebService,...) frameworks. Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.</p>
+<p>This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a “service registry” for remote partners.</p>
+<p><strong>Prerequisite:</strong> Application-Interface-Definition (has to be the same on client and server side)</p>
+<p><strong>Generated:</strong> Server-/Client-Proxies (generated at runtime)</p>
+<p><strong>Examples:</strong> RMI, JAX-RS, Spring REST, …</p>
 </div>
 <div class="section" id="mapped-operation-mode">
 <h4>Mapped operation mode<a class="headerlink" href="#mapped-operation-mode" title="Permalink to this headline">¶</a></h4>
-<p>Goal of the mapped operation mode is to separate the application
-interfaces from the data structure used to transport the data over the
-wire. Therefore the middleware has to map the application internal data
-structure and interfaces to a common IDL definition. Advantage is, that
-the application interface on client and server (or publisher/subscriber)
-side can be different.</p>
-<div class="line-block">
-<div class="line"><strong>Prerequisite:</strong> Application-Interface-Definition (can be different
-on server and client side) IDL Definition</div>
-<div class="line"><strong>Generated:</strong> Server-/Client-Proxis (generated at runtime, which map
-the attributes &amp; operations</div>
-<div class="line"><strong>Examples:</strong> KIARA</div>
-</div>
+<p>Goal of the mapped operation mode is to separate the application interfaces from the data structure used to transport the data over the wire. Therefore the middleware has to map the application internal data structure and interfaces to a common IDL definition. Advantage is, that the application interface on client and server (or publisher/subscriber) side can be different.</p>
+<p><strong>Prerequisite:</strong> Application-Interface-Definition (can be different on server and client side) IDL Definition</p>
+<p><strong>Generated:</strong> Server-/Client-Proxis (generated at runtime, which map the attributes &amp; operations</p>
+<p><strong>Examples:</strong> KIARA</p>
 <blockquote>
-<div>The first release of KIARA will provide support for the traditional
-IDL derived operation mode. Application derived and mapped operation
-mode will follow in a future release.</div></blockquote>
-</div>
+<div>The current release of KIARA provides support for the traditional IDL derived operation mode, being able to handle different communication patterns such as RPC or Publish/Subscribe. Application derived and mapped operation mode will follow in a future release.</div></blockquote>
 </div>
 </div>
 <div class="section" id="a-quick-example">
-<h2>A quick example<a class="headerlink" href="#a-quick-example" title="Permalink to this headline">¶</a></h2>
-<p>In the next chapters we will use the following example application to
-explain the basic concepts of building an application using KIARA.</p>
+<h3>A quick example<a class="headerlink" href="#a-quick-example" title="Permalink to this headline">¶</a></h3>
+<p>In the following chapters we will use the following example application to explain the basic concepts of building an application using KIARA.</p>
 <div class="section" id="calculator">
-<h3>Calculator<a class="headerlink" href="#calculator" title="Permalink to this headline">¶</a></h3>
-<p>The KIARA Calculator example application provides an API to ask for
-simple mathematics operations over two numbers. It is a common used
-example when trying to understand how an RPC framework works.</p>
+<h4>Calculator<a class="headerlink" href="#calculator" title="Permalink to this headline">¶</a></h4>
+<p>The KIARA Calculator example application provides an API to ask for simple mathematics operations over two numbers. Is a common used example when trying to understand how an RPC framework works.</p>
 <p>Basically the service provides two functions:</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">float</span> <span class="pre">add</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> : Returns the result of adding the
-two numbers introduced as parameters (n1 and n2).</li>
-<li><code class="docutils literal"><span class="pre">float</span> <span class="pre">subtract</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> : Returns the result of
-subtracting the two numbers introduced as parameters (n1 and n2).</li>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">float</span> <span class="pre">add</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> :</dt>
+<dd><p class="first last">Returns the result of adding the two numbers introduced as parameters (n1 and n2).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">float</span> <span class="pre">subtract</span> <span class="pre">(float</span> <span class="pre">n1,</span> <span class="pre">float</span> <span class="pre">n2)</span></code> :</dt>
+<dd><p class="first last">Returns the result of subtracting the two numbers introduced as parameters (n1 and n2).</p>
+</dd>
+</dl>
+</li>
 </ul>
-<p>The KIARA Calculator example is provided within this distribution, so it
-can be used as starting point.</p>
+<p>The KIARA Calculator example is provided within this distribution, so itcan be used as starting point.</p>
 </div>
 <div class="section" id="basic-procedure">
-<h3>Basic procedure<a class="headerlink" href="#basic-procedure" title="Permalink to this headline">¶</a></h3>
-<p>Before diving into the details describing the features and configure
-your projectfor KIARA, the following quick example should show the basic
-steps to create a simple client and server application in the different
-operation modes.</p>
-<p>Detailed instructions on how to execute the particular steps are given
-in chapter <a class="reference external" href="#building-a-kiara-rpc-application">Building a KIARA RPC
-application</a>.</p>
+<h4>Basic procedure<a class="headerlink" href="#basic-procedure" title="Permalink to this headline">¶</a></h4>
+<p>Before diving into the details describing the features and configure your projectfor KIARA, the following quick example should show the basic steps to create a simple client and server application in the different operation modes.</p>
+<p>Detailed instructions on how to execute the particular steps are given in chapter <a class="reference external" href="#Building_a_KIARA_RPC_application">Building a KIARA RPC application</a>.</p>
 <div class="section" id="idl-derived-application-process">
-<h4>IDL derived application process<a class="headerlink" href="#idl-derived-application-process" title="Permalink to this headline">¶</a></h4>
+<h5>IDL derived application process<a class="headerlink" href="#idl-derived-application-process" title="Permalink to this headline">¶</a></h5>
 <p>In the IDL derived approach, first the IDL definition has to be created:</p>
 <div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
 {
@@ -308,8 +304,7 @@ application</a>.</p>
 };
 </pre></div>
 </div>
-<p>The developer has to implement the functions inside the class
-<code class="docutils literal"><span class="pre">CalculatorServantImpl</span></code>:</p>
+<p>The developer has to implement the functions inside the class <code class="docutils literal"><span class="pre">CalculatorServantImpl</span></code>:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public static class CalculatorServantImpl extends CalculatorServant
 {
     @Override
@@ -357,163 +352,37 @@ float result = client.add(3, 5);
 </div>
 </div>
 <div class="section" id="application-derived-application-example">
-<h4>Application derived application example<a class="headerlink" href="#application-derived-application-example" title="Permalink to this headline">¶</a></h4>
+<h5>Application derived application example<a class="headerlink" href="#application-derived-application-example" title="Permalink to this headline">¶</a></h5>
 <blockquote>
 <div>This example will be added, when the feature is implemented.</div></blockquote>
 </div>
 <div class="section" id="mapping-application-example">
-<h4>Mapping application example<a class="headerlink" href="#mapping-application-example" title="Permalink to this headline">¶</a></h4>
+<h5>Mapping application example<a class="headerlink" href="#mapping-application-example" title="Permalink to this headline">¶</a></h5>
 <blockquote>
 <div>This example will be added, when the feature is implemented.</div></blockquote>
 </div>
 </div>
 </div>
-<div class="section" id="using-kiara-advanced-middleware-to-create-an-rpc-application">
-<h2>Using KIARA Advanced Middleware to create an RPC application<a class="headerlink" href="#using-kiara-advanced-middleware-to-create-an-rpc-application" title="Permalink to this headline">¶</a></h2>
-<p>KIARA Advanced Middleware allows the developer to easily implement a
-distributed application using remote procedure invocations. In
-client/server paradigm, a server offers a set of remote procedures that
-the client can remotely call. How the client calls these procedures
-should be transparent.</p>
-<p>For the developer, a proxy object represents the remote server, and this
-object offers the remote procedures implemented by the server. In the
-same way, how the server obtains a request from the network and how it
-sends the reply should also be transparent. The developer just writes
-the behaviour of the remote procedures.</p>
-<p>KIARA Advanced Middleware offers this transparency and facilitates the
-development.</p>
-<div class="section" id="id1">
-<h3>IDL derived operation mode<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<p>The general steps to build an application in IDL derived operation mode
-are:</p>
-<ol class="arabic simple">
-<li>Define a set of remote procedures: using the KIARA Interface
-Definition Language.</li>
-<li>Generation of specific remote procedure call support code: a
-Client-Proxy and a Server-Skeleton.</li>
-<li>Implement the servant: with the needed behaviour.</li>
-<li>Implement the server: filling the server skeleton with the behaviour
-of the procedures.</li>
-<li>Implement the client: using the client proxy to invoke the remote
-procedures.</li>
-</ol>
-<p>This section describes the basic concepts of these four steps that a
-developer has to follow to implement a distributed application. The
-advanced concepts are described in section Advanced Concepts.</p>
+<div class="section" id="kiaragen-tool">
+<h3>Kiaragen tool<a class="headerlink" href="#kiaragen-tool" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="kiaragen-installation">
+<h4>Kiaragen installation<a class="headerlink" href="#kiaragen-installation" title="Permalink to this headline">¶</a></h4>
+<p>To install kiaragen, please follow the installation instructions that
+can be found in the .</p>
 </div>
-</div>
-<div class="section" id="building-a-kiara-rpc-application">
-<h2>Building a KIARA RPC application<a class="headerlink" href="#building-a-kiara-rpc-application" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="defining-a-set-of-remote-procedures-using-the-kiara-idl">
-<h3>Defining a set of remote procedures using the KIARA IDL<a class="headerlink" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl" title="Permalink to this headline">¶</a></h3>
-<p>The KIARA Interface Definition Language (IDL) is used to define the
-remote procedures (operations) the server will offer. Simple and Complex
-Data Types used as parameter types in these remote procedures are also
-defined in the IDL file. In addition the KIARA IDL supports the
-declaration and application of Annotations to add metadata to almost any
-IDL element. These can be used by the code generator, when implementing
-the service functionality or configure some specific runtime
-functionality. The IDL syntax is based on the OMG IDL 3.5. The basic
-structure of an IDL File is shown in the following picture.</p>
-<p><img alt="GitHub Workflow" src="../_images/IDLFileStructure.png" /></p>
-<p>Following a short overview of the supported KIARA IDL elements. For a
-detailed description please see the chapter <a class="reference external" href="#kiara-interface-definition-language">KIARA Interface Definition
-Language</a>.</p>
-<ul class="simple">
-<li><strong>Import Declarations</strong>: Definitions can be split into multiple files
-and/or share common elements among multiple definitions using the
-import statement.</li>
-<li><strong>Namespace Declarations</strong>: Within a definition file the declarations
-can be grouped into modules. Modules are used to define scopes for
-IDL identifiers. KIARA supports the modern keyword namespace.
-Namespaces can be nested to support multi-level namespaces.</li>
-<li><strong>Constant Declarations</strong>: A constant declarations allows the
-definition of literals, which can be used as values in other
-definitions (e.g. as return values, default parameters, etc.)</li>
-<li><strong>Type Declarations</strong><ul>
-<li><strong>Basic Types</strong>: KIARA IDL supports the OMG IDL basic data types
-like float, double, (unsigned) short/int/long, char, wchar,
-boolean, octet, etc. Additionally it supports modern aliases like
-float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte</li>
-<li><strong>Constructed Types</strong>: Constructed Types are combinations of other
-types like. The following constructs are supported:</li>
-<li><strong>Structures</strong> (struct)</li>
-<li><strong>Template Types</strong>: Template types are frequently used data
-structures like the various forms of collections. The following
-Template Types are supported:</li>
-<li><strong>List</strong>: Ordered collection of elements of the same type “list”
-is the modern variant of the OMG IDL keyword “sequence”</li>
-<li><strong>Strings</strong>: collection of chars, will be mapped to the String
-representation of the language.</li>
-<li><strong>Complex Declarations</strong>: In addition to the above Type
-declarations, KIARA supports ultidimensional Arrays using the
-bracket notation (e.g. <code class="docutils literal"><span class="pre">int</span> <span class="pre">monthlyRevenue[12][10]</span></code>)</li>
-</ul>
-</li>
-<li><strong>Service Declarations</strong>: KIARA supports interface and service
-declarations via IDL. Meaning that the user can declare different
-services where the operations are going to be placed.</li>
-<li><strong>Operation Declarations</strong>: Operations can be declared within the
-services following the standard OMG IDL notation.</li>
-</ul>
-<p>The IDL file (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) for our example application shows the
-usage of some of the above elements.</p>
-<div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
-{
-    float32 add (float32 n1, float32 n2);
-    float32 substract (float32 n1, float32 n2);
-};
-</pre></div>
-</div>
-</div>
-<div class="section" id="generating-remote-procedure-call-support-code">
-<h3>Generating remote procedure call support code<a class="headerlink" href="#generating-remote-procedure-call-support-code" title="Permalink to this headline">¶</a></h3>
-<p>KIARA Advanced Middleware includes a Java application named
-<code class="docutils literal"><span class="pre">kiaragen</span></code>. This application parses the IDL file and generates Java
-code for the defined set of remote procedures.</p>
-<p>All support classes will be generated (e.g. for structs):</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">x.y.&lt;StructName&gt;</span></code>: Support classes containing the definition of
-the data types as well as the serialization code.</li>
-</ul>
-<p>Using the <code class="docutils literal"><span class="pre">-example</span></code> option (described below), kiaragen will generate
-the following files for each of your module/service definitions:</p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;</span></code>: Interface exposing the defined synchronous
-service operation calls.</li>
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Async</span></code>: Interface exposing the asynchronous
-operation calls.</li>
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Client</span></code>: Interface exposing all client side
-calls (sync &amp; async).</li>
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Proxy</span></code>: This class encapsulates all the logic
-needed to call the remote operations. (Client side proxy → stub).</li>
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Servant</span></code>: This abstract class provides all
-the mechanisms (transport, un/marshalling, etc.) the server requires
-to call the server functions.</li>
-<li><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample</span></code>: This class will be extended
-to implement the server side functions (see <a class="reference external" href="#servant-implementation">Servant
-Implementation</a>.</li>
-<li><code class="docutils literal"><span class="pre">x.y.ClientExample</span></code>: This class contains the code needed to run a
-possible example of the client side application.</li>
-<li><code class="docutils literal"><span class="pre">x.y.ServerExample</span></code>: This class contains the code needed to run a
-possible example of the server side application.</li>
-</ul>
-<p>The package name <code class="docutils literal"><span class="pre">x.y.</span></code> can be declared when generating the support
-code using <code class="docutils literal"><span class="pre">kiaragen</span></code> (see <code class="docutils literal"><span class="pre">-package</span></code> option below).</p>
 <div class="section" id="generate-support-code-manually-using-kiaragen">
 <h4>Generate support code manually using kiaragen<a class="headerlink" href="#generate-support-code-manually-using-kiaragen" title="Permalink to this headline">¶</a></h4>
 <p>To call <code class="docutils literal"><span class="pre">kiaragen</span></code> manually it has to be installed and in your run
-path. Instructions to install the kiaragen tool can be found in the
-<a class="reference internal" href="Installation_and_Admin_Guide.html"><em>KIARA Installation and Administration Guide</em></a></p>
+path.</p>
 <p>The usage syntax is:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ kiaragen [options] &lt;IDL file&gt; [&lt;IDL file&gt; …]
+<div class="code bash highlight-python"><div class="highlight"><pre>$ kiaragen [options] &lt;IDL file&gt; [&lt;IDL file&gt; …]
 </pre></div>
 </div>
 <p>Options:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="9%" />
-<col width="91%" />
+<col width="21%" />
+<col width="79%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Option</th>
@@ -530,28 +399,256 @@ path. Instructions to install the kiaragen tool can be found in the
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">-package</span></code></td>
 <td>Defines the package prefix of the generated Java classes. Default: no package</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&lt;path&gt;</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&quot;path&quot;</span></code></td>
 <td>Specify the output directory for the generated files. Default: current working dir</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">-replace</span></code></td>
 <td>Replaces existing generated files.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-example</span> <span class="pre">&lt;platform&gt;</span></code></td>
-<td>Generates the support files (interfaces, stubs, skeletons,...) for the given target platform. These classes will be used to by the developer to implement both client and server part or the application. Supported values: gradle (creates also build.gradle files)</td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-example</span> <span class="pre">&quot;pattern&quot;</span></code></td>
+<td><p class="first">Generates the support files (interfaces, classes, stubs, skeletons,...) for the given target communication  pattern.
+These classes can be used by the developer to implement his application. It also creates build.gradle files.
+Supported values:</p>
+<ul class="last simple">
+<li>rpc: Creates an example application which uses RPC as a communication framework.</li>
+<li>ps: Creates an example application which uses Publish/Subscribe as a communication pattern.</li>
+</ul>
+</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--ppDisable</span></code></td>
 <td>Disables the preprocessor.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ppPath</span> <span class="pre">&lt;path&gt;</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ppPath</span> <span class="pre">&quot;path&quot;</span></code></td>
 <td>Specifies the path of the preprocessor. Default: Systems C++ preprocessor</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;path&gt;</span></code></td>
-<td>Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path</td>
+<tr class="row-even"><td colspan="2"><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;path&gt;</span></code>            | Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path</td>
 </tr>
 </tbody>
 </table>
+</div>
+</div>
+<div class="section" id="kiara-idl">
+<h3>KIARA IDL<a class="headerlink" href="#kiara-idl" title="Permalink to this headline">¶</a></h3>
+<p>The KIARA Interface Definition Language (IDL) can be used to describe data types, namespaces, constants and even remote functions the server will offer (when using RPC pattern). In addition the KIARA IDL supports the declaration and application of Annotations to add metadata to almost any IDL element. These can be used by the code generator, when implementing the service functionality or configure some specific runtime functionality. The IDL syntax is based on the OMG IDL 3.5.</p>
+<p>The basic structure of an IDL File is shown in the picture in the right.</p>
+<p>Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter <a class="reference external" href="../specification/Middleware_IDL_Specification.html">KIARA Interface Definition Language</a>.</p>
+<p><img alt="GitHub Workflow" src="../_images/IDLFileStructure.png" /></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Import Declarations</strong>:</dt>
+<dd><p class="first last">Definitions can be split into multiple files and/or share common elements
+among multiple definitions using the import statement.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Namespace Declarations</strong>:</dt>
+<dd><p class="first last">Within a definition file the declarations can be grouped into modules. Modules are used to define scopes for IDL identifiers. KIARA supports the modern keyword namespace. Namespaces can be nested to support multi-level namespaces.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Constant Declarations</strong>:</dt>
+<dd><p class="first last">A constant declarations allows the definition of literals, which can be used as values in other definitions (e.g. as return values, default parameters, etc.)</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><strong>Type Declarations</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>Basic Types</strong>:</dt>
+<dd><p class="first last">KIARA IDL supports the OMG IDL basic data types like float, double, (unsigned) short/int/long, char, wchar, boolean, octet, etc. Additionally it supports modern aliases like float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Constructed Types</strong>:</dt>
+<dd><p class="first">Constructed Types are combinations of other types like. The following constructs are supported:</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt><strong>Structures</strong>:</dt>
+<dd><p class="first last">Struct types are mapped as classes in Java code. These structures can contain every other data type that can be described using KIARA IDL.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Unions</strong>:</dt>
+<dd><p class="first last">Union types are mapped into Java by using special classes. These classes use a discriminator value to distinguish between the different types that form the union.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Exceptions</strong>:</dt>
+<dd><p class="first last">Exception types are mapped as classes in Java code. These exceptions can contain every other data type that can be described using KIARA IDL.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Template Types</strong>:</dt>
+<dd><p class="first">Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt><strong>Lists</strong></dt>
+<dd><p class="first last">Ordered collection of elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Sets</strong></dt>
+<dd><p class="first last">Ordered collection of different elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Maps</strong></dt>
+<dd><p class="first last">Lists of paired objects indexed by a key</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Strings</strong></dt>
+<dd><p class="first last">Collection of chars, will be mapped to the String representation of the language.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Complex Declarations</strong>:</dt>
+<dd><p class="first last">In addition to the above Type declarations, KIARA supports multidimensional Arrays using the bracket notation (e.g. <code class="docutils literal"><span class="pre">int</span> <span class="pre">monthlyRevenue[12][10]</span></code>)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Service Declarations</strong>:</dt>
+<dd><p class="first last">KIARA supports interface and service declarations via IDL. Meaning that the user can declare different services where the operations are going to be placed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>Operation Declarations</strong>:</dt>
+<dd><p class="first last">Operations can be declared within the services following the standard OMG IDL notation.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="using-kiara-to-create-an-rpc-application">
+<h3>Using KIARA to create an RPC application<a class="headerlink" href="#using-kiara-to-create-an-rpc-application" title="Permalink to this headline">¶</a></h3>
+<p>KIARA Advanced Middleware allows the developer to easily implement a distributed application using remote procedure invocations. In client/server paradigm, a server offers a set of remote procedures that the client can remotely call. How the client calls these procedures should be transparent.</p>
+<p>For the developer, a proxy object represents the remote server, and this object offers the remote procedures implemented by the server. In the same way, how the server obtains a request from the network and how it sends the reply should also be transparent. The developer just writes the behaviour of the remote procedures.</p>
+<p>KIARA Advanced Middleware offers this transparency and facilitates the development.</p>
+<div class="section" id="idl-derived-operation-mode-in-rpc">
+<h4>IDL derived operation mode in RPC<a class="headerlink" href="#idl-derived-operation-mode-in-rpc" title="Permalink to this headline">¶</a></h4>
+<p>The general steps to build an application in IDL derived operation mode
+are:</p>
+<ol class="arabic simple">
+<li>Define a set of remote procedures: using the KIARA Interface
+Definition Language.</li>
+<li>Generation of specific remote procedure call support code: a
+Client-Proxy and a Server-Skeleton.</li>
+<li>Implement the servant: with the needed behaviour.</li>
+<li>Implement the server: filling the server skeleton with the behaviour
+of the procedures.</li>
+<li>Implement the client: using the client proxy to invoke the remote
+procedures.</li>
+</ol>
+<p>This section describes the basic concepts of these four steps that a
+developer has to follow to implement a distributed application.</p>
+</div>
+<div class="section" id="defining-a-set-of-remote-procedures-using-the-kiara-idl">
+<h4>Defining a set of remote procedures using the KIARA IDL<a class="headerlink" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl" title="Permalink to this headline">¶</a></h4>
+<p>The KIARA Interface Definition Language (IDL) can be used to define the remote procedures (operations) the server will offer. Simple and Complex Data Types | used as parameter types in these remote procedures are also defined in the IDL file. The IDL file for our example application (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) shows the usage of some of the above elements.</p>
+<div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
+{
+    float32 add (float32 n1, float32 n2);
+    float32 substract (float32 n1, float32 n2);
+};
+</pre></div>
+</div>
+</div>
+<div class="section" id="generating-remote-procedure-call-support-code">
+<h4>Generating remote procedure call support code<a class="headerlink" href="#generating-remote-procedure-call-support-code" title="Permalink to this headline">¶</a></h4>
+<p>KIARA Advanced Middleware includes a Java application named <code class="docutils literal"><span class="pre">kiaragen</span></code>. This application parses the IDL file and generates Java code for the defined set of remote procedures.</p>
+<p>All support classes will be generated (e.g. for structs):</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">x.y.&lt;StructName&gt;</span></code>: Support classes containing the definition
+of the data types as well as the serialization code.</li>
+</ul>
+<p>Using the <code class="docutils literal"><span class="pre">-example</span></code> option (described below), kiaragen will generate the following files for each of your module/service definitions:</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;</span></code>:</dt>
+<dd><p class="first last">Interface exposing the defined synchronous service operation calls.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Async</span></code>:</dt>
+<dd><p class="first last">Interface exposing the asynchronous operation calls.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Client</span></code>:</dt>
+<dd><p class="first last">Interface exposing all client side calls (sync &amp; async).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Process</span></code>:</dt>
+<dd><p class="first last">Class containing the methods that will be executed to process dynamic calls.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Proxy</span></code>:</dt>
+<dd><p class="first last">This class encapsulates all the logic needed to call the remote operations. (Client side proxy → stub).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;Servant</span></code>:</dt>
+<dd><p class="first last">This abstract class provides all the mechanisms (transport, un/marshalling, etc.) the server requires to call the server functions.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample</span></code>:</dt>
+<dd><p class="first last">This class will be extended to implement the server side functions (see <a class="reference external" href="#Servant_implementation">Servant Implementation</a>).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.ClientExample</span></code>:</dt>
+<dd><p class="first last">This class contains the code needed to run a possible example of the client side application.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.ServerExample</span></code>:</dt>
+<dd><p class="first last">This class contains the code needed to run a possible example of the server side application.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="docutils literal"><span class="pre">x.y.IDLText</span></code>:</dt>
+<dd><p class="first last">This class contains a String whose value is the content of the IDL file.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The package name <code class="docutils literal"><span class="pre">x.y.</span></code> can be declared when generating the support code using <code class="docutils literal"><span class="pre">kiaragen</span></code> (see <code class="docutils literal"><span class="pre">-package</span></code> option in <code class="docutils literal"><span class="pre">kiaragen</span></code> tool <a class="reference external" href="#Kiaragen_tool">description</a>).</p>
 <p>For our example the call could be:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ kiaragen -example gradle -package com.example src/main/idl/calculator.idl
+<div class="highlight-python"><div class="highlight"><pre>$ kiaragen -example rpc -package com.example src/main/idl/calculator.idl
 Loading templates...
 org.fiware.kiara.generator.kiaragen
 org.fiware.kiara.generator.idl.grammar.Context
@@ -566,34 +663,31 @@ Generating common client side files... OK
 </pre></div>
 </div>
 <p>This would generate the following files:</p>
-<div class="code highlight-python"><div class="highlight"><pre>.
-└── src                                      // source files
+<div class="highlight-python"><div class="highlight"><pre>.
+└── src                                                // source files
     ├── main
-    │   ├── idl                              // IDL definitions for kiaragen
+    │   ├── idl                                        // IDL definitions for kiaragen
     │   │   └── calculator.idl
-    │   └── java                             // Generated support files
+    │   └── java                                       // Generated support files
     │       └── com.example
-    │            │                           // Generated using --example
-    │            ├── Calculator.java         // Interface of service
-    │            ├── CalculatorAsync.java    // Interface of async calls
-    │            ├── CalculatorClient.java   // Interface client side
-    │            ├── CalculatorProxy.java    // Client side implementation
-    │            ├── CalculatorServant.java  // Abstract server side skeleton
-    │            ├── CalculatorServantExample.java // Dummmy servant impl.
-    │            ├── ClientExample.java      // Example client code
-    │            └── ServerExample.java      // Example server code
-    ├── build_client.gradle                  // generated support files
-    ├── build_server.gradle                  // generated support files
+    │            │                                     // Generated using --example
+    │            ├── Calculator.java                   // Interface of service
+    │            ├── CalculatorAsync.java              // Interface of async calls
+    │            ├── CalculatorProcess.java            // Process methods for dynamic operations
+    │            ├── CalculatorClient.java             // Interface client side
+    │            ├── CalculatorProxy.java              // Client side implementation
+    │            ├── CalculatorServant.java            // Abstract server side skeleton
+    │            ├── CalculatorServantExample.java     // Dummmy servant impl.
+    │            ├── ClientExample.java                // Example client code
+    │            ├── ServerExample.java                // Example server code
+    │            └── IDLText.java                      // IDL File contents
+    └── build.gradle                                   // File with targets to compile the example
 </pre></div>
 </div>
 </div>
-</div>
 <div class="section" id="servant-implementation">
-<h3>Servant implementation<a class="headerlink" href="#servant-implementation" title="Permalink to this headline">¶</a></h3>
-<p>Please note that the code inside the file
-<code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample.java</span></code> (which in this case is
-<code class="docutils literal"><span class="pre">CalculatorServantExample.java</span></code>) has to be modified in order to
-specify the behaviour of each declared function.</p>
+<h4>Servant implementation<a class="headerlink" href="#servant-implementation" title="Permalink to this headline">¶</a></h4>
+<p>Please note that the code inside the file <code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample.java</span></code> (which in this case is <code class="docutils literal"><span class="pre">CalculatorServantExample.java</span></code>) has to be modified in order to specify the behaviour of each declared function.</p>
 <div class="code java highlight-python"><div class="highlight"><pre>class CalculatorServantExample extends CalculatorServant {
 
   public float add (/*in*/ float n1, /*in*/ float n2) {
@@ -609,13 +703,9 @@ specify the behaviour of each declared function.</p>
 </div>
 </div>
 <div class="section" id="implementing-the-server">
-<h3>Implementing the server<a class="headerlink" href="#implementing-the-server" title="Permalink to this headline">¶</a></h3>
-<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code>
-option) contains a simple implementation of a server. This
-implementation can obviously be extended as far as the user wants, this
-is just a very simple server capable of executing remote procedures.</p>
-<p>The class containing the mentioned code is named ServerExample, and its
-code is shown below:</p>
+<h4>Implementing the server<a class="headerlink" href="#implementing-the-server" title="Permalink to this headline">¶</a></h4>
+<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code> option) contains a simple implementation of a server. This implementation can obviously be extended as far as the user wants, this is just a very simple server capable of executing remote procedures.</p>
+<p>The class containing the mentioned code is named ServerExample, and its code is shown below:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public class ServerExample {
 
     public static void main (String [] args) throws Exception {
@@ -643,15 +733,9 @@ code is shown below:</p>
 </div>
 </div>
 <div class="section" id="implementing-the-client">
-<h3>Implementing the client<a class="headerlink" href="#implementing-the-client" title="Permalink to this headline">¶</a></h3>
-<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code>
-option) contains a simple implementation of a client. This
-implementation must be extended in order to show the output received
-from the server.</p>
-<p>In the KIARA Calculator example, as we have defined first the add
-function in the IDL file, this will be the one used by default in the
-generated code. The code for doing this is shown in the following
-snippet:</p>
+<h4>Implementing the client<a class="headerlink" href="#implementing-the-client" title="Permalink to this headline">¶</a></h4>
+<p>The source code generated using kiaragen tool (by using the <code class="docutils literal"><span class="pre">-example</span></code> option) contains a simple implementation of a client. This implementation must be extended in order to show the output received from the server.</p>
+<p>In the KIARA Calculator example, as we have defined first the add function in the IDL file, this will be the one used by default in the generated code. The code for doing this is shown in the following snippet:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public class ClientExample {
     public static void main (String [] args) throws Exception {
         System.out.println(&quot;CalculatorClientExample&quot;);
@@ -675,6 +759,8 @@ snippet:</p>
             return;
         }
     }
+
+    Kiara.shutdown();
 }
 </pre></div>
 </div>
@@ -688,33 +774,20 @@ when the remote procedure is executed.</li>
 </ul>
 </div>
 <div class="section" id="compiling-the-client-and-the-server">
-<h3>Compiling the client and the server<a class="headerlink" href="#compiling-the-client-and-the-server" title="Permalink to this headline">¶</a></h3>
-<p>For the client and server examples to compile, some jar files are
-needed. These files are located under the lib directory provided with
-this distribution, and they must be placed in the root working
-directory, under the lib folder:</p>
-<div class="code highlight-python"><div class="highlight"><pre>.
-├── src                                      // source files
-├── lib                                      // generated support files
-├── build_client.gradle                      // generated support files
-└── build_server.gradle
+<h4>Compiling the client and the server<a class="headerlink" href="#compiling-the-client-and-the-server" title="Permalink to this headline">¶</a></h4>
+<p>For the client and server examples to compile, some jar files are needed. These files are located under the lib directory provided with this distribution, and they must be placed in the root working directory, under the lib folder:</p>
+<div class="highlight-python"><div class="highlight"><pre>.
+├── src                           // source files
+├── lib                           // generated support files
+└── build.gradle                  // Gradle compilation script
 </pre></div>
 </div>
-<p>To compile the client using gradle, the call would be the next (changing
-the file build_client.gradle to build_server.gradle will compile the
-server):</p>
-<div class="highlight-python"><div class="highlight"><pre>$ gradle -b build_client.gradle build
-:compileJava
+<p>To compile the client using gradle, the call would be the next one (change target clientJar to serverJar to compile the server):</p>
+<div class="highlight-python"><div class="highlight"><pre>$ gradle clientJar
+:compileJava UP-TO-DATE
 :processResources UP-TO-DATE
-:classes
-:jar
-:assemble
-:compileTestJava UP-TO-DATE
-:processTestResources UP-TO-DATE
-:testClasses UP-TO-DATE
-:test UP-TO-DATE
-:check UP-TO-DATE
-:build
+:classes UP-TO-DATE
+:clientJar
 
 BUILD SUCCESSFUL
 
@@ -722,37 +795,25 @@ Total time: 3.426 secs
 </pre></div>
 </div>
 <p>After compiling both of them the following files will be generated:</p>
-<div class="code highlight-python"><div class="highlight"><pre>.
-├── src                                // source files
-├── build                                    // generated by gradle
-│   ├── classes                              // Compiled .class files
-│   ├── dependency-cache                     // Inner gradle files
-│   ├── libs                                 // Executable jar files
-│   └── tmp                                  // Temporal files used by gradle
+<div class="highlight-python"><div class="highlight"><pre>.
+├── src                       // source files
+├── build                           // generated by gradle
+│   ├── classes                     // Compiled .class files
+│   ├── dependency-cache            // Inner gradle files
+│   ├── libs                        // Executable jar files
+│   └── tmp                        // Temporal files used by gradle
 ├── lib
-├── build_client.gradle                // generated support files
-└── build_server.gradle                // Generated support files
+└── build.gradle              //  Gradle compilation script
 </pre></div>
 </div>
-<p>In order to execute the examples, copy them to the same locations where
-the libraries mentioned before are placed (lib directory), and execute
-them using the command <code class="docutils literal"><span class="pre">java</span> <span class="pre">-jar</span> <span class="pre">file_to_execute.jar</span></code> All the files
-needed to compile and execute this project are located under the
-examples/Calculator directory included with this distribution.</p>
+<p>In order to execute the examples, just cd where they are placed (build/libs directory), and execute them using the command <code class="docutils literal"><span class="pre">java</span> <span class="pre">-jar</span> <span class="pre">file_to_execute.jar</span></code>.</p>
 </div>
 </div>
-<div class="section" id="building-a-kiara-rpc-application-using-the-dynamic-api">
-<h2>Building a KIARA RPC application using the dynamic API<a class="headerlink" href="#building-a-kiara-rpc-application-using-the-dynamic-api" title="Permalink to this headline">¶</a></h2>
-<p>The &#8220;KIARA RPC Dynamic API&#8221; allows the developers to easily execute
-calls in an RPC framework without having to statically generate code to
-support them. In the following sections, the different concepts of this
-feature will be explained.</p>
-<p>Using the dynamic API we still need the IDL file, which declares the
-&#8220;contract&#8221; between server and client by defining the data types and
-services (operations) the server offers.</p>
-<p>For the dynamic API the IDL format is identical to the one used for the
-static/compile time version. For example the IDL file for our demo
-application (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) is identical to the static use-case:</p>
+<div class="section" id="using-kiara-to-create-an-rpc-application-using-the-dynamic-api">
+<h3>Using KIARA to create an RPC application (using the dynamic API)<a class="headerlink" href="#using-kiara-to-create-an-rpc-application-using-the-dynamic-api" title="Permalink to this headline">¶</a></h3>
+<p>The &#8220;KIARA RPC Dynamic API&#8221; allows the developers to easily execute calls in an RPC framework without having to statically generate code to support them. In the following sections, the different concepts of this feature will be explained.</p>
+<p>Using the dynamic API we still need the IDL file, which declares the &#8220;contract&#8221; between server and client by defining the data types and services (operations) the server offers.</p>
+<p>For the dynamic API the IDL format is identical to the one used for the static/compile time version. For example the IDL file for our demo application (<code class="docutils literal"><span class="pre">calculator.idl</span></code>) is identical to the static use-case:</p>
 <div class="code idl highlight-python"><div class="highlight"><pre>service Calculator
 {
     float32 add (float32 n1, float32 n2);
@@ -761,29 +822,19 @@ application (<code class="docutils literal"><span class="pre">calculator.idl</sp
 </pre></div>
 </div>
 <div class="section" id="declaring-the-remote-calls-and-data-types-at-runtime">
-<h3>Declaring the remote calls and data types at runtime<a class="headerlink" href="#declaring-the-remote-calls-and-data-types-at-runtime" title="Permalink to this headline">¶</a></h3>
-<p>In the dynamic approach, the comple time <code class="docutils literal"><span class="pre">kiaragen</span></code> code-generator
-will not be required anymore. Instead, the middleware provides a
-function to load the IDL definition from a String object. The generation
-of the IDL String has to be done by the developer. For example it can be
-loaded from a File, from a URL or generated by an algorithm.</p>
+<h4>Declaring the remote calls and data types at runtime<a class="headerlink" href="#declaring-the-remote-calls-and-data-types-at-runtime" title="Permalink to this headline">¶</a></h4>
+<p>In the dynamic approach, the comple time <code class="docutils literal"><span class="pre">kiaragen</span></code> code-generator will not be required anymore. Instead, the middleware provides a function to load the IDL definition from a String object. The generation of the IDL String has to be done by the developer. For example it can be loaded from a File, from a URL or generated by an algorithm.</p>
 <p>The process to declare the dynamic part is as follows:</p>
 <ul class="simple">
 <li>The server loads the IDL String (e.g. from a file).</li>
-<li>The IDL definition will then be provided to the clients connecting
-with the server.</li>
-<li>On the server the developer has to provide objects to act as servants
-and execute code depending on the function the client has requested.</li>
+<li>The IDL definition will then be provided to the clients connecting with the server.</li>
+<li>On the server the developer has to provide objects to act as servants and execute code depending on the function the client has requested.</li>
 </ul>
 <div class="section" id="loading-the-idl-definition">
-<h4>Loading the IDL definition<a class="headerlink" href="#loading-the-idl-definition" title="Permalink to this headline">¶</a></h4>
-<p>On the server side, in order to provide the user with a definition of
-the functions that the server offers, the first thing to be done is to
-load the IDL definition into the application.</p>
-<p>Therefore, the <code class="docutils literal"><span class="pre">Service</span></code> class provides a public function that can be
-used to load the IDL information from a String object. It is the
-developers responsibility to load the String from the source (e.g. from
-a file). The following snippet shows an example on how to do this:</p>
+<h5>Loading the IDL definition<a class="headerlink" href="#loading-the-idl-definition" title="Permalink to this headline">¶</a></h5>
+<p>On the server side, in order to provide the user with a definition of the functions that the server offers, the first thing to be done is to load the IDL definition into the application.</p>
+<p>Therefore, the <code class="docutils literal"><span class="pre">Service</span></code> class provides a public function that can be used to load the IDL information from a String object. It is the developers responsibility to load the String from the source (e.g. from a file).</p>
+<p>The following snippet shows an example on how to do this:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>// Load IDL content string from file
 String idlString = new String(Files.readAllBytes(Paths.get(&quot;calculator.idl&quot;)));
 /* This is just one way to do it. Developer decides how to do it */
@@ -795,13 +846,8 @@ service.loadServiceIDLFromString(idlString);
 </div>
 </div>
 <div class="section" id="implementing-the-service-functionality">
-<h4>Implementing the service functionality<a class="headerlink" href="#implementing-the-service-functionality" title="Permalink to this headline">¶</a></h4>
-<p>Unlike in the static approach, in the dynamic version exists no Servant
-class to code the behaviour of the functions. To deal with this, KIARA
-provides a functional interface <code class="docutils literal"><span class="pre">DynamicFunctionHandler</span></code> that acts as
-a servant implementation. This class must be used to implement the
-function and register it with the service, which means to map the
-business logic of each function with its registered name.</p>
+<h5>Implementing the service functionality<a class="headerlink" href="#implementing-the-service-functionality" title="Permalink to this headline">¶</a></h5>
+<p>Unlike in the static approach, in the dynamic version exists no Servant class to code the behaviour of the functions. To deal with this, KIARA provides a functional interface <code class="docutils literal"><span class="pre">DynamicFunctionHandler</span></code> that acts as a servant implementation. This class must be used to implement the function and register it with the service, which means to map the business logic of each function with its registered name.</p>
 <div class="code java highlight-python"><div class="highlight"><pre>// Create type descriptor and dynamic builder
 final TypeDescriptorBuilder tdbuilder = Kiara.getTypeDescriptorBuilder();
 final DynamicValueBuilder dvbuilder = Kiara.getDynamicValueBuilder();
@@ -833,13 +879,9 @@ service.register(&quot;Calculator.add&quot;, addHandler);
 </div>
 </div>
 </div>
-<div class="section" id="id2">
-<h3>Implementing the server<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>Because the server functionality is not encapsuled in generated Servant
-classes, the server implmentation is a bit more extensive. It still
-follows the same pattern as in the static API, but the implementation
-and registration of the dynamic functions has to be done completely by
-the developer.</p>
+<div class="section" id="id1">
+<h4>Implementing the server<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>Because the server functionality is not encapsuled in generated Servant classes, the server implmentation is a bit more extensive. It still follows the same pattern as in the static API, but the implementation and registration of the dynamic functions has to be done completely by the developer.</p>
 <p>The following ServerExample class shows, how this would look like:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public class ServerExample {
     public static void main (String [] args) throws Exception {
@@ -879,18 +921,11 @@ the developer.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id3">
-<h3>Implementing the client<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>On the client side the key point is the negotiation with the server to
-download the IDL it provides. After downloading, it will automatically
-parse the content and generate the necessary information to create the
-dynamic objects. When the <code class="docutils literal"><span class="pre">DynamicProxy</span></code> is created the functions
-provided by the server can be executed by using
-<code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> objects. The parameters of the functions have
-to be set in the request using <code class="docutils literal"><span class="pre">DynamicData</span></code> objects. The call of the
-request function <code class="docutils literal"><span class="pre">execute()</span></code> will finally perform the call to the
-server and return the result in a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object.
-The following code shows the client implementation:</p>
+<div class="section" id="id2">
+<h4>Implementing the client<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>On the client side the key point is the negotiation with the server to download the IDL it provides. After downloading, it will automatically parse the content and generate the necessary information to create the dynamic objects.</p>
+<p>When the <code class="docutils literal"><span class="pre">DynamicProxy</span></code> is created the functions provided by the server can be executed by using <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> objects. The parameters of the functions have to be set in the request using <code class="docutils literal"><span class="pre">DynamicData</span></code> objects. The call of the request function <code class="docutils literal"><span class="pre">execute()</span></code> will finally perform the call to the server and return the result in a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object.</p>
+<p>The following code shows the client implementation:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public class ClientExample {
     public static void main (String [] args) throws Exception {
         System.out.println(&quot;CalculatorClientExample&quot;);
@@ -926,6 +961,784 @@ The following code shows the client implementation:</p>
 </div>
 </div>
 </div>
+<div class="section" id="using-kiara-to-create-a-pub-sub-application">
+<h3>Using KIARA to create a Pub/Sub application<a class="headerlink" href="#using-kiara-to-create-a-pub-sub-application" title="Permalink to this headline">¶</a></h3>
+<p>KIARA Advanced Middleware allows the developer to easily implement a distributed application using a Publish/Subscribe pattern. In software architecture, publish/subscribe is a messaging pattern when messages of a specific data type (topic) are sent by entities called publishers, and received by entities who are subscribed to that same data type, called subscribers.</p>
+<p>From the point of view of the developer, all he knows is that he has a certain data type in his application and he wants it to be sent. How the publisher publishes this data in the network and how the subscriber gets it must be transparent.</p>
+<p>KIARA Advanced Middleware offers this transparency and facilitates the development.</p>
+<div class="section" id="idl-derived-operation-mode-using-pub-sub">
+<h4>IDL derived operation mode using Pub/Sub<a class="headerlink" href="#idl-derived-operation-mode-using-pub-sub" title="Permalink to this headline">¶</a></h4>
+<p>The general steps to build an application in IDL derived operation mode
+are:</p>
+<ol class="arabic simple">
+<li>Define the application data types using KIARA IDL: using the KIARA Interface Definition Language.</li>
+<li>Generation of specific support code: those classes representing the types defined using IDL.</li>
+<li>Generate the Pub/Sub example: using the kiaragen tool.</li>
+<li>Implementing the Publisher side: using the Publisher entity and the generated type support classes.</li>
+<li>Implementing the Subscriber side: using the Subscriber entity and the
+generated type support classes.</li>
+</ol>
+<p>This section describes the basic concepts of these steps that a
+developer has to follow to implement a distributed application.</p>
+</div>
+<div class="section" id="defining-the-application-data-types-using-kiara-idl">
+<h4>Defining the application data types using KIARA IDL<a class="headerlink" href="#defining-the-application-data-types-using-kiara-idl" title="Permalink to this headline">¶</a></h4>
+<p>The KIARA Interface Definition Language (IDL) can be used to define the application data types to be published. Simple and Complex Data Types inside the structures can also be defined in the IDL file, but take into account that only structures will count as Topic types.</p>
+<p>The IDL file for our RPC example application shows the definition of a temperature sensor whose value is going to be published over the wire when changed.</p>
+<div class="code idl highlight-python"><div class="highlight"><pre>struct TSensor
+{
+    float32 temperature;
+};
+</pre></div>
+</div>
+</div>
+<div class="section" id="generate-pub-sub-code-using-kiaragen">
+<h4>Generate Pub/Sub code using kiaragen<a class="headerlink" href="#generate-pub-sub-code-using-kiaragen" title="Permalink to this headline">¶</a></h4>
+<p>KIARA Advanced Middleware includes a Java application named <code class="docutils literal"><span class="pre">kiaragen</span></code>. By using this application, the type support code for the structure defined in the IDL file can be generated. The files that will result as the output of the kiaragen execution are the following:</p>
+<ul class="simple">
+<li>x.y.: Support classes containing the definition of the data types as well as the serialization code.</li>
+<li>x.y.Type: Topic class for the data type. This class will be the one used to register the data types in a specific topic.</li>
+</ul>
+<p>Using ps as -example option, kiaragen will generate the following files for the data type definitions:</p>
+<ul class="simple">
+<li>x.y.SubscriberExample: This class contains the code needed to run a simple application with a Subscriber.</li>
+<li>x.y.PublisherExample: This class contains the code needed to run a simple application with a Publisher.</li>
+</ul>
+<p>The package name x.y. can be declared when generating the support code using kiaragen (see <code class="docutils literal"><span class="pre">-package</span></code> option below).</p>
+<p>For our example the call could be:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ kiaragen -example ps -package com.example src/main/idl/calculator.idl
+Loading templates...
+org.fiware.kiara.generator.kiaragen
+org.fiware.kiara.generator.idl.grammar.Context
+Processing the file calculator.idl...
+Creating destination source directory... OK
+Generating Type support classes...
+Generating Type support class for structure TSensor... OK
+Generating Topic class for structure TSensor... OK
+Generating Publisher example main code for Topic TSensor... OK
+Generating Subscriber example main code for Topic TSensor... OK
+
+Generating GRADLE compilation script... OK
+</pre></div>
+</div>
+<p>This would generate the following files:</p>
+<div class="highlight-python"><div class="highlight"><pre>.
+└── src                                                // source files
+    ├── main
+    │   ├── idl                                        // IDL definitions for kiaragen
+    │   │   └── sensor.idl
+    │   └── java                                       // Generated support files
+    │       └── com.example
+    │            │                                     // Generated using --example ps
+    │            ├── TSensor.java                      // User data type
+    │            ├── TSensorType.java                  // Topic class for user data type
+    │            ├── TSensorPublisherExample.java      // Publisher example code
+    │            └── TSensorSubscriberExample.java     // Subscriber example code
+    └── build.gradle                                   // File with targets to compile the example
+</pre></div>
+</div>
+</div>
+<div class="section" id="static-endpoint-discovery-sed-using-xml-files">
+<h4>Static Endpoint Discovery (SED) using XML files<a class="headerlink" href="#static-endpoint-discovery-sed-using-xml-files" title="Permalink to this headline">¶</a></h4>
+<p>In this version of the Publish/Subscribe pattern implemented in KIARA, the discovery of endpoints is done statically by loding the information of those endpoints from an XML file. It supports loading such information from a String variable with the contents of the XML discovery file as well.</p>
+<p>The discovery information than can be represented into the XML file includes the participant (with its name), and the endpoints this participant might have (readers or writers). it also supports adding multiple participant entities as well as multiple reader or writer configurations.</p>
+<p>The XML tags supported by KIARA are described below, grouped into different categories according to the entity they belong to.</p>
+<div class="section" id="staticdiscovery">
+<h5>staticdiscovery<a class="headerlink" href="#staticdiscovery" title="Permalink to this headline">¶</a></h5>
+<p>This tag is used to define that the XML file is going to contain information about the RTPS Endpoint Discovery protocol.</p>
+<p>The available tags inside <code class="docutils literal"><span class="pre">staticdiscovery</span></code> are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="25%" />
+<col width="39%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tag</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;participant&gt;</span></code></td>
+<td>complexType</td>
+<td>Participant entity.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="participant">
+<h5>participant<a class="headerlink" href="#participant" title="Permalink to this headline">¶</a></h5>
+<p>The participant tag is the one used to define a grouping entity for readers and writers. It allows to add as many endpoints as the user wants, as well as to configure the participant name.</p>
+<p>The available tags inside <code class="docutils literal"><span class="pre">participant</span></code> are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="23%" />
+<col width="52%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tag</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;name&gt;</span></code></td>
+<td>element</td>
+<td>Name of the Participant entity</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;writer&gt;</span></code></td>
+<td>complexType</td>
+<td>Writer entity</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;reader&gt;</span></code></td>
+<td>complexType</td>
+<td>Reader entity</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="writer">
+<h5>writer<a class="headerlink" href="#writer" title="Permalink to this headline">¶</a></h5>
+<p>The writer tag is the use used to describe all the characteristics of the reader endpoint. There can be multiple writers, as long as their values do not interfere one another.</p>
+<p>The available tags inside <code class="docutils literal"><span class="pre">writer</span></code> are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="17%" />
+<col width="11%" />
+<col width="71%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tag</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;userId&gt;</span></code></td>
+<td>element</td>
+<td>Integer defining the user ID for this endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;entityId&gt;</span></code></td>
+<td>element</td>
+<td>Integer defining the specific ID of the endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topicName&gt;</span></code></td>
+<td>element</td>
+<td>Indicates the name of the Topic used by the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;topicDataName&gt;</span></code></td>
+<td>element</td>
+<td>Indicates the name of the data type that can be sent by the endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topicKind&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Indicates whether the endpoint uses keyed topics or not. Supported values:</p>
+<ul class="last simple">
+<li>WITH_KEY</li>
+<li>NO_KEY</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;reliabilityQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Indicates which kind of reliability is used by the endpoint. Supported values:</p>
+<ul class="last simple">
+<li>RELIABLE_RELIABILITY_QOS</li>
+<li>BEST_EFFORT_RELIABILITY_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;unicastLocator&gt;</span></code></td>
+<td>complexType*</td>
+<td><p class="first">List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
+<td>IP address of the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
+<td>Integer indicating the port for communication.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;multicastLocator&gt;</span></code></td>
+<td>complexType*</td>
+<td><p class="first">List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
+<td>IP address of the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
+<td>Integer indicating the port for communication.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topic&gt;</span></code></td>
+<td>complexType</td>
+<td><p class="first">Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">name</span></code></td>
+<td>Name of the topic.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">dataType</span></code></td>
+<td>Name of the dataType related to this topic.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
+<ul class="last simple">
+<li>WITH_KEY</li>
+<li>NO_KEY</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;durabilityQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">String element indicating the durability of the data send by the endpoint. Supported values:</p>
+<ul class="last simple">
+<li>TRANSIENT_LOCAL_DURABILITY_QOS</li>
+<li>VOLATILE_DURABILITY_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;ownershipQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Complex type that describes the ownership of the data sent by the endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates the kind of ownership. Supported values:</p>
+<ul class="last simple">
+<li>SHARED_OWNERSHIP_QOS</li>
+<li>EXCLUSIVE_OWNERSHIP_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">strength</span></code></td>
+<td>Integer value used to give priority of the data ownership over other endpoints.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;livelinessQos&gt;</span></code></td>
+<td>complexType</td>
+<td><p class="first">It describes the Lliveliness QoS selected for the endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
+<ul class="last simple">
+<li>AUTOMATIC_LIVELINESS_QOS</li>
+<li>MANUAL_BY_PARTICIPANT_LIVELINESS_QOS</li>
+<li>MANUAL_BY_TOPIC_LIVELINESS_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code></td>
+<td>Integer indicating the lease duration in milliseconds.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="reader">
+<h5>reader<a class="headerlink" href="#reader" title="Permalink to this headline">¶</a></h5>
+<p>The reader tag is the use used to describe all the characteristics of the reader endpoint. There can be multiple readers, as long as their values do not interfere one another.</p>
+<p>The available tags inside <code class="docutils literal"><span class="pre">reader</span></code> are the following:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="16%" />
+<col width="11%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Tag</th>
+<th class="head">Type</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;userId&gt;</span></code></td>
+<td>element</td>
+<td>Integer defining the user ID for this endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;entityId&gt;</span></code></td>
+<td>element</td>
+<td>Integer defining the specific ID of the endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topicName&gt;</span></code></td>
+<td>element</td>
+<td>Indicates the name of the Topic used by the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;topicDataName&gt;</span></code></td>
+<td>element</td>
+<td>Indicates the name of the data type that can be received by the endpoint.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;expectsInlineQos&gt;</span></code></td>
+<td>element</td>
+<td>Boolean value inticating whether the reader endpoint expects to receive inline QoS in the RTPS messages or not.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;topicKind&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Indicates whether the endpoint uses keyed topics or not. Supported values:</p>
+<ul class="last simple">
+<li>WITH_KEY</li>
+<li>NO_KEY</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;reliabilityQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Indicates which kind of reliability is used by the endpoint. Supported values:</p>
+<ul class="last simple">
+<li>RELIABLE_RELIABILITY_QOS</li>
+<li>BEST_EFFORT_RELIABILITY_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;unicastLocator&gt;</span></code></td>
+<td>complexType*</td>
+<td><p class="first">List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
+<td>IP address of the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
+<td>Integer indicating the port for communication.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;multicastLocator&gt;</span></code></td>
+<td>complexType*</td>
+<td><p class="first">List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
+<td>IP address of the endpoint.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
+<td>Integer indicating the port for communication.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topic&gt;</span></code></td>
+<td>complexType</td>
+<td><p class="first">Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">name</span></code></td>
+<td>Name of the topic.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">dataType</span></code></td>
+<td>Name of the dataType related to this topic.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
+<ul class="last simple">
+<li>WITH_KEY</li>
+<li>NO_KEY</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;durabilityQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">String element indicating the durability of the data send by the endpoint. Supported values:</p>
+<ul class="last simple">
+<li>TRANSIENT_LOCAL_DURABILITY_QOS</li>
+<li>VOLATILE_DURABILITY_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;ownershipQos&gt;</span></code></td>
+<td>element</td>
+<td><p class="first">Complex type that describes the ownership of the data received by the endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="16%" />
+<col width="84%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates the kind of ownership. Supported values:</p>
+<ul class="last simple">
+<li>SHARED_OWNERSHIP_QOS</li>
+<li>EXCLUSIVE_OWNERSHIP_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">strength</span></code></td>
+<td>Integer value used to give priority of the data ownership over other endpoints.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;livelinessQos&gt;</span></code></td>
+<td>complexType</td>
+<td><p class="first">It describes the Lliveliness QoS selected for the endpoint. Attributes:</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="27%" />
+<col width="73%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
+<td><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
+<ul class="last simple">
+<li>AUTOMATIC_LIVELINESS_QOS</li>
+<li>MANUAL_BY_PARTICIPANT_LIVELINESS_QOS</li>
+<li>MANUAL_BY_TOPIC_LIVELINESS_QOS</li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code></td>
+<td>Integer indicating the lease duration in milliseconds.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="implementing-the-publisher">
+<h4>Implementing the Publisher<a class="headerlink" href="#implementing-the-publisher" title="Permalink to this headline">¶</a></h4>
+<p>The PubliserExample class is the one containing the main entry point for creating an application capable of publishing the user&#8217;s data types over the wire. This class is automatically generated by using the <code class="docutils literal"><span class="pre">kiaragen</span></code> tool, and it contains a basic initialization of QoS (Qualities of Service), a participant, and one simple Publisher entity.</p>
+<p>The following PublisherExample class shows how this would look like:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class TSensorPublisherExample {
+
+    private static final TSensorType type = new TSensorType();
+
+    public static void main (String [] args) throws InterruptedException {
+</pre></div>
+</div>
+<p>The generated class has a static final variable named type, and it will be used to register the user&#8217;s data type.</p>
+<p>The predefined arguments this example will handle are:</p>
+<ul class="simple">
+<li>domainId: This parameter is a number indicating the domain identifier
+for the RTPS communication. If not specified, the default value is 0.</li>
+<li>sampleCount: Number of samples the publisher will send. If not
+specified, the publisher will send examples without stopping.</li>
+</ul>
+<div class="code java highlight-python"><div class="highlight"><pre>int domainId = 0;
+if (args.length &gt;= 1) {
+     domainId = Integer.parseInt(args[0]);
+}
+
+int sampleCount = 0;
+if (args.length &gt;= 2) {
+     sampleCount = Integer.parseInt(args[1]);
+}
+</pre></div>
+</div>
+<p>In the following lines, the data itself is created by using the generated Topic class. The developer can now edit the created object before sending it over the network.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>TSensor instance = type.createData();
+
+// Initialize your data here
+</pre></div>
+</div>
+<p>Now, the participant&#8217;s attributes are initialized. Note that the domainId introduces as a parameter will be used here, and also that the attributes specify the participant to activate the static discovery protocol.</p>
+<p>To use the static discovery, either an XML file or a String variable with the XML contents can be used. In the generated example, the chosen approach is to load the XML discovery information by using a single String variable. In this String, the known endpoints have to be defined. In this case, a participant containing a BEST_EFFORT reader.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>ParticipantAttributes pAtt = new ParticipantAttributes();
+pAtt.rtps.builtinAtt.domainID = domainId;
+pAtt.rtps.builtinAtt.useStaticEDP = true;
+
+final String edpXml = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot;
+        + &quot;&lt;staticdiscovery&gt;&quot;
+        + &quot;    &lt;participant&gt;&quot;
+        + &quot;        &lt;name&gt;SubscriberParticipant&lt;/name&gt;&quot;
+        + &quot;        &lt;reader&gt;&quot;
+        + &quot;            &lt;userId&gt;1&lt;/userId&gt;&quot;
+        + &quot;            &lt;topic name=\&quot;TSensorTopic\&quot; dataType=\&quot;TSensor\&quot; kind=\&quot;NO_KEY\&quot;&gt;&lt;/topic&gt;&quot;
+        + &quot;            &lt;expectsInlineQos&gt;false&lt;/expectsInlineQos&gt;&quot;
+        + &quot;            &lt;reliabilityQos&gt;BEST_EFFORT_RELIABILITY_QOS&lt;/reliabilityQos&gt;&quot;
+        + &quot;        &lt;/reader&gt;&quot;
+        + &quot;    &lt;/participant&gt;&quot;
+        + &quot;&lt;/staticdiscovery&gt;&quot;;
+
+pAtt.rtps.builtinAtt.setStaticEndpointXML(edpXml);
+
+pAtt.rtps.setName(&quot;PublisherParticipant&quot;);
+</pre></div>
+</div>
+<p>At this point, the only thing remaining to be done before creating the Publisher is to finally create the Participant and register the user&#8217;s data type. To do so, the generated Topic class must be used <strong>after</strong> the participant has been correctly initialized.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>Participant participant = Domain.createParticipant(pAtt, null /* LISTENER */);
+if (participant == null) {
+     throw new RuntimeException(&quot;createParticipant&quot;);
+}
+
+Domain.registerType(participant, type);
+</pre></div>
+</div>
+<p>The Publisher&#8217;s attributes must specify the topic name and the name of the data type, and this information has to be the same in the other endpoints so that they can communicate with each other. In this generated example, the topic data name will be the same of the defined structure. Note that the example uses by default a BEST_EFFORT configuration for the Publisher.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Create publisher
+PublisherAttributes pubAtt = new PublisherAttributes();
+pubAtt.setUserDefinedID((short) 1);
+pubAtt.topic.topicDataTypeName = &quot;TSensor&quot;;
+pubAtt.topic.topicName = &quot;TSensorTopic&quot;;
+pubAtt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+
+org.fiware.kiara.ps.publisher.Publisher&lt;TSensor&gt; publisher = Domain.createPublisher(participant, pubAtt, null /* LISTENER */);
+
+if (publisher == null) {
+    Domain.removeParticipant(participant);
+    throw new RuntimeException(&quot;createPublisher&quot;);
+}
+</pre></div>
+</div>
+<p>Finally, the examples are sent according to the number of samples specified via parameter (without stopping if this number is not set).</p>
+<div class="code java highlight-python"><div class="highlight"><pre>int sendPeriod = 4000; // milliseconds
+for (int count=0; (sampleCount == 0) || (count &lt; sampleCount); ++count) {
+     System.out.println(&quot;Writing TSensor, count: &quot; + count);
+     publisher.write(instance);
+     Thread.sleep(sendPeriod);
+}
+</pre></div>
+</div>
+<p>In order for the Participant to stop succesfully, it must be removed from the Domain (all the associated endpoints will be stopped as well), and then the method named shutdown belonging to the Kiara class will be the one to stop all running services.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>        Domain.removeParticipant(participant);
+
+        Kiara.shutdown();
+
+        System.out.println(&quot;Publisher finished&quot;);
+
+    }
+
+}
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementing-the-subscriber">
+<h4>Implementing the Subscriber<a class="headerlink" href="#implementing-the-subscriber" title="Permalink to this headline">¶</a></h4>
+<p>The SubscriberExample class is the one containing the main entry point for creating an application capable of subscribing to a topic representing the user&#8217;s data types. This class is automatically generated by using the <code class="docutils literal"><span class="pre">kiaragen</span></code> tool, and it contains a basic initialization of QoS (Qualities of Service), a participant, and one simple Subscriber entity.</p>
+<p>The following PublisherExample class shows how this would look like:</p>
+<div class="code java highlight-python"><div class="highlight"><pre>public class TSensorSubscriberExample {
+
+    private static final TSensorType type = new TSensorType();
+
+    public static void main (String [] args) throws InterruptedException {
+</pre></div>
+</div>
+<p>as it happened with the PublisherExample, the generated class has a static final variable named type, and it will be used to register the user&#8217;s data type.</p>
+<p>The predefined arguments this example will handle are:</p>
+<ul class="simple">
+<li>domainId: This parameter is a number indicating the domain identifier for the RTPS communication. If not specified, the default value is 0.</li>
+<li>sampleCount: Number of samples the subscriber expects to receive. If not specified, the will run without stopping.</li>
+</ul>
+<div class="code java highlight-python"><div class="highlight"><pre>int domainId = 0;
+if (args.length &gt;= 1) {
+     domainId = Integer.parseInt(args[0]);
+}
+
+int sampleCount = 0;
+if (args.length &gt;= 2) {
+     sampleCount = Integer.parseInt(args[1]);
+}
+</pre></div>
+</div>
+<p>Now, the participant&#8217;s attributes are initialized. Note that the domainId introduces as a parameter will be used here, and also that the attributes specify the participant to activate the static discovery protocol.</p>
+<p>To use the static discovery, either an XML file or a String variable with the XML contents can be used. In the generated example, the chosen approach is to load the XML discovery information by using a single String variable. In this String, the known endpoints have to be defined. In this case, a participant containing a BEST_EFFORT writer.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>ParticipantAttributes pAtt = new ParticipantAttributes();
+pAtt.rtps.builtinAtt.domainID = domainId;
+pAtt.rtps.builtinAtt.useStaticEDP = true;
+
+final String edpXml = &quot;&lt;?xml version=\&quot;1.0\&quot; encoding=\&quot;UTF-8\&quot;?&gt;&quot;
+        + &quot;&lt;staticdiscovery&gt;&quot;
+        + &quot;    &lt;participant&gt;&quot;
+        + &quot;        &lt;name&gt;PublisherParticipant&lt;/name&gt;&quot;
+        + &quot;        &lt;writer&gt;&quot;
+        + &quot;            &lt;userId&gt;1&lt;/userId&gt;&quot;
+        + &quot;            &lt;topicName&gt;TSensorTopic&lt;/topicName&gt;&quot;
+        + &quot;            &lt;topicDataType&gt;TSensor&lt;/topicDataType&gt;&quot;
+        + &quot;            &lt;topicKind&gt;NO_KEY&lt;/topicKind&gt;&quot;
+        + &quot;            &lt;reliabilityQos&gt;BEST_EFFORT_RELIABILITY_QOS&lt;/reliabilityQos&gt;&quot;
+        + &quot;            &lt;livelinessQos kind=\&quot;AUTOMATIC_LIVELINESS_QOS\&quot; leaseDuration_ms=\&quot;100\&quot;&gt;&lt;/livelinessQos&gt;&quot;
+        + &quot;        &lt;/writer&gt;&quot;
+        + &quot;     &lt;/participant&gt;&quot;
+        + &quot;    &lt;/staticdiscovery&gt;&quot;;
+
+pAtt.rtps.builtinAtt.setStaticEndpointXML(edpXml);
+
+pAtt.rtps.setName(&quot;SubscriberParticipant&quot;);
+</pre></div>
+</div>
+<p>At this point, the only thing remaining to be done before creating the Subscriber is to finally create the Participant and register the user&#8217;s data type. To do so, the generated Topic class must be used <strong>after</strong> the participant has been correctly initialized.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>Participant participant = Domain.createParticipant(pAtt, null /* LISTENER */);
+if (participant == null) {
+     throw new RuntimeException(&quot;createParticipant&quot;);
+}
+
+Domain.registerType(participant, type);
+</pre></div>
+</div>
+<p>The Publisher&#8217;s attributes must specify the topic name and the name of the data type, and this information has to be the same in the other endpoints so that they can communicate with each other. In this generated example, the topic data name will be the same of the defined structure. Note that the example uses by default a BEST_EFFORT configuration for the Subscriber.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>// Create publisher
+SubscriberAttributes satt = new SubscriberAttributes();
+satt.setUserDefinedID((short) 1);
+satt.topic.topicDataTypeName = &quot;TSensor&quot;;
+satt.topic.topicName = &quot;TSensorTopic&quot;;
+satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+
+
+// CountDown object to store the number of received samples
+final CountDownLatch doneSignal = new CountDownLatch(sampleCount);
+</pre></div>
+</div>
+<p>For this Subscriber, a SubscriberListener object is implemented below. It will print out when a new saple has been received by the Subscriber, and it will also take care of the total number of samples that have already been received.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>org.fiware.kiara.ps.subscriber.Subscriber&lt;TSensor&gt; subscriber = Domain.createSubscriber(participant, satt, new SubscriberListener() {
+
+    @Override
+    public void onNewDataMessage(Subscriber&lt;?&gt; sub) {
+        TSensor type = (TSensor) sub.takeNextData(null /* SampleInfo */);
+        while (type != null) {
+            System.out.println(&quot;Message received&quot;);
+            type = (TSensor) sub.takeNextData(null);
+            doneSignal.countDown();
+        }
+    }
+
+    @Override
+    public void onSubscriptionMatched(Subscriber&lt;?&gt; sub, MatchingInfo info) {
+        // Write here you handling code
+    }
+
+});
+
+if (subscriber == null) {
+    Domain.removeParticipant(participant);
+    throw new RuntimeException(&quot;createSubscriber&quot;);
+}
+
+
+int receivePeriod = 4000; // milliseconds
+while ((sampleCount == 0) || (doneSignal.getCount() != 0)) {
+    System.out.println(&quot;$ctx.currentSt.name$ Subscriber sleeping for &quot; + receivePeriod/1000 + &quot; seconds..&quot;);
+    Thread.sleep(receivePeriod);
+}
+</pre></div>
+</div>
+<p>In order for the Participant to stop succesfully, it must be removed from the Domain (all the associated endpoints will be stopped as well), and then the method named shutdown belonging to the Kiara class will be the one to stop all running services.</p>
+<div class="code java highlight-python"><div class="highlight"><pre>        Domain.removeParticipant(participant);
+
+        Kiara.shutdown();
+
+        System.out.println(&quot;Publisher finished&quot;);
+
+    }
+
+}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -935,10 +1748,10 @@ The following code shows the client implementation:</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../specification/Middleware_RPC_API_Specification.html" class="btn btn-neutral float-right" title="Advanced Middleware RPC API Specification" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../specification/OpenSpecification.html" class="btn btn-neutral float-right" title="Open Specifiation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Installation_and_Admin_Guide.html" class="btn btn-neutral" title="KIARA Installation and Admin Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Installation_and_Admin_Guide.html" class="btn btn-neutral" title="KIARA Installation and Administration Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -969,7 +1782,7 @@ The following code shows the client implementation:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2.0',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

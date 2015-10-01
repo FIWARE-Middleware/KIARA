@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to FIWARE Advanced Middleware KIARA documentation! &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  <title>Welcome to FIWARE Advanced Middleware KIARA documentation! &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -30,8 +30,8 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="#"/>
-        <link rel="next" title="KIARA Installation and Admin Guide" href="manuals/Installation_and_Admin_Guide.html"/> 
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="#"/>
+        <link rel="next" title="KIARA Installation and Administration Guide" href="manuals/Installation_and_Admin_Guide.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -82,11 +82,12 @@
             
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="specification/OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
@@ -143,8 +144,7 @@ efficient and secure applications.</p>
 <ul class="simple">
 <li>Modern Interface Definition Language (IDL) with a syntax based on the Corba IDL.</li>
 <li>Easy to use and extensible Application Programmer Interface (API).</li>
-<li>IDL derived operation mode providing Stubs and Skeletons for RPC
-Client/Server implementations.</li>
+<li>IDL derived operation mode providing Stubs and Skeletons for RPC Client/Server implementations.</li>
 <li>Synchronous and Asynchronous function calls.</li>
 </ul>
 <p>Later versions will include additional features like:</p>
@@ -153,9 +153,7 @@ Client/Server implementations.</li>
 <li>Advanced security features like field encryption and authentication.</li>
 <li>Additional communication patterns like publish/subscribe.</li>
 </ul>
-<p>KIARA Advanced Middleware is essentially a library which is incorporated into
-the developed applications, the requirements are rather minimal.
-In particular it requires no service running in the background.</p>
+<p>KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.</p>
 <p>The documentation for this site is organized in multiple sections:</p>
 <ul class="simple">
 <li><a class="reference internal" href="#manual"><span>Manuals</span></a></li>
@@ -165,23 +163,18 @@ In particular it requires no service running in the background.</p>
 <div class="toctree-wrapper compound" id="manuals">
 <span id="manual"></span><p class="caption"><span class="caption-text">Manuals</span><a class="headerlink" href="#manuals" title="Permalink to this toctree">¶</a></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#system-requirements">System Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#installation-of-the-java-jdk">Installation of the Java JDK</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#installation-of-build-tools">Installation of Build Tools</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#kiara-components">KIARA components</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#setting-up-the-development-environment">Setting up the development environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#sanity-check-procedures">Sanity check procedures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#sanity-check-procedures">Sanity Check Procedures</a></li>
 <li class="toctree-l2"><a class="reference internal" href="manuals/Installation_and_Admin_Guide.html#diagnosis-procedures">Diagnosis Procedures</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#a-quick-example">A quick example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#using-kiara-advanced-middleware-to-create-an-rpc-application">Using KIARA Advanced Middleware to create an RPC application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#building-a-kiara-rpc-application">Building a KIARA RPC application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#building-a-kiara-rpc-application-using-the-dynamic-api">Building a KIARA RPC application using the dynamic API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#user-guide">User guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="manuals/User_and_Programmer_Guide.html#programmers-guide">Programmers guide</a></li>
 </ul>
 </li>
 </ul>
@@ -189,6 +182,13 @@ In particular it requires no service running in the background.</p>
 <div class="toctree-wrapper compound" id="architecture-and-api-specification">
 <span id="specification"></span><p class="caption"><span class="caption-text">Architecture and API Specification</span><a class="headerlink" href="#architecture-and-api-specification" title="Permalink to this toctree">¶</a></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="specification/OpenSpecification.html">Open Specifiation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#preface">Preface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#detailed-specifications">Detailed Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#re-utilised-technologies-specifications">Re-utilised Technologies/Specifications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#terms-and-definitions">Terms and definitions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#abstract">Abstract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#status-of-this-document">Status of this Document</a></li>
@@ -231,7 +231,7 @@ In particular it requires no service running in the background.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="manuals/Installation_and_Admin_Guide.html" class="btn btn-neutral float-right" title="KIARA Installation and Admin Guide" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="manuals/Installation_and_Admin_Guide.html" class="btn btn-neutral float-right" title="KIARA Installation and Administration Guide" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -263,7 +263,7 @@ In particular it requires no service running in the background.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.2.0',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

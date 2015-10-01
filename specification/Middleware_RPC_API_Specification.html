@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Advanced Middleware RPC API Specification &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  <title>Advanced Middleware RPC API Specification &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -30,9 +30,9 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
         <link rel="next" title="Advanced Middleware RPC Dynamic Types API Specification" href="Middleware_RPC_Dynamic_Types_API_Specification.html"/>
-        <link rel="prev" title="KIARA User and Developer Guide" href="../manuals/User_and_Programmer_Guide.html"/> 
+        <link rel="prev" title="Open Specifiation" href="OpenSpecification.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -83,11 +83,12 @@
             
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Admin Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware RPC API Specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#abstract">Abstract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#status-of-this-document">Status of this Document</a></li>
@@ -201,16 +202,15 @@
             
   <div class="section" id="advanced-middleware-rpc-api-specification">
 <h1>Advanced Middleware RPC API Specification<a class="headerlink" href="#advanced-middleware-rpc-api-specification" title="Permalink to this headline">¶</a></h1>
-<p><em>Date: 8th April 2015</em></p>
-<div class="line-block">
-<div class="line">This version: <a class="reference internal" href=""><em>0.2.0</em></a></div>
-<div class="line">Previous version: n/a</div>
-<div class="line">Latest version: <a class="reference internal" href=""><em>latest</em></a></div>
-<div class="line"><br /></div>
-</div>
-<p><strong>Editors:</strong></p>
+<p><strong>Date: 10th September 2015</strong></p>
 <ul class="simple">
-<li><a class="reference external" href="http://eprosima.com/index.php/en/">eProsima - The Middleware
+<li>Version: <a class="reference external" href="#">0.3.0</a></li>
+<li>Previous version: <a class="reference external" href="Middleware_RPC_API_Specification_0.2.0.html">0.2.0</a></li>
+<li>Latest version: <a class="reference external" href="Middleware_RPC_API_Specification.html">latest</a></li>
+</ul>
+<p>Editors:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.eprosima.com/index.php/en/">eProsima - The Middleware
 Experts</a></li>
 <li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
 Intelligence</a></li>
@@ -264,10 +264,10 @@ the Object Management Group (OMG) IDL draft submitted to W3C.</p>
 <div class="section" id="reference-material">
 <h3>Reference Material<a class="headerlink" href="#reference-material" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><a class="reference internal" href="Middleware_IDL_Specification.html"><em>Advanced Middleware IDL
-Specification</em></a></li>
-<li><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>Advanced Middleware RPC Dynamic Types API
-Specification</em></a></li>
+<li><a class="reference external" href="./Middleware_IDL_Specification.html">*Advanced Middleware IDL
+Specification*</a></li>
+<li><a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*Advanced Middleware RPC Dynamic Types API
+Specification*</a></li>
 </ul>
 </div>
 </div>
@@ -329,11 +329,11 @@ interfaces, especially the <code class="docutils literal"><span class="pre">Cont
 <li><strong>getTypeDescriptorBuilder</strong>: This function returns an instance of
 the type descriptor builder. It is a part of the dynamic API and is
 described
-<a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>here</em></a>.</li>
+<a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*here*</a>.</li>
 <li><strong>getDynamicValueBuilder</strong>: This function returns an instance of the
 dynamic value builder. It is a part of the dynamic API and is
 described
-<a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>here</em></a>.</li>
+<a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*here*</a>.</li>
 <li><strong>createContext</strong>: This function creates a new instance of the
 Context class, which is described below.</li>
 <li><strong>shutdown</strong>: This function closes and releases all internal Advanced
@@ -473,8 +473,8 @@ returns the produced response message. It is automatically generated.</li>
 from the user Advanced Middleware IDL definition. In the static
 version of the Advanced Middleware implementation these interfaces and
 classes should be generated by the compile time preprocessor.</div>
-<div class="line">This section uses the example in section <a class="reference external" href="#api-usage-examples">API Usage
-Examples</a>.</div>
+<div class="line">This section uses the example in section <a class="reference external" href="#api-usage-examples">*API Usage
+Examples*</a>.</div>
 </div>
 <hr class="docutils" />
 <div class="section" id="x-y-idl-servicename">
@@ -798,7 +798,7 @@ above.</p>
 <h3>Dependent API<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
 <p>Cause the described classes in this section are dependant of the
 Advanced Middleware IDL service, this section will use the example in
-section <a class="reference external" href="#api-examples">API Examples</a> to define them.</p>
+section <a class="reference external" href="#api-examples">*API Examples*</a> to define them.</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="39%" />
@@ -1160,8 +1160,8 @@ section <a class="reference external" href="#api-examples">API Examples</a> to d
 </div>
 <div class="section" id="api-usage-examples">
 <h2>API Usage Examples<a class="headerlink" href="#api-usage-examples" title="Permalink to this headline">¶</a></h2>
-<p>Examples used in this section are based on the following <a class="reference internal" href="Middleware_IDL_Specification.html"><em>Advanced
-Middleware IDL</em></a>:</p>
+<p>Examples used in this section are based on the following <a class="reference external" href="./Middleware_IDL_Specification.html">*Advanced
+Middleware IDL*</a>:</p>
 <div class="highlight-python"><div class="highlight"><pre>service Calculator
 {
     i32 add(i32 num1, i32 num2);
@@ -1265,7 +1265,7 @@ server.run();
         <a href="Middleware_RPC_Dynamic_Types_API_Specification.html" class="btn btn-neutral float-right" title="Advanced Middleware RPC Dynamic Types API Specification" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../manuals/User_and_Programmer_Guide.html" class="btn btn-neutral" title="KIARA User and Developer Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="OpenSpecification.html" class="btn btn-neutral" title="Open Specifiation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1296,7 +1296,7 @@ server.run();
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2.0',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

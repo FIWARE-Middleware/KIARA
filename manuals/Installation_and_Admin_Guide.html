@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KIARA Installation and Admin Guide &mdash; FIWARE Advanced Middleware KIARA 0.2.0 documentation</title>
+  <title>KIARA Installation and Administration Guide &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.2.0 documentation" href="../index.html"/>
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
         <link rel="next" title="KIARA User and Developer Guide" href="User_and_Programmer_Guide.html"/>
         <link rel="prev" title="Welcome to FIWARE Advanced Middleware KIARA documentation!" href="../index.html"/> 
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                0.2.0
+                0.3.0
               </div>
             
           
@@ -83,7 +83,7 @@
             
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="">KIARA Installation and Admin Guide</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="">KIARA Installation and Administration Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#hardware-requirements">Hardware Requirements</a></li>
@@ -91,58 +91,35 @@
 <li class="toctree-l3"><a class="reference internal" href="#operating-system-support">Operating System support:</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-of-the-java-jdk">Installation of the Java JDK</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#verify-java-installation">Verify Java installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-of-the-java-jdk">Installation of the Java JDK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#installation-of-build-tools">Installation of Build Tools</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#gradle">Gradle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#apache-maven">Apache Maven</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#integraded-development-environments-ide">Integraded Development Environments (IDE)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#installation-of-the-kiaragen-tool">Installation of the kiaragen tool</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#installation-of-build-tools">Installation of Build Tools</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#gradle">Gradle</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#windows-installation">Windows installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#unix-linux-os-x-solaris-freebsd-manual-installation">Unix (Linux / OS X / Solaris / FreeBSD) manual installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#unix-linux-os-x-solaris-freebsd-installation-using-gvm">Unix (Linux / OS X / Solaris / FreeBSD) installation using gvm</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#verify-gradle-installation">Verify Gradle installation</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#apache-maven">Apache Maven</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#windows">Windows</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Unix (Linux / OS X / Solaris / FreeBSD) manual installation</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#unix-linux-os-x-solaris-freebsd-installation-using-package-manager">Unix (Linux / OS X / Solaris / FreeBSD) installation using package manager</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#verify-maven-installation">Verify Maven installation</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#integraded-development-environments-ide">Integraded Development Environments (IDE)</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#kiara-components">KIARA components</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#installation-of-the-kiaragen-tool">Installation of the kiaragen tool</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#on-windows">On Windows:</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#on-linux-os-x">On Linux / OS X:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#kiara-components">KIARA components</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-up-the-development-environment">Setting up the development environment</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Gradle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Apache Maven</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-up-the-development-environment">Setting up the development environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Gradle</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#set-up-the-basic-project-structure">Set up the basic project structure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configure-your-gradle-project-to-use-kiara">Configure your Gradle project to use KIARA</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#maven">Maven</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#id3">Set up the basic project structure</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configure-your-maven-project-to-use-kiara">Configure your maven project to use KIARA</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#sanity-check-procedures">Sanity check procedures</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#end-to-end-testing">End to End Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sanity-check-procedures">Sanity Check Procedures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#end-to-end-testing">End to End testing</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-of-running-processes">List of Running Processes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#network-interfaces-up-open">Network interfaces Up &amp; Open</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#databases">Databases</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#diagnosis-procedures">Diagnosis Procedures</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#resource-availability">Resource availability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remote-service-access">Remote Service Access</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resource-consumption">Resource consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#i-o-flows">I/O flows</a></li>
 </ul>
 </li>
 </ul>
@@ -151,6 +128,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../specification/OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
@@ -184,7 +162,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>KIARA Installation and Admin Guide</li>
+    <li>KIARA Installation and Administration Guide</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -198,169 +176,136 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="kiara-installation-and-admin-guide">
-<h1>KIARA Installation and Admin Guide<a class="headerlink" href="#kiara-installation-and-admin-guide" title="Permalink to this headline">¶</a></h1>
-<p>Version 0.2.0</p>
+  <div class="section" id="kiara-installation-and-administration-guide">
+<h1>KIARA Installation and Administration Guide<a class="headerlink" href="#kiara-installation-and-administration-guide" title="Permalink to this headline">¶</a></h1>
+<p><strong>Date: 10th September 2015</strong></p>
+<ul class="simple">
+<li>Version: <a class="reference external" href="#">0.3.0</a></li>
+<li>Previous version: N/A</li>
+<li>Latest version: <a class="reference external" href="Installation_and_Admin_Guide.html">latest</a></li>
+</ul>
+<p>Editors:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.eprosima.com/index.php/en/">eProsima - The Middleware
+Experts</a></li>
+<li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
+Intelligence</a></li>
+<li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
+(ICCLab)</a></li>
+</ul>
+<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
+<hr class="docutils" />
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>KIARA Advanced Middleware is a Java based communication middleware for
-modern, efficient and secure applications. It is an implementation of
-the FIWARE Advanced Middleware Generic Enabler.</p>
+<p>KIARA Advanced Middleware is a Java based communication middleware for modern, efficient and secure applications. It is an implementation of the FIWARE Advanced Middleware Generic Enabler.</p>
 <p>This first release focuses on the basic features of RPC communication:</p>
 <ul class="simple">
-<li>Modern Interface Definition Language (IDL) with a syntax based on the
-Corba IDL.</li>
+<li>Modern Interface Definition Language (IDL) with a syntax based on the Corba IDL.</li>
 <li>Easy to use and extensible Application Programmer Interface (API).</li>
-<li>IDL derived operation mode providing Stubs and Skeletons for RPC
-Client/Server implementations.</li>
+<li>IDL derived operation mode providing Stubs and Skeletons for RPC Client/Server implementations.</li>
 <li>Synchronous and Asynchronous function calls.</li>
 </ul>
 <p>Later versions will include additional features like:</p>
 <ul class="simple">
-<li>Application derived and Mapped operation mode providing dynamic
-declaration of functions and data type mapping.</li>
+<li>Application derived and Mapped operation mode providing dynamic declaration of functions and data type mapping.</li>
 <li>Advanced security features like field encryption and authentication.</li>
 <li>Additional communication patterns like publish/subscribe.</li>
 </ul>
-<p>KIARA Advanced Middleware is essentially a library which is incorporated
-into the developed applications, the requirements are rather minimal. In
-particular it requires no service running in the background.</p>
+<p>KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.</p>
 </div>
 <div class="section" id="system-requirements">
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Permalink to this headline">¶</a></h2>
-<p>This section describes the basic requirements of KIARA Advanced
-Middleware and how to install them.</p>
+<p>This section describes the basic requirements of KIARA Advanced Middleware and how to install them.</p>
 <div class="section" id="hardware-requirements">
 <h3>Hardware Requirements<a class="headerlink" href="#hardware-requirements" title="Permalink to this headline">¶</a></h3>
-<p>The hardware requirements depend on the application to be developed. Any
-hardware running Java JRE/JDK 7 or later is supported.</p>
-<p>This <a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html">Oracle JDK
-Webpage</a>
-provides specific minimal hardware requirements (Disk, Memory, CPU).</p>
+<p>The hardware requirements depend on the application to be developed. Any hardware running Java JRE/JDK 7 or later is supported.</p>
+<p>This <a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html">Oracle JDK Webpage</a> provides specific minimal hardware requirements (Disk, Memory, CPU).</p>
 </div>
 <div class="section" id="software-requirements">
 <h3>Software Requirements<a class="headerlink" href="#software-requirements" title="Permalink to this headline">¶</a></h3>
 <p>Runtime Systems:</p>
 <ul class="simple">
-<li>Any Java SE JRE 7 or later distribution (OpenJDK, Oracle Java SE or
-IBM Java SDK)</li>
+<li>Any Java SE JRE 7 or later distribution (OpenJDK, Oracle Java SE or IBM Java SDK)</li>
 </ul>
 <p>Development Systems:</p>
 <ul class="simple">
-<li>Any Java SE JDK 7 or later distribution (OpenJDK, Oracle Java SE or
-IBM Java SDK)</li>
-<li>Build Tools (gradle or maven) and/or IDE (Eclipse, IntelliJ IDEA,
-Netbeans, ...)</li>
+<li>Any Java SE JDK 7 or later distribution (OpenJDK, Oracle Java SE or IBM Java SDK)</li>
+<li>Build Tools (gradle or maven) and/or IDE (Eclipse, IntelliJ IDEA, Netbeans, ...)</li>
 </ul>
 </div>
 <div class="section" id="operating-system-support">
 <h3>Operating System support:<a class="headerlink" href="#operating-system-support" title="Permalink to this headline">¶</a></h3>
 <p>Any Operating system running Java JRE/JDK 7 or later is supported.</p>
-<p>KIARA is tested on Windows (7), Linux (Ubuntu 14.04/Fedora 19) and OS X
-(10.9/10.10).</p>
+<p>KIARA is tested on Windows (7), Linux (Ubuntu 14.04/Fedora 19) and OS X (10.9/10.10).</p>
 </div>
 </div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="installation-of-the-java-jdk">
-<h2>Installation of the Java JDK<a class="headerlink" href="#installation-of-the-java-jdk" title="Permalink to this headline">¶</a></h2>
-<p>Please follow the installation instructions of the respective Java
-distribution:</p>
+<h3>Installation of the Java JDK<a class="headerlink" href="#installation-of-the-java-jdk" title="Permalink to this headline">¶</a></h3>
+<p>Please follow the installation instructions of the respective Java distribution:</p>
 <ul class="simple">
-<li><a class="reference external" href="http://openjdk.java.net/install/">OpenJDK</a> (Default on most
-Linux-Systems)</li>
-<li><a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install">Oracle Java SE
-JDK</a>
-(Linux, Windows, OS X, Solaris)</li>
-<li><a class="reference external" href="http://www-01.ibm.com/support/knowledgecenter/#!/SSYKE2_7.0.0/welcome/welcome_javasdk_version71.html">IBM Java SE
-JDK</a>
-(Linux, Windows, AIX, z/OS)</li>
+<li><a class="reference external" href="http://openjdk.java.net/install/">OpenJDK</a> (Default on most Linux-Systems)</li>
+<li><a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install">Oracle Java SE JDK</a> (Linux, Windows, OS X, Solaris)</li>
+<li><a class="reference external" href="http://www-01.ibm.com/support/knowledgecenter/#!/SSYKE2_7.0.0/welcome/welcome_javasdk_version71.html">IBM Java SE JDK</a> (Linux, Windows, AIX, z/OS)</li>
 </ul>
-<div class="section" id="verify-java-installation">
-<h3>Verify Java installation<a class="headerlink" href="#verify-java-installation" title="Permalink to this headline">¶</a></h3>
-<p>To verify that the installation is correct please open a
-terminal/shell/command line interface (cmd.exe, sh/bash/zsh) and check,
-that the java command is executable:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ java -version
-java version &quot;1.7.0_65&quot;
+<p>To verify that the installation is correct please open a terminal/shell/command line interface (cmd.exe, sh/bash/zsh) and check, that the java command is executable:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ java -version
+java version &amp;quot;1.7.0_65&amp;quot;
 OpenJDK Runtime Environment (IcedTea 2.5.3) (7u71-2.5.3-0ubuntu0.14.04.1)
 OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode)
 </pre></div>
 </div>
-<p>If the java command is not found, please make sure, that the
-<code class="docutils literal"><span class="pre">&lt;java_home&gt;/bin</span></code> directory is in your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable
-and the <code class="docutils literal"><span class="pre">JAVA_HOME</span></code> environment variable is set (see troubleshooting
-instructions on the <a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_jdk_install.html#BABGDJFH">Oracle
-Website</a>).</p>
-</div>
+<p>If the java command is not found, please make sure, that the <code class="docutils literal"><span class="pre">&lt;java_home&gt;/bin</span></code> directory is in your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable and the <code class="docutils literal"><span class="pre">JAVA_HOME</span></code> environment variable is set (see troubleshooting instructions on the <a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_jdk_install.html#BABGDJFH">Oracle Website</a>).</p>
 </div>
 <div class="section" id="installation-of-build-tools">
-<h2>Installation of Build Tools<a class="headerlink" href="#installation-of-build-tools" title="Permalink to this headline">¶</a></h2>
-<p>On development systems developers should use a build tool to compile,
-test, package and deploy applications. In the Java (JVM) world the most
-commonly used tools are <a class="reference external" href="http://www.gradle.org">Gradle</a> and <a class="reference external" href="http://maven.apache.org">Apache
-Maven</a>. An alternative approach is to use
-the built in build-management of IDEs like Eclipse, IntelliJ IDEA or
-Netbeans.</p>
+<h3>Installation of Build Tools<a class="headerlink" href="#installation-of-build-tools" title="Permalink to this headline">¶</a></h3>
+<p>On development systems developers should use a build tool to compile, test, package and deploy applications. In the Java (JVM) world the most commonly used tools are <a class="reference external" href="http://www.gradle.org">Gradle</a> and <a class="reference external" href="http://maven.apache.org">Apache Maven</a>. An alternative approach is to use the built in build-management of IDEs like Eclipse, IntelliJ IDEA or Netbeans.</p>
 <p>In the following section covers the Installation of these tools.</p>
 <div class="section" id="gradle">
-<h3>Gradle<a class="headerlink" href="#gradle" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="http://www.gradle.org">Gradle</a> is the newest and most flexible build
-tool for Java. It provides every good and detailed
-<a class="reference external" href="http://www.gradle.org/documentation">documentation</a> and
-<a class="reference external" href="http://www.gradle.org/docs/current/userguide/tutorials.html">tutorials</a>
-to get developers started. Official installation instructions are
-<a class="reference external" href="http://www.gradle.org/docs/current/userguide/installation.html">here</a>.</p>
-<p>The official way to install Gradle is to
-<a class="reference external" href="http://www.gradle.org/downloads">download</a> and unpack the binary ZIP
-file to a common directory, set the environment variable <code class="docutils literal"><span class="pre">GRADLE_HOME</span></code>
-and add the bin directory to your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable.</p>
+<h4>Gradle<a class="headerlink" href="#gradle" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="http://www.gradle.org">Gradle</a> is the newest and most flexible build tool for Java. It provides every good and detailed <a class="reference external" href="http://www.gradle.org/documentation">documentation</a> and <a class="reference external" href="http://www.gradle.org/docs/current/userguide/tutorials.html">tutorials</a> to get developers started. Official installation instructions are <a class="reference external" href="http://www.gradle.org/docs/current/userguide/installation.html">here</a>.</p>
+<p>The official way to install Gradle is to <a class="reference external" href="http://www.gradle.org/downloads">download</a> and unpack the binary ZIP file to a common directory, set the environment variable <code class="docutils literal"><span class="pre">GRADLE_HOME</span></code> and add the bin directory to your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable.</p>
 <div class="section" id="windows-installation">
-<h4>Windows installation<a class="headerlink" href="#windows-installation" title="Permalink to this headline">¶</a></h4>
-<p>Download newest gradle-x.x.x-all.zip from
-<a class="reference external" href="http://www.gradle.org/downloads">http://www.gradle.org/downloads</a>. Open CLI (cmd.exe)</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>unzip ~\Download\gradle-x.x.x-all.zip -d &quot;C:\Program Files&quot;
-setx GRADLE_HOME &quot;C:\Program Files\gradle-x.x.x&quot; /M
-setx PATH &quot;%PATH%;%GRADLE_HOME%\bin&quot; /M
+<h5>Windows installation<a class="headerlink" href="#windows-installation" title="Permalink to this headline">¶</a></h5>
+<p>Download newest gradle-x.x.x-all.zip from <a class="reference external" href="http://www.gradle.org/downloads">http://www.gradle.org/downloads</a>.</p>
+<p>Open CLI (cmd.exe)</p>
+<div class="highlight-python"><div class="highlight"><pre>unzip ~\Download\gradle-x.x.x-all.zip -d &amp;quot;C:\Program Files&amp;quot;
+setx GRADLE_HOME &amp;quot;C:\Program Files\gradle-x.x.x&amp;quot; /M
+setx PATH &amp;quot;%PATH%;%GRADLE_HOME%\bin&amp;quot; /M
 </pre></div>
 </div>
-<p>/M sets the value on a machine level, which means for all users. The
-values are stored permanently and will be available in any new cmd.exe
-session.</p>
+<p>/M sets the value on a machine level, which means for all users. The values are stored permanently and will be available in any new cmd.exe session.</p>
 </div>
 <div class="section" id="unix-linux-os-x-solaris-freebsd-manual-installation">
-<h4>Unix (Linux / OS X / Solaris / FreeBSD) manual installation<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-manual-installation" title="Permalink to this headline">¶</a></h4>
-<p>Download newest <code class="docutils literal"><span class="pre">gradle-x.x.x-all.zip</span></code> from
-<a class="reference external" href="http://www.gradle.org/downloads">http://www.gradle.org/downloads</a>.</p>
+<h5>Unix (Linux / OS X / Solaris / FreeBSD) manual installation<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-manual-installation" title="Permalink to this headline">¶</a></h5>
+<p>Download newest <code class="docutils literal"><span class="pre">gradle-x.x.x-all.zip</span></code> from <a class="reference external" href="http://www.gradle.org/downloads">http://www.gradle.org/downloads</a>.</p>
 <p>Open a shell:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ sudo unzip ~/gradle-x.x.x-all.zip -d /usr/share/
+<div class="highlight-python"><div class="highlight"><pre>$ sudo unzip ~/gradle-x.x.x-all.zip -d /usr/share/
 $ sudo ln -s /usr/share/gradle-x.x.x /usr/share/gradle
 </pre></div>
 </div>
-<p>Open <code class="docutils literal"><span class="pre">~/.profile</span></code> (single user) or <code class="docutils literal"><span class="pre">/etc/profile</span></code> (all users) and
-add the following lines:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>export GRADLE_HOME=/usr/share/gradle
+<p>Open <code class="docutils literal"><span class="pre">~/.profile</span></code> (single user) or <code class="docutils literal"><span class="pre">/etc/profile</span></code> (all users) and add the following lines:</p>
+<div class="highlight-python"><div class="highlight"><pre>export GRADLE_HOME=/usr/share/gradle
 export PATH=$PATH:$GRADLE_HOME/bin
 </pre></div>
 </div>
 </div>
 <div class="section" id="unix-linux-os-x-solaris-freebsd-installation-using-gvm">
-<h4>Unix (Linux / OS X / Solaris / FreeBSD) installation using gvm<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-installation-using-gvm" title="Permalink to this headline">¶</a></h4>
-<p>An alternative and simpler option to install gradle for a single user is
-to use the <a class="reference external" href="http://gvmtool.net">Groovy enVironment Manager (gvm)</a> to
-install and update Gradle. You need the commands/packages curl and unzip
-to be installed on your system.</p>
+<h5>Unix (Linux / OS X / Solaris / FreeBSD) installation using gvm<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-installation-using-gvm" title="Permalink to this headline">¶</a></h5>
+<p>An alternative and simpler option to install gradle for a single user is to use the <a class="reference external" href="http://gvmtool.net">Groovy enVironment Manager (gvm)</a> to install and update Gradle. You need the commands/packages curl and unzip to be installed on your system.</p>
 <p>Open shell:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ curl -s get.gvmtool.net | bash
+<div class="highlight-python"><div class="highlight"><pre>$ curl -s get.gvmtool.net | bash
 … follow instructions
 $ gvm install gradle
 </pre></div>
 </div>
-<p>See gvm help to get more infos about other options of gvm, like updating
-or switching between different versions.</p>
+<p>See gvm help to get more infos about other options of gvm, like updating or switching between different versions.</p>
 </div>
-<div class="section" id="verify-gradle-installation">
-<h4>Verify Gradle installation<a class="headerlink" href="#verify-gradle-installation" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="verify-installation">
+<h5>Verify installation<a class="headerlink" href="#verify-installation" title="Permalink to this headline">¶</a></h5>
 <p>Open a new shell or cmd.exe session and test if gradle is available:</p>
-<div class="code highlight-python"><div class="highlight"><pre>$ gradle -v
+<div class="highlight-python"><div class="highlight"><pre>$ gradle -v
 ------------------------------------------------------------
 Gradle 2.2.1
 ------------------------------------------------------------
@@ -378,77 +323,63 @@ OS:           Linux 3.13.0-34-generic amd64
 </div>
 </div>
 <div class="section" id="apache-maven">
-<h3>Apache Maven<a class="headerlink" href="#apache-maven" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference external" href="http://maven.apache.org">Apache Maven</a> is a very common build tool
-in the Java/JVM world and is very well known for its dependency
-management and its <a class="reference external" href="http://search.maven.org">central artifact repository
-(mavencentral)</a>. Find the documentation and
-tutorials on the <a class="reference external" href="http://maven.apache.org">main page</a>. Installation
-instructions and downloads are
-<a class="reference external" href="http://maven.apache.org/download.cgi">here</a>.</p>
-<p>The official way to install Maven is to
-<a class="reference external" href="http://maven.apache.org/download.cgi">download</a> and unpack the
-binary ZIP file to a common directory, set the environment variable
-<code class="docutils literal"><span class="pre">M2_HOME</span></code> and add the bin directory to your <code class="docutils literal"><span class="pre">PATH</span></code> environment
-variable. The official way to install Maven is to download and unpack
-the binary ZIP file to a common directory, set the environment variable
-<code class="docutils literal"><span class="pre">M2_HOME</span></code> and add the bin directory to your <code class="docutils literal"><span class="pre">PATH</span></code> environment
-variable.</p>
-<div class="section" id="windows">
-<h4>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h4>
-<p>Follow process in the <a class="reference external" href="http://books.sonatype.com/mvnex-book/reference/installation-sect-maven-install.html">install
-instructions</a>.</p>
-</div>
+<h4>Apache Maven<a class="headerlink" href="#apache-maven" title="Permalink to this headline">¶</a></h4>
+<p><a class="reference external" href="http://maven.apache.org">Apache Maven</a> is a very common build tool in the Java/JVM world and is very well known for its dependency management and its <a class="reference external" href="http://search.maven.org">central artifact repository
+(mavencentral)</a>. Find the documentation and tutorials on the <a class="reference external" href="http://maven.apache.org">main page</a>. Installation instructions and downloads are <a class="reference external" href="http://maven.apache.org/download.cgi">here</a>.</p>
+<p>The official way to install Maven is to <a class="reference external" href="http://maven.apache.org/download.cgi">download</a> and unpack the binary ZIP file to a common directory, set the environment variable <code class="docutils literal"><span class="pre">M2_HOME</span></code> and add the bin directory to your <code class="docutils literal"><span class="pre">PATH</span></code> environment variable.</p>
 <div class="section" id="id1">
-<h4>Unix (Linux / OS X / Solaris / FreeBSD) manual installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
-<p>Download newest apache-maven-x.x.x-bin.zip from
-<a class="reference external" href="http://maven.apache.org/download.html">http://maven.apache.org/download.html</a>. Open shell:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ sudo unzip ~/apache-maven-x.x.x-bin.zip -d /usr/share/
+<h5>Windows installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h5>
+<p>Follow process in the <a class="reference external" href="http://books.sonatype.com/mvnex-book/reference/installation-sect-maven-install.html">install instructions</a>.</p>
+</div>
+<div class="section" id="id2">
+<h5>Unix (Linux / OS X / Solaris / FreeBSD) manual installation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h5>
+<p>Download newest apache-maven-x.x.x-bin.zip from <a class="reference external" href="http://maven.apache.org/download.html">http://maven.apache.org/download.html</a>.</p>
+<p>Open shell:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ sudo unzip ~/apache-maven-x.x.x-bin.zip -d /usr/share/
 $ sudo ln -s apache-maven-x.x.x /usr/share/maven
 </pre></div>
 </div>
-<p>Open <code class="docutils literal"><span class="pre">~/.profile</span></code> (single user) or <code class="docutils literal"><span class="pre">/etc/profile</span></code> (all users) and
-add the following lines:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>export M2_HOME=/usr/share/maven
+<p>Open <code class="docutils literal"><span class="pre">~/.profile</span></code> (single user) or <code class="docutils literal"><span class="pre">/etc/profile</span></code> (all users) and add the following lines:</p>
+<div class="highlight-python"><div class="highlight"><pre>export M2_HOME=/usr/share/maven
 export PATH=$PATH:$M2_HOME/bin
 </pre></div>
 </div>
 </div>
 <div class="section" id="unix-linux-os-x-solaris-freebsd-installation-using-package-manager">
-<h4>Unix (Linux / OS X / Solaris / FreeBSD) installation using package manager<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-installation-using-package-manager" title="Permalink to this headline">¶</a></h4>
-<p>An alternative option to install maven is to use the package manager of
-the unix system.</p>
+<h5>Unix (Linux / OS X / Solaris / FreeBSD) installation using package manager<a class="headerlink" href="#unix-linux-os-x-solaris-freebsd-installation-using-package-manager" title="Permalink to this headline">¶</a></h5>
+<p>An alternative option to install maven is to use the package manager of the unix system.</p>
 <ul class="simple">
-<li>on DEB based systems (Debian,Ubuntu,...)
-<code class="docutils literal"><span class="pre">$</span> <span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">maven</span></code> (this is a quite outdated version
-3.0.x)</li>
-<li>on RPM based systems (RedHat,CentOS,Fedora,...) exists no official
-package (use above manual instructions).</li>
-<li>on OS X you can install Maven using a packet manager for OS X like
-Homebrew or MacPorts. Because the packages are usually compiled
-during installation you need to install Xcode beforehand. This is
-recommended especially, if you already have Xcode installed or you
-would like to install also other common unix packages. Homebrew
-(<a class="reference external" href="http://brew.sh">http://brew.sh</a>): <code class="docutils literal"><span class="pre">$</span> <span class="pre">brew</span> <span class="pre">install</span> <span class="pre">maven</span></code> MacPorts
-(<a class="reference external" href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>): <code class="docutils literal"><span class="pre">$</span> <span class="pre">port</span> <span class="pre">install</span> <span class="pre">maven2</span></code></li>
+<li>on DEB based systems (Debian,Ubuntu,...) <code class="docutils literal"><span class="pre">$</span> <span class="pre">sudo</span> <span class="pre">apt-get</span> <span class="pre">install</span> <span class="pre">maven</span></code> (this is a quite outdated version 3.0.x)</li>
+<li>on RPM based systems (RedHat,CentOS,Fedora,...) exists no official package (use above manual instructions).</li>
+<li>on OS X you can install Maven using a packet manager for OS X like Homebrew or MacPorts. Because the packages are usually compiled during installation you need to install Xcode beforehand. This is recommended especially, if you already have Xcode installed or you would like to install also other common unix packages.</li>
 </ul>
-</div>
-<div class="section" id="verify-maven-installation">
-<h4>Verify Maven installation<a class="headerlink" href="#verify-maven-installation" title="Permalink to this headline">¶</a></h4>
+<p>Homebrew (<a class="reference external" href="http://brew.sh">http://brew.sh</a>):</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><code class="docutils literal"><span class="pre">$</span> <span class="pre">brew</span> <span class="pre">install</span> <span class="pre">maven</span></code></dd>
+</dl>
+<p>MacPorts (<a class="reference external" href="http://www.macports.org/install.php">http://www.macports.org/install.php</a>):</p>
+<dl class="docutils">
+<dt>::</dt>
+<dd><code class="docutils literal"><span class="pre">$</span> <span class="pre">port</span> <span class="pre">install</span> <span class="pre">maven2</span></code></dd>
+</dl>
+<div class="section" id="id3">
+<h6>Verify installation<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h6>
 <p>Open a new shell or cmd.exe session and test if maven is available:</p>
-<div class="code highlight-python"><div class="highlight"><pre>$ mvn -version
+<div class="highlight-python"><div class="highlight"><pre>$ mvn -version
 Apache Maven 3.2.3 (33f8c3e1027c3ddde99d3cdebad2656a31e8fdf4; 2014-08-11T22:58:10+02:00)
 Maven home: /usr/local/Cellar/maven/3.2.3/libexec
 Java version: 1.8.0_20, vendor: Oracle Corporation
 Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home/jre
 Default locale: en_US, platform encoding: UTF-8
-OS name: &quot;mac os x&quot;, version: &quot;10.10.2&quot;, arch: &quot;x86_64&quot;, family: &quot;mac&quot;
+OS name: &amp;quot;mac os x&amp;quot;, version: &amp;quot;10.10.2&amp;quot;, arch: &amp;quot;x86_64&amp;quot;, family: &amp;quot;mac&amp;quot;
 </pre></div>
 </div>
 </div>
 </div>
+</div>
 <div class="section" id="integraded-development-environments-ide">
-<h3>Integraded Development Environments (IDE)<a class="headerlink" href="#integraded-development-environments-ide" title="Permalink to this headline">¶</a></h3>
+<h4>Integraded Development Environments (IDE)<a class="headerlink" href="#integraded-development-environments-ide" title="Permalink to this headline">¶</a></h4>
 <p>To install your IDE please check the webpage of your prefered IDE
 product:</p>
 <ul class="simple">
@@ -456,99 +387,77 @@ product:</p>
 <li><a class="reference external" href="https://www.jetbrains.com/idea/">IntelliJ IDEA</a></li>
 <li><a class="reference external" href="https://netbeans.org">Netbeans</a></li>
 </ul>
-<p>These IDEs typically integrate well with Gradle and Apache Maven using
-plugins. Alternatively you have to copy the KIARA libraries manually to
-the library folder of your project and add them to your classpath.</p>
+<p>These IDEs typically integrate well with Gradle and Apache Maven using plugins. Alternatively you have to copy the KIARA libraries manually to the library folder of your project and add them to your classpath.</p>
 </div>
-</div>
-<div class="section" id="kiara-components">
-<h2>KIARA components<a class="headerlink" href="#kiara-components" title="Permalink to this headline">¶</a></h2>
-<p>The KIARA components (libraries) are usually delivered together with the
-the developed application and do not have to be installed separately.</p>
 <div class="section" id="installation-of-the-kiaragen-tool">
-<h3>Installation of the kiaragen tool<a class="headerlink" href="#installation-of-the-kiaragen-tool" title="Permalink to this headline">¶</a></h3>
-<p>The kiaragen tool is part of the KIARA components available on Maven
-Central. Depending on your build tool kiaragen can be easily integrated
-or it can be called with a shell/batch script.</p>
-<p>If you are using Maven or an IDE you can download an executable jar file
-of kiaragen from the <a class="reference external" href="http://search.maven.org/#search|ga|1|g:org.fiware.kiara">KIARA
-Maven-Central</a>
-repository, or you can find it in a standalone distribution available
-online.</p>
+<h4>Installation of the kiaragen tool<a class="headerlink" href="#installation-of-the-kiaragen-tool" title="Permalink to this headline">¶</a></h4>
+<p>The kiaragen tool is part of the KIARA components available on Maven Central. Depending on your build tool kiaragen can be easily integrated or it can be called with a shell/batch script.</p>
+<p>If you are using Maven or an IDE you can download an executable jar file of kiaragen from the <a class="reference external" href="http://search.maven.org/#search">ga|1|g:org.fiware.kiara|KIARA Maven-Central</a> repository, or you
+can find it in a standalone distribution available online.</p>
 <div class="section" id="on-windows">
-<h4>On Windows:<a class="headerlink" href="#on-windows" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li>There are two ways of obtaining the kiaragen software:</li>
-<li>Download the file <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> from Maven Central and
-place it into a directory (e.g. subdirectory kiaragen).</li>
-<li>To make the execution simpler you can also download the kiaragen.bat
-script from the kiaragen project
-(<a class="reference external" href="https://github.com/FIWARE-Middleware/kiaragen">https://github.com/FIWARE-Middleware/kiaragen</a>) and copy it into the
-scripts directory (create if not not created yet).</li>
-<li>Please take into account that the script will look for the
-<code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> file inside the kiaragen subdirectory.</li>
-<li>Now the tool can be called using: kiaragen.bat when the scripts
-folder in the installation dir is in the execute path or with a
-relative path <code class="docutils literal"><span class="pre">./scripts/kiaragen.bat</span></code> for project local
-installations.</li>
+<h5>On Windows:<a class="headerlink" href="#on-windows" title="Permalink to this headline">¶</a></h5>
+<ul>
+<li><p class="first">There are two ways of obtaining the kiaragen software:</p>
+</li>
+<li><p class="first">Download the file <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> from Maven Central and place it into a directory (e.g. subdirectory kiaragen).</p>
+</li>
+<li><p class="first">To make the execution simpler you can also download the kiaragen.bat script from the kiaragen project (<a class="reference external" href="https://github.com/FIWARE-Middleware/kiaragen">https://github.com/FIWARE-Middleware/kiaragen</a>) and copy it into the scripts directory (create if not not created yet).</p>
+<blockquote>
+<div><p>Please take into account that the script will look for the <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> file inside the kiaragen subdirectory.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Now the tool can be called using: kiaragen.bat when the scripts folder in the installation dir is in the execute path or with a relative path <code class="docutils literal"><span class="pre">./scripts/kiaragen.bat</span></code> for project local installations.</p>
+</li>
 </ul>
 </div>
 <div class="section" id="on-linux-os-x">
-<h4>On Linux / OS X:<a class="headerlink" href="#on-linux-os-x" title="Permalink to this headline">¶</a></h4>
-<ul class="simple">
-<li>Download the file <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> from Maven Central</li>
-<li>Place it in a directory of your shells execute path (e.g.
-<code class="docutils literal"><span class="pre">/usr/local/bin</span></code>). Alternatively you can also add it to your
-project dir and call it with a relative path (./scripts/kiaragen.sh).</li>
-<li>To make the execution simpler you can also download the kiaragen.sh
-script from the kiaragen project
-(<a class="reference external" href="https://github.com/FIWARE-Middleware/kiaragen">https://github.com/FIWARE-Middleware/kiaragen</a>) and copy it into the
-scripts directory.</li>
-<li>Please take into account that the script will look for the
-<code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> file inside the kiaragen subdirectory.</li>
-<li>Now the tool can be called using: kiaragen.sh when the scripts folder
-in the installation dir is in the execute path or with a relative
-path <code class="docutils literal"><span class="pre">./scripts/kiaragen.sh</span></code> for project local installations
-executable flag is lost while downloading, you can set it again using
-<code class="docutils literal"><span class="pre">chmod</span> <span class="pre">a+x</span> <span class="pre">kiaragen</span></code></li>
+<h5>On Linux / OS X:<a class="headerlink" href="#on-linux-os-x" title="Permalink to this headline">¶</a></h5>
+<ul>
+<li><p class="first">Download the file <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> from Maven Central</p>
+</li>
+<li><p class="first">Place it in a directory of your shells execute path (e.g. <code class="docutils literal"><span class="pre">/usr/local/bin</span></code>). Alternatively you can also add it to your project dir and call it with a relative path (./scripts/kiaragen.sh).</p>
+</li>
+<li><p class="first">To make the execution simpler you can also download the kiaragen.sh script from the kiaragen project (<a class="reference external" href="https://github.com/FIWARE-Middleware/kiaragen">https://github.com/FIWARE-Middleware/kiaragen</a>) and copy it into the scripts directory.</p>
+<blockquote>
+<div><p>Please take into account that the script will look for the <code class="docutils literal"><span class="pre">kiaragen-x.x.x-cli.jar</span></code> file inside the kiaragen subdirectory.</p>
+</div></blockquote>
+</li>
+<li><p class="first">Now the tool can be called using: kiaragen.sh when the scripts folder in the installation dir is in the execute path or with a relative path <code class="docutils literal"><span class="pre">./scripts/kiaragen.sh</span></code> for project local installations executable flag is lost while downloading, you can set it again using <code class="docutils literal"><span class="pre">chmod</span> <span class="pre">a+x</span> <span class="pre">kiaragen</span></code></p>
+</li>
 </ul>
 </div>
 </div>
 </div>
+<div class="section" id="kiara-components">
+<h3>KIARA components<a class="headerlink" href="#kiara-components" title="Permalink to this headline">¶</a></h3>
+<p>The KIARA components (libraries) are usually delivered together with the the developed application and do not have to be installed separately.</p>
+</div>
 <div class="section" id="setting-up-the-development-environment">
-<h2>Setting up the development environment<a class="headerlink" href="#setting-up-the-development-environment" title="Permalink to this headline">¶</a></h2>
-<p>In this section it is explained how to set up your development
-environment and configure your project to use KIARA Advanced Middleware.
-We support the most common build tools for Java projects, which are:</p>
+<h3>Setting up the development environment<a class="headerlink" href="#setting-up-the-development-environment" title="Permalink to this headline">¶</a></h3>
+<p>In this section it is explained how to set up your development environment and configure your project to use KIARA Advanced Middleware. We support the most common build tools for Java projects, which are:</p>
 <ul class="simple">
 <li>Gradle</li>
 <li>Apache Maven</li>
 </ul>
-<p>All Java Integrated Development environments like Eclipse, InteliJ IDEA,
-Netbeans, etc. provide support for one of these tools. Please check the
-Installation Manual for instructions how to install the required plugins
-and import your KIARA project.</p>
-<div class="section" id="id2">
-<h3>Gradle<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>All Java Integrated Development environments like Eclipse, InteliJ IDEA, Netbeans, etc. provide support for one of these tools.</p>
+<p>Please check the Installation Manual for instructions how to install the required plugins and import your KIARA project.</p>
+<div class="section" id="id4">
+<h4>Gradle<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <div class="section" id="set-up-the-basic-project-structure">
-<h4>Set up the basic project structure<a class="headerlink" href="#set-up-the-basic-project-structure" title="Permalink to this headline">¶</a></h4>
-<p>If you do not yet have a project you can setup the basic structure using
-the gradle init plugin:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ mkdir calculator
+<h5>Set up the basic project structure<a class="headerlink" href="#set-up-the-basic-project-structure" title="Permalink to this headline">¶</a></h5>
+<p>If you do not yet have a project you can setup the basic structure using the gradle init plugin:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ mkdir calculator
 $ cd calculator
 $ gradle init --type java-library
 </pre></div>
 </div>
-<p>This will create a basic directory structure for your source and test
-code and create a commented <code class="docutils literal"><span class="pre">build.gradle</span></code> file for a Java
-application.</p>
-<p>Additionally the gradle wrapper is set up, which allows developers to
-execute gradle tasks without installing the gradle tool globally.</p>
+<p>This will create a basic directory structure for your source and test code and create a commented <code class="docutils literal"><span class="pre">build.gradle</span></code> file for a Java application.</p>
+<p>Additionally the gradle wrapper is set up, which allows developers to execute gradle tasks without installing the gradle tool globally.</p>
 </div>
 <div class="section" id="configure-your-gradle-project-to-use-kiara">
-<h4>Configure your Gradle project to use KIARA<a class="headerlink" href="#configure-your-gradle-project-to-use-kiara" title="Permalink to this headline">¶</a></h4>
+<h5>Configure your Gradle project to use KIARA<a class="headerlink" href="#configure-your-gradle-project-to-use-kiara" title="Permalink to this headline">¶</a></h5>
 <p>To use KIARA in your project you have to extend your build.gradle file:</p>
-<div class="code groovy highlight-python"><div class="highlight"><pre>apply plugin: &#39;java&#39;
+<div class="highlight-python"><div class="highlight"><pre>apply plugin: &#39;java&#39;
 
 sourceCompatibility = 1.7
 version = &#39;1.0&#39;
@@ -566,28 +475,25 @@ dependencies {
 }
 </pre></div>
 </div>
-<p>The KIARA artefacts are available on the Maven Central repository. So
-you have to make sure, `mavenCentral() is part of your repositories
-section.</p>
-<p>To include the KIARA artefacts you have to add the <code class="docutils literal"><span class="pre">kiara</span></code> main
-library to the dependencies section. All the depending libraries will be
-added automatically to your project.</p>
-<p>The following is a typical file structure for a gradle project using
-KIARA:</p>
+<p>The KIARA artefacts are available on the Maven Central repository. So you have to make sure, `mavenCentral() is part of your repositories section.</p>
+<p>To include the KIARA artefacts you have to add the <code class="docutils literal"><span class="pre">kiara</span></code> main library to the dependencies section. All the depending libraries will be added automatically to your project.</p>
+<p>The following is a typical file structure for a gradle project using KIARA:</p>
 <div class="highlight-python"><div class="highlight"><pre>.
 ├── build                                       // generated files
 │   ├── classes                                 // compiled classes
 │   │   └── main
 │   │       └── com
 │   │           └── example
-│   │               ├── CalculatorClient.class
 │   │               ├── Calculator.class
 │   │               ├── CalculatorAsync.class
 │   │               ├── CalculatorClient.class
+│   │               ├── CalculatorProcess.class
 │   │               ├── CalculatorProxy.class
+│   │               ├── CalculatorServant.class
 │   │               ├── CalculatorServantExample.class
-│   │               ├── CalculatorServantImpl.class
-│   │               └── CalculatorServer.class
+│   │               ├── ClientExample.class
+│   │               ├── IDLText.class
+│   │               └── ServerExample.class
 │   ├── generated-src                           // generated support classes
 │   │   └── kiara
 │   │       └── com
@@ -595,9 +501,9 @@ KIARA:</p>
 │   │               ├── Calculator.java
 │   │               ├── CalculatorAsync.java
 │   │               ├── CalculatorClient.java
+│   │               ├── CalculatorProcess.java
 │   │               ├── CalculatorProxy.java
-│   │               ├── CalculatorServant.java
-│   │               └── CalculatorServantExample.java
+│   │               └── CalculatorServant.java
 │   └── libs
 │       └── Calculator-1.0.jar                 // packaged application
 ├── build.gradle                               // gradle build file
@@ -616,9 +522,9 @@ KIARA:</p>
     │   └── java                               // application code
     │       └── com
     │           └── example
-    │               ├── CalculatorClientMain.java  // client start code
-    │               ├── CalculatorServerMain.java  // server start code
-    │               └── CalculatorServantImpl.java // servant impl.
+    │               ├── ClientExample.java               // client start code
+    │               ├── ServerExample.java               // server start code
+    │               └── CalculatorServantExample.java    // servant impl.
     └── test
         └── java
 </pre></div>
@@ -632,137 +538,34 @@ KIARA:</p>
 </div>
 </div>
 </div>
-<div class="section" id="maven">
-<h3>Maven<a class="headerlink" href="#maven" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="id3">
-<h4>Set up the basic project structure<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
-<p>If you do not yet have a maven project you can setup the basic structure
-using the archetype plugin:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ mvn archetype:generate \
+<div class="section" id="id5">
+<h4>Apache Maven<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id6">
+<h5>Set up the basic project structure<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h5>
+<p>If you do not yet have a maven project you can setup the basic structure using the archetype plugin:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ mvn archetype:generate \
  -DgroupId=mw.kiara \
  -DartifactId=calculator \
  -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 </pre></div>
 </div>
-<p>This will create a basic directory structure for your source and test
-code and create a commented <code class="docutils literal"><span class="pre">pom.xml</span></code> file for a Java application.</p>
-</div>
-<div class="section" id="configure-your-maven-project-to-use-kiara">
-<h4>Configure your maven project to use KIARA<a class="headerlink" href="#configure-your-maven-project-to-use-kiara" title="Permalink to this headline">¶</a></h4>
-<p>To use KIARA in your project you have to extend your project
-configuration file (<code class="docutils literal"><span class="pre">pom.xml</span></code>):</p>
-<div class="code xml highlight-python"><div class="highlight"><pre>&lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd&quot;&gt;
-  &lt;modelVersion&gt;4.0.0&lt;/modelVersion&gt;
-  &lt;groupId&gt;com.example&lt;/groupId&gt;
-  &lt;artifactId&gt;calculator&lt;/artifactId&gt;
-  &lt;packaging&gt;jar&lt;/packaging&gt;
-  &lt;version&gt;1.0&lt;/version&gt;
-
-  &lt;name&gt;KIARA Calculator Demo&lt;/name&gt;
-  &lt;url&gt;http://kiarademo.fiware.org&lt;/url&gt;
-
-  &lt;build&gt;
-    &lt;plugins&gt;
-      &lt;plugin&gt;
-        &lt;artifactId&gt;maven-compiler-plugin&lt;/artifactId&gt;
-          &lt;version&gt;3.1&lt;/version&gt;
-            &lt;configuration&gt;
-              &lt;source&gt;1.7&lt;/source&gt;
-              &lt;target&gt;1.7&lt;/target&gt;
-            &lt;/configuration&gt;
-          &lt;/plugin&gt;
-      &lt;/plugins&gt;
-  &lt;/build&gt;
-
-  &lt;dependencies&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;org.fiware.kiara&lt;/groupId&gt;
-      &lt;artifactId&gt;kiara&lt;/artifactId&gt;
-      &lt;version&gt;0.2.0&lt;/version&gt;
-      &lt;scope&gt;compile&lt;/scope&gt;
-    &lt;/dependency&gt;
-    &lt;dependency&gt;
-      &lt;groupId&gt;junit&lt;/groupId&gt;
-      &lt;artifactId&gt;junit&lt;/artifactId&gt;
-      &lt;version&gt;3.8.1&lt;/version&gt;
-      &lt;scope&gt;test&lt;/scope&gt;
-    &lt;/dependency&gt;
-  &lt;/dependencies&gt;
-&lt;/project&gt;
-</pre></div>
-</div>
-<p>The KIARA artefacts are available on the Maven Central Repository. To
-include the KIARA libraries you have to add the <code class="docutils literal"><span class="pre">kiara</span></code> main library
-to the dependencies section. All the depending libraries will be added
-automatically to your project.</p>
-<p>The following is a typical file structure for a maven project using
-KIARA:</p>
-<div class="code highlight-python"><div class="highlight"><pre>.
-├── pom.xml                                   // maven project config (pom.xml)
-├── src                                       // source files
-│   ├── main
-│   │   ├── idl                               // IDL definitions for KIARA
-│   │   │   └── CurrencyConverter.idl
-│   │   └── java                              // application code
-│   │       └── com
-│   │           └── example
-│   │               ├── CalculatorClientMain.java  // client start code
-│   │               ├── CalculatorServerMain.java  // server start code
-│   │               └── CalculatorServantImpl.java // servant impl.
-│   └── test
-│       └── java
-└── target                                    // generated files
-    ├── Calculator-1.0.jar                    // packaged application
-    ├── classes                               // compiled classes
-    │   └── com
-    │       └── example
-    │           ├── CalculatorClientMain.class
-    │           ├── Calculator.class
-    │           ├── CalculatorAsync.class
-    │           ├── CalculatorClient.class
-    │           ├── CalculatorProxy.class
-    │           ├── CalculatorServantExample.class
-    │           ├── CalculatorServantImpl.class
-    │           └── CalculatorServerMain.class
-    ├── generated-src                  // generated support classes of kiaragen
-    │       └── com
-    │           └── example
-    │               ├── Calculator.java
-    │               ├── CalculatorAsync.java
-    │               ├── CalculatorClient.java
-    │               ├── CalculatorProxy.java
-    │               ├── CalculatorServant.java
-    │               └── CalculatorServantExample.java
-    ├── maven-archiver
-    │   └── pom.properties
-    ├── maven-status
-    │   └── maven-compiler-plugin
-    └── test-classes
-</pre></div>
-</div>
-<div class="line-block">
-<div class="line">Some basic mvn goals:</div>
-<div class="line"><code class="docutils literal"><span class="pre">mvn</span> <span class="pre">compile</span></code> → builds all classes</div>
-<div class="line"><code class="docutils literal"><span class="pre">mvn</span> <span class="pre">test</span></code> → builds all classes and run tests</div>
-<div class="line"><code class="docutils literal"><span class="pre">mvn</span> <span class="pre">package</span></code> → creates the application package</div>
-<div class="line"><code class="docutils literal"><span class="pre">mvn</span> <span class="pre">clean</span></code> → cleans up your project</div>
+<p>This will create a basic directory structure for your source and test code and create a commented <code class="docutils literal"><span class="pre">pom.xml</span></code> file for a Java application.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="sanity-check-procedures">
-<h2>Sanity check procedures<a class="headerlink" href="#sanity-check-procedures" title="Permalink to this headline">¶</a></h2>
-<p>To verify correct installation please execute all the verifications described in the above installation instructions:</p>
-<ul class="simple">
-<li><a class="reference internal" href="#verify-java-installation">Verify Java installation</a></li>
-<li><a class="reference internal" href="#verify-gradle-installation">Verify Gradle installation</a> if you are using Gradle</li>
-<li><a class="reference internal" href="#verify-maven-installation">Verify Maven installation</a> if you are using Maven</li>
-</ul>
+<h2>Sanity Check Procedures<a class="headerlink" href="#sanity-check-procedures" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="end-to-end-testing">
-<h3>End to End Testing<a class="headerlink" href="#end-to-end-testing" title="Permalink to this headline">¶</a></h3>
-<p>Finally you can checkout, compile and run our demo application:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ git clone https://github.com/FIWARE-Middleware/Examples.git
-$ gradle build
+<h3>End to End testing<a class="headerlink" href="#end-to-end-testing" title="Permalink to this headline">¶</a></h3>
+<p>To verify your development environment you can download and run the KIARA Calculator example application.</p>
+<p>Download the example application from <a class="reference external" href="https://github.com/FIWARE-Middleware/Examples">Github</a>. You can clone it using git or download the ZIP archive and unzip it to an empty directory.</p>
+<div class="highlight-python"><div class="highlight"><pre>$ git clone https://github.com/FIWARE-Middleware/Examples.git KiaraCalculator
+$ cd KiaraCalculator
+</pre></div>
+</div>
+<p><strong>Build the application</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>$ gradle build
 :compileJava
 :processResources UP-TO-DATE
 :classes
@@ -776,54 +579,85 @@ $ gradle build
 :build
 
 BUILD SUCCESSFUL
+
+Total time: 1.793 secs
 </pre></div>
 </div>
-<p>Run the server:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ gradle runServer
+<p><strong>Run the Server</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>$ gradle runServer
 :compileJava UP-TO-DATE
 :processResources UP-TO-DATE
 :classes UP-TO-DATE
 :runServer
 CalculatorServerExample
-Sep 25, 2015 7:56:57 AM io.netty.util.internal.logging.Slf4JLogger info
-INFO: [id: 0xef9aba49] REGISTERED
-Sep 25, 2015 7:56:57 AM io.netty.util.internal.logging.Slf4JLogger info
-INFO: [id: 0xef9aba49] BIND(/0.0.0.0:9090)
-Sep 25, 2015 7:56:57 AM io.netty.util.internal.logging.Slf4JLogger info
-INFO: [id: 0xef9aba49, /0:0:0:0:0:0:0:0:9090] ACTIVE
+Apr 15, 2015 6:00:32 PM io.netty.util.internal.logging.Slf4JLogger info
+INFO: [id: 0xbfb04d67] REGISTERED
+Apr 15, 2015 6:00:32 PM io.netty.util.internal.logging.Slf4JLogger info
+INFO: [id: 0xbfb04d67] BIND(/0.0.0.0:9090)
+Apr 15, 2015 6:00:32 PM io.netty.util.internal.logging.Slf4JLogger info
+INFO: [id: 0xbfb04d67, /0:0:0:0:0:0:0:0:9090] ACTIVE
+&gt; Building 75% &gt; :runServer
 </pre></div>
 </div>
-<p>Open a new Terminal session and start the client:</p>
-<div class="code shell highlight-python"><div class="highlight"><pre>$ runClient
+<p><strong>Open an new terminal window and run the Client</strong></p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd KiaraCalculator
+$ gradle runClient
 :compileJava UP-TO-DATE
 :processResources UP-TO-DATE
 :classes UP-TO-DATE
 :runClient
 CalculatorClientExample
+
 10 + 5 = 15
+
+Apr 15, 2015 5:54:06 PM org.fiware.kiara.Kiara shutdown
+INFO: shutdown 2 services
+Apr 15, 2015 5:54:06 PM org.fiware.kiara.Kiara shutdown
+INFO: shutdown org.fiware.kiara.netty.NettyTransportFactory$1@880ec60
+Apr 15, 2015 5:54:11 PM org.fiware.kiara.Kiara shutdown
+INFO: shutdown org.fiware.kiara.transport.impl.Global$1@3f3afe78
+
+BUILD SUCCESSFUL
+
+Total time: 12.76 secs
 </pre></div>
 </div>
+<p>The Client task should terminate with BUILD SUCCESSFUL and the Calculation should show the correct result.</p>
 </div>
 <div class="section" id="list-of-running-processes">
 <h3>List of Running Processes<a class="headerlink" href="#list-of-running-processes" title="Permalink to this headline">¶</a></h3>
-<p>KIARA Advanced Middleware itself does not install any kind of permanently running daemon or service. There are no running processes, but libraries to link to your applications.</p>
+<p>KIARA Advanced Middleware itself do not install any kind of daemon or service. There are no running processes, but libraries to link to your applications.</p>
 </div>
 <div class="section" id="network-interfaces-up-open">
 <h3>Network interfaces Up &amp; Open<a class="headerlink" href="#network-interfaces-up-open" title="Permalink to this headline">¶</a></h3>
-<p>The KIARA Advanced Middleware itself does not open or provide services, therefore has no open Ports or Interfaces. Applications using KIARA can open any ports or interfaces and firewalls have to be configured accordingly.
-The above Example Application is opening and listening by default on Port 9090.</p>
+<p>The KIARA Middleware itself does not open or provide services, therefore has no open Ports or Interfaces. Applications using KIARA can open any ports or interfaces and firewalls have to be configured accordingly.</p>
+<p>The provided TestServer is opening and listening by default on Port 9090.</p>
+</div>
+<div class="section" id="databases">
+<h3>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>N/A</div></blockquote>
 </div>
 </div>
 <div class="section" id="diagnosis-procedures">
 <h2>Diagnosis Procedures<a class="headerlink" href="#diagnosis-procedures" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="resource-availability">
 <h3>Resource availability<a class="headerlink" href="#resource-availability" title="Permalink to this headline">¶</a></h3>
-<p>The middleware itself requires very few resources, any typical PC capable to run Java is enough to run the demo examples.</p>
-<p>This <a class="reference external" href="http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html">Oracle JDK Webpage</a> provides specific minimal hardware requirements (Disk, Memory, CPU).</p>
+<p>This middleware requires very few resources, any typical PC should be enough to run the regular examples.</p>
+</div>
+<div class="section" id="remote-service-access">
+<h3>Remote Service Access<a class="headerlink" href="#remote-service-access" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>N/A</div></blockquote>
 </div>
 <div class="section" id="resource-consumption">
 <h3>Resource consumption<a class="headerlink" href="#resource-consumption" title="Permalink to this headline">¶</a></h3>
-<p>Resource consumption is mainly defined by the application using the KIARA middleware. The compiled library is about 270kB in size.</p>
+<p>Depends on your application, it can be as low of 256 Kbytes of heap space and almost zero cpu use. The amount of RAM depends on your data types size and the different persistence options, please read the user manual for more information.</p>
+</div>
+<div class="section" id="i-o-flows">
+<h3>I/O flows<a class="headerlink" href="#i-o-flows" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div>N/A</div></blockquote>
 </div>
 </div>
 </div>
@@ -869,7 +703,7 @@ The above Example Application is opening and listening by default on Port 9090.<
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'0.2.0',
+            VERSION:'0.3.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
