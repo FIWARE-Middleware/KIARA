@@ -10,7 +10,7 @@ Advanced Middleware IDL Specification
 Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`__
 -  `DFKI - German Research Center for Artificial
    Intelligence <http://www.dfki.de/>`__
 -  `ZHAW - School of Engineering
