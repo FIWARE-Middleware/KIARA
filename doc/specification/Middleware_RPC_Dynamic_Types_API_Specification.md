@@ -1,19 +1,47 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
+___Date: 8th April 2015___
+
+This version: [*0.2.0*](#)  
+Previous version: n/a  
+Latest version: [*latest*](Middleware_RPC_Dynamic_Types_Specification.html)  
+
+Editors:
+
+- [eProsima - The Middleware Experts][EPROS]
+- [DFKI - German Research Center for Artificial Intelligence][DFKI]
+- [ZHAW - School of Engineering (ICCLab)][ZHAW]
+
+[EPROS]: http://eprosima.com/index.php/en/ "eProsima - The Middleware Experts"
+[DFKI]: http://www.dfki.de/ "German Research Center for Artificial Intelligence"
+[ZHAW]: http://blog.zhaw.ch/icclab "ZHAW - School of Engineering (ICCLab)"
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+
+----
+
+Abstract
+--------
+Ahe Advanced Middleware GE enables flexible, efficient, scalable, and secure communication between distributed applications and to/between FIWARE GEs.
+The __Middleware RPC Dynamic Types API Specification__ describes the extensions to the __Middleware RPC API Specification__ to do _dynamic_ Request/Reply type Remote Procedure Calls (RPC).
+
+It provides a _dynamic runtime Data-Mapping and invocation of Function proxies_, by parsing the IDL description of the remote service at runtime and map it to the function/data definition provided by the developer when setting up the connection.
+
+## Status of this Document
+
+| **Date**         | **Description**               | 
+|------------------|-------------------------------|
+| 30-January-2015  | Frist release                 |
+| 04-February-2015 | Update after review meeting   |
+| 08-April-2015    | Release 0.2.0                 |
+
+----
 
 Introduction
 ------------
 ### Purpose
 
 The purpose of this document is to specify the dynamic Remote Procedure Call (RPC) Application Programming Interface (API) for the Advanced Middleware GE.
-
-### Revision History
-
-| **Date**         | **Description**               | 
-|------------------|-------------------------------|
-| 30-January-2015  | Frist release                 |
-| 04-February-2015 | Update after review meeting   |
-| 06-March-2015    | Release 0.2.0                 |
 
 ### Reference Material
 
@@ -149,6 +177,7 @@ This subsection contains the interfaces and classes that are dependent on the us
 <center>Figure: Class Diagram TypeDescriptor</center>
 
 ---
+
 #### org.fiware.kiara.typecode.TypeDescriptorBuilder
 
 This interface defined the operations used to create type-describing objects. It allows the users to create every supported data type inside Advanced Middleware by acting as a single access builder.
@@ -169,6 +198,7 @@ This interface defined the operations used to create type-describing objects. It
 - **createServiceType**: Function that creates a new `ServiceTypeDescriptor` object used to represent a service defined in the server’s side.
 
 ---
+
 #### org.fiware.kiara.typecode.TypeDescriptor
 
 This class is used to manipulate the objects used to describe the data types. It allows the users to know what type of data an object represents.
@@ -196,6 +226,7 @@ This class is used to manipulate the objects used to describe the data types. It
 - **isService:** Function used to know if a `TypeDescriptor` object is a description of a service.
 
 ---
+
 #### org.fiware.kiara.typecode.data.DataTypeDescriptor
 
 Interface that represents the top level class of the data type hierarchy. It is used as a generic type to englobe only and exclusively data type descriptors.
@@ -206,6 +237,7 @@ Interface that represents the top level class of the data type hierarchy. It is 
 **Functions**: None
 
 ---
+
 #### org.fiware.kiara.typecode.data.PrimitiveTypeDescriptor
 
 Interface that represents a primitive data type. Primitive types include **boolean**, **byte**, **i16**, **ui16**, **i32**, **ui32**, **i64**, **ui64**, **float32**, **float64**, **char** and **string**.
@@ -220,6 +252,7 @@ Interface that represents a primitive data type. Primitive types include **boole
 - **getMaxFixedLength**: This function returns the maximum length specified when creating the `PrimitiveTypeDescriptor` object if it represents a string data type.
 
 ---
+
 #### org.fiware.kiara.typecode.data.ContainerTypeDescriptor
 
 Interface that represents a container data type. Container data types are **arrays**, **lists**, **maps** and **sets**.
@@ -233,6 +266,7 @@ Interface that represents a container data type. Container data types are **arra
 - **getMaxSize**: This function returns the maximum size of a container data type.
 
 ---
+
 #### org.fiware.kiara.typecode.data.ArrayTypeDescriptor
 
 Interface that represents an array data type. Arrays can hold multiple repeated objects of the same data type inside.
@@ -249,6 +283,7 @@ Interface that represents an array data type. Arrays can hold multiple repeated 
 - **getDimensions**: This method returns the different dimensions of the array.
 
 ---
+
 #### org.fiware.kiara.typecode.data.ListTypeDescriptor
 
 Interface that represents a list data type. Lists can hold multiple repeated objects of the same data type inside.
@@ -262,6 +297,7 @@ Interface that represents a list data type. Lists can hold multiple repeated obj
 - **setElementType**: This function sets the `DataTypeDescriptor` object describing the content type of the list.
 
 ---
+
 #### org.fiware.kiara.typecode.data.SetTypeDescriptor
 
 Interface that represents a set data type. Sets can have non repeated objects of the same data type inside.
@@ -275,6 +311,7 @@ Interface that represents a set data type. Sets can have non repeated objects of
 - **setElementType**: This function sets the `DataTypeDescriptor` object describing the content type of the set.
 
 ---
+
 #### org.fiware.kiara.typecode.data.MapTypeDescriptor
 
 Interface that represents a map data type. Maps can hold multiple key-object pairs inside if and only if the key objects are unique.
@@ -290,6 +327,7 @@ Interface that represents a map data type. Maps can hold multiple key-object pai
 - **setValueTypeDescriptor**: This function sets the `DataTypeDescriptor` object describing the value type of the map.
 
 ---
+
 #### org.fiware.kiara.typecode.data.MemberedTypeDescriptor
 
 Interface that represents a membered data type. `Membered` data types are **structs**, **enumerations**, **unions** and **exceptions**.
@@ -303,6 +341,7 @@ Interface that represents a membered data type. `Membered` data types are **stru
 - **getName**: This function returns the name of the `ContainerTypeDescriptor` object.
 
 ---
+
 #### org.fiware.kiara.typecode.data.StructTypeDescriptor
 
 Interface that represents a struct data type. Structs can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
@@ -316,6 +355,7 @@ Interface that represents a struct data type. Structs can have multiple differen
 - **getMember**: This function returns a `DataTypeDescriptor` object identified by the name introduced as a parameter.
 
 ---
+
 #### org.fiware.kiara.typecode.data.EnumTypeDescriptor
 
 Interface that represents an enumeration data type. Enumerations are formed by a group of different string values.
@@ -328,6 +368,7 @@ Interface that represents an enumeration data type. Enumerations are formed by a
 - **addValue**: This function adds a new value to the enumeration using the string object received as a parameter.
 
 ---
+
 #### org.fiware.kiara.typecode.data.UnionTypeDescriptor
 
 Interface that represents a union data type. Unions are formed by a group of members identified by their names and the labels of the discriminator to which they are assigned.
@@ -340,6 +381,7 @@ Interface that represents a union data type. Unions are formed by a group of mem
 - **addMember**: This function adds a new `TypeDescriptor` object as a member using a specific name and the labels of the discriminator.
 
 ---
+
 #### org.fiware.kiara.typecode.data.ExceptionTypeDescriptor
 
 Interface that represents a struct data type. Exceptions can have multiple different `DataTypeDescriptor` objects inside stored as members. Every struct member is identified by a unique name.
@@ -354,6 +396,7 @@ Interface that represents a struct data type. Exceptions can have multiple diffe
 - **getMd5**: This function returns the Md5 hash string of the exception name.
 
 ---
+
 #### org.fiware.kiara.typecode.data.Member
 
 Interface that represents a member of a `MemberedTypeDescriptor` object. Each member is identified by its name and the `TypeDescriptor` object that it holds.
@@ -367,6 +410,7 @@ Interface that represents a member of a `MemberedTypeDescriptor` object. Each me
 - **getTypeDescriptor**: This function returns a `DataTypeDescriptor` object stored inside the member.
 
 ---
+
 #### org.fiware.kiara.typecode.data.EnumMember
 
 Interface that represents a member of a `EnumTypeDescriptor` object. It inherits from `Member` interface and therefore it has no new methods.
@@ -377,6 +421,7 @@ Interface that represents a member of a `EnumTypeDescriptor` object. It inherits
 **Functions:** None
 
 ---
+
 #### org.fiware.kiara.typecode.data.UnionMember
 
 Interface that represents a member of a `UnionTypeDescriptor` object. It inherits from Member interface and therefore it has no new methods.
@@ -387,6 +432,7 @@ Interface that represents a member of a `UnionTypeDescriptor` object. It inherit
 **Functions:** None
 
 ---
+
 #### org.fiware.kiara.typecode.services.FunctionTypeDescriptor
 
 This interface represents a function, providing methods to easily describe it by setting its return type, parameters and exceptions that it might throw.
@@ -407,6 +453,7 @@ This interface represents a function, providing methods to easily describe it by
 - **setServiceName**: This function sets the name of the `ServiceTypeDescriptor` in which the `FunctionTypeDescriptor` is defined.
 
 ---
+
 #### org.fiware.kiara.typecode.services.ServiceTypeDescriptor
 
 This interface represents a service, providing methods to add the FunctionTypeDescriptor objects representing every function defined in a specific service.
@@ -430,6 +477,7 @@ This subsection contains the interfaces and classes that are designed to provide
 <center>Figure: Class Diagramm DynamicValue</center>
 
 ---
+
 #### org.fiware.kiara.dynamic.DynamicValueBuilder
 
 This class allows the users to create new data types based on their `TypeCode` descriptions.
@@ -445,6 +493,7 @@ This class allows the users to create new data types based on their `TypeCode` d
 - **createService:** This function receives a `ServiceTypeDescriptor` object describing a function, and it creates a new `DynamicService` object representing it.
 
 ---
+
 #### org.fiware.kiara.dynamic.DynamicValue
 
 Interface that acts as a supertype for every dynamic value that can be managed. Every `DynamicValue` object is defined by using a `TypeDescriptor` which is used to describe the data. It defines the common serialization functions as well as a function to retrieve the `TypeDescriptor` object it was created from.
@@ -459,6 +508,7 @@ Interface that acts as a supertype for every dynamic value that can be managed. 
 - **deserialize:** This function deserializes the content of a BinaryInputStream message into a DynamicValue object.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicData
 
 Interface that is used to group all the `DynamicValues` representing data types.
@@ -469,6 +519,7 @@ Interface that is used to group all the `DynamicValues` representing data types.
 **Functions:** None
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicPrimitive
 
 This class allows the users to manipulate `DynamicData` objects made from `PrimitiveTypeDescriptor` objects.
@@ -482,6 +533,7 @@ This class allows the users to manipulate `DynamicData` objects made from `Primi
 - **get**: This function returns the value of a `DynamicPrimitive` object.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicContainer
 
 This class holds the data values of a `DynamicData` object created from a `ContainerTypeDescriptor`.
@@ -492,6 +544,7 @@ This class holds the data values of a `DynamicData` object created from a `Conta
 **Functions:** None
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicArray
 
 This class holds the data values of a `DynamicData` object created from an `ArrayTypeDescriptor`. A `DynamicArray` contains a group of `DynamicData` objects (all must be the same type) stored in single or multi dimensional matrixes.
@@ -505,6 +558,7 @@ This class holds the data values of a `DynamicData` object created from an `Arra
 - **setElementAt**: This function sets a `DynamicData` object in a specific position inside the array. If the array has multiple dimensions, the object will be set in a specific coordinate.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicList
 
 This class holds the data values of a DynamicData object created from a ListTypeDescriptor. A list can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicList must have been created from the same TypeDescriptor definition.
@@ -519,6 +573,7 @@ This class holds the data values of a DynamicData object created from a ListType
 - **isEmpty**: This function returns true if the `DynamicList` is empty.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicSet
 
 This class holds the data values of a DynamicData object created from a SetTypeDescriptor. A set can only have one dimension and it has a maximum length. All the DynamicData objects stored inside a DynamicSet must have been created from the same TypeDescriptor definition and it cannot be duplicated objects.
@@ -533,6 +588,7 @@ This class holds the data values of a DynamicData object created from a SetTypeD
 - **isEmpty**: This function returns true if the `DynamicSet` is empty.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicMap
 
 This class holds a list of pairs key-value instances of DynamicData. In a DynamicMap, the key values cannot be duplicated.
@@ -548,6 +604,7 @@ This class holds a list of pairs key-value instances of DynamicData. In a Dynami
 - **get**: This function returns a DynamicData object from a key-value pair whose key is equal to the one introduced as a parameter.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicMembered
 
 This class represents a `DynamicData` type formed by multiple `DynamicData` objects stored into a class named `DynamicMember`.
@@ -558,6 +615,7 @@ This class represents a `DynamicData` type formed by multiple `DynamicData` obje
 **Functions:** None
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicStruct
 
 This class holds group of `DynamicData` objects acting as members of a stucture. Each member is identified by its name.
@@ -570,6 +628,7 @@ This class holds group of `DynamicData` objects acting as members of a stucture.
 - **getMember:** This function returns a `DynamicData` object (acting as a member of the structure) whose name is the same as the one introduced as a parameter.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicEnum
 
 This class is used to dynamically manipulate enumerations described by a specific `EnumTypeDescriptor` object.
@@ -583,6 +642,7 @@ This class is used to dynamically manipulate enumerations described by a specifi
 - **get**: This function returns the actual value of the DynamicEnum object.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicUnion
 
 This class is used to dynamically manipulate unions described by a specific `UnionTypeDescriptor` object. A union is formed by some `DynamicData` objects, and the valid one is selected by using a discriminator.
@@ -597,6 +657,7 @@ This class is used to dynamically manipulate unions described by a specific `Uni
 - **setMember**: This function sets the `DynamicData` object received as a parameter in the member whose name is the same as the one introduced (if and only if the discriminator value is correct).
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicException
 
 This class holds group of `DynamicData` objects acting as members of an exception. Each member is identified by its own name.
@@ -609,6 +670,7 @@ This class holds group of `DynamicData` objects acting as members of an exceptio
 - **getMember:** This function returns a `DynamicData` object whose name is the same as the one introduced as a parameter.
 
 ---
+
 #### org.fiware.kiara.dynamic.data.DynamicMember
 
 This class represents a dynamic member of any DynamicMembered object. It is used to store the DynamicData objects inside structures, unions, enumerations and exceptions.
@@ -623,6 +685,7 @@ This class represents a dynamic member of any DynamicMembered object. It is used
 - **equals**: It returns true if two `DynamicMember` objects are equal.
 
 ---
+
 #### org.fiware.kiara.dynamic.service.DynamicFunctionRequest
 
 This class represents a dynamic function request. This class is used to create objects whose objective is to invoke functions remotely.
@@ -637,6 +700,7 @@ This class represents a dynamic function request. This class is used to create o
 - **executeAsync**: This function behaves the same way as the function `execute`. The only difference is that it needs a callback to be executed when the response arrives from the server.
 
 ---
+
 #### org.fiware.kiara.dynamic.service.DynamicFunctionResponse
 
 This class represents a dynamic function response. This class is used to retrieve the information sent from the server after a remote procedure call.
@@ -652,6 +716,7 @@ This class represents a dynamic function response. This class is used to retriev
 - **getReturnValue**: This function returns the `DynamicData` representing the result of the remote call.
 
 ---
+
 #### org.fiware.kiara.dynamic.service.DynamicProxy
 
 This class represents a proxy than can be dynamically used to create an instance of DynamicFunctionRequest or a DynamicFunctionResponse depending if the user wants an object to execute a remote call or to store the result.
@@ -666,6 +731,7 @@ This class represents a proxy than can be dynamically used to create an instance
 - **createFunctionResponse**: This function creates a new object instance of `DynamicFunctionResponse` according to the `FunctionTypeDescriptor` that was used to describe it.
 
 ---
+
 #### org.fiware.kiara.dynamic.service.DynamicFunctionHandler
 
 This class represents a dynamic object used to hold the implementation of a specific function. Its process method must be defined by the user when creating the object, and it will be used to register the service’s functions on the server’s side.
