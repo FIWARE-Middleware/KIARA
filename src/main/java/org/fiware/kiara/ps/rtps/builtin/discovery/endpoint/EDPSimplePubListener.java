@@ -20,8 +20,6 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
-import javax.enterprise.inject.New;
-
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;

@@ -26,14 +26,17 @@ the developed applications, the requirements are rather minimal.
 In particular it requires no service running in the background.
 
 ## Documentation
-
 The following Manuals are available in the docs section:
 
-* [KIARA Installation and Admin Guide](doc/Installation_and_Admin_Guide.md)
-* [KIARA User and Developer Guide](doc/User_and_Developer_Guide.md)
+* [KIARA Installation and Admin Guide](http://fiware-middleware.github.io/KIARA/manuals/Installation_and_Admin_Guide.html)
+* [KIARA User and Programmer Guide](http://fiware-middleware.github.io/KIARA/manuals/User_and_Programmer_Guide.html)
 
-### Architecture and Specification
-* [Architecture](doc/specification/Architecture.md)
-* [IDL Specification](doc/specification/Middleware_IDL_Specification.md)
-* [RPC API Specification](doc/specification/Middleware_RPC_API_Specification.md)
-* [RPC Dynamic Types API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.md)
+### Architecture
+* [Architecture](http://fiware-middleware.github.io/KIARA/specification/Architecture)
+
+### Specification
+* [Open Specification] (http://fiware-middleware.github.io/KIARA/specification/OpenSpecification.html)
+* [IDL Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_IDL_Specification.html)
+* [RPC API Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_RPC_API_Specification.html)
+* [RPC Dynamic Types API Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_RPC_Dynamic_Types_API_Specification.html)
+* [Pub/Sub API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.md)

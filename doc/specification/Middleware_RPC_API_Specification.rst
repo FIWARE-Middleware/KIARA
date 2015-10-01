@@ -1,11 +1,10 @@
 Advanced Middleware RPC API Specification
 =========================================
 
-**Date: 10th September 2015**
+**Date: 10th October 2015**
 
 - Version: `0.3.0 <#>`__
-- Previous version: `0.2.0 <Middleware_RPC_API_Specification_0.2.0.html>`__
-- Latest version: `latest <Middleware_RPC_API_Specification.html>`__
+- Latest version: :doc:`latest <Middleware_RPC_API_Specification>`
 
 Editors:
 
@@ -38,13 +37,15 @@ the Object Management Group (OMG) IDL draft submitted to W3C.
 Status of this Document
 -----------------------
 
-+-------------------+-------------------+
-| **Date**          | **Description**   |
-+===================+===================+
-| 7-November-2014   | Release 0.1.0     |
-+-------------------+-------------------+
-| 8-April-2015      | Release 0.2.0     |
-+-------------------+-------------------+
++-------------------+----------------------+
+| **Date**          | **Description**      |
++===================+======================+
+| 7-November-2014   | Release 0.1.0        |
++-------------------+----------------------+
+| 8-April-2015      | Release 0.2.0        |
++-------------------+----------------------+
+| 10-October-2015   | Release 0.3.0        |
++-------------------+----------------------+
 
 --------------
 
@@ -59,10 +60,8 @@ This document attempts to describe the Advanced Middleware RPC API.
 Reference Material
 ~~~~~~~~~~~~~~~~~~
 
--  `*Advanced Middleware IDL
-   Specification* <./Middleware_IDL_Specification.html>`__
--  `*Advanced Middleware RPC Dynamic Types API
-   Specification* <./Middleware_RPC_Dynamic_Types_API_Specification.html>`__
+-  :doc:`*Advanced Middleware IDL Specification* <./Middleware_IDL_Specification>`
+-  :doc:`*Advanced Middleware RPC Dynamic Types API Specification* <./Middleware_RPC_Dynamic_Types_API_Specification>`
 
 A quick Example
 ---------------
@@ -132,12 +131,10 @@ interfaces, especially the ``Context``.
 
 -  **getTypeDescriptorBuilder**: This function returns an instance of
    the type descriptor builder. It is a part of the dynamic API and is
-   described
-   `*here* <./Middleware_RPC_Dynamic_Types_API_Specification.html>`__.
+   described :doc:`*here* <./Middleware_RPC_Dynamic_Types_API_Specification>`.
 -  **getDynamicValueBuilder**: This function returns an instance of the
    dynamic value builder. It is a part of the dynamic API and is
-   described
-   `*here* <./Middleware_RPC_Dynamic_Types_API_Specification.html>`__.
+   described :doc:`*here* <./Middleware_RPC_Dynamic_Types_API_Specification>`.
 -  **createContext**: This function creates a new instance of the
    Context class, which is described below.
 -  **shutdown**: This function closes and releases all internal Advanced
@@ -616,8 +613,7 @@ section `*API Examples* <#api-examples>`__ to define them.
 API Usage Examples
 ------------------
 
-Examples used in this section are based on the following `*Advanced
-Middleware IDL* <./Middleware_IDL_Specification.html>`__:
+Examples used in this section are based on the following :doc:`*Advanced Middleware IDL* <./Middleware_IDL_Specification>`:
 
 ::
 

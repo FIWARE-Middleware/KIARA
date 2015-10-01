@@ -369,7 +369,7 @@ public class EDPSimple extends EDP {
      * This methods generates the change disposing of the local Writer and calls
      * the unpairing and removal methods of the base class.
      *
-     * @param W Reference to the RTPSWriter object.
+     * @param writer Reference to the RTPSWriter object.
      * @return True if correct.
      */
     @Override

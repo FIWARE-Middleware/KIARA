@@ -1,11 +1,10 @@
-KIARA User and Developer Guide
-==============================
+KIARA User and Programmer Guide
+===============================
 
-**Date: 10th September 2015**
+**Date: 10th October 2015**
 
 - Version: `0.3.0 <#>`__
-- Previous version: N/A
-- Latest version: `latest <User_and_Programmer_Guide.html>`__
+- Latest version: :doc:`latest <User_and_Programmer_Guide>`
 
 Editors:
 
@@ -44,11 +43,7 @@ KIARA Advanced Middleware is essentially a library which is incorporated into th
 Background and Detail
 ~~~~~~~~~~~~~~~~~~~~~
 
-This User and Programmers Guide relates to the Advanced Middleware GE which is part of the `Interface to Networks and Devices (I2ND) chapter`. Please find more information about this Generic Enabler in the related `Open Specification`_ and `Architecture Description`_.
-
-.. _Open Specification: ../specification/OpenSpecification.html
-
-.. _Architecture Description: ../specification/Architecture.html
+This User and Programmers Guide relates to the Advanced Middleware GE which is part of the `Interface to Networks and Devices (I2ND) chapter`. Please find more information about this Generic Enabler in the related :doc:`Open Specification <../specification/OpenSpecification>` and :doc:`Architecture Description <../specification/Architecture>`.
 
 User guide
 ----------
@@ -264,9 +259,7 @@ The KIARA Interface Definition Language (IDL) can be used to describe data types
 
 The basic structure of an IDL File is shown in the picture in the right.
 
-Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter `KIARA Interface Definition Language`_. 
-
-.. _KIARA Interface Definition Language: ../specification/Middleware_IDL_Specification.html
+Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter :doc:`KIARA Interface Definition Language <../specification/Middleware_IDL_Specification>`. 
 
 \ |GitHub Workflow|\ 
 

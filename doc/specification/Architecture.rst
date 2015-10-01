@@ -1,21 +1,26 @@
 Advanced Middleware Architecture
 ================================
 
-Copyright
-=========
+Editors:
 
--  Copyright © 2015 by `eProsima <http://eprosima.com/index.php/en/>`__,
-   `ZHAW <http://blog.zhaw.ch/icclab>`__, `DFKI <http://www.dfki.de/>`__
+-  `eProsima - The Middleware
+   Experts <http://www.eprosima.com/index.php/en/>`__
+-  `DFKI - German Research Center for Artificial
+   Intelligence <http://www.dfki.de/>`__
+-  `ZHAW - School of Engineering
+   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
 Legal Notice
-============
+------------
 
 Please check the following `Legal
 Notice <http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_(implicit_patents_license)>`__
 to understand the rights to use these specifications.
 
 Overview
-========
+--------
 
 This specification describes the Advanced Middleware GE, which enables
 flexible, efficient, scalable, and secure communication between
@@ -256,7 +261,7 @@ communication paradigms and and the corresponding associated QoS
 parameters and security policies.
 
 Basic Concepts
-==============
+--------------
 
 In this section several basic concepts of the Advanced Communication
 Middleware are explained. We assume that the reader is familiar with the
@@ -264,7 +269,7 @@ basic functionality of communication middleware like CORBA or
 WebServices.
 
 Communication Patterns
-----------------------
+~~~~~~~~~~~~~~~~~~~~~~
 
 We can distinguish between three main different messaging patterns,
 Publish/Subscribe, Point-to-Point, and Request/Reply, shown
@@ -353,7 +358,7 @@ generator for Point-To-Point and Request/Reply and potential
 alternatives.
 
 Interface Definition Language (IDL)
------------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The Advanced Middleware GE supports a novel IDL to describe the Data
 Types and Operations. Following is a list of the main features it
@@ -378,7 +383,7 @@ supports:
    security even at the field level.
 
 Main Interactions
-=================
+-----------------
 
 As explained above, the middleware can be used in different
 communication scenarios. Depending on the scenario, the interaction
@@ -386,7 +391,7 @@ mechanisms and the set of API-functions for application developers may
 vary.
 
 API versions
-------------
+~~~~~~~~~~~~
 
 There will be two versions of APIs provided:
 
@@ -405,7 +410,7 @@ Additionally following features will be provided as API extensions:
    applications
 
 Classification of functions
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The API-Functions can be classified in the following groups:
 
@@ -443,7 +448,7 @@ Developer Guide, which will be updated for every release of the Advanced
 Middleware GE.
 
 Basic Design Principles
-=======================
+-----------------------
 
 Implementations of the Advanced Middleware GE have to comply to the
 following basic design principles:
