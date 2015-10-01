@@ -1,11 +1,24 @@
 KIARA Installation and Administration Guide
 ===========================================
 
-Version 0.3.0
+**Date: 10th September 2015**
 
-.. raw:: mediawiki
+- Version: `0.3.0 <#>`__
+- Previous version: N/A
+- Latest version: `latest <Installation_and_Admin_Guide.html>`__
 
-   {{TOCright}}
+Editors:
+
+-  `eProsima - The Middleware
+   Experts <http://www.eprosima.com/index.php/en/>`__
+-  `DFKI - German Research Center for Artificial
+   Intelligence <http://www.dfki.de/>`__
+-  `ZHAW - School of Engineering
+   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+
+Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+
+--------------
 
 Introduction
 ------------
