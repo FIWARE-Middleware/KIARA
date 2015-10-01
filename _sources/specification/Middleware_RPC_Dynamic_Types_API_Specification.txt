@@ -1,14 +1,14 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
 
-***Date: 8th April 2015***
+*Date: 8th April 2015*
 
-| This version: `*0.2.0* <#>`__
+| This version: :doc:`0.2.0 <Middleware_RPC_Dynamic_Types_API_Specification>`
 | Previous version: n/a
-| Latest version:
-  `*latest* <Middleware_RPC_Dynamic_Types_Specification.html>`__
+| Latest version: :doc:`latest <Middleware_RPC_Dynamic_Types_API_Specification>`
+|
 
-Editors:
+**Editors:**
 
 -  `eProsima - The Middleware
    Experts <http://eprosima.com/index.php/en/>`__
@@ -63,10 +63,10 @@ Middleware GE.
 Reference Material
 ~~~~~~~~~~~~~~~~~~
 
--  `*Advanced Middleware IDL
-   Specification* <./Middleware_IDL_Specification.md>`__
--  `*Advanced Middleware RPC API
-   Specification* <./Middleware_RPC_API_Specification.md>`__
+-  :doc:`Advanced Middleware IDL
+   Specification <./Middleware_IDL_Specification>`
+-  :doc:`Advanced Middleware RPC API
+   Specification <./Middleware_RPC_API_Specification>`
 
 A quick Example
 ---------------
@@ -219,11 +219,11 @@ Middleware interfaces, especially ``Context``.
 -  **getDynamicValueBuilder**: This function returns an instance of the
    ``DynamicValueBuilder`` described below.
 -  **createContext**: This function creates a new instance of the
-   Context class, which is part of the public `Advanced Middleware RPC
-   API <./Middleware_RPC_API_Specification.md>`__ .
+   Context class, which is part of the public :doc:`Advanced Middleware RPC
+   API <./Middleware_RPC_API_Specification>` .
 -  **shutdown**: This function closes releases all internal Advanced
-   Middleware structures, and is a part of the public `Advanced
-   Middleware RPC API <./Middleware_RPC_API_Specification.md>`__.
+   Middleware structures, and is a part of the public :doc:`Advanced
+   Middleware RPC API <./Middleware_RPC_API_Specification>`.
 
 Serialization mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -231,8 +231,8 @@ Serialization mechanisms
 org.fiware.kiara.serialization.Serializer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This interface is part of the public `Advanced Middleware RPC
-API <./Middleware_RPC_API_Specification.md>`__.
+This interface is part of the public :doc:`Advanced Middleware RPC
+API <./Middleware_RPC_API_Specification>`.
 
 org.fiware.kiara.serialization.impl.Serializable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -241,8 +241,8 @@ This interface is the one that must be implemented by all the used
 defined data types in order to be serializable. It defines the methods
 ``serialize`` and ``deserialize`` for each data type. This class will
 not be described in this document, for more information take a look at
-the `Advanced Middleware RPC API
-Specification <./Middleware_RPC_API_Specification.md>`__ document.
+the :doc:`Advanced Middleware RPC API
+Specification <./Middleware_RPC_API_Specification>` document.
 
 Client API
 ~~~~~~~~~~

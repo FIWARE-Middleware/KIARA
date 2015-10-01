@@ -3,10 +3,6 @@ KIARA Installation and Admin Guide
 
 Version 0.2.0
 
-.. raw:: html
-
-   <!--TOC max2-->
-
 Introduction
 ------------
 
@@ -695,6 +691,8 @@ Resource availability
 ~~~~~~~~~~~~~~~~~~~~~
 
 The middleware itself requires very few resources, any typical PC capable to run Java is enough to run the demo examples.
+
+This `Oracle JDK Webpage <http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html>`__ provides specific minimal hardware requirements (Disk, Memory, CPU).
 
 Resource consumption
 ~~~~~~~~~~~~~~~~~~~~
