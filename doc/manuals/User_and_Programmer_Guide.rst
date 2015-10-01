@@ -3,10 +3,6 @@ KIARA User and Developer Guide
 
 Version 0.2.0
 
-.. raw:: html
-
-   <!--TOC max2-->
-
 Introduction
 ------------
 
@@ -359,8 +355,7 @@ Generate support code manually using kiaragen
 
 To call ``kiaragen`` manually it has to be installed and in your run
 path. Instructions to install the kiaragen tool can be found in the
-`KIARA Installation and Administration
-Guide <Installation_and_Admin_Guide.md>`__
+:doc:`KIARA Installation and Administration Guide <Installation_and_Admin_Guide>`
 
 The usage syntax is:
 
@@ -411,7 +406,7 @@ For our example the call could be:
 
 This would generate the following files:
 
-.. code:: tree
+.. code:: 
 
     .
     └── src                                      // source files
@@ -547,7 +542,7 @@ needed. These files are located under the lib directory provided with
 this distribution, and they must be placed in the root working
 directory, under the lib folder:
 
-.. code:: tree
+.. code:: 
 
     .
     ├── src                                      // source files
@@ -580,7 +575,7 @@ server):
 
 After compiling both of them the following files will be generated:
 
-.. code:: tree
+.. code:: 
 
     .
     ├── src                                // source files

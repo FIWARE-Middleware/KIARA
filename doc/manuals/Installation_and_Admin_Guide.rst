@@ -3,10 +3,6 @@ KIARA Installation and Admin Guide
 
 Version 0.2.0
 
-.. raw:: html
-
-   <!--TOC max2-->
-
 Introduction
 ------------
 
