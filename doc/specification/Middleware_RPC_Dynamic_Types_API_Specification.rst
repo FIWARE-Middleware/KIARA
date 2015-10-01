@@ -1,11 +1,10 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
 
-**Date: 10th September 2015**
+**Date: 10th October 2015**
 
 - Version: `0.3.0 <#>`__
-- Previous version: `0.2.0 <Middleware_RPC_Dynamic_Types_API_Specification.0.2.0.html>`__
-- Latest version: `latest <Middleware_RPC_Dynamic_Types_API_Specification.html>`__
+- Latest version: :doc:`latest <Middleware_RPC_Dynamic_Types_API_Specification>`
 
 Editors:
 
@@ -45,6 +44,8 @@ Status of this Document
 | 04-February-2015   | Update after review meeting   |
 +--------------------+-------------------------------+
 | 08-April-2015      | Release 0.2.0                 |
++--------------------+-------------------------------+
+| 10-October-2015    | Release 0.3.0                 |
 +--------------------+-------------------------------+
 
 --------------

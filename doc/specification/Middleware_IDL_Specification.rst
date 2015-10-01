@@ -1,11 +1,10 @@
 Advanced Middleware IDL Specification
 =====================================
 
-**Date: 10th September 2015**
+**Date: 10th October 2015**
 
 - Version: `0.3.0 <#>`__
-- Previous version: `0.2.0 <Middleware_IDL_Specification_0.2.0.html>`__
-- Latest version: `latest <Middleware_IDL_Specification.html>`__
+- Latest version: :doc:`latest <Middleware_IDL_Specification>`
 
 Editors:
 
@@ -47,11 +46,13 @@ Service. Following is a list of the main features it supports:
 Status of this Document
 -----------------------
 
-+----------------+-----------------------+
-| **Date**       | **Description**       |
-+================+=======================+
-| 8-April-2015   | 0.2.0 First Release   |
-+----------------+-----------------------+
++-----------------+-----------------------+
+| **Date**        | **Description**       |
++=================+=======================+
+| 8-April-2015    | 0.2.0 First Release   |
++-----------------+-----------------------+
+| 10-October-2015 | Release 0.3.0         |
++-----------------+-----------------------+
 
 --------------
 

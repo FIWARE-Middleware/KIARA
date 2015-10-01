@@ -3,5 +3,5 @@
 /build
 /.gradle
 /bin
-/doc/_build
-
+/logging.properties
+/release

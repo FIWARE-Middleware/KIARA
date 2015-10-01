@@ -31,9 +31,9 @@ future users.
 Open API Specifications
 ~~~~~~~~~~~~~~~~~~~~~~~
 
--  `Advanced Middleware IDL Specification <Middleware_IDL_Specification.html>`__
--  `Advanced Middleware RPC API Specification <Middleware_RPC_API_Specification.html>`__
--  `Advanced Middleware RPC Dynamic Types API Specification <Middleware_RPC_Dynamic_Types_API_Specification.html>`__
+-  :doc:`Advanced Middleware IDL Specification <Middleware_IDL_Specification>`
+-  :doc:`Advanced Middleware RPC API Specification <Middleware_RPC_API_Specification>`
+-  :doc:`Advanced Middleware RPC Dynamic Types API Specification <Middleware_RPC_Dynamic_Types_API_Specification>`
 
 .. raw:: html
 

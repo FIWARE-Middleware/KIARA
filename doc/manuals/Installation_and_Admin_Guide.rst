@@ -1,11 +1,10 @@
 KIARA Installation and Administration Guide
 ===========================================
 
-**Date: 10th September 2015**
+**Date: 10th October 2015**
 
 - Version: `0.3.0 <#>`__
-- Previous version: N/A
-- Latest version: `latest <Installation_and_Admin_Guide.html>`__
+- Latest version: :doc:`latest <Installation_and_Admin_Guide>`
 
 Editors:
 
