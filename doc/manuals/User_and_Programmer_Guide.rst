@@ -58,21 +58,22 @@ The IDL derived operation mode is similar to the traditional middleware approach
 Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, which have to be used by the application to implement the server and client (or Pub/Sub) application parts.
 
 **Prerequisite:** IDL definition
+
 **Generated:** Stubs and Skeletons (at compile time) which have to be used by the application
+
 **Examples:** Corba, DDS, Thrift, …
 
 Application derived operation mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This mode is typical for some modern (e.g. RMI, WebService,...) frameworks.
-Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.
+This mode is typical for some modern (e.g. RMI, WebService,...) frameworks. Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.
 
-This mode implicitly generates an IDL definition based on the Java
-interfaces definition and provide this IDL through a “service registry”
-for remote partners.
+This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a “service registry” for remote partners.
 
 **Prerequisite:** Application-Interface-Definition (has to be the same on client and server side)
+
 **Generated:** Server-/Client-Proxies (generated at runtime)
+
 **Examples:** RMI, JAX-RS, Spring REST, …
 
 Mapped operation mode
@@ -81,12 +82,12 @@ Mapped operation mode
 Goal of the mapped operation mode is to separate the application interfaces from the data structure used to transport the data over the wire. Therefore the middleware has to map the application internal data structure and interfaces to a common IDL definition. Advantage is, that the application interface on client and server (or publisher/subscriber) side can be different.
 
 **Prerequisite:** Application-Interface-Definition (can be different on server and client side) IDL Definition
+
 **Generated:** Server-/Client-Proxis (generated at runtime, which map the attributes & operations
+
 **Examples:** KIARA
 
-    The first release of KIARA will provide support for the traditional
-    IDL derived operation mode. Application derived and mapped operation
-    mode will follow in a future release.
+    The current release of KIARA provides support for the traditional IDL derived operation mode, being able to handle different communication patterns such as RPC or Publish/Subscribe. Application derived and mapped operation mode will follow in a future release.
 
 A quick example
 ~~~~~~~~~~~~~~~
@@ -246,9 +247,9 @@ The KIARA Interface Definition Language (IDL) can be used to describe data types
 
 The basic structure of an IDL File is shown in the picture in the right.
 
-Following, a short overview of the supported KIARA IDL elements. For a
-detailed description please see the chapter `KIARA Interface Definition
-Language <#kiara-interface-definition-language>`__. 
+Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter `KIARA Interface Definition Language`__. 
+
+.. __KIARA Interface Definition Language: ../specification/Middleware_IDL_Specification.rst
 
 \ |GitHub Workflow|\ 
 
@@ -256,25 +257,24 @@ Language <#kiara-interface-definition-language>`__.
     Definitions can be split into multiple files and/or share common elements
     among multiple definitions using the import statement.
 -  **Namespace Declarations**:
-    Within a definition file the declarations can be grouped into modules. Modules are used to define scopes for IDL identifiers. KIARA supports the modern keyword namespace. Namespaces can be nested to support multi-level
-    namespaces.
+    Within a definition file the declarations can be grouped into modules. Modules are used to define scopes for IDL identifiers. KIARA supports the modern keyword namespace. Namespaces can be nested to support multi-level namespaces.
 -  **Constant Declarations**:
     A constant declarations allows the definition of literals, which can be used as values in other definitions (e.g. as return values, default parameters, etc.)
 -  **Type Declarations**
 
    -  **Basic Types**:
-    KIARA IDL supports the OMG IDL basic data types like float, double, (unsigned) short/int/long, char, wchar, boolean, octet, etc. Additionally it supports modern aliases like float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte
+		KIARA IDL supports the OMG IDL basic data types like float, double, (unsigned) short/int/long, char, wchar, boolean, octet, etc. Additionally it supports modern aliases like float32, float64, i16, ui16, i32, ui32, i64, ui64 and byte
    -  **Constructed Types**:
-    Constructed Types are combinations of other types like. The following constructs are supported:
+		Constructed Types are combinations of other types like. The following constructs are supported:
    -  **Structures** (struct)
    -  **Template Types**:
-    Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:
+		Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:
    -  **List**:
-    Ordered collection of elements of the same type “list” is the modern variant of the OMG IDL keyword “sequence”
+		Ordered collection of elements of the same type “list” is the modern variant of the OMG IDL keyword “sequence”
    -  **Strings**:
-    Collection of chars, will be mapped to the String representation of the language.
+		Collection of chars, will be mapped to the String representation of the language.
    -  **Complex Declarations**:
-    In addition to the above Type declarations, KIARA supports multidimensional Arrays using the bracket notation (e.g. ``int monthlyRevenue[12][10]``)
+		In addition to the above Type declarations, KIARA supports multidimensional Arrays using the bracket notation (e.g. ``int monthlyRevenue[12][10]``)
 
 -  **Service Declarations**:
     KIARA supports interface and service declarations via IDL. Meaning that the user can declare different services where the operations are going to be placed.
@@ -312,12 +312,7 @@ developer has to follow to implement a distributed application.
 Defining a set of remote procedures using the KIARA IDL
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-| The KIARA Interface Definition Language (IDL) can be used to define
-  the remote procedures (operations) the server will offer. Simple and
-  Complex Data Types
-| used as parameter types in these remote procedures are also defined in
-  the IDL file. The IDL file for our example application
-  (``calculator.idl``) shows the usage of some of the above elements.
+The KIARA Interface Definition Language (IDL) can be used to define the remote procedures (operations) the server will offer. Simple and Complex Data Types | used as parameter types in these remote procedures are also defined in the IDL file. The IDL file for our example application (``calculator.idl``) shows the usage of some of the above elements.
 
 .. code:: idl
 
