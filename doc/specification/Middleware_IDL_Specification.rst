@@ -1,11 +1,11 @@
 Advanced Middleware IDL Specification
 =====================================
 
-***Date: 8th April 2015***
+**Date: 10th September 2015**
 
-| This version: `*0.2.0* <#>`__
-| Previous version: n/a
-| Latest version: `*latest* <Middleware_IDL_Specification.html>`__
+- Version: `0.3.0 <#>`__
+- Previous version: `0.2.0 <Middleware_IDL_Specification_0.2.0.html>`__
+- Latest version: `latest <Middleware_IDL_Specification.html>`__
 
 Editors:
 
@@ -15,7 +15,7 @@ Editors:
    Intelligence <http://www.dfki.de/>`__
 -  `ZHAW - School of Engineering
    (ICCLab) <http://blog.zhaw.ch/icclab>`__
-
+   
 Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
 --------------

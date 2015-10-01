@@ -1,16 +1,16 @@
 Advanced Middleware RPC API Specification
 =========================================
 
-***Date: 8th April 2015***
+**Date: 10th September 2015**
 
-| This version: `*0.2.0* <#>`__
-| Previous version: n/a
-| Latest version: `*latest* <Middleware_RPC_API_Specification.html>`__
+- Version: `0.3.0 <#>`__
+- Previous version: `0.2.0 <Middleware_RPC_API_Specification_0.2.0.html>`__
+- Latest version: `latest <Middleware_RPC_API_Specification.html>`__
 
 Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`__
 -  `DFKI - German Research Center for Artificial
    Intelligence <http://www.dfki.de/>`__
 -  `ZHAW - School of Engineering
