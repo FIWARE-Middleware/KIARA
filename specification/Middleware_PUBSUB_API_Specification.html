@@ -1,0 +1,1747 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Advanced Middleware Publication Subscription API Specification &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
+        <link rel="next" title="Advanced Middleware IDL Specification" href="Middleware_IDL_Specification.html"/>
+        <link rel="prev" title="Advanced Middleware RPC Dynamic Types API Specification" href="Middleware_RPC_Dynamic_Types_API_Specification.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FIWARE Advanced Middleware KIARA
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <p class="caption"><span class="caption-text">Manuals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="OpenSpecification.html">Open Specifiation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware Publication Subscription API Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#abstract">Abstract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#status-of-this-document">Status of this Document</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conformance">Conformance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reference-material">Reference Material</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-overview">API Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-classes">Main classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-participant-participant">org.fiware.kiara.ps.participant.Participant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-topic-topicdatatype">org.fiware.kiara.ps.topic.TopicDataType</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-publisher-publisher">org.fiware.kiara.ps.publisher.Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-subscriber-subscriber">org.fiware.kiara.ps.subscriber.Subscriber</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#secondary-classes">Secondary classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-listeners-publisherlistener">org.fiware.kiara.ps.listeners.PublisherListener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-listeners-subscriberlistener">org.fiware.kiara.ps.listeners.SubscriberListener</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auxiliary-classes">Auxiliary classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-utils-instancehandle">org.fiware.kiara.ps.utils.InstanceHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-attributes-topicattributes">org.fiware.kiara.ps.attributes.TopicAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-attributes-publisherattributes">org.fiware.kiara.ps.attributes.PublisherAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-attributes-subscriberattributes">org.fiware.kiara.ps.attributes.SubscriberAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-utils-sampleinfo">org.fiware.kiara.ps.utils.SampleInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-utils-matchinginfo">org.fiware.kiara.ps.utils.MatchingInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-common-guid">org.fiware.kiara.ps.common.GUID</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#api-description">API Description</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Main classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">org.fiware.kiara.ps.participant.Participant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">org.fiware.kiara.ps.topic.TopicDataType</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">org.fiware.kiara.ps.publisher.Publisher</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5">org.fiware.kiara.ps.subscriber.Subscriber</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Secondary classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-publisher-publisherlistener">org.fiware.kiara.ps.publisher.PublisherListener</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#org-fiware-kiara-ps-subscriber-subscriberlistener">org.fiware.kiara.ps.subscriber.SubscriberListener</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Auxiliary classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id8">org.fiware.kiara.ps.utils.InstanceHandle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id9">org.fiware.kiara.ps.attributes.TopicAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">org.fiware.kiara.ps.attributes.PublisherAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id11">org.fiware.kiara.ps.attributes.SubscriberAttributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">org.fiware.kiara.ps.utils.SampleInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id13">org.fiware.kiara.ps.utils.MatchingInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id14">org.fiware.kiara.ps.common.GUID</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">FIWARE Advanced Middleware KIARA</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Advanced Middleware Publication Subscription API Specification</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/specification/Middleware_PUBSUB_API_Specification.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="advanced-middleware-publication-subscription-api-specification">
+<h1>Advanced Middleware Publication Subscription API Specification<a class="headerlink" href="#advanced-middleware-publication-subscription-api-specification" title="Permalink to this headline">¶</a></h1>
+<p><strong>Date: 10th October 2015</strong></p>
+<ul class="simple">
+<li>Version: <a class="reference external" href="#">0.2.0</a></li>
+<li>Latest version: <a class="reference internal" href=""><em>latest</em></a></li>
+</ul>
+<p>Editors:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.eprosima.com/index.php/en/">eProsima - The Middleware
+Experts</a></li>
+<li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
+Intelligence</a></li>
+<li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
+(ICCLab)</a></li>
+</ul>
+<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
+<hr class="docutils" />
+<div class="section" id="abstract">
+<h2>Abstract<a class="headerlink" href="#abstract" title="Permalink to this headline">¶</a></h2>
+<p>This document presents a proposal for a publication-subscription API.
+The goal of this document is to define the basic principles of a new
+KIARA Publication-Subscription framework.</p>
+<p>The API proposed in this document will be very user-friendly in order to
+allow FI-WARE users to easily migrate to KIARA’s Publisher-Subscriber
+framework. The presented API should allow users to set up a publisher or
+a subscriber with very few calls and with little knowledge of the
+technology behind the framework.</p>
+</div>
+<div class="section" id="status-of-this-document">
+<h2>Status of this Document<a class="headerlink" href="#status-of-this-document" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Date</strong></th>
+<th class="head"><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>29-April-2015</td>
+<td>Release 0.1.0</td>
+</tr>
+<tr class="row-odd"><td>01-November-2015</td>
+<td>Release 0.2.0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="conformance">
+<h2>Conformance<a class="headerlink" href="#conformance" title="Permalink to this headline">¶</a></h2>
+<p>The conformance clause identifies which clauses of the specification are
+mandatory (or conditionally mandatory) and which are optional in order
+for an implementation to claim conformance to the specification.</p>
+<p>Note: For conditionally mandatory clauses, the conditions must be
+specified.</p>
+</div>
+<div class="section" id="reference-material">
+<h2>Reference Material<a class="headerlink" href="#reference-material" title="Permalink to this headline">¶</a></h2>
+<p>The following normative documents contain provisions which, through
+reference in this text, constitute provisions of this specification. For
+dated references, subsequent amendments to, or revisions of, any of
+these publications do not apply.</p>
+</div>
+<div class="section" id="api-overview">
+<h2>API Overview<a class="headerlink" href="#api-overview" title="Permalink to this headline">¶</a></h2>
+<p>This section enumerates and describes the classes provided by the KIARA
+Publication-Subscription API.</p>
+<p>The Publication-Subscription framework is a messaging pattern by which
+the information producers, in this case called publishers, publish
+messages characterized in a specific manner. On the other hand, the
+information consumers, called subscribers, state their interest in a
+certain type of messages. This pattern provides a larger flexibility and
+scalability compared to other messaging paradigms.</p>
+<p>This pattern also allows for message filtering, and the most common way
+of doing so is by using a topic-based filter, where each publisher or
+subscriber produces or consumes information of a specific topic. Each
+topic has a unique name in the network, as well as a specific data type
+associated with it.</p>
+<p>The main objective of this API is to allow users to easily have access
+to the basics of a Publication-Subscription messaging framework,
+providing them with a friendly interface and lowering the learning
+curve.</p>
+<div class="section" id="main-classes">
+<h3>Main classes<a class="headerlink" href="#main-classes" title="Permalink to this headline">¶</a></h3>
+<p>There are four main classes in this API:</p>
+<div class="section" id="org-fiware-kiara-ps-participant-participant">
+<h4>org.fiware.kiara.ps.participant.Participant<a class="headerlink" href="#org-fiware-kiara-ps-participant-participant" title="Permalink to this headline">¶</a></h4>
+<p>Singleton class representing a node in the network. It might have
+multiple publishers and subscribers associated to it. This object acts
+as a supervisor of this node in the network. All the methods in this
+class will be static, since the constructor will be hidden to the user.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>registerTopicDataType:</strong></dt>
+<dd><p class="first last">This function is used to register new TopicDataType objects in a Participant (network node). The registration acts as a contract defining which data types a publisher is able to understand. It allows the creation of publishers and subscribers that use the registered TopicDataType.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>createPublisher:</strong></dt>
+<dd><p class="first last">Function to create a new Publisher for a specific TopicDataType object and associate it with a listener.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>createSubscriber:</strong></dt>
+<dd><p class="first last">Function to create a new Subscriber for a specific TopicDataType object and associate it with a listener.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>removePubisher:</strong></dt>
+<dd><p class="first last">This function removes a Publisher from this Participant.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>removeSubscriber:</strong></dt>
+<dd><p class="first last">This function removes a Subscriber from this Participant.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>registerType:</strong></dt>
+<dd><p class="first last">This function is used to register a TopicDataType in this participant.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-topic-topicdatatype">
+<h4>org.fiware.kiara.ps.topic.TopicDataType<a class="headerlink" href="#org-fiware-kiara-ps-topic-topicdatatype" title="Permalink to this headline">¶</a></h4>
+<p>This interface describes the serialization and deserialization procedures of the selected data type. It also defines how the key is obtained from the data object in case the topic is a keyed topic.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>serialize</strong>:</dt>
+<dd><p class="first last">This function defines the signature of the serialization functions for every TopicDataType object existing in the framework.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>deserialize</strong>:</dt>
+<dd><p class="first last">This function defines the signature of the deserialization functions for every TopicDataType object existing in the framework.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>createData</strong>:</dt>
+<dd><p class="first last">This function returns a new object of the type represented by the TopicDataType.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getKey</strong>:</dt>
+<dd><p class="first last">This function is used to return the IntanceHandle object representing the 16-Byte key of the TopicDataType.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-publisher-publisher">
+<h4>org.fiware.kiara.ps.publisher.Publisher<a class="headerlink" href="#org-fiware-kiara-ps-publisher-publisher" title="Permalink to this headline">¶</a></h4>
+<p>This class is the one used to describe a data publisher inside a
+specific node. It has multiple parameters grouped into a single
+PublisherAttributes object, which will be detailed later.</p>
+<p>It also provides functions to easily change and manipulate the
+parameters of the publisher, as well as a function to send data over the
+wire.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getAttributes:</strong></dt>
+<dd><p class="first last">This function is used to retrieve the PublisherAttributes object contained within this class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setAttributes:</strong></dt>
+<dd><p class="first last">This function is used to set the PublisherAttributes object inside this class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>write:</strong></dt>
+<dd><p class="first last">This function is the one used to send data through the network. Its function is to publish information about a specific topic which the publisher is able to use.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>destroy</strong>:</dt>
+<dd><p class="first last">This function is used to delete all the entities associated to this publisher.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-subscriber-subscriber">
+<h4>org.fiware.kiara.ps.subscriber.Subscriber<a class="headerlink" href="#org-fiware-kiara-ps-subscriber-subscriber" title="Permalink to this headline">¶</a></h4>
+<p>This class is similar to the Publisher class. All the parameters
+associated with each subscriber are aggregated into a single
+SubscriberAttributes object that can be retrieved and changed by using
+its accessor functions.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getAttributes:</strong></dt>
+<dd><p class="first last">This function is used to retrieve the SubscriberAttributes object contained within this class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setAttributes:</strong></dt>
+<dd><p class="first last">This function is used to set the SubscriberAttributes object inside this class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>readNextData:</strong></dt>
+<dd><p class="first last">This function is used to retrieve an unread CacheChange with the data sent through the network. The data received belongs to a topic the subscriber has subscribed to.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>takeNextData</strong>:</dt>
+<dd><p class="first last">This function is used to retrieve and remove the next unread CacheChange with data receiver over the wire.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>waitForMessage:</strong></dt>
+<dd><p class="first last">This method blocks the execution thread until a message is received. This message can be retrieved then using the <strong>read</strong> function.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>destroy</strong>:</dt>
+<dd><p class="first last">This function is used to delete all the entities associated to this subscriber.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="secondary-classes">
+<h3>Secondary classes<a class="headerlink" href="#secondary-classes" title="Permalink to this headline">¶</a></h3>
+<p>This classes are those necessary for the main ones described before. In this group are included the classes that are used to deliberately specify a certain behaviour for an event that happened in the publisher or the subscriber side.</p>
+<div class="section" id="org-fiware-kiara-ps-listeners-publisherlistener">
+<h4>org.fiware.kiara.ps.listeners.PublisherListener<a class="headerlink" href="#org-fiware-kiara-ps-listeners-publisherlistener" title="Permalink to this headline">¶</a></h4>
+<p>This interface is designed to be implemented for those classes that ought to manage certain events in the publisher side. It defines a set of methods that can be overwritten by the user to specify the behaviour of the publisher when certain events occur. An example of this would be a new subscriber that has been discovered.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>onPublicationMatched:</strong></dt>
+<dd><p class="first last">This function is the one that will be called when the data published by a publisher matches with the subscriber for a specific topic. The MatchingInfo class provided as a parameter gives the user information about the matched subscriber.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-listeners-subscriberlistener">
+<h4>org.fiware.kiara.ps.listeners.SubscriberListener<a class="headerlink" href="#org-fiware-kiara-ps-listeners-subscriberlistener" title="Permalink to this headline">¶</a></h4>
+<p>This interface is similar to the PublisherListener interface described above, but in this case it defines a set of methods used to specify the subscriber’s behaviour. An example of this would be a new message that has been received.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>onSubscriptionMatched:</strong></dt>
+<dd><p class="first last">This method’s objective is the same as the one described in the PublisherListener class, but in this case, it will be executed when a new subscription matches with the data a publisher is publishing.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>onNewDataMessage:</strong></dt>
+<dd><p class="first last">This function will be executed when a new message is received by the subscriber.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="auxiliary-classes">
+<h3>Auxiliary classes<a class="headerlink" href="#auxiliary-classes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="org-fiware-kiara-ps-utils-instancehandle">
+<h4>org.fiware.kiara.ps.utils.InstanceHandle<a class="headerlink" href="#org-fiware-kiara-ps-utils-instancehandle" title="Permalink to this headline">¶</a></h4>
+<p>This class contains the serialized data of a specific message the user is sending or receiving through the network. It provides functions to retrieve the information of such message.</p>
+<p><strong>Functions:</strong> None</p>
+</div>
+<div class="section" id="org-fiware-kiara-ps-attributes-topicattributes">
+<h4>org.fiware.kiara.ps.attributes.TopicAttributes<a class="headerlink" href="#org-fiware-kiara-ps-attributes-topicattributes" title="Permalink to this headline">¶</a></h4>
+<p>This structure contains all the different attributes of a Topic. These attributes will include the topic name, the data type name and the topic kind.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>topicKind:</strong></dt>
+<dd><p class="first last">This attribute represents the kind of the Topic (with key or without key)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>topicName:</strong></dt>
+<dd><p class="first last">This attribute represents the topic name.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>topicDataTypeName:</strong></dt>
+<dd><p class="first last">This attribute represents the name of the data type for a specific topic.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>historyQos:</strong></dt>
+<dd><p class="first last">This attribute represents the History QoS.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>resourceLimitQos:</strong></dt>
+<dd><p class="first last">This attribute represents the limit of the resources for this topic.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-attributes-publisherattributes">
+<h4>org.fiware.kiara.ps.attributes.PublisherAttributes<a class="headerlink" href="#org-fiware-kiara-ps-attributes-publisherattributes" title="Permalink to this headline">¶</a></h4>
+<p>This structure contains all the different attributes of a publisher. These attributes will include the topic attributes (topic name, topic data type, etc), as well as the list of locators, times and writer QoS.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>topic:</strong></dt>
+<dd><p class="first last">Object instance of TopicAttributes. It holds all the attributes of the Topic.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>wqos:</strong></dt>
+<dd><p class="first last">Represents the Qualities of Service associated to the Writer.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>times:</strong></dt>
+<dd><p class="first last">Time values associated to the Publisher entity.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>unicastLocatorList:</strong></dt>
+<dd><p class="first last">List of unicast locators representing different Endpoints.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>multicastLocatorList:</strong></dt>
+<dd><p class="first last">List of multicast locators representing different Endpoints.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getUserDefinedID:</strong></dt>
+<dd><p class="first last">Returns the user defined identifier for this object.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setUserDefinedID:</strong></dt>
+<dd><p class="first last">Sets the user defined identifier for this object.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getEntityId:</strong></dt>
+<dd><p class="first last">Returns the EntityID that uses this attributes class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setEntityId:</strong></dt>
+<dd><p class="first last">Sets the EntityID that uses this attributes class.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-attributes-subscriberattributes">
+<h4>org.fiware.kiara.ps.attributes.SubscriberAttributes<a class="headerlink" href="#org-fiware-kiara-ps-attributes-subscriberattributes" title="Permalink to this headline">¶</a></h4>
+<p>This structure contains all the different attributes of subscriber. These attributes will include the topic attributes (name, topic data type, etc), as well as the list of locators, times and reader QoS.</p>
+<p><strong>Attributes:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>topic:</strong></dt>
+<dd><p class="first last">Object instance of TopicAttributes. It holds all the attributes of the Topic.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>rqos:</strong></dt>
+<dd><p class="first last">Represents the Qualities of Service associated to the Reader.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>times:</strong></dt>
+<dd><p class="first last">Time values associated to the Subscriber entity.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>unicastLocatorList:</strong></dt>
+<dd><p class="first last">List of unicast locators representing different Endpoints.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>multicastLocatorList:</strong></dt>
+<dd><p class="first last">List of multicast locators representing different Endpoints.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>expectsInlineQos</strong>:</dt>
+<dd><p class="first last">This attribute defines whether or not the Subscriber will expect inline QoS.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getUserDefinedID:</strong></dt>
+<dd><p class="first last">Returns the user defined identifier for this object.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setUserDefinedID:</strong></dt>
+<dd><p class="first last">Sets the user defined identifier for this object.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getEntityId:</strong></dt>
+<dd><p class="first last">Returns the EntityID that uses this attributes class.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>setEntityId:</strong></dt>
+<dd><p class="first last">Sets the EntityID that uses this attributes class.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-utils-sampleinfo">
+<h4>org.fiware.kiara.ps.utils.SampleInfo<a class="headerlink" href="#org-fiware-kiara-ps-utils-sampleinfo" title="Permalink to this headline">¶</a></h4>
+<p>This class contains information about each particular message, for example the publisher who originated it or a timestamp of its creation time. The GUID of the writer is related to the node from where the information comes from.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getWriterGUID:</strong></dt>
+<dd><p class="first last">This function is used to obtain the GUID of the writer who originated a specific message.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getTimestamp:</strong></dt>
+<dd><p class="first last">This function returns the timestamp value indicating the exact time when the message was created.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-utils-matchinginfo">
+<h4>org.fiware.kiara.ps.utils.MatchingInfo<a class="headerlink" href="#org-fiware-kiara-ps-utils-matchinginfo" title="Permalink to this headline">¶</a></h4>
+<p>This class informs the user of whether the event is a matching or an un-matching event and also the global identifier of the remote endpoint.</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getMatchingStatus:</strong></dt>
+<dd><p class="first last">This function allows the users to know the matching status of a specific endpoint with the risen event.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getRemoteEndpointGUID:</strong></dt>
+<dd><p class="first last">This function returns the endpoint’s unique identifier.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="org-fiware-kiara-ps-common-guid">
+<h4>org.fiware.kiara.ps.common.GUID<a class="headerlink" href="#org-fiware-kiara-ps-common-guid" title="Permalink to this headline">¶</a></h4>
+<p>This class represents a unique identifier of a node in the network. It is formed by two members, a prefix (12 Bytes) and an entity ID (4 Bytes).</p>
+<p><strong>Functions:</strong></p>
+<ul>
+<li><dl class="first docutils">
+<dt><strong>getEntityId</strong>:</dt>
+<dd><p class="first last">This function returns the EntityId associated to the GUID.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><strong>getGUIDPrefix</strong>:</dt>
+<dd><p class="first last">This function returns the GUIDPrefix associated to the GUID.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><p class="first">NOTE: There are some classes that do not appear yet in this document, and this is because their definition is too long (they will be included in an external annex)</p>
+<p>A few examples of these classes are:</p>
+<blockquote class="last">
+<div><ul class="simple">
+<li>QoS related classes: QoSList, ReaderQos, WriterQos and QoSPolicy (and all its subclasses).</li>
+<li>SerializableDataType: Interface between Serializable objects defined in KIARA and TopicDataTypes.</li>
+<li>History classes: HistoryCache, SubscriberHistory and PublisherHistory</li>
+</ul>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="section" id="api-description">
+<h2>API Description<a class="headerlink" href="#api-description" title="Permalink to this headline">¶</a></h2>
+<p>This section details the classes of this API and all their methods.</p>
+<div class="section" id="id1">
+<h3>Main classes<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h4>org.fiware.kiara.ps.participant.Participant<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.participant.Participant</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="31%" />
+<col width="22%" />
+<col width="30%" />
+<col width="17%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>registerTopicDataType</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>dataType</td>
+<td>TopicDataType&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createPublisher</td>
+<td>&nbsp;</td>
+<td>Publisher&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>attributes</td>
+<td>PublisherAttributes</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>listener</td>
+<td>PublisherListener</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>topic</td>
+<td>TopicDataType&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>createSubscriber</td>
+<td>&nbsp;</td>
+<td>Subscriber&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>attributes</td>
+<td>SubscriberAttributes</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>listener</td>
+<td>SubscriberListener</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>topic</td>
+<td>TopicDataType&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>removePublisher</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>publisher</td>
+<td>Publisher&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>removeSubscriber</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>subscriber</td>
+<td>Subscriber&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>registerType</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>type</td>
+<td>TopicDataType&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id3">
+<h4>org.fiware.kiara.ps.topic.TopicDataType<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.topic.TopicDataType</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="22%" />
+<col width="26%" />
+<col width="30%" />
+<col width="22%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>serialize</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>IOException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>payload</td>
+<td>SerializedPayload</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>object</td>
+<td>T</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>deserialize</td>
+<td>&nbsp;</td>
+<td>T</td>
+<td>IOException</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>payload</td>
+<td>SerializerPayload</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>createData</td>
+<td>&nbsp;</td>
+<td>T</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>getKey</td>
+<td>&nbsp;</td>
+<td>InstanceHandle</td>
+<td>IOException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>object</td>
+<td>T</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id4">
+<h4>org.fiware.kiara.ps.publisher.Publisher<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.publisher.Publisher</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="21%" />
+<col width="23%" />
+<col width="29%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getAttributes</td>
+<td>&nbsp;</td>
+<td>Attributes</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setAttributes</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>PublisherException</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>attributes</td>
+<td>PublisherAttributes</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>write</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>PublisherException</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>data</td>
+<td>TopicDataType&lt;T&gt;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>destroy</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id5">
+<h4>org.fiware.kiara.ps.subscriber.Subscriber<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.subscriber.Subscriber</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="22%" />
+<col width="22%" />
+<col width="28%" />
+<col width="28%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getAttributes</td>
+<td>&nbsp;</td>
+<td>Attributes</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setAttributes</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>SubscriberException</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>attributes</td>
+<td>SubscriberException</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>waitForMessage</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>SubscriberException</td>
+</tr>
+<tr class="row-even"><td>readNextData</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>info</td>
+<td>SampleInfo</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>takeNextData</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>info</td>
+<td>SampleInfo</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>destroy</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id6">
+<h3>Secondary classes<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="org-fiware-kiara-ps-publisher-publisherlistener">
+<h4>org.fiware.kiara.ps.publisher.PublisherListener<a class="headerlink" href="#org-fiware-kiara-ps-publisher-publisherlistener" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.publisher.PublisherListener</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="29%" />
+<col width="21%" />
+<col width="24%" />
+<col width="26%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>onPublicationMatched</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>PublisherException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>info</td>
+<td>MatchingInfo</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>pub</td>
+<td>Publisher</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="org-fiware-kiara-ps-subscriber-subscriberlistener">
+<h4>org.fiware.kiara.ps.subscriber.SubscriberListener<a class="headerlink" href="#org-fiware-kiara-ps-subscriber-subscriberlistener" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.subscriber.SubscriberListener</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="29%" />
+<col width="21%" />
+<col width="23%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>onSubscriptionMatched</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>SubscriberException</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>info</td>
+<td>MatchingInfo</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>sub</td>
+<td>Subscriber</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>onNewDataMessage</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>SubscriberException</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>sub</td>
+<td>Subscriber</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="id7">
+<h3>Auxiliary classes<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id8">
+<h4>org.fiware.kiara.ps.utils.InstanceHandle<a class="headerlink" href="#id8" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.utils.InstanceHandle</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id9">
+<h4>org.fiware.kiara.ps.attributes.TopicAttributes<a class="headerlink" href="#id9" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.attributes.TopicAttributes</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="44%" />
+<col width="56%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Type</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>topicKind</td>
+<td>TopicKind</td>
+</tr>
+<tr class="row-odd"><td>topicName</td>
+<td>String</td>
+</tr>
+<tr class="row-even"><td>topicDataTypeName</td>
+<td>String</td>
+</tr>
+<tr class="row-odd"><td>historyQos</td>
+<td>HistoryPolicyQos</td>
+</tr>
+<tr class="row-even"><td>resourceLimitQos</td>
+<td>ResourceLimitsQosPolicy</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-even"><td>None</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id10">
+<h4>org.fiware.kiara.ps.attributes.PublisherAttributes<a class="headerlink" href="#id10" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.attributes.PublisherAttributes</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Type</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>topic</td>
+<td>TopicAttributes</td>
+</tr>
+<tr class="row-odd"><td>wqos</td>
+<td>WriterQos</td>
+</tr>
+<tr class="row-even"><td>times</td>
+<td>WriterTimes</td>
+</tr>
+<tr class="row-odd"><td>unicastLocatorList</td>
+<td>LocatorList</td>
+</tr>
+<tr class="row-even"><td>multicastLocatorList</td>
+<td>LocatorList</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-odd"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-even"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="28%" />
+<col width="25%" />
+<col width="28%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getUserDefinedID</td>
+<td>&nbsp;</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setUserDefinedID</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>userDefinedID</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getEntityID</td>
+<td>&nbsp;</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setEntityID</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>entityID</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id11">
+<h4>org.fiware.kiara.ps.attributes.SubscriberAttributes<a class="headerlink" href="#id11" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.attributes.SubscriberAttributes</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="56%" />
+<col width="44%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Type</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>topic</td>
+<td>TopicAttributes</td>
+</tr>
+<tr class="row-odd"><td>rqos</td>
+<td>ReaderQos</td>
+</tr>
+<tr class="row-even"><td>times</td>
+<td>ReaderTimes</td>
+</tr>
+<tr class="row-odd"><td>unicastLocatorList</td>
+<td>LocatorList</td>
+</tr>
+<tr class="row-even"><td>multicastLocatorList</td>
+<td>LocatorList</td>
+</tr>
+<tr class="row-odd"><td>expectsInlineQos</td>
+<td>boolean</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="28%" />
+<col width="25%" />
+<col width="28%" />
+<col width="19%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getUserDefinedID</td>
+<td>&nbsp;</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setUserDefinedID</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>userDefinedID</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getEntityID</td>
+<td>&nbsp;</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setEntityID</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>entityID</td>
+<td>short</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id12">
+<h4>org.fiware.kiara.ps.utils.SampleInfo<a class="headerlink" href="#id12" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.utils.SampleInfo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="25%" />
+<col width="26%" />
+<col width="29%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getWriterGUID</td>
+<td>&nbsp;</td>
+<td>GUID</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getTimestamp</td>
+<td>&nbsp;</td>
+<td>Timestamp</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id13">
+<h4>org.fiware.kiara.ps.utils.MatchingInfo<a class="headerlink" href="#id13" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.utils.MatchingInfo</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><table border="1" class="first last docutils">
+<colgroup>
+<col width="32%" />
+<col width="24%" />
+<col width="26%" />
+<col width="18%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getMatchingStatus</td>
+<td>&nbsp;</td>
+<td>MatchingStatus</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>geRemoteEndpointGUID</td>
+<td>&nbsp;</td>
+<td>GUID</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id14">
+<h4>org.fiware.kiara.ps.common.GUID<a class="headerlink" href="#id14" title="Permalink to this headline">¶</a></h4>
+<p>The public methods of this class are listed below:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="100%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>org.fiware.kiara.ps.common.GUID</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><strong>Attributes</strong></td>
+</tr>
+<tr class="row-odd"><td>None</td>
+</tr>
+<tr class="row-even"><td><strong>Public Operations</strong></td>
+</tr>
+<tr class="row-odd"><td><p class="first">None</p>
+<table border="1" class="last docutils">
+<colgroup>
+<col width="25%" />
+<col width="26%" />
+<col width="29%" />
+<col width="20%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><strong>Name</strong></th>
+<th class="head"><strong>Parameters</strong></th>
+<th class="head"><strong>Returns/Type</strong></th>
+<th class="head"><strong>Raises</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>getEntityId</td>
+<td>&nbsp;</td>
+<td>EntityId</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>setEntityId</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>&nbsp;</td>
+<td>entityID</td>
+<td>EntityId</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>getGUIDPrefix</td>
+<td>&nbsp;</td>
+<td>GuidPrefix</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>setGUIDPrefix</td>
+<td>&nbsp;</td>
+<td>void</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>guidPrefix</td>
+<td>GUIDPrefix</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>equals</td>
+<td>&nbsp;</td>
+<td>boolean</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-odd"><td>&nbsp;</td>
+<td>other</td>
+<td>Object</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Middleware_IDL_Specification.html" class="btn btn-neutral float-right" title="Advanced Middleware IDL Specification" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Middleware_RPC_Dynamic_Types_API_Specification.html" class="btn btn-neutral" title="Advanced Middleware RPC Dynamic Types API Specification" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, eProsima, DFKI, ZHAW.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.3.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

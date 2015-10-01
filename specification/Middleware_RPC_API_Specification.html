@@ -155,6 +155,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_PUBSUB_API_Specification.html">Advanced Middleware Publication Subscription API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
 </ul>
 
@@ -202,11 +203,10 @@
             
   <div class="section" id="advanced-middleware-rpc-api-specification">
 <h1>Advanced Middleware RPC API Specification<a class="headerlink" href="#advanced-middleware-rpc-api-specification" title="Permalink to this headline">¶</a></h1>
-<p><strong>Date: 10th September 2015</strong></p>
+<p><strong>Date: 10th October 2015</strong></p>
 <ul class="simple">
 <li>Version: <a class="reference external" href="#">0.3.0</a></li>
-<li>Previous version: <a class="reference external" href="Middleware_RPC_API_Specification_0.2.0.html">0.2.0</a></li>
-<li>Latest version: <a class="reference external" href="Middleware_RPC_API_Specification.html">latest</a></li>
+<li>Latest version: <a class="reference internal" href=""><em>latest</em></a></li>
 </ul>
 <p>Editors:</p>
 <ul class="simple">
@@ -236,8 +236,8 @@ the Object Management Group (OMG) IDL draft submitted to W3C.</p>
 <h2>Status of this Document<a class="headerlink" href="#status-of-this-document" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="50%" />
-<col width="50%" />
+<col width="46%" />
+<col width="54%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head"><strong>Date</strong></th>
@@ -250,6 +250,9 @@ the Object Management Group (OMG) IDL draft submitted to W3C.</p>
 </tr>
 <tr class="row-odd"><td>8-April-2015</td>
 <td>Release 0.2.0</td>
+</tr>
+<tr class="row-even"><td>10-October-2015</td>
+<td>Release 0.3.0</td>
 </tr>
 </tbody>
 </table>
@@ -264,10 +267,8 @@ the Object Management Group (OMG) IDL draft submitted to W3C.</p>
 <div class="section" id="reference-material">
 <h3>Reference Material<a class="headerlink" href="#reference-material" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><a class="reference external" href="./Middleware_IDL_Specification.html">*Advanced Middleware IDL
-Specification*</a></li>
-<li><a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*Advanced Middleware RPC Dynamic Types API
-Specification*</a></li>
+<li><a class="reference internal" href="Middleware_IDL_Specification.html"><em>*Advanced Middleware IDL Specification*</em></a></li>
+<li><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>*Advanced Middleware RPC Dynamic Types API Specification*</em></a></li>
 </ul>
 </div>
 </div>
@@ -328,12 +329,10 @@ interfaces, especially the <code class="docutils literal"><span class="pre">Cont
 <ul class="simple">
 <li><strong>getTypeDescriptorBuilder</strong>: This function returns an instance of
 the type descriptor builder. It is a part of the dynamic API and is
-described
-<a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*here*</a>.</li>
+described <a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>*here*</em></a>.</li>
 <li><strong>getDynamicValueBuilder</strong>: This function returns an instance of the
 dynamic value builder. It is a part of the dynamic API and is
-described
-<a class="reference external" href="./Middleware_RPC_Dynamic_Types_API_Specification.html">*here*</a>.</li>
+described <a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html"><em>*here*</em></a>.</li>
 <li><strong>createContext</strong>: This function creates a new instance of the
 Context class, which is described below.</li>
 <li><strong>shutdown</strong>: This function closes and releases all internal Advanced
@@ -1160,8 +1159,7 @@ section <a class="reference external" href="#api-examples">*API Examples*</a> to
 </div>
 <div class="section" id="api-usage-examples">
 <h2>API Usage Examples<a class="headerlink" href="#api-usage-examples" title="Permalink to this headline">¶</a></h2>
-<p>Examples used in this section are based on the following <a class="reference external" href="./Middleware_IDL_Specification.html">*Advanced
-Middleware IDL*</a>:</p>
+<p>Examples used in this section are based on the following <a class="reference internal" href="Middleware_IDL_Specification.html"><em>*Advanced Middleware IDL*</em></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre>service Calculator
 {
     i32 add(i32 num1, i32 num2);

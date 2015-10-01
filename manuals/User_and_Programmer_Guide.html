@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>KIARA User and Developer Guide &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
+  <title>KIARA User and Programmer Guide &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
   
 
   
@@ -31,7 +31,7 @@
 
   
     <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
-        <link rel="next" title="Open Specifiation" href="../specification/OpenSpecification.html"/>
+        <link rel="next" title="Advanced Middleware Architecture" href="../specification/Architecture.html"/>
         <link rel="prev" title="KIARA Installation and Administration Guide" href="Installation_and_Admin_Guide.html"/> 
 
   
@@ -84,7 +84,7 @@
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">KIARA User and Developer Guide</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="">KIARA User and Programmer Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#background-and-detail">Background and Detail</a></li>
 </ul>
@@ -140,9 +140,17 @@
 </ul>
 <p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html">Advanced Middleware Architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#copyright">Copyright</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#legal-notice">Legal Notice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#overview">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#main-interactions">Main Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#basic-design-principles">Basic Design Principles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_PUBSUB_API_Specification.html">Advanced Middleware Publication Subscription API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
 </ul>
 
@@ -174,7 +182,7 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../index.html">Docs</a> &raquo;</li>
       
-    <li>KIARA User and Developer Guide</li>
+    <li>KIARA User and Programmer Guide</li>
       <li class="wy-breadcrumbs-aside">
         
           
@@ -188,13 +196,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="kiara-user-and-developer-guide">
-<h1>KIARA User and Developer Guide<a class="headerlink" href="#kiara-user-and-developer-guide" title="Permalink to this headline">¶</a></h1>
-<p><strong>Date: 10th September 2015</strong></p>
+  <div class="section" id="kiara-user-and-programmer-guide">
+<h1>KIARA User and Programmer Guide<a class="headerlink" href="#kiara-user-and-programmer-guide" title="Permalink to this headline">¶</a></h1>
+<p><strong>Date: 10th October 2015</strong></p>
 <ul class="simple">
 <li>Version: <a class="reference external" href="#">0.3.0</a></li>
-<li>Previous version: N/A</li>
-<li>Latest version: <a class="reference external" href="User_and_Programmer_Guide.html">latest</a></li>
+<li>Latest version: <a class="reference internal" href=""><em>latest</em></a></li>
 </ul>
 <p>Editors:</p>
 <ul class="simple">
@@ -227,7 +234,7 @@ of functions and data type mapping.</li>
 <p>KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.</p>
 <div class="section" id="background-and-detail">
 <h3>Background and Detail<a class="headerlink" href="#background-and-detail" title="Permalink to this headline">¶</a></h3>
-<p>This User and Programmers Guide relates to the Advanced Middleware GE which is part of the <cite>Interface to Networks and Devices (I2ND) chapter</cite>. Please find more information about this Generic Enabler in the related <a class="reference external" href="../specification/OpenSpecification.html">Open Specification</a> and <a class="reference external" href="../specification/Architecture.html">Architecture Description</a>.</p>
+<p>This User and Programmers Guide relates to the Advanced Middleware GE which is part of the <cite>Interface to Networks and Devices (I2ND) chapter</cite>. Please find more information about this Generic Enabler in the related <a class="reference internal" href="../specification/OpenSpecification.html"><em>Open Specification</em></a> and <a class="reference internal" href="../specification/Architecture.html"><em>Architecture Description</em></a>.</p>
 </div>
 </div>
 <div class="section" id="user-guide">
@@ -431,7 +438,7 @@ Supported values:</p>
 <h3>KIARA IDL<a class="headerlink" href="#kiara-idl" title="Permalink to this headline">¶</a></h3>
 <p>The KIARA Interface Definition Language (IDL) can be used to describe data types, namespaces, constants and even remote functions the server will offer (when using RPC pattern). In addition the KIARA IDL supports the declaration and application of Annotations to add metadata to almost any IDL element. These can be used by the code generator, when implementing the service functionality or configure some specific runtime functionality. The IDL syntax is based on the OMG IDL 3.5.</p>
 <p>The basic structure of an IDL File is shown in the picture in the right.</p>
-<p>Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter <a class="reference external" href="../specification/Middleware_IDL_Specification.html">KIARA Interface Definition Language</a>.</p>
+<p>Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter <a class="reference internal" href="../specification/Middleware_IDL_Specification.html"><em>KIARA Interface Definition Language</em></a>.</p>
 <p><img alt="GitHub Workflow" src="../_images/IDLFileStructure.png" /></p>
 <ul>
 <li><dl class="first docutils">
@@ -1748,7 +1755,7 @@ while ((sampleCount == 0) || (doneSignal.getCount() != 0)) {
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../specification/OpenSpecification.html" class="btn btn-neutral float-right" title="Open Specifiation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../specification/Architecture.html" class="btn btn-neutral float-right" title="Advanced Middleware Architecture" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="Installation_and_Admin_Guide.html" class="btn btn-neutral" title="KIARA Installation and Administration Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>

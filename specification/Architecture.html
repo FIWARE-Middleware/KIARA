@@ -30,7 +30,9 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/> 
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="../index.html"/>
+        <link rel="next" title="Open Specifiation" href="OpenSpecification.html"/>
+        <link rel="prev" title="KIARA User and Programmer Guide" href="../manuals/User_and_Programmer_Guide.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -82,12 +84,45 @@
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Programmer Guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#legal-notice">Legal Notice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#general-note">General Note</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-advanced-middleware-ge-components">The Advanced Middleware GE components</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-data-access">API &amp; Data Access</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#marshalling">Marshalling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wire-protocols">Wire Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dispatching">Dispatching</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transport-mechanisms">Transport Mechanisms</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transport-protocols">Transport Protocols</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#negotiation">Negotiation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-concepts">Basic Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#communication-patterns">Communication Patterns</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#interface-definition-language-idl">Interface Definition Language (IDL)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#main-interactions">Main Interactions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#api-versions">API versions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classification-of-functions">Classification of functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-design-principles">Basic Design Principles</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API Specification</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="OpenSpecification.html">Open Specifiation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Middleware_PUBSUB_API_Specification.html">Advanced Middleware Publication Subscription API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Middleware_IDL_Specification.html">Advanced Middleware IDL Specification</a></li>
 </ul>
 
@@ -135,22 +170,24 @@
             
   <div class="section" id="advanced-middleware-architecture">
 <h1>Advanced Middleware Architecture<a class="headerlink" href="#advanced-middleware-architecture" title="Permalink to this headline">¶</a></h1>
-</div>
-<div class="section" id="copyright">
-<h1>Copyright<a class="headerlink" href="#copyright" title="Permalink to this headline">¶</a></h1>
+<p>Editors:</p>
 <ul class="simple">
-<li>Copyright © 2015 by <a class="reference external" href="http://eprosima.com/index.php/en/">eProsima</a>,
-<a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW</a>, <a class="reference external" href="http://www.dfki.de/">DFKI</a></li>
+<li><a class="reference external" href="http://www.eprosima.com/index.php/en/">eProsima - The Middleware
+Experts</a></li>
+<li><a class="reference external" href="http://www.dfki.de/">DFKI - German Research Center for Artificial
+Intelligence</a></li>
+<li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
+(ICCLab)</a></li>
 </ul>
-</div>
+<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
 <div class="section" id="legal-notice">
-<h1>Legal Notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h1>
+<h2>Legal Notice<a class="headerlink" href="#legal-notice" title="Permalink to this headline">¶</a></h2>
 <p>Please check the following <a class="reference external" href="http://forge.fiware.org/plugins/mediawiki/wiki/fiware/index.php/FI-WARE_Open_Specification_Legal_Notice_(implicit_patents_license)">Legal
 Notice</a>
 to understand the rights to use these specifications.</p>
 </div>
 <div class="section" id="overview">
-<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>This specification describes the Advanced Middleware GE, which enables
 flexible, efficient, scalable, and secure communication between
 distributed applications and to/between FIWARE GEs.</p>
@@ -166,6 +203,7 @@ in return. In a similar way an application can use the middleware also
 to offer services to other applications by registering suitable service
 functionality and interfaces, which can then be used as targets of
 communication.</p>
+</div>
 <div class="section" id="general-note">
 <h2>General Note<a class="headerlink" href="#general-note" title="Permalink to this headline">¶</a></h2>
 <p>In contrast to other GEs, the Advanced Middleware GE is not a standalone
@@ -356,15 +394,14 @@ communication paradigms and and the corresponding associated QoS
 parameters and security policies.</p>
 </div>
 </div>
-</div>
 <div class="section" id="basic-concepts">
-<h1>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h1>
+<h2>Basic Concepts<a class="headerlink" href="#basic-concepts" title="Permalink to this headline">¶</a></h2>
 <p>In this section several basic concepts of the Advanced Communication
 Middleware are explained. We assume that the reader is familiar with the
 basic functionality of communication middleware like CORBA or
 WebServices.</p>
 <div class="section" id="communication-patterns">
-<h2>Communication Patterns<a class="headerlink" href="#communication-patterns" title="Permalink to this headline">¶</a></h2>
+<h3>Communication Patterns<a class="headerlink" href="#communication-patterns" title="Permalink to this headline">¶</a></h3>
 <p>We can distinguish between three main different messaging patterns,
 Publish/Subscribe, Point-to-Point, and Request/Reply, shown
 schematically below:</p>
@@ -395,7 +432,7 @@ generator for Point-To-Point and Request/Reply and potential
 alternatives.</p>
 </div>
 <div class="section" id="interface-definition-language-idl">
-<h2>Interface Definition Language (IDL)<a class="headerlink" href="#interface-definition-language-idl" title="Permalink to this headline">¶</a></h2>
+<h3>Interface Definition Language (IDL)<a class="headerlink" href="#interface-definition-language-idl" title="Permalink to this headline">¶</a></h3>
 <p>The Advanced Middleware GE supports a novel IDL to describe the Data
 Types and Operations. Following is a list of the main features it
 supports:</p>
@@ -421,13 +458,13 @@ security even at the field level.</li>
 </div>
 </div>
 <div class="section" id="main-interactions">
-<h1>Main Interactions<a class="headerlink" href="#main-interactions" title="Permalink to this headline">¶</a></h1>
+<h2>Main Interactions<a class="headerlink" href="#main-interactions" title="Permalink to this headline">¶</a></h2>
 <p>As explained above, the middleware can be used in different
 communication scenarios. Depending on the scenario, the interaction
 mechanisms and the set of API-functions for application developers may
 vary.</p>
 <div class="section" id="api-versions">
-<h2>API versions<a class="headerlink" href="#api-versions" title="Permalink to this headline">¶</a></h2>
+<h3>API versions<a class="headerlink" href="#api-versions" title="Permalink to this headline">¶</a></h3>
 <p>There will be two versions of APIs provided:</p>
 <ul>
 <li><div class="first line-block">
@@ -451,7 +488,7 @@ applications</li>
 </ul>
 </div>
 <div class="section" id="classification-of-functions">
-<h2>Classification of functions<a class="headerlink" href="#classification-of-functions" title="Permalink to this headline">¶</a></h2>
+<h3>Classification of functions<a class="headerlink" href="#classification-of-functions" title="Permalink to this headline">¶</a></h3>
 <p>The API-Functions can be classified in the following groups:</p>
 <ul class="simple">
 <li><strong>Preparation:</strong> statically at compile-time (Static API) or
@@ -490,7 +527,7 @@ Middleware GE.</p>
 </div>
 </div>
 <div class="section" id="basic-design-principles">
-<h1>Basic Design Principles<a class="headerlink" href="#basic-design-principles" title="Permalink to this headline">¶</a></h1>
+<h2>Basic Design Principles<a class="headerlink" href="#basic-design-principles" title="Permalink to this headline">¶</a></h2>
 <p>Implementations of the Advanced Middleware GE have to comply to the
 following basic design principles:</p>
 <ul class="simple">
@@ -507,11 +544,21 @@ Protocols, Authentication Mechanisms, ...) these should be
 encapsulated as Plugins with a defined interface.</li>
 </ul>
 </div>
+</div>
 
 
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="OpenSpecification.html" class="btn btn-neutral float-right" title="Open Specifiation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../manuals/User_and_Programmer_Guide.html" class="btn btn-neutral" title="KIARA User and Programmer Guide" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>
