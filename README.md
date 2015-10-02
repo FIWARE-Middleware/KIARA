@@ -39,4 +39,4 @@ The following Manuals are available in the docs section:
 * [IDL Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_IDL_Specification.html)
 * [RPC API Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_RPC_API_Specification.html)
 * [RPC Dynamic Types API Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_RPC_Dynamic_Types_API_Specification.html)
-* [Pub/Sub API Specification](doc/specification/Middleware_RPC_Dynamic_Types_API_Specification.md)
+* [Pub/Sub API Specification](http://fiware-middleware.github.io/KIARA/specification/Middleware_PUBSUB_API_Specification.html)
