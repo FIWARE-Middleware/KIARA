@@ -20,21 +20,47 @@ package org.fiware.kiara.typecode.services;
 import java.util.List;
 
 import org.fiware.kiara.typecode.TypeDescriptor;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This interface represents a service, providing methods to add the
+ * FunctionTypeDescriptor objects representing every function defined in a
+ * specific service.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface ServiceTypeDescriptor extends TypeDescriptor {
 
+    /**
+     * This function returns the service name.
+     *
+     * @return service name
+     */
     public String getName();
 
+    /**
+     * This function returns the service scoped name.
+     *
+     * @return service scoped name
+     */
     public String getScopedName();
 
+    /**
+     * This function returns the list of {@link FunctionTypeDescriptor} objects
+     * stored inside the {@link ServiceTypeDescriptor}.
+     *
+     * @return service function list
+     * @see List
+     * @see FunctionTypeDescriptor
+     */
     public List<FunctionTypeDescriptor> getFunctions();
 
+    /**
+     * This function adds a {@link FunctionTypeDescriptor} to the list of
+     * functions defined inside the service.
+     *
+     * @param functionTypeDescriptor function type
+     */
     public void addFunction(FunctionTypeDescriptor functionTypeDescriptor);
-    
+
 }

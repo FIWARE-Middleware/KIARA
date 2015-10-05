@@ -20,7 +20,7 @@ package org.fiware.kiara.typecode.impl.services;
 import java.util.ArrayList;
 
 import org.fiware.kiara.typecode.TypeKind;
-import org.fiware.kiara.typecode.impl.FunctionTypeDescriptor;
+import org.fiware.kiara.typecode.services.FunctionTypeDescriptor;
 import org.fiware.kiara.typecode.impl.TypeDescriptorImpl;
 import org.fiware.kiara.typecode.services.ServiceTypeDescriptor;
 

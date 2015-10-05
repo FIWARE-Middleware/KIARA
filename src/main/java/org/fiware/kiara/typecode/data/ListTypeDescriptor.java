@@ -18,14 +18,30 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a list data type. Lists can hold multiple repeated
+ * objects of the same data type inside.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface ListTypeDescriptor extends ContainerTypeDescriptor {
-    
+
+    /**
+     * This function returns the DataTypeDescriptor object describing the
+     * content type of the list.
+     *
+     * @return element type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getElementType();
 
+    /**
+     * This function sets the DataTypeDescriptor object describing the content
+     * type of the list.
+     *
+     * @param contentType element type descriptor
+     * @return true if operation was successful
+     */
     public boolean setElementType(DataTypeDescriptor contentType);
 
 }

@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
+import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.junit.Test;
 
@@ -33,10 +34,27 @@ import org.junit.Test;
  */
 public class BinaryOutputStreamTest {
 
-    private final BinaryOutputStream out = new BinaryOutputStream();
+    @Test
+    public void testSetPosition() throws IOException {
+        BinaryOutputStream bos = new BinaryOutputStream();
+        bos.setPosition(4);
+        bos.writeInt(54321);
+        org.junit.Assert.assertEquals(8, bos.getPosition());
+        bos.setPosition(0);
+        bos.writeInt(12345);
+        org.junit.Assert.assertEquals(4, bos.getPosition());
+        bos.setPosition(8);
+        org.junit.Assert.assertEquals(8, bos.getPosition());
+
+        BinaryInputStream bis = new BinaryInputStream(bos.getBuffer(), bos.getBufferOffset(), bos.getBufferLength());
+        org.junit.Assert.assertEquals(12345, bis.readInt());
+        org.junit.Assert.assertEquals(54321, bis.readInt());
+    }
 
     @Test
     public void testWriteLittleEndian() throws IOException {
+
+        BinaryOutputStream out = new BinaryOutputStream();
 
         /* Write out various test values in LITTLE ENDIAN FORMAT */
         out.write(new byte[]{-100, 100});

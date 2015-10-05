@@ -20,18 +20,46 @@ package org.fiware.kiara.typecode.data;
 import java.util.List;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents an array data type. Arrays can hold multiple
+ * repeated objects of the same data type inside.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface ArrayTypeDescriptor extends ContainerTypeDescriptor {
-    
+
+    /**
+     * This function returns the DataTypeDescriptor object describing the
+     * content type of the array.
+     *
+     * @return data type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getElementType();
 
+    /**
+     * This function sets the DataTypeDescriptor object describing the content
+     * type of the array.
+     *
+     * @param contentType element type descriptor
+     * @return true if operation was successful
+     * @see DataTypeDescriptor
+     */
     public boolean setElementType(DataTypeDescriptor contentType);
-    
+
+    /**
+     * This method sets the dimensions of the array.
+     *
+     * @param dimensions array of dimensions
+     */
     public void setDimensions(int... dimensions);
-    
+
+    /**
+     * This method returns the different dimensions of the array.
+     *
+     * @return list of dimensions
+     * @see java.util.List
+     */
     public List<Integer> getDimensions();
 
 }

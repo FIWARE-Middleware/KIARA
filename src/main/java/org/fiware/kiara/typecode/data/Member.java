@@ -18,14 +18,28 @@
 package org.fiware.kiara.typecode.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a member of a MemberedTypeDescriptor object. Each
+ * member is identified by its name and the TypeDescriptor object that it holds.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface Member {
-    
+
+    /**
+     * This function returns the member?s name.
+     *
+     * @return member name
+     */
     public String getName();
-    
+
+    /**
+     * This function returns a DataTypeDescriptor object stored inside the
+     * member.
+     *
+     * @return member type descriptor
+     * @see DataTypeDescriptor
+     */
     public DataTypeDescriptor getTypeDescriptor();
 
 }

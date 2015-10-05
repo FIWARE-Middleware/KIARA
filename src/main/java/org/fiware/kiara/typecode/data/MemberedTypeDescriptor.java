@@ -20,14 +20,30 @@ package org.fiware.kiara.typecode.data;
 import java.util.List;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * Interface that represents a membered data type. Membered data types are
+ * structs, enumerations, unions and exceptions.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface MemberedTypeDescriptor extends DataTypeDescriptor {
 
+    /**
+     * This function returns the list of member objects stored in a
+     * {@link ContainerTypeDescriptor} object.
+     *
+     * @return list of members
+     * @see java.util.List
+     * @see Member
+     */
     public List<Member> getMembers();
-    
+
+    /**
+     * This function returns the name of the {@link ContainerTypeDescriptor}
+     * object.
+     *
+     * @return name of the container type descriptor
+     */
     public String getName();
-    
+
 }

@@ -1,22 +1,20 @@
 Advanced Middleware IDL Specification
 =====================================
 
-*Date: 8th April 2015*
+**Date: 10th October 2015**
 
-| This version: :doc:`0.2.0 <Middleware_IDL_Specification>`
-| Previous version: n/a
-| Latest version: :doc:`latest <Middleware_IDL_Specification>`
-|
+- Version: `0.3.0 <#>`__
+- Latest version: :doc:`latest <Middleware_IDL_Specification>`
 
-**Editors:**
+Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`__
 -  `DFKI - German Research Center for Artificial
    Intelligence <http://www.dfki.de/>`__
 -  `ZHAW - School of Engineering
    (ICCLab) <http://blog.zhaw.ch/icclab>`__
-
+   
 Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
 --------------
@@ -48,11 +46,13 @@ Service. Following is a list of the main features it supports:
 Status of this Document
 -----------------------
 
-+----------------+-----------------------+
-| **Date**       | **Description**       |
-+================+=======================+
-| 8-April-2015   | 0.2.0 First Release   |
-+----------------+-----------------------+
++-----------------+-----------------------+
+| **Date**        | **Description**       |
++=================+=======================+
+| 8-April-2015    | 0.2.0 First Release   |
++-----------------+-----------------------+
+| 10-October-2015 | Release 0.3.0         |
++-----------------+-----------------------+
 
 --------------
 
@@ -60,8 +60,8 @@ Preface
 -------
 
 The foundation of the FIWARE Middleware Interface Definition Language
-(IDL) is the Object Management Group (OMG) IDL 3.5. See `Appendix
-C <#appendix-c-omg-idl-3.5-grammar>`__ for the OMG IDL 3.5 grammar.
+(IDL) is the Object Management Group (OMG) IDL 3.5. See `*Appendix
+C* <#appendix-c-omg-idl-3.5-grammar>`__ for the OMG IDL 3.5 grammar.
 
 To maintain backward compatibility, the FIWARE Middleware IDL grammar
 embraces all OMG IDL 3.5 features. IDL parsers are not required to
@@ -74,7 +74,7 @@ supported.
 Related documentation
 ---------------------
 
--  `OMG DDS-XTypes 1.0 <http://www.omg.org/spec/DDS-XTypes/1.0/>`__
+-  `*OMG DDS-XTypes 1.0* <http://www.omg.org/spec/DDS-XTypes/1.0/>`__
 
 Syntax Definition
 -----------------
@@ -102,32 +102,32 @@ therefore will be ignored by the implmentations.
                  |   <annotation_dcl> ";"
                  |   <annotation_appl> <definition>
 
-| See section `Import Declaration <#import-declaration>`__ for the
+| See section `*Import Declaration* <#import-declaration>`__ for the
   specification of ``<import>``
-| See section `Module Declaration <#module-declaration>`__ for the
+| See section `*Module Declaration* <#module-declaration>`__ for the
   specification of ``<module\>``
-| See section `Interface Declaration <#interface-declaration>`__ for
+| See section `*Interface Declaration* <#interface-declaration>`__ for
   the specification of ``<interface>``
-| See section `Value Declaration <#value-declaration>`__ for the
+| See section `*Value Declaration* <#value-declaration>`__ for the
   specification of ``<value\>``
-| See section `Constant Declaration <#constant-declaration>`__ for the
+| See section `*Constant Declaration* <#constant-declaration>`__ for the
   specification of ``<const_dcl>``
-| See section `Type Declaration <#type-declaration>`__ for the
+| See section `*Type Declaration* <#type-declaration>`__ for the
   specification of ``<type_dcl>``
-| See section `Exception Declaration <#exception-declaration>`__ for
+| See section `*Exception Declaration* <#exception-declaration>`__ for
   the specification of ``<except_dcl>``
-| See section `Repository Identity Related
-  Declarations <#repository-identity-related-declarations>`__ for the
+| See section `*Repository Identity Related
+  Declarations* <#repository-identity-related-declarations>`__ for the
   specification of ``<type_id_dcl>`` and ``<type_prefix_dcl>``
-| See section `Event Declaration <#event-declaration>`__ for the
+| See section `*Event Declaration* <#event-declaration>`__ for the
   specification of ``<event>``
-| See section `Component Declaration <#component-declaration>`__ for
+| See section `*Component Declaration* <#component-declaration>`__ for
   the specification of ``<component>``
-| See section `Event Declaration <#event-declaration>`__ for the
+| See section `*Event Declaration* <#event-declaration>`__ for the
   specification of ``<home_dcl>``
-| See section `Annotation Declaration <#annotation-declaration>`__ for
+| See section `*Annotation Declaration* <#annotation-declaration>`__ for
   the specification of ``<annotation_dcl>``
-| See section `Annotation Application <#annotation-application>`__ for
+| See section `*Annotation Application* <#annotation-application>`__ for
   the specification of ``< annotation_appl>``
 
 Import Declaration
@@ -214,7 +214,7 @@ The interface header consists of three elements:
 An interface declaration containing the keyword ``abstract`` in its
 header, declares an abstract interface. Abstract interfaces have
 slightly different rules from *regular* interfaces, as described in
-section `Abstract interface <#abstract-interface>`__.
+section `*Abstract interface* <#abstract-interface>`__.
 
 An interface declaration containing the keyword ``local`` in its header,
 declares a local interface. Local interfaces are not currently supported
@@ -244,16 +244,16 @@ Interface Body
 
 The interface body contains the following kind of declarations:
 
--  Constant declarations whose syntax is described in section `Constant
-   Declaration <#constant-declaration>`__.
--  Type declarations whose syntax is described in section `Type
-   Declaration <#type-declaration>`__.
+-  Constant declarations whose syntax is described in section `*Constant
+   Declaration* <#constant-declaration>`__.
+-  Type declarations whose syntax is described in section `*Type
+   Declaration* <#type-declaration>`__.
 -  Exception declarations whose syntax is described in section
-   `Exception Declaration <#exception-declaration>`__.
+   `*Exception Declaration* <#exception-declaration>`__.
 -  Attribute declarations whose syntax is described in section
-   `Attribute Declaration <#attribute-declaration>`__.
+   `*Attribute Declaration* <#attribute-declaration>`__.
 -  Operation declarations whose syntax is described in section
-   `Operation Declaration <#operation-declaration>`__.
+   `*Operation Declaration* <#operation-declaration>`__.
 
 Abstract interface
 ^^^^^^^^^^^^^^^^^^
@@ -392,7 +392,7 @@ specifiers to represent typed value. The syntax is as follows:
 
 The ``<scoped_name\>`` in ``<simple_type_spec>`` must be a previously
 defined type introduced by a type declaration(\ ``<type_dcl>`` - see
-section `Type Declaration <#type-declaration>`__).
+section `*Type Declaration* <#type-declaration>`__).
 
 The next subsections describe basic and constructed type specifiers.
 
@@ -758,22 +758,22 @@ An operation declaration consists of:
 
 -  An optional *operation attribute* that is supported by FIWARE
    Middleware IDL for backward compatibility. Operation attributes are
-   described in section `Operation
-   attribute <#operation-attribute>`__.
+   described in section `*Operation
+   attribute* <#operation-attribute>`__.
 -  The *type* of the operation’s return result. Operations that do not
    return a result must specify the void type.
 -  An *identifier* that names the operation in the scope of the
    interface in which it is defined.
 -  A *parameter list* that specifies zero or more parameter declarations
    for the operation. Parameter declaration is described in section
-   `Parameter Declarations <#parameter-declarations>`__.
+   `*Parameter Declarations* <#parameter-declarations>`__.
 -  An optional *raises expression* that indicates which exception may be
    raised as a result of an invocation of this operation. Raises
-   expression are described in section `Raises
-   Expressions <#raises-expressions>`__.
+   expression are described in section `*Raises
+   Expressions* <#raises-expressions>`__.
 -  An optional *context expression* that is inherited from OMG IDL 3.5,
    but FIWARE Middleware will not use. Context expressions are described
-   in section `Context Expressions <#context-expressions>`__.
+   in section `*Context Expressions* <#context-expressions>`__.
 
 Operation attribute
 ^^^^^^^^^^^^^^^^^^^
@@ -787,7 +787,7 @@ The syntax for operation attributes is as follows:
 This attribute is supported in FIWARE Middleware for backward
 compatibility. But in FIWARE Middleware IDL the preferedby way to define
 a **oneway** function is using the **@Oneway** annotation as described
-in section `Oneway functions <#oneway-functions>`__.
+in section `*Oneway functions* <#oneway-functions>`__.
 
 Parameter Declarations
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1079,8 +1079,8 @@ members’ declaration
 An annotation may be applied to almost any IDL construct or
 sub-construct. Applying and annotation consists actually in adding the
 related meta-data to the element under annotation. Full FIWARE
-Middleware IDL described in section `Appendix B: FIWARE Middleware IDL
-Grammar <#h.h832exl87ix3>`__ shows this.
+Middleware IDL described in section `*Appendix B: FIWARE Middleware IDL
+Grammar* <#h.h832exl87ix3>`__ shows this.
 
 Built-in annotations
 ~~~~~~~~~~~~~~~~~~~~
@@ -1235,41 +1235,41 @@ This section summarizes in one block all changes applied from OMG IDL
 3.5 to the FIWARE Middleware IDL:
 
 -  Modern keyword for modules. New keyword is ``namespace``. See section
-   `Module Declaration <#module-declaration>`__.
+   `*Module Declaration* <#module-declaration>`__.
 -  Modern keyword for interfaces. New keyword is ``service``. See
-   section `Interface Header <#interface-header>`__.
--  Modern keywords for basic types. See section `Basic
-   Types <#basic-types>`__.
--  New template types. See section `Template
-   Types <#template-types>`__.
+   section `*Interface Header* <#interface-header>`__.
+-  Modern keywords for basic types. See section `*Basic
+   Types* <#basic-types>`__.
+-  New template types. See section `*Template
+   Types* <#template-types>`__.
 -  FIWARE Middleware IDL only uses input parameters. See section
-   `Parameter Declarations <#parameter-declarations>`__
--  FIWARE Middleware IDL adds annotations. See sections `Annotation
-   Declaration <#annotation-declaration>`__ and `Annotation
-   Application <#annotation-application>`__.
+   `*Parameter Declarations* <#parameter-declarations>`__
+-  FIWARE Middleware IDL adds annotations. See sections `*Annotation
+   Declaration* <#annotation-declaration>`__ and `*Annotation
+   Application* <#annotation-application>`__.
 
 Also FIWARE Middleware IDL does **not** use and support (and therefore
 ignores) several OMG IDL 3.5 constructs:
 
--  Import declarations. See section `Import
-   Declaration <#import-declaration>`__.
--  Value declarations. See section `Value
-   Declaration <#value-declaration>`__.
--  'Any' type. See section `Basic Types <#basic-types>`__.
--  Native types. See section `Native Types <#native-types>`__.
--  Context expressions. See section `Context
-   Expressions <#context-expressions>`__.
--  Attribute declarations. See section `Attribute
-   Declaration <#attribute-declaration>`__.
--  Repository Identity Related Declarations. See section `Repository
+-  Import declarations. See section `*Import
+   Declaration* <#import-declaration>`__.
+-  Value declarations. See section `*Value
+   Declaration* <#value-declaration>`__.
+-  'Any' type. See section `*Basic Types* <#basic-types>`__.
+-  Native types. See section `*Native Types* <#native-types>`__.
+-  Context expressions. See section `*Context
+   Expressions* <#context-expressions>`__.
+-  Attribute declarations. See section `*Attribute
+   Declaration* <#attribute-declaration>`__.
+-  Repository Identity Related Declarations. See section `*Repository
    Identity Related
-   Declarations <#repository-identity-related-declarations>`__.
--  Event declarations. See section `Event
-   Declaration <#event-declaration>`__.
--  Component declarations. See section `Component
-   Declaration <#component-declaration>`__.
--  Home declarations. See section `Home
-   Declaration <#home-declaration>`__.
+   Declarations* <#repository-identity-related-declarations>`__.
+-  Event declarations. See section `*Event
+   Declaration* <#event-declaration>`__.
+-  Component declarations. See section `*Component
+   Declaration* <#component-declaration>`__.
+-  Home declarations. See section `*Home
+   Declaration* <#home-declaration>`__.
 
 Appendix B: FIWARE Middleware IDL Grammar
 -----------------------------------------

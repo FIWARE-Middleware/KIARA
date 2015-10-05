@@ -18,18 +18,50 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class holds the data values of a DynamicData object created from a
+ * ListTypeDescriptor. A list can only have one dimension and it has a maximum
+ * length. All the DynamicData objects stored inside a DynamicList must have
+ * been created from the same TypeDescriptor definition.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicList extends DynamicContainer {
-    
+
+    /**
+     * This function adds a DynamicData object into the list in the last
+     * position or in the position specified via parameter.
+     *
+     * @param element
+     * @return true if operation was successful
+     */
     public boolean add(DynamicData element);
-    
+
+    /**
+     * This function adds a DynamicData object into the list at the specified
+     * via parameter.
+     *
+     * @param index
+     * @param element
+     * @see DynamicData
+     */
     public void add(int index, DynamicData element);
-    
+
+    /**
+     * This function returns a DynamicData object stored is a specific position
+     * in the list.
+     *
+     * @param index
+     * @return dynamic data
+     * @see DynamicData
+     */
     public DynamicData get(int index);
-    
+
+    /**
+     * This function returns true if the {@link DynamicList} is empty.
+     *
+     * @return true if list is empty
+     */
     public boolean isEmpty();
 
 }

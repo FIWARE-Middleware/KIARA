@@ -18,12 +18,21 @@
 package org.fiware.kiara.dynamic.data;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class holds group of {@link DynamicData} objects acting as members of a
+ * structure. Each member is identified by its name.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicStruct extends DynamicMembered {
-    
+
+    /**
+     * This function returns a {@link DynamicData} object (acting as a member of the
+     * structure) whose name is the same as the one introduced as a parameter.
+     *
+     * @param name
+     * @return dynamic data
+     */
     public DynamicData getMember(String name);
 
 }

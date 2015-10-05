@@ -18,13 +18,27 @@
 package org.fiware.kiara.client;
 
 /**
+* This interface provides an abstraction used by the client to return the
+* server's reply to the user when the calling was asynchronous.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public interface AsyncCallback<T> {
 
-	public void onSuccess(T result);
+    /**
+     * This function will be called when the function call ends
+     * successfully. It must be implemented by the user.
+     *
+     * @param result
+     */
+    public void onSuccess(T result);
 
-	public void onFailure(java.lang.Throwable caught);
+    /**
+     * This function will be called when the function call does not end
+     * successfully. It must be implemented by the user.
+     *
+     * @param caught
+     */
+    public void onFailure(java.lang.Throwable caught);
 
 }

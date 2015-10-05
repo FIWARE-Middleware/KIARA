@@ -20,12 +20,12 @@ package org.fiware.kiara.dynamic.data;
 import org.fiware.kiara.dynamic.DynamicValue;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
+ * Interface that is used to group all the DynamicValues representing
+ * data types.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
 */
 public interface DynamicData extends DynamicValue {
-    
-    
 
 }

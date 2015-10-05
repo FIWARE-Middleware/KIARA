@@ -20,18 +20,45 @@ package org.fiware.kiara.dynamic.services;
 import org.fiware.kiara.dynamic.DynamicValue;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*
-*/
+ * This class represents a proxy than can be dynamically used to create an
+ * instance of {@link DynamicFunctionRequest} or a
+ * {@link DynamicFunctionResponse} depending if the user wants an object to
+ * execute a remote call or to store the result.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public interface DynamicProxy extends DynamicValue {
-    
+
+    /**
+     * This function returns the service name.
+     *
+     * @return service name
+     */
     public String getServiceName();
-    
+
+    /**
+     * This function creates a new object instance of
+     * {@link DynamicFunctionRequest} according to the
+     * {@link org.fiware.kiara.typecode.services.FunctionTypeDescriptor} that
+     * was used to describe it.
+     *
+     * @param name request function name
+     * @return dynamic function request
+     * @see DynamicFunctionRequest
+     */
     public DynamicFunctionRequest createFunctionRequest(String name);
-    
+
+    /**
+     * This function creates a new object instance of
+     * {@link DynamicFunctionResponse} according to the
+     * {@link org.fiware.kiara.typecode.services.FunctionTypeDescriptor} that
+     * was used to describe it.
+     *
+     * @param name response function name
+     * @return dynamic function response
+     * @see DynamicFunctionResponse
+     */
     public DynamicFunctionResponse createFunctionResponse(String name);
-    
-    
 
 }
