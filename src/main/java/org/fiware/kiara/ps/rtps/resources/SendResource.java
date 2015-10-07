@@ -17,7 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.resources;
 
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -41,9 +40,7 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.InternetProtocolFamily;
 
-import java.net.Inet4Address;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
@@ -54,63 +51,97 @@ import org.fiware.kiara.ps.rtps.utils.IPTYPE;
 import org.fiware.kiara.ps.rtps.utils.InfoIP;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This class is the one in charge of sending messages over
+ * the wire. It contains all the informacion about the endpoints
+ * to which the data will be sent.
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class SendResource {
 
+    /**
+     * Maximum number of binding tries
+     */
     public static final int MAX_BIND_TRIES = 100;
 
-    private final Lock m_mutex;
-
+    /**
+     * This value indicates whether to se IPv4 or not
+     */
     private boolean m_useIPv4;
 
+    /**
+     * This value indicates whether to se IPv6 or not
+     */
     private boolean m_useIPv6;
 
+    /**
+     * List of IPv4 {@link Locator}s
+     */
     private final List<Locator> m_sendLocatorIPv4;
 
+    /**
+     * List of IPv6 {@link Locator}s
+     */
     private final List<Locator> m_sendLocatorIPv6;
 
+    /**
+     * List of IPv4 {@link DatagramChannel}s to send data to
+     */
     private final List<DatagramChannel> m_sendSocketIPv4;
 
+    /**
+     * List of IPv6 {@link DatagramChannel}s to send data to
+     */
     private final List<DatagramChannel> m_sendSocketIPv6;
 
+    /**
+     * IPv4 sending endpoint
+     */
     private InetSocketAddress m_sendEndpointV4;
+
+    /**
+     * IPv6 sending endpoint
+     */
     private InetSocketAddress m_sendEndpointV6;
 
-    private int m_bytesSent;
-
+    /**
+     * Tells whether to send next message or not
+     */
     private boolean m_sendNext;
 
-    private RTPSParticipant m_RTPSParticipant;
-
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(RTPSParticipant.class);
 
+    /**
+     * Mutex
+     */
+    private final Lock m_mutex;
+
+    /**
+     * Default {@link SendResource} constructor
+     */
     public SendResource() {
         this.m_sendLocatorIPv4 = new ArrayList<>();
         this.m_sendLocatorIPv6 = new ArrayList<>();
         this.m_sendSocketIPv4 = new ArrayList<>();
         this.m_sendSocketIPv6 = new ArrayList<>();
-
         this.m_useIPv4 = true;
         this.m_useIPv6 = true;
-
-        this.m_bytesSent = 0;
         this.m_sendNext = true;
-
         this.m_mutex = new ReentrantLock(true);
-
     }
 
     /**
      * Initialize the sending socket.
      *
-     * @param participant
+     * @param participant The {@link RTPSParticipant} that creates the {@link SendResource}
      * @param loc Locator of the address from where to start the sending socket.
-     * @param sendSockBuffer
+     * @param sendSockBuffer Send buffer
      * @param useIPv4 Boolean telling whether to use IPv4
      * @param useIPv6 Boolean telling whether to use IPv6
-     * @return true on success
+     * @return true on success; false otherwise
      */
     public boolean initSend(RTPSParticipant participant, Locator loc, int sendSockBuffer, boolean useIPv4, boolean useIPv6) {
 
@@ -131,13 +162,13 @@ public class SendResource {
                 DatagramChannel sendSocketV4 = null;
                 Bootstrap b = new Bootstrap();
                 b.group(Global.transportGroup)
-                        .handler(new ChannelInitializer<NioDatagramChannel>() {
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
 
-                            @Override
-                            protected void initChannel(NioDatagramChannel ch) throws Exception {
-                            }
+                    @Override
+                    protected void initChannel(NioDatagramChannel ch) throws Exception {
+                    }
 
-                        });
+                });
 
                 b.channelFactory(new NioDatagramChannelFactory(InternetProtocolFamily.IPv4));
                 b.option(ChannelOption.SO_SNDBUF, sendSockBuffer);
@@ -190,13 +221,13 @@ public class SendResource {
                 DatagramChannel sendSocketV6 = null;
                 Bootstrap b = new Bootstrap();
                 b.group(Global.transportGroup)
-                        .handler(new ChannelInitializer<NioDatagramChannel>() {
+                .handler(new ChannelInitializer<NioDatagramChannel>() {
 
-                            @Override
-                            protected void initChannel(NioDatagramChannel ch) throws Exception {
-                            }
+                    @Override
+                    protected void initChannel(NioDatagramChannel ch) throws Exception {
+                    }
 
-                        });
+                });
 
                 b.channelFactory(new NioDatagramChannelFactory(InternetProtocolFamily.IPv6));
                 b.option(ChannelOption.SO_SNDBUF, sendSockBuffer);
@@ -261,9 +292,6 @@ public class SendResource {
                 return;
             }
 
-            // Should we call this or the caller ?
-            //msg.serialize(); //??? FIXME
-
             if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4 && m_useIPv4) {
                 byte[] srcAddr = loc.getAddress();
 
@@ -273,9 +301,7 @@ public class SendResource {
                 }
 
                 try {
-                    //if (this.m_sendEndpointV4 == null) {
-                        m_sendEndpointV4 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
-                    //}
+                    m_sendEndpointV4 = new InetSocketAddress(InetAddress.getByAddress(addr), loc.getPort());
                 } catch (UnknownHostException e) {
                     logger.error("UDPv4 Error obtaining address: {}", Arrays.toString(addr));
                     return;
@@ -284,7 +310,6 @@ public class SendResource {
                 for (DatagramChannel sockit : m_sendSocketIPv4) {
                     logger.debug("UDPv4 Sending {} bytes TO {} FROM {}", msg.getSize(), m_sendEndpointV4, sockit.localAddress());
                     if (m_sendEndpointV4.getPort() > 0) {
-                        m_bytesSent = 0;
                         if (m_sendNext) {
                             try {
                                 if (!this.m_sendEndpointV4.getAddress().equals(InetAddress.getByAddress(new byte[] {0,0,0,0}))) { // TODO Fix 0.0.0.0 case
@@ -295,7 +320,7 @@ public class SendResource {
                             } catch (Exception error) {
                                 // Should print the actual error message
                                 logger.warn(error.toString());
-                               // error.printStackTrace();
+                                // error.printStackTrace();
                             }
 
                         } else {
@@ -326,10 +351,8 @@ public class SendResource {
                 }
 
                 for (DatagramChannel sockit : m_sendSocketIPv6) {
-                    //logger.debug("UDPv6: {} bytes TO endpoint: {} FROM {}", msg.getSize(), m_sendEndpointV6, sockit.localAddress());
                     logger.debug("UDPv6 Sending {} bytes TO {} FROM {}", msg.getSize(), m_sendEndpointV6, sockit.localAddress());
                     if (m_sendEndpointV6.getPort() > 0) {
-                        m_bytesSent = 0;
                         if (m_sendNext) {
                             try {
 
@@ -362,15 +385,25 @@ public class SendResource {
 
     }
 
-    //!FOR TESTING ONLY!!!!
+    /**
+     * Looses next change (for testing purposes only)
+     */
     public void looseNextChange() {
         m_sendNext = false;
     }
 
+    /**
+     * Get the {@link Lock} mutex
+     * 
+     * @return The {@link Lock} mutex
+     */
     public Lock getMutex() {
         return m_mutex;
     }
 
+    /**
+     * Destroys the {@link SendResource} and all the associated objects
+     */
     public void destroy() {
         this.m_mutex.lock();
         try {

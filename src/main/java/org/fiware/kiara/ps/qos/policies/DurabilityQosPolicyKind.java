@@ -34,12 +34,25 @@ public enum DurabilityQosPolicyKind {
     /** NOT IMPLEMENTED. */
     PERSISTENT_DURABILITY_QOS((byte) 3);
 
+    /**
+     * Enumeration value
+     */
     private final byte m_value;
 
+    /**
+     * Private {@link DurabilityQosPolicyKind} constructor
+     * 
+     * @param value The enumeration value
+     */
     private DurabilityQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }

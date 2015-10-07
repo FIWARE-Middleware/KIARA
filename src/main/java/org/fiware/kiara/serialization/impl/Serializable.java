@@ -25,8 +25,24 @@ import java.io.IOException;
 */
 public interface Serializable {
 
+    /**
+     * Serialization method
+     * 
+     * @param impl {@link SerializerImpl} object implementing interface {@link Serializable}
+     * @param message {@link BinaryOutputStream} object in which the data will be serialized
+     * @param name Name identifying the data
+     * @throws IOException If something goes wrong while serializing the data
+     */
     public abstract void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException;
 
+    /**
+     * Deserialization method
+     * 
+     * @param impl {@link SerializerImpl} object implementing interface {@link Serializable}
+     * @param message {@link BinaryInputStream} object from which the data will be deserialized
+     * @param name Name identifying the data
+     * @throws IOException If something goes wrong while deserializing the data
+     */
     public abstract void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException;
 
 }

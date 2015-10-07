@@ -44,8 +44,14 @@ import org.slf4j.LoggerFactory;
  */
 public class Domain {
 
+    /**
+     * List of {@link Participant} objects
+     */
     private static final List<Participant> m_participants = new ArrayList<>();
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(Domain.class);
 
     /**

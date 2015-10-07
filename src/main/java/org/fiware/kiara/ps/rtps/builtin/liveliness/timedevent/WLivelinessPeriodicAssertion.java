@@ -67,7 +67,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     private final GUIDPrefix m_guidP;
 
     /**
-     * Constructor
+     * {@link WLivelinessPeriodicAssertion} constructor
      *
      * @param pwlp Pointer to the WLP object.
      * @param kind Kind of the periodic assertion timed event
@@ -87,7 +87,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
     }
 
     /**
-     * Constructor
+     * {@link WLivelinessPeriodicAssertion} constructor 
      *
      * @param pwlp Pointer to the WLP object.
      * @param kind Kind of the periodic assertion timed event

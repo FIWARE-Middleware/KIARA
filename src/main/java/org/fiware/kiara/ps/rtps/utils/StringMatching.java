@@ -133,6 +133,13 @@ public class StringMatching {
         return sb.toString();
     }
 
+    /**
+     * Chechs if a provided String input matches a pattern
+     *  
+     * @param pattern String indicating the pattern
+     * @param input String to compare 
+     * @return true if the String matches the pattern; false otherwise
+     */
     public static boolean matchString(String pattern, String input) {
         return Pattern.matches(convertGlobToRegex(pattern), input);
     }

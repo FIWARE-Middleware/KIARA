@@ -25,20 +25,44 @@ package org.fiware.kiara.ps.rtps.common;
  */
 public enum ChangeForReaderStatus {
 
+    /**
+     * Change is UNSENT (not sent yet)
+     */
     UNSENT(0),
+    /**
+     * Change is UNACKNOWLEDGED (sent but not aknowledged)
+     */
     UNACKNOWLEDGED(1),
+    /**
+     * Change is REQUESTED (sent and not received by reader)
+     */
     REQUESTED(2),
+    /**
+     * Change is ACKNOWLEDGED (sent and received by reader)
+     */
     ACKNOWLEDGED(3),
+    /**
+     * Change is UNDERWAY (in process to be sent)
+     */
     UNDERWAY(4);
 
+    /**
+     * Enumeration value
+     */
     private final int m_value;
 
+    /**
+     * Private default {@link ChangeForReaderStatus} constructor
+     * 
+     * @param value The enumeration value
+     */
     private ChangeForReaderStatus(int value) {
         this.m_value = value;
     }
 
     /**
      * Creates a new ChangeForReaderStatus object from its integer value.
+     * 
      * @param value The ordinal value of the enumeration
      * @return ChangeForReaderStatus
      */
@@ -57,6 +81,15 @@ public enum ChangeForReaderStatus {
         default:
             return ChangeForReaderStatus.UNSENT;        
         }
+    }
+
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
+    public int getValue() {
+        return m_value;
     }
 
 

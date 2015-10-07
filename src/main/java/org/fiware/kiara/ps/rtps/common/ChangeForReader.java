@@ -46,11 +46,18 @@ public class ChangeForReader {
      */
     public final SequenceNumber seqNum;
 
+    /**
+     * Boolean value indicating if the {@link ChangeForReader} is valid
+     */
     private boolean m_isValid;
+    
+    /**
+     * {@link CacheChange} associated to the {@link ChangeForReader}
+     */
     private CacheChange m_change;
 
     /**
-     * Default constructor
+     * Default {@link ChangeForReader} constructor
      */
     public ChangeForReader() {
         status = UNSENT;
@@ -118,6 +125,11 @@ public class ChangeForReader {
         return m_isValid;
     }
 
+    /**
+     * This method copies an instance of {@link ChangeForReader} into another
+     * 
+     * @param change The {@link ChangeForReader} to be copied
+     */
     public void copy(ChangeForReader change) {
         status = ChangeForReaderStatus.createFromValue(change.status.ordinal());
         isRelevant = change.isRelevant;

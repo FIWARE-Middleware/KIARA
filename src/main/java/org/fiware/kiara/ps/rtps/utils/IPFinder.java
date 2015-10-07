@@ -29,11 +29,17 @@ import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This class helps the middleware to find IP adresses
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class IPFinder {
 
+    /**
+     * Gets all the IP adresses associated to a specific machine
+     * 
+     * @return A list of {@link InfoIP} objects
+     */
     public static List<InfoIP> getIPs() {
         ArrayList<InfoIP> retVal = new ArrayList<>();
 
@@ -54,10 +60,10 @@ public class IPFinder {
                             final Inet6Address currentIPv6 = (Inet6Address) currentIP;
                             final InfoIP infoIP = new InfoIP(
                                     loopback ? IPTYPE.IPv6_LOCAL : IPTYPE.IPv6,
-                                    currentIPv6.getScopeId(),
-                                    currentIPv6.getHostAddress(),
-                                    null
-                            );
+                                            currentIPv6.getScopeId(),
+                                            currentIPv6.getHostAddress(),
+                                            null
+                                    );
 
                             if (!loopback) {
                                 byte addr[] = new byte[16];
@@ -74,17 +80,14 @@ public class IPFinder {
                             final Inet4Address currentIPv4 = (Inet4Address) currentIP;
                             final InfoIP infoIP = new InfoIP(
                                     loopback ? IPTYPE.IPv4_LOCAL : IPTYPE.IPv4,
-                                    0,
-                                    currentIPv4.getHostAddress(),
-                                    null
-                            );
+                                            0,
+                                            currentIPv4.getHostAddress(),
+                                            null
+                                    );
 
                             if (!loopback) {
                                 byte[] addr = new byte[16];
                                 final byte[] ipAddress = currentIPv4.getAddress();
-                                /*if (ipAddress[2] == 56) {
-                                    continue; // TODO Delete this
-                                }*/
 
                                 addr[12] = ipAddress[0];
                                 addr[13] = ipAddress[1];
@@ -102,13 +105,17 @@ public class IPFinder {
                 }
             }
         } catch (SocketException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return retVal;
     }
 
+    /**
+     * Get a {@link LocatorList} with all the avaliable IPv4 addresses
+     * 
+     * @return A {@link LocatorList} with the avaliable IPv4 addresses
+     */
     public static LocatorList getIPv4Adress() {
         LocatorList locators = new LocatorList();
         List<InfoIP> ipNames = IPFinder.getIPs();
@@ -126,6 +133,11 @@ public class IPFinder {
 
     }
 
+    /**
+     * Get an {@link Inet4Address} with the first avaliable IPv4 address
+     * 
+     * @return An {@link Inet4Address} with the first avaliable IPv4 address
+     */
     public static Inet4Address getFirstIPv4Address() {
         try {
             java.util.Enumeration<java.net.NetworkInterface> nets = java.net.NetworkInterface.getNetworkInterfaces();
@@ -144,6 +156,11 @@ public class IPFinder {
         return null;
     }
 
+    /**
+     * Get an {@link Inet6Address} with the first avaliable IPv6 address
+     * 
+     * @return An {@link Inet6Address} with the first avaliable IPv6 address
+     */
     public static Inet6Address getFirstIPv6Address() {
         try {
             java.util.Enumeration<java.net.NetworkInterface> nets = java.net.NetworkInterface.getNetworkInterfaces();
@@ -161,7 +178,12 @@ public class IPFinder {
         }
         return null;
     }
-    
+
+    /**
+     * Creates an empty IPv4 address
+     * 
+     * @return An empty {@link Inet4Address}
+     */
     public static Inet4Address addressIPv4() {
         try {
             return (Inet4Address) InetAddress.getByName("0.0.0.0");
@@ -172,10 +194,11 @@ public class IPFinder {
         return null;
     }
 
-    public static Inet4Address getFirstIPv4Adress() {
-        return getFirstIPv4Address();
-    }
-
+    /**
+     * Get the IPv6 addresses
+     * 
+     * @return A {@link LocatorList} containing the IPv6 addresses
+     */
     public static LocatorList getIPv6Adress() {
         LocatorList locators = new LocatorList();
         List<InfoIP> ipNames = IPFinder.getIPs();
@@ -192,11 +215,12 @@ public class IPFinder {
         return locators;
 
     }
-
-    public static Inet6Address getFirstIPv6Adress() {
-        return getFirstIPv6Address();
-    }
-    
+   
+    /**
+     * Creates an empty IPv6 address
+     * 
+     * @return An empty {@link Inet6Address}
+     */
     public static Inet6Address addressIPv6() {
         try {
             return (Inet6Address) InetAddress.getByName("::");
@@ -207,6 +231,11 @@ public class IPFinder {
         return null;
     }
 
+    /**
+     * Get all the IP adresses
+     * 
+     * @return A {@link LocatorList} containing all the IP adresses
+     */
     public static LocatorList getAllIPAdress() {
         LocatorList locators = new LocatorList();
         List<InfoIP> ipNames = IPFinder.getIPs();
@@ -223,99 +252,5 @@ public class IPFinder {
         return locators;
     }
 
-    @Deprecated
-    private static boolean parseIPv4(InfoIP infoIP) {
-        String ipStr = infoIP.name;
-
-        byte[] addr = new byte[16];
-        String ch = "\\.";
-
-        String[] splitted = ipStr.split(ch);
-
-        addr[12] = (byte) Integer.parseInt(splitted[0]);
-        addr[13] = (byte) Integer.parseInt(splitted[1]);
-        addr[14] = (byte) Integer.parseInt(splitted[2]);
-        addr[15] = (byte) Integer.parseInt(splitted[3]);
-
-        if (addr[12] == 127 && addr[13] == 0 && addr[14] == 0 && addr[15] == 1) {
-            return false;
-        }
-
-        infoIP.locator.setKind(LocatorKind.LOCATOR_KIND_UDPv4);
-        infoIP.locator.setPort(0);
-        infoIP.locator.setAddress(addr);
-
-        return true;
-    }
-
-    @Deprecated
-    private static boolean parseIPv6(InfoIP infoIP) {
-        String ipStr = infoIP.name;
-
-        String[] scopeIdSplitted = ipStr.split("%");
-        String[] splitted = scopeIdSplitted[0].split(":");
-
-        if (splitted[0].length() == 0 && splitted[1].length() == 0) {
-            return false;
-        }
-
-        if (splitted[splitted.length - 1].contains(".")) { // Map do IPv4 address
-            return false;
-        }
-
-        byte addr[] = new byte[16];
-
-        infoIP.locator.setKind(LocatorKind.LOCATOR_KIND_UDPv6);
-        infoIP.locator.setPort(0);
-
-        int auxNumber = 0;
-        byte index = 15;
-
-        for (int i = splitted.length - 1; i >= 0; --i) {
-            String it = splitted[i];
-            if (it.length() != 0) {
-                if (it.length() <= 2) {
-                    addr[index - 1] = 0;
-                    auxNumber = Integer.parseInt(it, 16);
-                    addr[index] = (byte) auxNumber;
-                } else {
-                    //String subs = it.substring(it.length()-2);
-                    auxNumber = Integer.parseInt(it.substring(it.length() - 2), 16);
-                    addr[index] = (byte) auxNumber;
-                    //subs = it.substring(0, it.length()-2);
-                    auxNumber = Integer.parseInt(it.substring(0, it.length() - 2), 16);
-                    addr[index - 1] = (byte) auxNumber;
-                }
-                index -= 2;
-            } else {
-                break;
-            }
-        }
-
-        index = 0;
-        for (String it : splitted) {
-            if (it.length() != 0) {
-                if (it.length() <= 2) {
-                    addr[index] = 0;
-                    auxNumber = Integer.parseInt(it, 16);
-                    addr[index + 1] = (byte) auxNumber;
-                } else {
-                    //String subs = it.substring(it.length()-2);
-                    auxNumber = Integer.parseInt(it.substring(it.length() - 2), 16);
-                    addr[index + 1] = (byte) auxNumber;
-                    //subs = it.substring(0, it.length()-2);
-                    auxNumber = Integer.parseInt(it.substring(0, it.length() - 2), 16);
-                    addr[index] = (byte) auxNumber;
-                }
-                index += 2;
-            } else {
-                break;
-            }
-        }
-
-        return true;
-    }
-
-    
 
 }

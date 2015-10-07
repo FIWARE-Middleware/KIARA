@@ -20,7 +20,6 @@ package org.fiware.kiara.ps.rtps.history;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
@@ -57,10 +56,15 @@ public class ReaderHistoryCache extends HistoryCache {
     protected Map<GUID,Set<SequenceNumber>> m_historyRecord; // TODO Comparison functions in GUID
 
     /**
-     * Log object
+     * Logging object
      */
     private static final Logger logger = LoggerFactory.getLogger(ReaderHistoryCache.class);
 
+    /**
+     * Main {@link ReaderHistoryCache} constructor
+     * 
+     * @param att {@link HistoryCacheAttributes} related to this {@link ReaderHistoryCache}
+     */
     public ReaderHistoryCache(HistoryCacheAttributes att) {
         super(att);
         this.m_reader = null;
@@ -178,6 +182,11 @@ public class ReaderHistoryCache extends HistoryCache {
         }
     }
 
+    /**
+     * Set the {@link RTPSReader} of the {@link ReaderHistoryCache}
+     * 
+     * @param rtpsReader The {@link RTPSReader} to be set
+     */
     public void setReader(RTPSReader rtpsReader) {
         this.m_reader = rtpsReader;
     }

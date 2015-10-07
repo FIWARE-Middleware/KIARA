@@ -18,13 +18,19 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* This enumeration represents the kind of a specific {@link org.fiware.kiara.ps.topic.TopicDataType} 
-* 
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This enumeration represents the kind of a specific {@link org.fiware.kiara.ps.topic.TopicDataType} 
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum TopicKind {
-	
-	WITH_KEY,
-	NO_KEY;
+
+    /**
+     * Topic is WITH_KEY
+     */
+    WITH_KEY,
+    /**
+     * Topic is NO_KEY
+     */
+    NO_KEY;
 
 }

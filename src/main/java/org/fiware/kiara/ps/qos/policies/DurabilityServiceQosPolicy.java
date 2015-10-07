@@ -38,20 +38,44 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class DurabilityServiceQosPolicy extends Parameter {
 
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link Timestamp} indicating the service cleanup delay
+     */
     public Timestamp serviceCleanupDelay;
 
+    /**
+     * {@link HistoryQosPolicyKind} indicating the type of QoS policy
+     */
     public HistoryQosPolicyKind kind;
 
+    /**
+     * Integer value which indicated ow mamy objects can be stored in the HistoryCache
+     */
     public int historyDepth;
 
+    /**
+     * Maximum number of samples of any instance
+     */
     public int maxSamples;
 
+    /**
+     * Maximum number of samples of a different instance (different KEY)
+     */
     public int maxInstances;
 
+    /**
+     * Maximum number of samples of the same instance (same KEY)
+     */
     public int maxSamplesPerInstance;
 
+    /**
+     * Default {@link DurabilityServiceQosPolicy} constructor
+     */
     public DurabilityServiceQosPolicy() {
         super(ParameterId.PID_DURABILITY_SERVICE, (short) (Parameter.PARAMETER_KIND_LENGTH + Parameter.PARAMETER_KIND_LENGTH + 4 + 4 + 4 + 4));
         this.parent = new QosPolicy(false);
@@ -63,6 +87,10 @@ public class DurabilityServiceQosPolicy extends Parameter {
         this.maxSamplesPerInstance = -1;
     }
 
+    /**
+     * This method copies two instnces of {@link DurabilityServiceQosPolicy}
+     * @param value The {@link DurabilityServiceQosPolicy} to be copied
+     */
     public void copy(DurabilityServiceQosPolicy value) {
         parent.copy(value.parent);
         serviceCleanupDelay.copy(value.serviceCleanupDelay);
@@ -73,6 +101,9 @@ public class DurabilityServiceQosPolicy extends Parameter {
         maxSamplesPerInstance = value.maxSamplesPerInstance;
     }
 
+    /**
+     * Serializes a {@link DestinationOrderQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -91,6 +122,9 @@ public class DurabilityServiceQosPolicy extends Parameter {
 
     }
 
+    /**
+     * Deserializes a {@link DestinationOrderQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
@@ -106,9 +140,20 @@ public class DurabilityServiceQosPolicy extends Parameter {
         this.maxSamplesPerInstance = impl.deserializeI32(message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link DestinationOrderQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.serviceCleanupDelay.deserialize(impl, message, name);
+
+        this.kind = HistoryQosPolicyKind.values()[impl.deserializeByte(message, name)];
+        message.skipBytes(3);
+
+        this.historyDepth = impl.deserializeI32(message, name);
+        this.maxSamples = impl.deserializeI32(message, name);
+        this.maxInstances = impl.deserializeI32(message, name);
+        this.maxSamplesPerInstance = impl.deserializeI32(message, name);
     }
 
 }

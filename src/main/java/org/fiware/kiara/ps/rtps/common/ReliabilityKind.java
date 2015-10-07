@@ -18,13 +18,19 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* Reliability enum used for internal purposes
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Reliability enum used for internal purposes
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum ReliabilityKind {
-	
-	RELIABLE,
-	BEST_EFFORT
+
+    /**
+     * Reliability is RELIABLE
+     */
+    RELIABLE,
+    /**
+     * Reliability is BEST_EFFORT
+     */
+    BEST_EFFORT
 
 }

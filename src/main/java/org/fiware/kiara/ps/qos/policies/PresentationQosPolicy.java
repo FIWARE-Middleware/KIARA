@@ -35,15 +35,29 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class PresentationQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link PresentationQosPolicyAccessScopeKind} indicating the type of Presentation QoS policy
+     */
     public PresentationQosPolicyAccessScopeKind accessScope;
 
+    /**
+     * Boolean indicating whether the defined acces is of type coherent
+     */
     public boolean coherentAccess;
 
+    /**
+     * Boolean indicating whether the defined acces is of type ordered
+     */
     public boolean orderedAccess;
 
+    /**
+     * Default {@link PresentationQosPolicy} constructor
+     */
     public PresentationQosPolicy() {
         super(ParameterId.PID_PRESENTATION, Parameter.PARAMETER_PRESENTATION_LENGTH);
         this.parent = new QosPolicy(false);
@@ -52,6 +66,10 @@ public class PresentationQosPolicy extends Parameter {
         this.orderedAccess = false;
     }
 
+    /**
+     * This method copies two instnces of {@link PresentationQosPolicy}
+     * @param value The {@link PresentationQosPolicy} to be copied
+     */
     public void copy(PresentationQosPolicy value) {
         parent.copy(value.parent);
         accessScope = value.accessScope;
@@ -59,6 +77,9 @@ public class PresentationQosPolicy extends Parameter {
         orderedAccess = value.orderedAccess;
     }
 
+    /**
+     * Deserializes only the contents of a {@link PresentationQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

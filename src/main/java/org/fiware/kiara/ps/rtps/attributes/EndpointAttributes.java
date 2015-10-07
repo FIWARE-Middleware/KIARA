@@ -17,8 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.attributes;
 
+import org.fiware.kiara.ps.rtps.Endpoint;
 import org.fiware.kiara.ps.rtps.common.DurabilityKind;
 import org.fiware.kiara.ps.rtps.common.EndpointKind;
+import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
@@ -66,6 +68,9 @@ public class EndpointAttributes {
      */
     private short m_entityId;
 
+    /**
+     * Default {@link EndpointAttributes} constructor
+     */
     public EndpointAttributes() {
         this.topicKind = TopicKind.NO_KEY;
         this.reliabilityKind = ReliabilityKind.BEST_EFFORT;
@@ -113,14 +118,29 @@ public class EndpointAttributes {
         this.m_entityId = id;
     }
 
+    /**
+     * {@link LocatorList} containing the unicast {@link Locator}s of thie {@link Endpoint}
+     * 
+     * @return The unicast {@link LocatorList}
+     */
     public LocatorList getUnicastLocatorList() {
         return unicastLocatorList;
     }
 
+    /**
+     * {@link LocatorList} containing the multicast {@link Locator}s of thie {@link Endpoint}
+     * 
+     * @return The multicast {@link LocatorList}
+     */
     public LocatorList getMulticastLocatorList() {
         return multicastLocatorList;
     }
 
+    /**
+     * This method copies an instance of {@link EndpointAttributes} into another
+     * 
+     * @param value The {@link EndpointAttributes} to be copied
+     */
     public void copy(EndpointAttributes value) {
         endpointKind = value.endpointKind;
         topicKind = value.topicKind;

@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.reader;
 
 import java.util.ArrayList;
@@ -7,7 +24,6 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
-import org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus;
 import org.fiware.kiara.ps.rtps.common.ChangeFromWriter;
 import org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -15,65 +31,136 @@ import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.reader.timedevent.HeartbeatResponseDelay;
 import org.fiware.kiara.ps.rtps.reader.timedevent.WriterProxyLiveliness;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class represents a remote {@link RTPSWriter}
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class WriterProxy {
 
-    // TODO Implement
+    /**
+     * Reference to the {@link StatefulReader}
+     */
     public StatefulReader statefulReader;
 
+    /**
+     * {@link RemoteWriterAttributes} of the remote {@link RTPSWriter}
+     */
     public RemoteWriterAttributes att;
 
+    /**
+     * List of received {@link CacheChange}s
+     */
     public List<ChangeFromWriter> changesFromWriter;
 
+    /**
+     * Counter of the ACKNACK messages
+     */
     public int acknackCount;
 
+    /**
+     * Count od the last HEARTBEAT received
+     */
     public int lastHeartbeatCount;
 
+    /**
+     * Indicates if the missing {@link CacheChange} list is empty or not
+     */
     public boolean isMissingChangesEmpty;
 
+    /**
+     * Reference to the {@link HeartbeatResponseDelay}
+     */
     public HeartbeatResponseDelay heartBeatResponse;
 
+    /**
+     * Reference to the {@link WriterProxyLiveliness}
+     */
     public WriterProxyLiveliness writerProxyLiveliness;
 
+    /**
+     * Indicates if the HEARTBEAT is activated
+     */
     public boolean hearbeatFinalFlag;
 
+    /**
+     * Last removed {@link SequenceNumber}
+     */
     public final SequenceNumber lastRemovedSeqNum;
 
+    /**
+     * Maximum available {@link SequenceNumber}
+     */
     private final SequenceNumber m_maxAvailableSeqNum;
 
+    /**
+     * minimum available {@link SequenceNumber}
+     */
     private final SequenceNumber m_minAvailableSeqNum;
 
+    /**
+     * Indicates if the maximum {@link SequenceNumber} has changed
+     */
     public boolean hasMaxAvailableSeqNumChanged;
 
+    /**
+     * Indicates if the minimum {@link SequenceNumber} has changed
+     */
     public boolean hasMinAvailableSeqNumChanged;
 
+    /**
+     * Indicates if the {@link WriterProxy} is still alive
+     */
+    @SuppressWarnings("unused")
     private boolean m_isAlive;
 
+    /**
+     * Indicates if no more {@link CacheChange}s have been received after the first one
+     */
     private boolean m_firstReceived;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
     
+    /**
+     * Liveliness multiplier
+     */
     public static final int WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER = 1; // TODO Check in spec if this must be allowed to change
 
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
 
+    /**
+     * Destroys the {@link WriterProxy}
+     */
     public void destroy() {
         if (writerProxyLiveliness != null) {
             writerProxyLiveliness.stopTimer();
         }
     }
 
+    /**
+     * {@link WriterProxy} constructor
+     * 
+     * @param watt The {@link RemoteWriterAttributes} for configuration
+     * @param heartbeatResponse {@link Timestamp} indicating the HEARTBEAT response period
+     * @param SR Reference to a {@link StatefulReader}
+     */
     public WriterProxy(RemoteWriterAttributes watt, Timestamp heartbeatResponse, StatefulReader SR) {
         statefulReader = SR;
         att = new RemoteWriterAttributes();
         att.copy(watt);
         this.changesFromWriter = new ArrayList<ChangeFromWriter>();
         this.m_firstReceived = true;
-        //changesFromWriter.clear();
-        //Create Events
-        //heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         if (att.livelinessLeaseDuration.isLowerThan(new Timestamp().timeInfinite())) {
             writerProxyLiveliness = new WriterProxyLiveliness(this, att.livelinessLeaseDuration.toMilliSecondsDouble()*WRITERPROXY_LIVELINESS_PERIOD_MULTIPLIER);
         }
@@ -83,10 +170,21 @@ public class WriterProxy {
         logger.debug("RTPS READER: Writer Proxy created in reader: {}", statefulReader.getGuid().getEntityId());
     }
 
+    /**
+     * Get te minimum available changes
+     * 
+     * @return The minimum {@link SequenceNumber}
+     */
     public SequenceNumber getAvailableChangesMin() {
         return getAvailableChangesMin(null);
     }
 
+    /**
+     * Get te minimum available changes starting from the provided {@link SequenceNumber}
+     * 
+     * @param seqNum The {@link SequenceNumber} to start with
+     * @return The minimum {@link SequenceNumber}
+     */
     public SequenceNumber getAvailableChangesMin(SequenceNumber seqNum) {
         m_mutex.lock();
         try {
@@ -101,7 +199,6 @@ public class WriterProxy {
 
             if (hasMinAvailableSeqNumChanged) {
 		//Order changesFromWriter
-                //	std::sort(m_changesFromW.begin(),m_changesFromW.end(),sort_chFW);
                 seqNum.setHigh(0);
                 seqNum.setLow(0);
                 for (ChangeFromWriter it : changesFromWriter) {
@@ -135,10 +232,21 @@ public class WriterProxy {
         }
     }
 
+    /**
+     * Get the maximum available changes
+     * 
+     * @return The maximum {@link SequenceNumber}
+     */
     public SequenceNumber getAvailableChangesMax() {
         return getAvailableChangesMax(null);
     }
 
+    /**
+     * Get te maximum available changes starting from the provided {@link SequenceNumber}
+     * 
+     * @param seqNum The {@link SequenceNumber} to start with
+     * @return The maximum {@link SequenceNumber}
+     */
     public SequenceNumber getAvailableChangesMax(SequenceNumber seqNum) {
         this.m_mutex.lock();
         try {
@@ -176,6 +284,11 @@ public class WriterProxy {
         }
     }
 
+    /**
+     * Get a list of missing {@link ChangeFromWriter}
+     * 
+     * @return A list of missing {@link ChangeFromWriter}
+     */
     public List<ChangeFromWriter> getMissingChanges() {
         List<ChangeFromWriter> missing = new ArrayList<>();
         if (!this.changesFromWriter.isEmpty()) {
@@ -199,17 +312,23 @@ public class WriterProxy {
         return missing;
     }
 
-    public void assertLiveliness() { // TODO Review this (whole liveliness behaviour)
+    /**
+     * Asserts the {@link WriterProxy} liveliness
+     */
+    public void assertLiveliness() {
         logger.debug("Liveliness asserted");
         this.m_isAlive = true;
         if (this.writerProxyLiveliness != null) {
-//            if (this.writerProxyLiveliness.isWaiting()) {
-//                this.writerProxyLiveliness.stopTimer();
-//            }
             this.writerProxyLiveliness.restartTimer();
         }
     }
 
+    /**
+     * Adds a {@link ChangeFromWriter} containing the provided {@link CacheChange}
+     * 
+     * @param change The {@link CacheChange} to add
+     * @return true on success; false otherwise
+     */
     public boolean receivedChangeSet(CacheChange change) {
         logger.debug("RTPS READER: {}: seqNum: {}", att.guid.getEntityId(), change.getSequenceNumber().toLong());
         m_mutex.lock();
@@ -246,6 +365,12 @@ public class WriterProxy {
         }
     }
 
+    /**
+     * Adds changes from the {@link RTPSWriter} up to a specified {@link SequenceNumber}
+     * 
+     * @param seq The {@link SequenceNumber} to compare
+     * @return true on success; false otherwise
+     */
     public boolean addChangesFromWriterUpTo(SequenceNumber seq) {
         final SequenceNumber firstSN = new SequenceNumber();
         if (changesFromWriter.isEmpty()) {
@@ -260,10 +385,6 @@ public class WriterProxy {
         
         firstSN.increment();
         while (firstSN.isLowerOrEqualThan(seq)) {
-            /*firstSN.increment();
-            if (firstSN.isGreaterThan(seq)) {
-                break;
-            }*/
             ChangeFromWriter chw = new ChangeFromWriter();
             chw.seqNum.copy(firstSN);
             chw.status = ChangeFromWriterStatus.UNKNOWN;
@@ -275,6 +396,9 @@ public class WriterProxy {
         return true;
     }
 
+    /**
+     * Prints changes
+     */
     public void printChangesFromWriterTest2() {
         StringBuilder sb = new StringBuilder();
 
@@ -288,6 +412,12 @@ public class WriterProxy {
         logger.debug("RTPS READER: {}", sb.toString());
     }
 
+    /**
+     * Get the {@link CacheChange} that matches the provided {@link SequenceNumber}
+     * 
+     * @param seq The {@link SequenceNumber} to compare
+     * @return The found {@link CacheChange}; null otherwise
+     */
     public CacheChange getChange(final SequenceNumber seq) {
         m_mutex.lock();
         try {
@@ -302,6 +432,12 @@ public class WriterProxy {
         }
     }
 
+    /**
+     * Updates the lost changes using the provided {@link SequenceNumber}
+     * 
+     * @param seqNum The {@link SequenceNumber} to compare
+     * @return true on success; false otherwise
+     */
     public boolean lostChangesUpdate(SequenceNumber seqNum) {
         logger.debug("{} up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
         this.m_mutex.lock();
@@ -323,6 +459,12 @@ public class WriterProxy {
         return true;
     }
 
+    /**
+     * Updates the missing changes using the provided {@link SequenceNumber}
+     * 
+     * @param seqNum The {@link SequenceNumber} to compare
+     * @return true on success; false otherwise
+     */
     public boolean missingChangesUpdate(SequenceNumber seqNum) {
         logger.debug("{} changes up to seqNum {}", this.att.guid.getEntityId(), seqNum.toLong());
         this.m_mutex.lock();
@@ -348,6 +490,9 @@ public class WriterProxy {
         return true;
     }
     
+    /**
+     * Starts the HEARTBEAT response thread
+     */
     public void startHeartbeatResponse() {
         if (this.heartBeatResponse == null) {
             heartBeatResponse = new HeartbeatResponseDelay(this, statefulReader.getTimes().heartbeatResponseDelay.toMilliSecondsDouble());

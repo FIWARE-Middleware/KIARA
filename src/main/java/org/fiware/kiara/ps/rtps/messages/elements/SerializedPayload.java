@@ -66,8 +66,6 @@ public class SerializedPayload extends RTPSSubmessageElement {
      */
     private boolean m_dataFlag;
     
-    //private boolean m_keyFlag; // TODO Uncomment this for future releases
-
     /**
      * Maximum SerializedPayload size
      */
@@ -92,7 +90,6 @@ public class SerializedPayload extends RTPSSubmessageElement {
         this.m_parameterList = null;
         this.m_appData = null;
         this.m_ownSerializer = new CDRSerializer(false);
-
     }
 
     /**

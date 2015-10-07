@@ -51,20 +51,44 @@ import org.slf4j.LoggerFactory;
  */
 public class SubscriberHistory<T> extends ReaderHistoryCache {
     
+    /**
+     * Number of unread {@link CacheChange} objects
+     */
     private long m_unreadCacheCount;
     
+    /**
+     * Keyes {@link CacheChange} objects
+     */
     private List<Pair<InstanceHandle, List<CacheChange>>> m_keyedChanges;
     
+    /**
+     * {@link HistoryQosPolicy} indicating the QoS policy
+     */
     private HistoryQosPolicy m_historyQos;
     
+    /**
+     * {@link ResourceLimitsQosPolicy} object indicating the resource limit QoS policy
+     */
     private ResourceLimitsQosPolicy m_resourceLimitsQos;
     
+    /**
+     * {@link Subscriber} this {@link SubscriberHistory} is associated to
+     */
     private Subscriber<T> m_subscriber;
     
+    /**
+     * Object for the KAY
+     */
     private T m_getKeyObject;
     
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
     
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(SubscriberHistory.class);
     
     /**
@@ -282,9 +306,9 @@ public class SubscriberHistory<T> extends ReaderHistoryCache {
     /**
      * Removes the CacheChange list associated to a specific InstanceHandle
      * 
-     * @param change
-     * @param vit_in
-     * @return
+     * @param change The {@link CacheChange} to be removed
+     * @param vit_in The KEYED Pair for this {@link CacheChange}
+     * @return true on success; false otherwise
      */
     public boolean removeChangeSub(CacheChange change, Pair<InstanceHandle, List<CacheChange>> vit_in) {
         this.m_mutex.lock();

@@ -37,13 +37,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class is used to send CacheChanges in different types of messages
+ * depending on the needs
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class RTPSMessageGroup {
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterHistoryCache.class);
 
+    /**
+     * Sends the CacheChanges allocated inside a DATA {@link RTPSMessage}
+     * 
+     * @param rtpsWriter The {@link RTPSWriter} that sends the data
+     * @param changes All the {@link CacheChange} objects to be sent
+     * @param unicastLocatorList List of unicast {@link Locator} objects to sent the {@link RTPSMessage} to
+     * @param multicastLocatorList List of multicast {@link Locator} objects to sent the {@link RTPSMessage} to
+     * @param expectsInlineQos Indicates whether to expect InlineQoS parameters or not
+     * @param entityId {@link EntityId} of the writer 
+     */
     public static void sendChangesAsData(RTPSWriter rtpsWriter, List<CacheChange> changes, LocatorList unicastLocatorList, LocatorList multicastLocatorList, boolean expectsInlineQos, EntityId entityId) {
 
         short dataMsgSize = 0;
@@ -80,7 +95,7 @@ public class RTPSMessageGroup {
                 msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
                 RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
                 RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+                msg.checkPadding(false); // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
             }
 
             while (cit.hasNext()) {
@@ -109,36 +124,15 @@ public class RTPSMessageGroup {
         } while (changeIndex < changes.size());
     }
 
-    /*public static void sendChangesAsData_old(RTPSWriter rtpsWriter, List<CacheChange> changes, LocatorList unicastLocatorList, LocatorList multicastLocatorList, boolean expectsInlineQos, EntityId entityId) {
-
-        RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-        RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-        boolean added = false;
-
-        for (CacheChange cit : changes) {
-
-            RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false);
-
-            RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit, expectsInlineQos, entityId);
-
-            added = true;
-
-        }
-
-        msg.serialize();
-
-        if (added) {
-            for (Locator unicastLoc : unicastLocatorList.getLocators()) {
-                rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
-            }
-            for (Locator multicastLoc : multicastLocatorList.getLocators()) {
-                rtpsWriter.getRTPSParticipant().sendSync(msg, multicastLoc);
-            }
-        }
-
-
-    }*/
-
+    /**
+     * Sends the provided {@link CacheChange} allocated inside a DATA {@link RTPSMessage}
+     * 
+     * @param rtpsWriter The {@link RTPSWriter} that sends the data
+     * @param changes All the {@link CacheChange} objects to be sent
+     * @param locator {@link Locator} to send data to
+     * @param expectsInlineQos Indicates whether to expect InlineQoS parameters or not 
+     * @param entityId {@link EntityId} of the related Entity
+     */
     public static void sendChangesAsData(RTPSWriter rtpsWriter, List<CacheChange> changes, Locator locator, boolean expectsInlineQos, EntityId entityId) {
         short dataMsgSize = 0;
         short changeIndex = 1;
@@ -197,6 +191,15 @@ public class RTPSMessageGroup {
 
     }
 
+    /**
+     * Sends the information to request non-received {@link RTPSMessage}s
+     * 
+     * @param rtpsWriter The {@link RTPSWriter} that sends the data
+     * @param changesSeqNum List of {@link SequenceNumber} objects to request
+     * @param readerId {@link EntityId} of the writer that will receive the {@link RTPSMessage}
+     * @param unicastLocatorList List of unicast {@link Locator} objects to sent the {@link RTPSMessage} to
+     * @param multicastLocatorList List of multicast {@link Locator} objects to sent the {@link RTPSMessage} to
+     */
     public static void sendChangesAsGap(RTPSWriter rtpsWriter, List<SequenceNumber> changesSeqNum, EntityId readerId, LocatorList unicastLocatorList, LocatorList multicastLocatorList) {
 
         short gapMsgSize = 0;
@@ -265,6 +268,15 @@ public class RTPSMessageGroup {
 
     }
 
+    /**
+     * Adds an {@link RTPSSubmessageElement} to the {@link RTPSMessage} containing a specific {@link CacheChange}
+     * 
+     * @param msg The {@link RTPSMessage} to add the {@link RTPSSubmessage} to 
+     * @param rtpsWriter The {@link RTPSWriter} that sends the data
+     * @param change The CacheChange to be included in the {@link RTPSSubmessage}
+     * @param expectsInlineQos Indicates whether to expect InlineQoS parameters or not
+     * @param entityId {@link EntityId} of the related Entity
+     */
     private static void prepareSubmessageData(RTPSMessage msg, RTPSWriter rtpsWriter, CacheChange change, boolean expectsInlineQos, EntityId entityId) {
         ParameterList inlineQos = null;
         if (expectsInlineQos) {
@@ -275,6 +287,12 @@ public class RTPSMessageGroup {
 
     }
 
+    /**
+     * Creates a list of paired {@link SequenceNumber} and {@link SequenceNumberSet} objects representing
+     * all the {@link SequenceNumber} to be requested
+     * @param changesSeqNum List of {@link SequenceNumber} objects to check
+     * @return The paired entity
+     */
     private static List<Pair<SequenceNumber, SequenceNumberSet>> prepareSequenceNumberSet(List<SequenceNumber> changesSeqNum) { // TODO Review this
 
         List<Pair<SequenceNumber, SequenceNumberSet>> sequences = new ArrayList<Pair<SequenceNumber, SequenceNumberSet>>();

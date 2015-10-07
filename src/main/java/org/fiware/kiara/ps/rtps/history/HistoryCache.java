@@ -20,7 +20,6 @@ package org.fiware.kiara.ps.rtps.history;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -79,8 +78,11 @@ public abstract class HistoryCache {
      */
     public final Lock m_mutex;
 
-    /* Methods */
-
+    /**
+     * Main {@link HistoryCache} constructor
+     * 
+     * @param att {@link HistoryCacheAttributes} of the {@link HistoryCache}
+     */
     protected HistoryCache(HistoryCacheAttributes att) {
         this.m_attributes = att;
         this.m_isHistoryFull = false;
@@ -94,6 +96,11 @@ public abstract class HistoryCache {
         this.m_maxSeqCacheChange = this.m_invalidChange;
     }
 
+    /**
+     * Removes all {@link CacheChange} objects of this {@link HistoryCache}
+     * 
+     * @return true on success; false otherwise
+     */
     public boolean removeAllChanges() {
         this.m_mutex.lock();
         try {

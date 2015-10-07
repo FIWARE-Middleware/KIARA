@@ -34,35 +34,53 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class LatencyBudgetQosPolicy extends Parameter {
-    // TODO
-
+    
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
     public Timestamp duration;
 
+    /**
+     * Default {@link LatencyBudgetQosPolicy} constructor
+     */
     public LatencyBudgetQosPolicy() {
         super(ParameterId.PID_LATENCY_BUDGET, Parameter.PARAMETER_TIME_LENGTH);
         this.parent = new QosPolicy(true);
         this.duration = new Timestamp().timeZero();
     }
 
+    /**
+     * This method copies two instnces of {@link LatencyBudgetQosPolicy}
+     * @param value The {@link LatencyBudgetQosPolicy} to be copied
+     */
     public void copy(LatencyBudgetQosPolicy value) {
         parent.copy(value.parent);
         duration.copy(value.duration);
     }
 
+    /**
+     * Serializes a {@link LatencyBudgetQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         this.duration.serialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link LatencyBudgetQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.duration.deserialize(impl, message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link LatencyBudgetQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.duration.deserialize(impl, message, name);

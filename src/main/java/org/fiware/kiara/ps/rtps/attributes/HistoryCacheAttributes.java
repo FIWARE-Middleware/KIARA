@@ -41,6 +41,9 @@ public class HistoryCacheAttributes {
      */
     public int maximumReservedCaches;
 
+    /**
+     * Default {@link HistoryCacheAttributes} constructor
+     */
     public HistoryCacheAttributes() {
         this.payloadMaxSize = 500;
         this.initialReservedCaches = 500;
@@ -48,7 +51,7 @@ public class HistoryCacheAttributes {
     }
 
     /**
-     * Constructor
+     * Alternative {@link EndpointAttributes} constructor
      *
      * @param payloadMaxSize Maximum payload size.
      * @param initialeservedCaches Initial reserved caches.

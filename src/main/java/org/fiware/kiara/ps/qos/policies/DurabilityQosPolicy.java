@@ -34,21 +34,37 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class DurabilityQosPolicy extends Parameter {
 
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link DurabilityQosPolicyKind} indicasting the type of Durability
+     */
     public DurabilityQosPolicyKind kind;
 
+    /**
+     * Default constructor
+     */
     public DurabilityQosPolicy() {
         super(ParameterId.PID_DURABILITY, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(true);
         this.kind = DurabilityQosPolicyKind.VOLATILE_DURABILITY_QOS;
     }
 
+    /**
+     * This method copies two instnces of {@link DurabilityQosPolicy}
+     * @param value The {@link DurabilityQosPolicy} to be copied
+     */
     public void copy(DurabilityQosPolicy value) {
         parent.copy(value.parent);
         kind = value.kind;
     }
 
+    /**
+     * Serializes a {@link DestinationOrderQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -58,6 +74,9 @@ public class DurabilityQosPolicy extends Parameter {
         impl.serializeByte(message, name, (byte) 0);
     }
 
+    /**
+     * Deserializes a {@link DestinationOrderQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
@@ -65,6 +84,9 @@ public class DurabilityQosPolicy extends Parameter {
         message.skipBytes(3);
     }
 
+    /**
+     * Deserializes only the contents of a {@link DestinationOrderQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.kind = DurabilityQosPolicyKind.values()[impl.deserializeByte(message, name)];

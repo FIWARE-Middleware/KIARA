@@ -31,6 +31,9 @@ public class SubmessageFlags {
      */
     BitSet m_bits;
 
+    /**
+     * Default {@link SubmessageFlags} constructor
+     */
     public SubmessageFlags() {
         this.m_bits = new BitSet(8);
         this.init();
@@ -45,6 +48,11 @@ public class SubmessageFlags {
         }
     }
 
+    /**
+     * Alternative {@link SubmessageFlags} constructor
+     * 
+     * @param value The byte value of the {@link SubmessageFlags}
+     */
     public SubmessageFlags(byte value) {
         this.m_bits = new BitSet(8);
         this.init();
@@ -57,7 +65,6 @@ public class SubmessageFlags {
      * @param value Byte value indicating the flags
      */
     public void setFlagValue(byte value) {
-        int n = 8;
         for (int i=0; i<8; i++) {
             if ((value & (1 << i)) > 0) {
                 this.m_bits.set(i);

@@ -33,14 +33,27 @@ public class ReaderTimes {
      */
     public Timestamp heartbeatResponseDelay;
 
+    /**
+     * Default {@link ReaderTimes} constructor
+     */
     public ReaderTimes() {
         this.heartbeatResponseDelay = new Timestamp(0, 500 * 1000 * 1000);
     }
 
+    /**
+     * Alternative {@link ReaderAttributes} copy constructor
+     * 
+     * @param value The {@link ReaderTimes} object to copy data from
+     */
     public ReaderTimes(ReaderTimes value) {
         this.heartbeatResponseDelay = new Timestamp(value.heartbeatResponseDelay);
     }
 
+    /**
+     * This method copies an instance of {@link ReaderTimes} into another
+     * 
+     * @param value The {@link ReaderTimes} to be copied
+     */
     public void copy(ReaderTimes value) {
         heartbeatResponseDelay.copy(value.heartbeatResponseDelay);
     }

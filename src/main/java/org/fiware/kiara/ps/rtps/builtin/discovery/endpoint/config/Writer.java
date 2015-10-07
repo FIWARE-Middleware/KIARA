@@ -28,16 +28,29 @@ import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.StaticRTPSParticipantInfo;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Class representing an {@link RTPSWriter} defined using an XML file
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class Writer extends Endpoint {
 
+    /**
+     * Logging object
+     */
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
 
+    /**
+     * Creates and the information in the {@link Writer} entity storing it into a {@link StaticRTPSParticipantInfo} object
+     * 
+     * @param pdata {@link StaticRTPSParticipantInfo} to add the {@link Writer}
+     * @param endpointIds List of {@link Endpoint} identifiers
+     * @param entityIds List of Entity identifiers
+     * @return true on success; false otherwise
+     */
     public boolean process(StaticRTPSParticipantInfo pdata, Set<Short> endpointIds, Set<Integer> entityIds) {
         WriterProxyData wdata = new WriterProxyData();
         if (userId <= 0 || endpointIds.add(userId) == false) {

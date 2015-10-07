@@ -27,35 +27,57 @@ import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
-import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class represents the {@link ReaderListener} to be called by the EDP
+ * builtin subscriber 
  * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
  */
 public class EDPSimpleSubListener extends ReaderListener {
 
+    /**
+     * {@link EDPSimple} reference to the object representing the Endpoint Discovery Protocol
+     */
     public EDPSimple edpSimple;
 
+    /**
+     * {@link ReaderProxyData} representing a remote {@link RTPSReader}
+     */
     public ReaderProxyData readerProxyData;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(EDPSimpleSubListener.class);
 
+    /**
+     * Default {@link EDPSimpleSubListener} constructor
+     * 
+     * @param edpSimple {@link EDPSimple} reference
+     */
     public EDPSimpleSubListener(EDPSimple edpSimple) {
         this.edpSimple = edpSimple;
         this.readerProxyData = new ReaderProxyData();
     }
 
+    /**
+     * Method to be executed when a new {@link RTPSWriter} matches
+     */
     @Override
     public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
         // Do Nothing
     }
 
+    /**
+     * Method to be executed when a new {@link CacheChange} has been added  
+     */
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
         // TODO Auto-generated method stub
@@ -63,8 +85,7 @@ public class EDPSimpleSubListener extends ReaderListener {
             logger.warn("Received change with no Key");
         }
         if (change.getKind() == ChangeKind.ALIVE) {
-            SerializedPayload pl = change.getSerializedPayload();
-
+            
             this.readerProxyData.clear();
             if (this.readerProxyData.readFromCDRMessage(change)) {
                 change.setInstanceHandle(this.readerProxyData.getKey());
@@ -117,9 +138,14 @@ public class EDPSimpleSubListener extends ReaderListener {
         }
     }
 
+    /**
+     * Method to compute the key
+     * @param change CacheChange to store the computed key
+     * @return boolean if sucess; false otherwise
+     */
     public boolean computeKey(CacheChange change) {
         if (change.getInstanceHandle().equals(new InstanceHandle())) {
-
+            // TODO Review
         }
         return true;
     }

@@ -66,6 +66,9 @@ public class CacheChange implements Comparable<CacheChange> {
      */
     Timestamp m_sourceTimestamp;
 
+    /**
+     * Default {@link CacheChange} constructor
+     */
     public CacheChange() {
         this.m_changeKind = ChangeKind.ALIVE;
         this.m_payload = new SerializedPayload();

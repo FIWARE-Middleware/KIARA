@@ -38,12 +38,25 @@ public enum PresentationQosPolicyAccessScopeKind {
      */
     GROUP_PRESENTATION_QOS((byte) 2);
 
+    /**
+     * Enumeration value
+     */
     private byte m_value;
 
+    /**
+     * Private {@link PresentationQosPolicyAccessScopeKind} constructor
+     * 
+     * @param value Enumeration value
+     */
     private PresentationQosPolicyAccessScopeKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }

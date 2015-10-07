@@ -32,35 +32,55 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
 */
 public class OwnershipStrengthQosPolicy extends Parameter {
 
-    // TODO
-    
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
     
+    /**
+     * {@link OwnershipStrengthQosPolicy} value
+     */
     public int value;
 
+    /**
+     * Default {@link OwnershipStrengthQosPolicy} constructor
+     */
     public OwnershipStrengthQosPolicy() {
         super(ParameterId.PID_OWNERSHIP_STRENGTH, (short) 4);
         this.parent = new QosPolicy(false);
         this.value = 0;
     }
 
+    /**
+     * This method copies two instnces of {@link OwnershipStrengthQosPolicy}
+     * @param other The {@link OwnershipStrengthQosPolicy} to be copied
+     */
     public void copy(OwnershipStrengthQosPolicy other) {
         parent.copy(other.parent);
         value = other.value;
     }
 
+    /**
+     * Serializes a {@link OwnershipStrengthQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         impl.serializeUI32(message, name, this.value);
     }
 
+    /**
+     * Deserializes a {@link OwnershipStrengthQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.value = impl.deserializeUI32(message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link OwnershipStrengthQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.value = impl.deserializeUI32(message, name);

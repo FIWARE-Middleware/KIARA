@@ -42,6 +42,9 @@ public class RemoteReaderAttributes {
      */
     public boolean expectsInlineQos;
 
+    /**
+     * Default {@link RemoteReaderAttributes} constructor
+     */
     public RemoteReaderAttributes() {
         this.endpoint = new EndpointAttributes();
         this.guid = new GUID();
@@ -49,10 +52,20 @@ public class RemoteReaderAttributes {
         this.expectsInlineQos = false;
     }
 
+    /**
+     * Set the {@link GUID} atribute
+     * 
+     * @param other The {@link GUID} to set
+     */
     public void setGUID(GUID other) {
         this.guid.copy(other);
     }
 
+    /**
+     * This method copies an instance of {@link EndpointAttributes} into another
+     * 
+     * @param value The {@link EndpointAttributes} to be copied
+     */
     public void copy(RemoteReaderAttributes value) {
         endpoint.copy(value.endpoint);
         guid.copy(value.guid);

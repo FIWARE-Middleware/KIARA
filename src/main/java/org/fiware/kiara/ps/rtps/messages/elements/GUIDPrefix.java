@@ -77,9 +77,10 @@ public class GUIDPrefix extends RTPSSubmessageElement {
     }
 
     /**
+     * Alternative {@link GUIDPrefix} constructor
      * 
-     * @param value
-     * @throws Exception
+     * @param value Byte array containing the value of the {@link GUIDPrefix}
+     * @throws Exception If the introduced Byte array does not have a length of 12
      */
     public GUIDPrefix(byte[] value) throws Exception {
         if (value.length != 12) {

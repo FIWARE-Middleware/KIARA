@@ -26,13 +26,15 @@ import org.fiware.kiara.ps.rtps.participant.RTPSParticipantDiscoveryInfo;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ParticipantDiscoveryInfo {
-    // TODO Implement
-
+    
     /**
      * RTPSParticipantAttributes of the discovered participant.
      */
     public RTPSParticipantDiscoveryInfo rtps;
 
+    /**
+     * ParticipantDiscoveryInfo constructor
+     */
     public ParticipantDiscoveryInfo() {
         this.rtps = new RTPSParticipantDiscoveryInfo();
     }

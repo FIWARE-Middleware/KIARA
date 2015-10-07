@@ -30,7 +30,6 @@ import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
-import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
@@ -39,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class represents an Stateful {@link RTPSReader}
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
@@ -54,8 +54,20 @@ public class StatefulReader extends RTPSReader {
      */
     private final List<WriterProxy> matchedWriters;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(StatefulReader.class);
 
+    /**
+     * {@link StatefulReader} constructor
+     * 
+     * @param participant {@link RTPSParticipant} who created the {@link StatefulReader}
+     * @param guid {@link GUID} of the reader
+     * @param att {@link ReaderAttributes} for configuration
+     * @param history {@link ReaderHistoryCache} to store {@link CacheChange} objects
+     * @param listener listener Listener to invoke
+     */
     public StatefulReader(RTPSParticipant participant, GUID guid,
             ReaderAttributes att, ReaderHistoryCache history,
             ReaderListener listener) {
@@ -64,6 +76,9 @@ public class StatefulReader extends RTPSReader {
         matchedWriters = new ArrayList<>();
     }
 
+    /**
+     * Destroys all the related entities
+     */
     public void destroy() {
         logger.debug("RTPS READER: StatefulReader destructor.");
         for (WriterProxy it : matchedWriters) {
@@ -127,6 +142,12 @@ public class StatefulReader extends RTPSReader {
         }
     }
 
+    /**
+     * Looks for a matched writer
+     * 
+     * @param writerGUID The {@link GUID} of the writer to look for
+     * @return A {@link WriterProxy} if found, null otherwise
+     */
     public WriterProxy matchedWriterLookup(GUID writerGUID) {
         m_mutex.lock();
         try {
@@ -341,6 +362,12 @@ public class StatefulReader extends RTPSReader {
         }
     }
 
+    /**
+     * Updates the {@link ReaderTimes} attributes
+     * 
+     * @param ti The {@link ReaderTimes} to look for changes
+     * @return boolean if success; false oterwise
+     */
     public boolean updateTimes(ReaderTimes ti) {
         if (!m_times.heartbeatResponseDelay.equals(ti.heartbeatResponseDelay)) {
             m_times.copy(ti);
@@ -364,8 +391,9 @@ public class StatefulReader extends RTPSReader {
     }
 
     /**
-     *
-     * @return Reference to the ReaderTimes.
+     * Get the {@link ReaderTimes} attribute
+     * 
+     * @return Reference to the {@link ReaderTimes}
      */
     public ReaderTimes getTimes() {
         return m_times;

@@ -20,12 +20,21 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
+ * Represents a {@link org.fiware.kiara.ps.rtps.common.Locator} defined using XML
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class Locator {
+    
+    /**
+     * {@link org.fiware.kiara.ps.rtps.common.Locator} address
+     */
     @JacksonXmlProperty(localName="address", isAttribute = true)
     public String address = "";
+    
+    /**
+     * {@link org.fiware.kiara.ps.rtps.common.Locator} port
+     */
     @JacksonXmlProperty(localName="port", isAttribute = true)
     public int port = 0;
 }

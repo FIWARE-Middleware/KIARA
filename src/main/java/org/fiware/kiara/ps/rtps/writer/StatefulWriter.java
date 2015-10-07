@@ -78,6 +78,15 @@ public class StatefulWriter extends RTPSWriter {
      */
     private final EntityId m_HBReaderEntityId;
 
+    /**
+     * {@link StatefulWriter} constructor
+     * 
+     * @param participant The {@link RTPSParticipant} that creates the {@link StatefulWriter}
+     * @param guid The {@link StatefulWriter} GUID
+     * @param att The {@link WriterAttributes} for configuration
+     * @param history The {@link WriterHistoryCache} to store the new {@link CacheChange}s
+     * @param listener The {@link WriterListener} to be called
+     */
     public StatefulWriter(RTPSParticipant participant, GUID guid,
             WriterAttributes att, WriterHistoryCache history,
             WriterListener listener) {
@@ -97,6 +106,9 @@ public class StatefulWriter extends RTPSWriter {
         }
     }
 
+    /**
+     * Destroys the {@link StatefulWriter}
+     */
     public void destroy() {
         logger.debug("RTPS WRITER: StatefulWriter destructor");
         if (m_periodicHB != null)
@@ -107,13 +119,14 @@ public class StatefulWriter extends RTPSWriter {
         m_matchedReaders.clear();
     }
 
+    /**
+     * Get The {@link ReaderProxy} list
+     * 
+     * @return The {@link ReaderProxy} list
+     */
     public List<ReaderProxy> getMatchedReaders() {
         return m_matchedReaders;
     }
-    
-    /*
-     * CHANGE-RELATED METHODS
-     */
     
     @Override
     public void unsentChangeAddedToHistory(CacheChange change) {
@@ -270,10 +283,6 @@ public class StatefulWriter extends RTPSWriter {
         logger.debug("Finished sending unsent changes");
     }
     
-    /*
-     * MATCHED_READER-RELATED METHODS
-     */
-
     @Override
     public boolean matchedReaderAdd(RemoteReaderAttributes ratt) {
         this.m_mutex.lock();
@@ -373,6 +382,7 @@ public class StatefulWriter extends RTPSWriter {
         return null;
     }
     
+    @Override
     public boolean isAckedByAll(CacheChange change) {
         if (!change.getWriterGUID().equals(this.m_guid)) {
             logger.warn("The given change is not from this writer");
@@ -392,15 +402,16 @@ public class StatefulWriter extends RTPSWriter {
         return true;
     }
     
-    /*
-     * PARAMETER-RELATED METHODS
-     */
-    
     @Override
     public void updateAttributes(WriterAttributes att) {
         this.updateTimes(att.times);
     }
     
+    /**
+     * Updates the {@link WriterTimes}
+     * 
+     * @param times The {@link WriterTimes} to copy the data from
+     */
     public void updateTimes(WriterTimes times) {
         if (!this.m_times.heartBeatPeriod.equals(times.heartBeatPeriod)) {
             this.m_periodicHB.updateInterval(times.heartBeatPeriod);

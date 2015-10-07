@@ -57,6 +57,9 @@ public class PortParameters {
      */
     public short offsetd3;
 
+    /**
+     * Default {@link PortParameters} constructor
+     */
     public PortParameters() {
         this.portBase = 7400;
         this.participantIDGain = 2;

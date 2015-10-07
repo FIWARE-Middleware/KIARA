@@ -1,6 +1,21 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.qos;
-
-import java.util.List;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.common.Locator;
@@ -28,12 +43,28 @@ import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterTime;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterVendorId;
 import org.fiware.kiara.util.Pair;
 
+/**
+ * This class represents a list os QoS values that are sent in the
+ * form of a {@link ParameterList}.
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class QosList {
 
+    /**
+     * All the QoS values
+     */
     private ParameterList m_allQos;
 
+    /**
+     * Only inline QoS values
+     */
     private ParameterList m_inlineQos;
 
+    /**
+     * Default {@link QosList} constructor
+     */
     public QosList() {
         this.m_allQos = new ParameterList();
         this.m_inlineQos = new ParameterList();
@@ -282,16 +313,6 @@ public class QosList {
             return true;
         }
         return false;
-    }
-
-    /**
-     * AddQos method.
-     * @param pid PID of the parameter to add to the QosList.
-     * @param ocVec List of bytes.
-     */
-    public boolean addQos(ParameterId pid, List<Byte> ocVec) {
-        // TODO Implement
-        return true;
     }
 
     /**

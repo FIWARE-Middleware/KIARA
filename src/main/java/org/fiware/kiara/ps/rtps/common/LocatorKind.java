@@ -18,30 +18,49 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* This enumeration represents the kind of a {@link Locator}
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This enumeration represents the kind of a {@link Locator}
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum LocatorKind {
-	
-	LOCATOR_KIND_RESERVED(0),
-	LOCATOR_KIND_UDPv4(1),
-	LOCATOR_KIND_UDPv6(2),
-	LOCATOR_KIND_INVALID(-1);
-	
-	private int m_value;
-	
-	private LocatorKind(int value) {
-		this.m_value = value;
-	}
-	
-	/**
-	 * Gets the LocatorKind value
-	 * 
-	 * @return The LocatorKind value
-	 */
-	public int getValue() {
-		return this.m_value;
-	}
+
+    /**
+     * {@link Locator} is RESERVED
+     */
+    LOCATOR_KIND_RESERVED(0),
+    /**
+     * {@link Locator} is UDPv4
+     */
+    LOCATOR_KIND_UDPv4(1),
+    /**
+     * {@link Locator} is UDPv6
+     */
+    LOCATOR_KIND_UDPv6(2),/**
+     * {@link Locator} is INVALID
+     */
+    LOCATOR_KIND_INVALID(-1);
+
+    /**
+     * Enumeration value
+     */
+    private int m_value;
+
+    /**
+     * Private {@link LocatorKind} constructor
+     * 
+     * @param value Tehe enumeration value
+     */
+    private LocatorKind(int value) {
+        this.m_value = value;
+    }
+
+    /**
+     * Gets the LocatorKind value
+     * 
+     * @return The LocatorKind value
+     */
+    public int getValue() {
+        return this.m_value;
+    }
 
 }

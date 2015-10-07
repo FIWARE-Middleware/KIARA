@@ -36,16 +36,33 @@ import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.StaticRTPSParticipant
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class is the one used to load the static XML discovery file
+ *  
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 @JsonRootName(value = "staticdiscovery")
 public class StaticDiscovery {
+    
+    /**
+     * List of {@link Participant} entities
+     */
     @JacksonXmlProperty(localName="participant")
     public List<Participant> participants = new ArrayList<>();
 
+    /**
+     * XML file reader
+     */
     private final static ObjectReader xmlReader;
+    
+    /**
+     * XML file writer
+     */
     private final static ObjectWriter xmlWriter;
+
+    /**
+     * Logging object
+     */
+    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
 
     static {
         JacksonXmlModule module = new JacksonXmlModule();
@@ -56,24 +73,55 @@ public class StaticDiscovery {
         xmlReader = xmlMapper.reader(StaticDiscovery.class);
     }
 
+    /**
+     * Reads data from an XML file
+     * 
+     * @param xml The String containing the contents of the XML file
+     * @return {@link StaticDiscovery} object containing the discovery information
+     * @throws IOException If something goes wrong while reading the file
+     */
     public static StaticDiscovery fromXML(String xml) throws IOException {
         return xmlReader.<StaticDiscovery>readValue(xml);
     }
 
+    /**
+     * Reads data from an XML file
+     * 
+     * @param xmlFile The String containing the location of the XMl file
+     * @return {@link StaticDiscovery} object containing the discovery information
+     * @throws IOException If something goes wrong while reading the file
+     */
     public static StaticDiscovery fromXML(File xmlFile) throws IOException {
         return xmlReader.<StaticDiscovery>readValue(xmlFile);
     }
 
+    /**
+     * Transforms the discovery information into an XML String and returns it
+     * 
+     * @return The XML file contents as a String
+     * @throws IOException If the writing operation goes wrong
+     */
     public String toXML() throws IOException {
         return xmlWriter.writeValueAsString(this);
     }
 
+    /**
+     * Transforms the discovery information into an XML String and writes into a file
+     * 
+     * @throws IOException If the writing operation goes wrong
+     */
     public void toXML(File xmlFile) throws IOException {
         xmlWriter.writeValue(xmlFile, this);
     }
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
-
+    /**
+     * Processes the information about static discovery
+     * 
+     * @param participants List of {@link StaticRTPSParticipantInfo} objects to add the information into
+     * @param endpointIds List of {@link Endpoint} identifiers
+     * @param entityIds List od Entity identifiers
+     * @return true if sucess; false otherwise
+     */
     public boolean process(List<StaticRTPSParticipantInfo> participants, Set<Short> endpointIds, Set<Integer> entityIds) {
         for (Participant cfgParticipant : this.participants) {
             StaticRTPSParticipantInfo pdata= new StaticRTPSParticipantInfo();

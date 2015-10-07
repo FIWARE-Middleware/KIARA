@@ -41,6 +41,9 @@ public class ReaderAttributes {
      */
     public boolean expectsInlineQos;
 
+    /**
+     * Default {@link ReaderAttributes} constructor
+     */
     public ReaderAttributes() {
         this.endpointAtt = new EndpointAttributes();
         this.times = new ReaderTimes();

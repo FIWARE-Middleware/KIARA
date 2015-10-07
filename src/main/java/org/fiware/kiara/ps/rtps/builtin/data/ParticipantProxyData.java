@@ -1,11 +1,30 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.qos.QosList;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.UserDataQosPolicy;
@@ -44,23 +63,89 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
  */
 public class ParticipantProxyData {
 
+    /**
+     * Maximum size ofthe DATA packet for Participant discovery 
+     */
     public static final int DISCOVERY_PARTICIPANT_DATA_MAX_SIZE = 5000;
+    
+    /**
+     * Maximum size ofthe DATA packet for the topic 
+     */
     public static final int DISCOVERY_TOPIC_DATA_MAX_SIZE = 500;
+    
+    /**
+     * Maximum size ofthe DATA packet for publication 
+     */
     public static final int DISCOVERY_PUBLICATION_DATA_MAX_SIZE = 5000;
+    
+    /**
+     * Maximum size ofthe DATA packet for subscription 
+     */
     public static final int DISCOVERY_SUBSCRIPTION_DATA_MAX_SIZE = 5000;
+    
+    /**
+     * Maximum size ofthe DATA packet for the builtin data 
+     */
     public static final int BUILTIN_PARTICIPANT_DATA_MAX_SIZE = 100;
 
+    /**
+     * Bitmask for the {@link Participant} announcer
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER = 0x00000001 << 0;
+    
+    /**
+     * Bitmask for the {@link Participant} detector
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_DETECTOR = 0x00000001 << 1;
+    
+    /**
+     * Bitmask for the {@link Participant} publication announcer
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PUBLICATION_ANNOUNCER = 0x00000001 << 2;
+    
+    /**
+     * Bitmask for the {@link Participant} publication detector
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PUBLICATION_DETECTOR = 0x00000001 << 3;
+    
+    /**
+     * Bitmask for the {@link Participant} subscription announcer
+     */
     public static final int DISC_BUILTIN_ENDPOINT_SUBSCRIPTION_ANNOUNCER = 0x00000001 << 4;
+    
+    /**
+     * Bitmask for the {@link Participant} subscription detector
+     */
     public static final int DISC_BUILTIN_ENDPOINT_SUBSCRIPTION_DETECTOR = 0x00000001 << 5;
+    
+    /**
+     * Bitmask for the {@link Participant} proxy announcer
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_PROXY_ANNOUNCER = 0x00000001 << 6;
+    
+    /**
+     * Bitmask for the {@link Participant} proxy detector
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_PROXY_DETECTOR = 0x00000001 << 7;
+    
+    /**
+     * Bitmask for the {@link Participant} state announcer
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_STATE_ANNOUNCER = 0x00000001 << 8;
+    
+    /**
+     * Bitmask for the {@link Participant} state detector
+     */
     public static final int DISC_BUILTIN_ENDPOINT_PARTICIPANT_STATE_DETECTOR = 0x00000001 << 9;
+    
+    /**
+     * Bitmask for the {@link Participant} data writer
+     */
     public static final int BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_WRITER = 0x00000001 << 10;
+    
+    /**
+     * Bitmask for the {@link Participant} data reader
+     */
     public static final int BUILTIN_ENDPOINT_PARTICIPANT_MESSAGE_DATA_READER = 0x00000001 << 11;
 
     /**
@@ -118,32 +203,74 @@ public class ParticipantProxyData {
      */
     private String m_participantName;
 
+    /**
+     * {@link InstanceHandle} representing the KEY
+     */
     private InstanceHandle m_key;
 
+    /**
+     * {@link Timestamp} indicating the {@link Participant} lease duration
+     */
     private Timestamp m_leaseDuration;
 
+    /**
+     * {@link Timestamp} indicating the remote {@link Participant} lease duration
+     */
     private RemoteParticipantLeaseDuration m_leaseDurationTimer;
 
+    /**
+     * Boolean value indicating if the {@link Participant} is alive
+     */
     private boolean m_isAlive;
 
+    /**
+     * Boolean value indicating if the {@link ParticipantProxyData} has changed
+     */
     private boolean m_hasChanged;
 
+    /**
+     * QoS list
+     */
     private final QosList m_QosList;
 
+    /**
+     * Byte array containing the user's data
+     */
     private List<Byte> m_userData;
 
+    /**
+     * {@link ParameterPropertyList} containing the list of parameter properties
+     */
     private ParameterPropertyList m_properties;
 
+    /**
+     * List of remote {@link Reader} objects
+     */
     private final List<ReaderProxyData> m_readers;
 
+    /**
+     * List of remote {@link Writer} objects
+     */
     private final List<WriterProxyData> m_writers;
 
+    /**
+     * List of {@link RemoteReaderAttributes} objects
+     */
     private final List<RemoteReaderAttributes> m_builtinReaders;
 
+    /**
+     * List of {@link RemoteWriterAttributes} objects
+     */
     private final List<RemoteWriterAttributes> m_builtinWriters;
 
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
 
+    /**
+     * Default {@link ParticipantProxyData} constructor
+     */
     public ParticipantProxyData() {
         this.m_protocolVersion = new ProtocolVersion();
         this.m_guid = new GUID();
@@ -682,6 +809,9 @@ public class ParticipantProxyData {
         this.m_leaseDuration = leaseDuration;
     }
 
+    /**
+     * Function used to destroy all the entities used by the {@link ParticipantProxyData} 
+     */
     public void destroy() {
         if (this.m_leaseDurationTimer != null) {
             this.m_leaseDurationTimer.delete();

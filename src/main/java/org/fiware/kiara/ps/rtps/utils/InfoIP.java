@@ -20,19 +20,47 @@ package org.fiware.kiara.ps.rtps.utils;
 import org.fiware.kiara.ps.rtps.common.Locator;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This class is used to retrieve IP adresses information.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class InfoIP {
-	public IPTYPE type;
-	public int scopeId;
-	public String name;
-	public final Locator locator;
 
-	public InfoIP() {
-            this(IPTYPE.IPv4, 0, "", null);
-	}
+    /**
+     * {@link IPTYPE} indicating the IP address type
+     */
+    public IPTYPE type;
+    
+    /**
+     * Scope Identifier
+     */
+    public int scopeId;
+    
+    /**
+     * String indicating the name
+     */
+    public String name;
+    
+    /**
+     * Associated {@link Locator}
+     */
+    public final Locator locator;
 
+    /**
+     * Default {@link InfoIP} constructor (IPv4, 0, "", null)
+     */
+    public InfoIP() {
+        this(IPTYPE.IPv4, 0, "", null);
+    }
+
+    /**
+     * Alternative {@link InfoIP} constructor
+     * 
+     * @param type The IP type
+     * @param scopeId The scope identifier
+     * @param name The IP name
+     * @param locator The {@link Locator} associastes to this IP
+     */
     public InfoIP(IPTYPE type, int scopeId, String name, Locator locator) {
         this.type = type;
         this.scopeId = scopeId;

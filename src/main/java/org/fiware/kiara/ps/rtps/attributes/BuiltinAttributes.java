@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.attributes;
 
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 
 /**
  * Class BuiltinAttributes, to define the behavior of the RTPSParticipant
@@ -64,8 +65,8 @@ public class BuiltinAttributes {
     public Timestamp leaseDuration;
 
     /**
-     * The period for the RTPSParticipant to send its Discovery Message to all
-     * other discovered RTPSParticipants as well as to all Multicast ports.
+     * The period for the {@link RTPSParticipant} to send its Discovery Message to all
+     * other discovered {@link RTPSParticipant}s as well as to all Multicast ports.
      */
     public Timestamp leaseDurationAnnouncementPeriod;
 
@@ -96,6 +97,9 @@ public class BuiltinAttributes {
      */
     private String m_staticEndpointXML;
 
+    /**
+     * Default {@link BuiltinAttributes} constructor
+     */
     public BuiltinAttributes() {
         this.useSimplePDP = true;
         this.useWriterLP = true;
@@ -147,6 +151,11 @@ public class BuiltinAttributes {
         this.m_staticEndpointXML = edpXml;
     }
 
+    /**
+     * This method copies an instance of {@link BuiltinAttributes} into another
+     * 
+     * @param other The {@link BuiltinAttributes} object to be copied
+     */
     public void copy(BuiltinAttributes other) {
         useSimplePDP = other.useSimplePDP;
         useWriterLP = other.useWriterLP;

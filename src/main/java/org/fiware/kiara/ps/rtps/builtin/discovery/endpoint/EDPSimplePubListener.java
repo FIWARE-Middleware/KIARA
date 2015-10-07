@@ -21,42 +21,63 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
-import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
-import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
+import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class represents the {@link ReaderListener} to be called by the EDP
+ * builtin publisher 
  * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  *
  */
 public class EDPSimplePubListener extends ReaderListener {
     
+    /**
+     * {@link EDPSimple} reference to the object representing the Endpoint Discovery Protocol
+     */
     public EDPSimple edpSimple;
     
+    /**
+     * {@link WriterProxyData} representing a remote {@link RTPSWriter}
+     */
     public WriterProxyData writerProxyData;
     
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(EDPSimplePubListener.class);
     
+    /**
+     * Default {@link EDPSimplePubListener} constructor
+     * 
+     * @param edpSimple {@link EDPSimple} reference
+     */
     public EDPSimplePubListener(EDPSimple edpSimple) {
         this.edpSimple = edpSimple;
         this.writerProxyData = new WriterProxyData();
     }
 
+    /**
+     * Method to be executed when a new {@link RTPSReader} matches
+     */
     @Override
     public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
         // Do Nothing
     }
 
+    /**
+     * Method to be executed when a new {@link CacheChange} has been added  
+     */
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
         // TODO Auto-generated method stub
@@ -64,7 +85,6 @@ public class EDPSimplePubListener extends ReaderListener {
             logger.warn("Received change with no Key");
         }
         if (change.getKind() == ChangeKind.ALIVE) {
-            SerializedPayload pl = change.getSerializedPayload();
             
             this.writerProxyData.clear();
             if (this.writerProxyData.readFromCDRMessage(change)) {
@@ -118,9 +138,14 @@ public class EDPSimplePubListener extends ReaderListener {
         }
     }
     
+    /**
+     * Method to compute the key
+     * @param change CacheChange to store the computed key
+     * @return boolean if sucess; false otherwise
+     */
     public boolean computeKey(CacheChange change) {
         if (change.getInstanceHandle().equals(new InstanceHandle())) {
-            
+            // TODO Review
         }
         return true;
     }

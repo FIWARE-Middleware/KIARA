@@ -30,6 +30,7 @@ import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
+import org.fiware.kiara.ps.rtps.writer.StatefulWriter;
 import org.fiware.kiara.ps.rtps.writer.WriterListener;
 import org.fiware.kiara.ps.topic.TopicDataType;
 import org.fiware.kiara.serialization.impl.Serializable;
@@ -51,10 +52,18 @@ public class Publisher<T> {
 
         private final Publisher<T> m_publisher;
 
+        /**
+         * Main PublisherWriterListener constructor 
+         * 
+         * @param publisher The {@link Publisher} that will use the PublisherWriterListener
+         */
         public PublisherWriterListener(Publisher<T> publisher) {
             this.m_publisher = publisher;
         }
 
+        /**
+         * Function to be executed when a new RTPSWriter has matched
+         */
         @Override
         public void onWriterMatched(RTPSWriter writer, MatchingInfo info) {
             if (this.m_publisher.m_listener != null) {
@@ -64,24 +73,59 @@ public class Publisher<T> {
 
     }
 
+    /**
+     * Object containing a reference to a {@link Participant} who created the Publisher
+     */
     private Participant m_participant;
 
+    /**
+     * {@link RTPSWriter} associated to this Publisher
+     */
     private RTPSWriter m_writer;
 
+    /**
+     * {@link TopicDataType} the Publisher is able to publish
+     */
     private TopicDataType<T> m_type;
 
+    /**
+     * Reference to a {@link PublisherAttributes} object containing the Publisher's attributes
+     */
     private PublisherAttributes m_att;
 
+    /**
+     * {@link PublisherHistory} representing the Publisher History Cache
+     */
     private PublisherHistory m_history;
 
+    /**
+     * {@link PublisherListener} object to be called when an event should occur (this oject can be created by the developer)
+     */
     private PublisherListener m_listener;
 
+    /**
+     * Referente to the @{link {@link RTPSParticipant} object
+     */
     private RTPSParticipant m_rtpsParticipant;
 
+    /**
+     * {@link PublisherWriterListener} reference holding the inner listener used by the Publisher
+     */
     private PublisherWriterListener m_writerListener;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(Publisher.class);
 
+    /**
+     * Publisher constructor.
+     * 
+     * @param participant The {@link Participant} who creates the Publisher
+     * @param dataType The {@link TopicDataType} associated to the Publisher
+     * @param att {@link PublisherAttributes} object representing the attributes of the Publisher
+     * @param listener {@link PublisherListener} object to be invoked when a specific event should occur
+     */
     public Publisher(Participant participant, TopicDataType<T> dataType, PublisherAttributes att, PublisherListener listener) {
         this.m_participant = participant;
         this.m_writer = null;
@@ -93,6 +137,9 @@ public class Publisher<T> {
         this.m_rtpsParticipant = null;
     }
 
+    /**
+     * Function used to destroy the contents of the Publisher. The associated RTPSWirited will be stopped. 
+     */
     public void destroy() {
         logger.info("Destroying Publisher (Writer GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSWriter(this.m_writer);
@@ -266,7 +313,8 @@ public class Publisher<T> {
 
         if (updated) {
             if (this.m_att.qos.reliability.kind == ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS) {
-                // TODO Not supported in this version (StatefulWriter)
+                StatefulWriter sfw = (StatefulWriter) this.m_writer;
+                sfw.updateTimes(att.times);
             }
             this.m_att.qos.setQos(att.qos, false);
             this.m_att = att;
@@ -339,6 +387,15 @@ public class Publisher<T> {
      */
     public void setWriter(RTPSWriter writer) {
         this.m_writer = writer;
+    }
+
+    /**
+     * Get the Participant who created the Publisher
+     * 
+     * @return The Participant who created the Publisher
+     */
+    public Participant getParticipant() {
+        return m_participant;
     }
 
 }

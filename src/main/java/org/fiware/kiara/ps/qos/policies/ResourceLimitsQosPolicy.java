@@ -36,8 +36,34 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
 
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * Maximum number of samples of an instance
+     */
+    public int maxSamples;
+
+    /**
+     * Maximum number of different instances
+     */
+    public int maxInstances;
+
+    /**
+     * Maximum number of sample of the same instance
+     */
+    public int maxSamplesPerInstance;
+
+    /**
+     * Total number of allocated samples
+     */
+    public int allocatedSamples;
+
+    /**
+     * Default {@link ResourceLimitsQosPolicy} constructor
+     */
     public ResourceLimitsQosPolicy() {
         super(ParameterId.PID_RESOURCE_LIMITS, (short) (Parameter.PARAMETER_KIND_LENGTH + 4 + 4));
         this.parent = new QosPolicy(false);
@@ -47,14 +73,9 @@ public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
         this.allocatedSamples = 3000;
     }
 
-    public int maxSamples;
-
-    public int maxInstances;
-
-    public int maxSamplesPerInstance;
-
-    public int allocatedSamples;
-
+    /**
+     * Serializes a {@link ResourceLimitsQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -63,6 +84,9 @@ public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
         impl.serializeI32(message, name, this.maxSamplesPerInstance);
     }
 
+    /**
+     * Deserializes a {@link ResourceLimitsQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
@@ -71,9 +95,14 @@ public class ResourceLimitsQosPolicy extends Parameter implements Serializable {
         this.maxSamplesPerInstance = impl.deserializeI32(message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link ResourceLimitsQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
+        this.maxSamples = impl.deserializeI32(message, name);
+        this.maxInstances = impl.deserializeI32(message, name);
+        this.maxSamplesPerInstance = impl.deserializeI32(message, name);
     }
 
 }

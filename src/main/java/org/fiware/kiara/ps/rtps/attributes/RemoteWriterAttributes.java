@@ -49,6 +49,9 @@ public class RemoteWriterAttributes {
      */
     public short ownershipStrength;
 
+    /**
+     * Default {@link RemoteWriterAttributes} constructor
+     */
     public RemoteWriterAttributes() {
         this.endpoint = new EndpointAttributes();
         this.guid = new GUID();

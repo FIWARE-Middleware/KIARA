@@ -17,8 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.messages.elements.parameters;
 
-import java.io.IOException;
-
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
 import org.fiware.kiara.ps.qos.policies.DestinationOrderQosPolicy;
@@ -29,16 +27,24 @@ import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicy;
 import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicy;
 import org.fiware.kiara.ps.qos.policies.OwnershipStrengthQosPolicy;
 import org.fiware.kiara.ps.qos.policies.ReliabilityQosPolicy;
-import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config.OwnershipQos;
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**
- *
+ * Class in charge of constructing all the different {@link Parameter} objects
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
  */
 public class ParameterBuilder {
 
+    /**
+     * Methos used to create a {@link Parameter} object depending on its {@link ParameterId}
+     * 
+     * @param pid The {@link Parameter} identifier
+     * @param length The {@link Parameter} length
+     * @return The new {@link Parameter} object
+     */
     public static Parameter createParameter(ParameterId pid, short length) {
         Parameter param = null;
         switch (pid) {

@@ -20,21 +20,37 @@ package org.fiware.kiara.ps.rtps.resources;
 import java.net.InetAddress;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This class represents an endpoint formed by an IP address and
+ * a port number. 
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class AsioEndpoint {
-	
-	public int port;
-	public InetAddress address;
-	
-	public AsioEndpoint() {
-		
-	}
-	
-	@Override
-	public String toString() {
-	    return this.address.toString() + ":" + this.port;
-	}
+
+    /**
+     * Por number
+     */
+    public int port;
+    
+    /**
+     * IP address
+     */
+    public InetAddress address;
+
+    /**
+     * Default {@link AsioEndpoint} constructor
+     */
+    public AsioEndpoint() {
+        this.port = 0;
+        this.address = null;
+    }
+
+    /**
+     * Converts an {@link AsioEndpoint} into its String representation
+     */
+    @Override
+    public String toString() {
+        return this.address.toString() + ":" + this.port;
+    }
 
 }

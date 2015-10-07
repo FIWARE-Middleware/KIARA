@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.concurrent.locks.Lock;
@@ -19,15 +36,31 @@ import org.fiware.kiara.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class EDPStatic extends EDP {
 
+    /**
+     * {@link EDPStaticXML} reference
+     */
     private EDPStaticXML m_edpXML;
+    
+    /**
+     * {@link BuiltinAttributes} for the static EDP
+     */
     private final BuiltinAttributes m_attributes;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(EDPStatic.class);
 
     /**
-     * Constructor.
+     * Default {@link EDPStatic} constructor
      *
      * @param p Reference to the PDPSimple
      * @param part Reference to the RTPSParticipantImpl

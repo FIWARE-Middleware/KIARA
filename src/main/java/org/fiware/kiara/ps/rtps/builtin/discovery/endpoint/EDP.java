@@ -65,6 +65,9 @@ public abstract class EDP {
      */
     protected RTPSParticipant m_RTPSParticipant;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(EDP.class);
     
     /**

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.data.WriterProxyData;
+import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config.Endpoint;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config.StaticDiscovery;
 import org.slf4j.LoggerFactory;
 
@@ -32,18 +33,33 @@ import org.slf4j.LoggerFactory;
  * Class EDPStaticXML used to parse the XML file that contains information about
  * remote endpoints.
  *
- *
- *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class EDPStaticXML {
 
+    /**
+     * Set of {@link Endpoint} identifiers
+     */
     private final Set<Short> m_endpointIds;
+    
+    /**
+     * Set of Entity identifiers
+     */
     private final Set<Integer> m_entityIds;
+    
+    /**
+     * List of {@link StaticRTPSParticipantInfo} references
+     */
     private final List<StaticRTPSParticipantInfo> m_RTPSParticipants;
 
+    /**
+     * Logging object
+     */
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
 
+    /**
+     * Default {@link EDPStaticXML} constructor
+     */
     public EDPStaticXML() {
         this.m_endpointIds = new HashSet<>();
         this.m_entityIds = new HashSet<>();
@@ -107,6 +123,12 @@ public class EDPStaticXML {
         return true;
     }
 
+    /**
+     * Load the XML file
+     *
+     * @param edpXml String containing the XML content of the file to load and parse.
+     * @return True if correct.
+     */
     boolean loadXMLString(String edpXml) {
         try {
             StaticDiscovery config = StaticDiscovery.fromXML(edpXml);

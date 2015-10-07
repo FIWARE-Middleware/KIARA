@@ -27,60 +27,92 @@ import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Key RTPS DATA parameter
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class ParameterKey extends Parameter {
 
-	private final InstanceHandle m_instanceHandle;
+    /**
+     * {@link Parameter} value
+     */
+    private final InstanceHandle m_instanceHandle;
 
-	public ParameterKey(InstanceHandle instanceHandle) {
-		super(ParameterId.PID_KEY_HASH, instanceHandle.getSerializedSize());
-		this.m_instanceHandle = instanceHandle;
-	}
+    /**
+     * Default {@link ParameterKey} constructor
+     */
+    public ParameterKey(InstanceHandle instanceHandle) {
+        super(ParameterId.PID_KEY_HASH, instanceHandle.getSerializedSize());
+        this.m_instanceHandle = instanceHandle;
+    }
 
-        /**
-	 * Constructor using a parameter PID and the parameter length
-	 * @param pid Pid of the parameter
-	 * @param length Its associated length
-	 */
-	public ParameterKey(ParameterId pid, short length) {
-            super(pid, length);
-            m_instanceHandle = new InstanceHandle();
-        }
+    /**
+     * Constructor using a parameter PID and the parameter length
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     */
+    public ParameterKey(ParameterId pid, short length) {
+        super(pid, length);
+        m_instanceHandle = new InstanceHandle();
+    }
 
-        public ParameterKey(ParameterId pid, short length, InstanceHandle ke) {
-            super(pid, length);
-            m_instanceHandle = new InstanceHandle();
-            m_instanceHandle.copy(ke);
-        }
+    /**
+     * Alternative {@link ParameterKey} constructor
+     * 
+     * @param pid Pid of the parameter
+     * @param length Its associated length
+     * @param key {@link InstanceHandle} represneting the KEY
+     */
+    public ParameterKey(ParameterId pid, short length, InstanceHandle key) {
+        super(pid, length);
+        m_instanceHandle = new InstanceHandle();
+        m_instanceHandle.copy(key);
+    }
 
-	@Override
-	public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
-		super.serialize(impl, message, name);
-		this.m_instanceHandle.serialize(impl, message, name);
-	}
-	
-	@Override
-	public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		super.deserialize(impl, message, name);
-		this.m_instanceHandle.deserialize(impl, message, name);
-	}
-	
-	@Override
-	public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-		this.m_instanceHandle.deserialize(impl, message, name);
-	}
-	
-	@Override
-	public short getSerializedSize() {
-		return (short) (super.getSerializedSize() + this.m_length);
-	}
-	
-	public InstanceHandle getKey() {
-	    return this.m_instanceHandle;
-	}
+    /**
+     * Serializes a {@link ParameterId} object and its inherited attributes
+     */
+    @Override
+    public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
+        super.serialize(impl, message, name);
+        this.m_instanceHandle.serialize(impl, message, name);
+    }
 
-	 
+    /**
+     * Deserializes a {@link ParameterId} object and its inherited attributes
+     */
+    @Override
+    public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        super.deserialize(impl, message, name);
+        this.m_instanceHandle.deserialize(impl, message, name);
+    }
+
+    /**
+     * Deserializes a {@link ParameterId} object and not its inherited attributes
+     */
+    @Override
+    public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
+        this.m_instanceHandle.deserialize(impl, message, name);
+    }
+
+    /**
+     * Get the serialized size
+     */
+    @Override
+    public short getSerializedSize() {
+        return (short) (super.getSerializedSize() + this.m_length);
+    }
+
+    /**
+     * Get the KEY
+     * 
+     * @return {@link InstanceHandle} representing the KEY
+     */
+    public InstanceHandle getKey() {
+        return this.m_instanceHandle;
+    }
+
+
 
 }

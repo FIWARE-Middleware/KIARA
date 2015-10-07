@@ -23,20 +23,37 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class that handles an event to send all unsent changes every time 
+ * the time interval finishes 
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class UnsentChangesNotEmptyEvent extends TimedEvent {
-    
+
+    /**
+     * The associated {@link RTPSWriter}
+     */
     private RTPSWriter m_writer;
-    
+
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(UnsentChangesNotEmptyEvent.class);
-    
+
+    /**
+     * {@link UnsentChangesNotEmptyEvent} constructor
+     * 
+     * @param writer The {@link RTPSWriter} that will sent the changes
+     * @param milliseconds TIme interval in milliseconds
+     */
     public UnsentChangesNotEmptyEvent(RTPSWriter writer, double milliseconds) {
         super(milliseconds);
         this.m_writer = writer;
     }
 
+    /**
+     * Main method
+     */
     @Override
     public void event(EventCode code, String msg) {
         if (code == EventCode.EVENT_SUCCESS) {

@@ -46,6 +46,11 @@ public class WriterHistoryCache extends HistoryCache {
      */
     private static final Logger logger = LoggerFactory.getLogger(WriterHistoryCache.class);
 
+    /**
+     * Main {@link WriterHistoryCache} constructor
+     * 
+     * @param att {@link HistoryCacheAttributes} related to this {@link WriterHistoryCache}
+     */
     public WriterHistoryCache(HistoryCacheAttributes att) {
         super(att);
         this.m_writer = null;

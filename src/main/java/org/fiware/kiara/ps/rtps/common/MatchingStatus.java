@@ -18,14 +18,20 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* MatchingStatus, indicates whether the matched publication/subscription method of the PublisherListener or SubscriberListener has
-* been called for a matching or a removal of a remote endpoint.
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * MatchingStatus, indicates whether the matched publication/subscription method of the PublisherListener or SubscriberListener has
+ * been called for a matching or a removal of a remote endpoint.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum MatchingStatus {
-	
-	MATCHED_MATHING,
-	REMOVED_MATCHING
+
+    /**
+     * Status is MATCHED_MATHING (new match)
+     */
+    MATCHED_MATHING,
+    /**
+     * Status is REMOVED_MATCHING (no longer matching)
+     */
+    REMOVED_MATCHING
 
 }

@@ -18,14 +18,20 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* Enumeration representing the durability of the messages
-* dent over the wire.
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enumeration representing the durability of the messages
+ * dent over the wire.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum DurabilityKind {
-	
-	VOLATILE,
-	TRANSIENT_LOCAL
+
+    /**
+     * Kind is VOLATILE (not kept)
+     */
+    VOLATILE,
+    /**
+     * Kind is TRANSIENT_LOCAL (kept)
+     */
+    TRANSIENT_LOCAL
 
 }

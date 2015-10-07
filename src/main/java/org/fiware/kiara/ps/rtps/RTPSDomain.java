@@ -52,14 +52,29 @@ import org.slf4j.LoggerFactory;
  */
 public class RTPSDomain {
 
+    /**
+     * Veod r specific identifier
+     */
     private static final byte[] vendorId = new byte[]{0x01, 0x0F};
 
+    /**
+     * Maximum {@link RTPSParticipant} identifier
+     */
     private static int m_maxRTPSParticipantID = -1;
 
+    /**
+     * List of {@link RTPSParticipant} references
+     */
     private static final List<RTPSParticipant> m_rtpsParticipants = new ArrayList<>();
 
+    /**
+     * List of non repeated {@link RTPSParticipant} identifiers
+     */
     private static final Set<Integer> m_rtpsParticipantsIDs = new HashSet<>();
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(RTPSDomain.class);
 
     /**

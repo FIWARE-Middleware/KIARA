@@ -96,6 +96,7 @@ public class EDPStaticProperty {
             } catch (NumberFormatException ex) {
                 return false;
             }
+            @SuppressWarnings("resource")
             Scanner s = new Scanner(prop.getSecond()).useDelimiter("\\s*[.]\\s*");
             try {
                 int a = s.nextInt();

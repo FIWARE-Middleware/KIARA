@@ -90,6 +90,9 @@ public class BuiltinProtocols {
      */
     private boolean m_useMandatory;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(BuiltinProtocols.class);
 
     /**
@@ -103,6 +106,9 @@ public class BuiltinProtocols {
         this.m_metatrafficUnicastLocatorList = new LocatorList();
     }
 
+    /**
+     * Destroys all the information related to the {@link BuiltinProtocols}
+     */
     public void destroy() {
         if (this.m_WLP != null) {
             this.m_WLP.destroy();

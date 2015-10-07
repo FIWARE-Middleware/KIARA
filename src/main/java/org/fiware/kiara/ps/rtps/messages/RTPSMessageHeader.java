@@ -29,17 +29,35 @@ import org.fiware.kiara.serialization.impl.Serializable;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 
 /**
- *
+ * This class represents the {@link RTPSMessage} header
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class RTPSMessageHeader implements Serializable {
 
+    /**
+     * RTPS Character chain
+     */
     char m_rtps[] = new char[4];
 
+    /**
+     * {@link ProtocolVersion} of the message
+     */
     ProtocolVersion m_protocolVersion;
+    
+    /**
+     * {@link VendorId} specifying the implementation owner
+     */
     VendorId m_vendorId;
+    
+    /**
+     * {@link GUIDPrefix} of the header
+     */
     GUIDPrefix m_guidPrefix;
 
+    /**
+     * Default {@link RTPSMessageHeader} constructor
+     */
     public RTPSMessageHeader() {
         this.m_rtps = new String("RTPS").toCharArray();
         this.m_protocolVersion = new ProtocolVersion((byte) 2, (byte) 1);
@@ -47,22 +65,45 @@ public class RTPSMessageHeader implements Serializable {
         this.m_guidPrefix = new GUIDPrefix();
     }
 
+    /**
+     * Get the protocol name
+     * 
+     * @return The protocol name
+     */
     public String getProtocolName() {
         return new String(this.m_rtps);
     }
 
+    /**
+     * Get the {@link ProtocolVersion}
+     * 
+     * @return The {@link ProtocolVersion}
+     */
     public ProtocolVersion getProtocolVersion() {
         return this.m_protocolVersion;
     }
 
+    /**
+     * Get the {@link VendorId}
+     * 
+     * @return The {@link VendorId}
+     */
     public VendorId getVendorId() {
         return this.m_vendorId;
     }
 
+    /**
+     * Get the {@link GUIDPrefix}
+     * 
+     * @return The {@link GUIDPrefix}
+     */
     public GUIDPrefix getGUIDPrefix() {
         return this.m_guidPrefix;
     }
 
+    /**
+     * Compares two instances of {@link RTPSMessageHeader}
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof RTPSMessageHeader) {
@@ -79,6 +120,9 @@ public class RTPSMessageHeader implements Serializable {
         return false;
     }
 
+    /**
+     * Serializes the {@link RTPSMessageHeader}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         impl.serializeChar(message, "", 'R');
@@ -93,6 +137,9 @@ public class RTPSMessageHeader implements Serializable {
         this.m_guidPrefix.serialize(impl, message, "");
     }
 
+    /**
+     * Deserializes the {@link RTPSMessageHeader}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.m_rtps[0] = impl.deserializeChar(message, name);

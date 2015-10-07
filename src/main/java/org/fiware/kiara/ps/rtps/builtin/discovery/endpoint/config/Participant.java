@@ -22,13 +22,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a {@link org.fiware.kiara.ps.participant.Participant} defined using XML
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class Participant {
+    
+    /**
+     * {@link org.fiware.kiara.ps.participant.Participant} name
+     */
     public String name = null;
+    
+    /**
+     * {@link org.fiware.kiara.ps.participant.Participant} list of {@link Writer}
+     */
     @JacksonXmlProperty(localName="writer")
     public List<Writer> writers = new ArrayList<>();
+    
+    /**
+     * {@link org.fiware.kiara.ps.participant.Participant} list of {@link Reader}
+     */
     @JacksonXmlProperty(localName="reader")
     public List<Reader> readers = new ArrayList<>();
 }

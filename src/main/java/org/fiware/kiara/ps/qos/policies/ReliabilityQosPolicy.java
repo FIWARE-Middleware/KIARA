@@ -36,13 +36,24 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class ReliabilityQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link ReliabilityQosPolicyKind} indicating the type of Reliability QoS
+     */
     public ReliabilityQosPolicyKind kind;
 
+    /**
+     * {@link Timestamp} indicating how much is the blocking time
+     */
     public Timestamp maxBlockingTime;
 
+    /**
+     * Default {@link ReliabilityQosPolicy} constructor
+     */
     public ReliabilityQosPolicy() {
         super(ParameterId.PID_RELIABILITY, (short) (Parameter.PARAMETER_KIND_LENGTH + Parameter.PARAMETER_KIND_LENGTH));
         this.parent = new QosPolicy(true); // indicate send always
@@ -50,12 +61,19 @@ public class ReliabilityQosPolicy extends Parameter {
         this.maxBlockingTime = new Timestamp();
     }
 
+    /**
+     * This method copies two instnces of {@link ReliabilityQosPolicy}
+     * @param value The {@link ReliabilityQosPolicy} to be copied
+     */
     public void copy(ReliabilityQosPolicy value) {
         parent.copy(value.parent);
         kind = value.kind;
         maxBlockingTime.copy(value.maxBlockingTime);
     }
 
+    /**
+     * Serializes a {@link ReliabilityQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -63,6 +81,9 @@ public class ReliabilityQosPolicy extends Parameter {
         this.maxBlockingTime.serialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link ReliabilityQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
@@ -70,6 +91,9 @@ public class ReliabilityQosPolicy extends Parameter {
         this.maxBlockingTime.deserialize(impl, message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link ReliabilityQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.kind = ReliabilityQosPolicyKind.getFromValue((byte) impl.deserializeUI32(message, name));

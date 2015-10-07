@@ -18,13 +18,19 @@
 package org.fiware.kiara.ps.rtps.messages.common.types;
 
 /**
-* Class representing the endian of an RTPS message
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class representing the endian of an RTPS message
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum RTPSEndian {
-	
-	LITTLE_ENDIAN,
-	BIG_ENDIAN;
+
+    /**
+     * Endianness is Litle-Endian
+     */
+    LITTLE_ENDIAN,
+    /**
+     * Endianness is Big-Endian
+     */
+    BIG_ENDIAN;
 
 }

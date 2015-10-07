@@ -38,24 +38,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * This class is in charge of sending HEARTBEATS of the sent DATA
+ * messages periodically
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class PeriodicHeartbeat extends TimedEvent {
 
-    private static final Logger logger = LoggerFactory.getLogger(PeriodicHeartbeat.class);
-
+    /**
+     * The {@link StatefulWriter} that will send the HEARTBEAT messages
+     */
     private StatefulWriter m_SFW;
 
+    /**
+     * Logging object
+     */
+    private static final Logger logger = LoggerFactory.getLogger(PeriodicHeartbeat.class);
+
+    /**
+     * {@link PeriodicHeartbeat} constructor
+     * 
+     * @param writer The {@link StatefulWriter} that will send the ACKNACK messages
+     * @param interval Time interval in milliseconds
+     */
     public PeriodicHeartbeat(StatefulWriter writer, double interval) {
         super(interval);
         m_SFW = writer;
     }
 
+    /**
+     * Destroys the {@link PeriodicHeartbeat}
+     */
     public void destroy() {
-
+        // Do nothing
     }
 
+    /**
+     * Main method
+     */
     @Override
     public void event(EventCode code, String msg) {
         if (code == EVENT_SUCCESS) {
@@ -66,7 +86,7 @@ public class PeriodicHeartbeat extends TimedEvent {
 
             final Lock mutex = m_SFW.getMutex();
             mutex.lock();
-            try {//BEGIN PROTECTION
+            try {
                 List<ChangeForReader> unack = new ArrayList<ChangeForReader>();
                 for (ReaderProxy it : m_SFW.getMatchedReaders()) {
                     unack.clear();
@@ -99,17 +119,12 @@ public class PeriodicHeartbeat extends TimedEvent {
                             false,
                             false);
 
-//                    logger.info("RTPS WRITER: {} Sending Heartbeat ({} - {})",
-//                            m_SFW.getGuid().getEntityId(), firstSeq, lastSeq
-//                    );
-                    rtpsMessage.serialize();
+                     rtpsMessage.serialize();
                     for (Locator lit : locList) {
                         m_SFW.getRTPSParticipant().sendSync(rtpsMessage, lit);
                     }
 
                 }
-                //Reset TIMER
-                //restartTimer();
             } else {
                 stopTimer();
             }

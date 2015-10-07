@@ -136,32 +136,40 @@ public class PDPSimple {
      */
     private final Lock m_mutex = new ReentrantLock(true);
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(PDPSimple.class);
 
+    /**
+     * Guard Mutex
+     */
     private final Object m_guardMutex = new Object();
 
-    private final Object m_guardMutexAlt = new Object();
-
+    /**
+     * Guard writer Mutex
+     */
     private final Object m_guardW = new Object();
 
+    /**
+     * Guard reader Mutex
+     */
     private final Object m_guardR = new Object();
 
     /**
-     * Constructor
+     * Default {@link PDPSimple} constructor
      *
      * @param builtinProtocols Reference to the BuiltinProcols object.
      */
     public PDPSimple(BuiltinProtocols builtinProtocols) {
         this.m_builtin = builtinProtocols;
         this.m_hasChangedLocalPDP = true;
-        /*this.m_guardMutex = new Object();
-         this.m_guardMutexAlt = new Object();
-         this.m_guardW = new Object();
-         this.m_guardR = new Object();*/
         this.m_participantProxies = new ArrayList<>();
-        // TODO Create objects properly
     }
 
+    /**
+     * Deletes the {@link PDPSimple} associated entities
+     */
     public void destroy() {
         this.m_mutex.lock();
         try {
@@ -182,9 +190,6 @@ public class PDPSimple {
                 RTPSDomain.removeRTPSWriter(this.m_SPDPWriter);
             }
 
-            /*if (this.m_listener != null) {
-                this.m_listener.destroy();
-            }*/
             while (this.m_participantProxies.size() > 0) {
                 this.m_participantProxies.get(0).destroy();
                 this.m_participantProxies.remove(0);

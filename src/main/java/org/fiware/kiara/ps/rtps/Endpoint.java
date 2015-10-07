@@ -56,6 +56,13 @@ public class Endpoint {
      */
     protected final Lock m_mutex = new ReentrantLock(true);
 
+    /**
+     * {@link Endpoint} constructor
+     * 
+     * @param participant The {@link RTPSParticipant} that creates the {@link Endpoint}
+     * @param guid The {@link GUID} of the {@link Endpoint}
+     * @param att The {@link Endpoint} attributes for configuration
+     */
     public Endpoint(RTPSParticipant participant, GUID guid, EndpointAttributes att) {
         this.m_participant = participant;
         this.m_guid = guid;

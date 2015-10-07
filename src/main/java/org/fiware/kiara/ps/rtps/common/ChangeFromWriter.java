@@ -54,6 +54,9 @@ public class ChangeFromWriter {
      */
     private CacheChange m_change;
 
+    /**
+     * Default {@link ChangeFromWriter} value
+     */
     public ChangeFromWriter() {
         this.status = ChangeFromWriterStatus.UNKNOWN;
         this.isRelevant = true;

@@ -19,7 +19,6 @@ package org.fiware.kiara.ps.rtps.history;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -73,6 +72,13 @@ public class CacheChangePool {
      */
     private static final Logger logger = LoggerFactory.getLogger(CacheChangePool.class);
 
+    /**
+     * {@link CacheChangePool} constructor
+     * 
+     * @param poolSize Initial size of the {@link CacheChangePool}
+     * @param payloadSize Maximum payload size for every {@link CacheChange}
+     * @param maxPoolSize Maximum size of the {@link CacheChangePool}
+     */
     public CacheChangePool(int poolSize, int payloadSize, int maxPoolSize) {
         this.m_mutex.lock();
         this.m_payloadSize = payloadSize;

@@ -33,40 +33,71 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class PartitionQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * List of partition names
+     */
     private final List<String> m_names;
 
+    /**
+     * Default {@link PartitionQosPolicy} constructor
+     */
     public PartitionQosPolicy() {
         super(ParameterId.PID_PARTITION, (short) 0);
         this.parent = new QosPolicy(false);
         this.m_names = new ArrayList<>();
     }
 
+    /**
+     * Adds a new partition at the end of the partition list
+     * 
+     * @param name The new partition to be added
+     */
     public void pushBack(String name) {
         this.m_names.add(name);
         this.parent.hasChanged = true;
     }
 
+    /**
+     * Clears the content of the partition list
+     */
     public void clear() {
         this.m_names.clear();
     }
 
+    /**
+     * Get the partition list
+     * @return
+     */
     public List<String> getNames() {
         return this.m_names;
     }
 
+    /**
+     * Set the partition list
+     * @param names
+     */
     public void setNames(List<String> names) {
         m_names.clear();
         m_names.addAll(names);
     }
 
+    /**
+     * This method copies two instnces of {@link PartitionQosPolicy}
+     * @param value The {@link PartitionQosPolicy} to be copied
+     */
     public void copy(PartitionQosPolicy value) {
         parent.copy(value.parent);
         setNames(value.m_names);
     }
 
+    /**
+     * Deserializes only the contents of a {@link PartitionQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

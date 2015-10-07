@@ -26,15 +26,44 @@ package org.fiware.kiara.ps.rtps.common;
  */
 public enum ChangeFromWriterStatus {
     
+    /**
+     * Change is UNKNOWN (received and not processed)
+     */
     UNKNOWN(0),
+    /**
+     * Change is MISSING (not received, can be requested)
+     */
     MISSING(1),
+    /**
+     * Change is RECEIVED (received and processed)
+     */
     RECEIVED(2),
+    /**
+     * Change is LOST (not received)
+     */
     LOST(3);
     
+    /**
+     * Enumeration value
+     */
     private int m_value;
     
+    /**
+     * Private default {@link ChangeFromWriterStatus} constructor
+     * 
+     * @param value The enumeration value
+     */
     private ChangeFromWriterStatus(int value) {
         this.m_value = value;
+    }
+
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
+    public int getValue() {
+        return m_value;
     }
 
 }

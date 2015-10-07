@@ -26,20 +26,28 @@ package org.fiware.kiara.ps.rtps.attributes;
 public class SimpleEDPAttributes {
 
     /**
-     * Default value true.
+     * Commands the EDP to use the Publication Writer and Subscription Reader (default value true).
      */
     public boolean usePulicationWriterAndSubscriptionReader;
 
     /**
-     * Default value true.
+     * Commands the EDP to use the Publication Reader and Subscription Writer (default value true).
      */
     public boolean usePulicationReaderAndSubscriptionWriter;
 
+    /**
+     * Default {@link SimpleEDPAttributes} constructor
+     */
     public SimpleEDPAttributes() {
         this.usePulicationReaderAndSubscriptionWriter = true;
         this.usePulicationWriterAndSubscriptionReader = true;
     }
 
+    /**
+     * This method copies an instance of {@link SimpleEDPAttributes} into another
+     * 
+     * @param other The {@link SimpleEDPAttributes} to be copied
+     */
     public void copy(SimpleEDPAttributes other) {
         usePulicationWriterAndSubscriptionReader = other.usePulicationWriterAndSubscriptionReader;
         usePulicationReaderAndSubscriptionWriter = other.usePulicationReaderAndSubscriptionWriter;

@@ -20,11 +20,18 @@ package org.fiware.kiara.ps.rtps.writer;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Class that represents a listener to be called when a event should occur
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public abstract class WriterListener {
 
-	public abstract void onWriterMatched(RTPSWriter writer, MatchingInfo info);
+    /**
+     * Method to be called whan a new {@link RTPSWriter} has matched
+     * 
+     * @param writer The matched {@link RTPSWriter}
+     * @param info The {@link MatchingInfo}
+     */
+    public abstract void onWriterMatched(RTPSWriter writer, MatchingInfo info);
 
 }

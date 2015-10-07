@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_ENDPOINT_GUID;
@@ -22,6 +39,7 @@ import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUI
 import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
@@ -50,7 +68,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
-import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBool;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterGuid;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterLocator;
@@ -65,57 +82,71 @@ import org.slf4j.LoggerFactory;
 /**
  * Class WriterProxyData, used to represent all the information on a Writer
  * (both local and remote) with the purpose of implementing the discovery.
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class WriterProxyData {
 
     /**
-     * GUID
+     * {@link WriterProxyData} GUID
      */
     private final GUID m_guid;
+    
     /**
      * Unicast locator list
      */
     private final LocatorList m_unicastLocatorList;
+    
     /**
      * Multicast locator list
      */
     private final LocatorList m_multicastLocatorList;
+    
     /**
      * GUID of the Reader converted to InstanceHandle_t
      */
     private InstanceHandle m_key;
+    
     /**
      * GUID of the participant converted to InstanceHandle
      */
     private InstanceHandle m_RTPSParticipantKey;
+    
     /**
      * Type name
      */
     private String m_typeName;
+    
     /**
      * Topic name
      */
     private String m_topicName;
+    
     /**
      * User defined ID
      */
     private short m_userDefinedId;
+    
     /**
      * Writer Qos
      */
     private final WriterQos m_qos;
+    
     /**
      * Maximum size of the type associated with this Writer, serialized.
      */
     private int m_typeMaxSerialized;
+    
     /**
      * Indicates if the Writer is Alive.
      */
     private boolean m_isAlive;
+    
     /**
      * Topic kind
      */
     private TopicKind m_topicKind;
+    
     /**
      * Parameter list
      */
@@ -126,6 +157,9 @@ public class WriterProxyData {
      */
     private RemoteWriterAttributes m_remoteAtt;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxyData.class);
 
     /**
@@ -478,26 +512,56 @@ public class WriterProxyData {
         this.m_topicName = topicName;
     }
 
+    /**
+     * Get the {@link WriterQos}
+     * 
+     * @return The {@link WriterQos}
+     */
     public WriterQos getQos() {
         return m_qos;
     }
 
+    /**
+     * Set the {@link WriterQos}
+     * 
+     * @param qos The {@link WriterQos} to be set
+     */
     public void setQos(WriterQos qos) {
         this.m_qos.copy(qos);
     }
 
+    /**
+     * Get the maximum serialized size
+     * 
+     * @return The maximum serialized size
+     */
     public int getTypeMaxSerialized() {
         return m_typeMaxSerialized;
     }
 
+    /**
+     * Set the maximum serialized size
+     * 
+     * @param typeMaxSerialized The maximum serialized size
+     */
     public void setTypeMaxSerialized(int typeMaxSerialized) {
         this.m_typeMaxSerialized = typeMaxSerialized;
     }
 
+    /**
+     * Checks if the remote {@link Writer} is alive
+     * 
+     * @return true if alive; false otherwise
+     */
     public boolean getIsAlive() {
         return m_isAlive;
     }
 
+    /**
+     * Set the liveliness status of the remote {@link Writer}
+     * 
+     * @param value The status of the remote {@link Writer}
+     */
     public void setIsAlive(boolean value) {
         this.m_isAlive = value;
     }
@@ -592,6 +656,12 @@ public class WriterProxyData {
         return m_remoteAtt;
     }
 
+    /**
+     * Reads the {@link WriterProxyData} from a CDR message 
+     * 
+     * @param change The CacheChange containing the CDR message
+     * @return true if sucess; false otherwise
+     */
     public boolean readFromCDRMessage(CacheChange change) {
 
         SerializedPayload payload = change.getSerializedPayload();

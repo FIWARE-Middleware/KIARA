@@ -21,13 +21,26 @@ import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Listener to be invoked when an event should occur
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public abstract class ReaderListener {
-	
-	public abstract void onReaderMatched(RTPSReader reader, MatchingInfo info);
-	
-	public abstract void onNewCacheChangeAdded(RTPSReader reader, CacheChange change);
+
+    /**
+     * This method will be executed when a new Reader has matched
+     * 
+     * @param reader The matched {@link RTPSReader}
+     * @param info The {@link MatchingInfo}
+     */
+    public abstract void onReaderMatched(RTPSReader reader, MatchingInfo info);
+
+    /**
+     * This method will be executed when a new CacheChange has been added
+     * 
+     * @param reader The matched {@link RTPSReader}
+     * @param change The {@link CacheChange} that has been added
+     */
+    public abstract void onNewCacheChangeAdded(RTPSReader reader, CacheChange change);
 
 }

@@ -41,18 +41,31 @@ public class WriterTimes {
      */
     public Timestamp nackSupressionDuration;
 
+    /**
+     * Default {@link WriterTimes} copy constructor
+     * 
+     * @param value The {@link WriterTimes} to copy the values from
+     */
     public WriterTimes(WriterTimes value) {
         this.heartBeatPeriod = new Timestamp(value.heartBeatPeriod);
         this.nackResponseDelay = new Timestamp(value.nackResponseDelay);
         this.nackSupressionDuration = new Timestamp(value.nackSupressionDuration);
     }
 
+    /**
+     * Default {@link WriterTimes} constructor
+     */
     public WriterTimes() {
         this.heartBeatPeriod = new Timestamp(3, 0);
         this.nackResponseDelay = new Timestamp(0, 200 * 1000 * 1000);
         this.nackSupressionDuration = new Timestamp().timeZero();
     }
 
+    /**
+     * This method copies an instance of {@link WriterTimes} into another
+     * 
+     * @param value The {@link WriterTimes} to be copied
+     */
     public void copy(WriterTimes value) {
         this.heartBeatPeriod.copy(value.heartBeatPeriod);
         this.nackResponseDelay.copy(value.nackResponseDelay);

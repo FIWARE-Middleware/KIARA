@@ -33,10 +33,18 @@ public class LocatorList implements Iterable<Locator> {
      */
     private List<Locator> m_locators;
 
+    /**
+     * Default {@link LocatorList} constructor
+     */
     public LocatorList() {
         this.m_locators = new ArrayList<Locator>();
     }
     
+    /**
+     * Alternative {@link LocatorList} copy constructor
+     * 
+     * @param other The {@link LocatorList} to be copied
+     */
     public LocatorList(LocatorList other) {
         this.m_locators = new ArrayList<Locator>();
         //System.arraycopy(other.m_locators, 0, this.m_locators, 0, other.m_locators.size());

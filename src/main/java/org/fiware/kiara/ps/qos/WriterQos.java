@@ -133,10 +133,13 @@ public class WriterQos {
      */
     public GroupDataQosPolicy groupData;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterQos.class);
 
     /**
-     * Default Constructor
+     * Default WriterQos constructor
      */
     public WriterQos() {
         this.reliability = new ReliabilityQosPolicy();
@@ -310,6 +313,11 @@ public class WriterQos {
         return updatable;
     }
 
+    /**
+     * This method copies all the contents of a WriterQos object
+     * 
+     * @param qos The WriterQos to copy
+     */
     public void copy(WriterQos qos) {
         this.durability.copy(qos.durability);
         this.durabilityService.copy(qos.durabilityService);

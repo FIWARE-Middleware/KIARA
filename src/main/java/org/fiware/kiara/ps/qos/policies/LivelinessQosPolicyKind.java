@@ -38,16 +38,35 @@ public enum LivelinessQosPolicyKind {
      */
     MANUAL_BY_TOPIC_LIVELINESS_QOS((byte) 2);
 
+    /**
+     * Enumeration value
+     */
     private final byte m_value;
 
+    /**
+     * Private {@link LivelinessQosPolicyKind} constructor
+     * 
+     * @param value The enumeration value
+     */
     private LivelinessQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }
 
+    /**
+     * Creates a new {@link LivelinessQosPolicyKind} from its value
+     * 
+     * @param value The enumeration value
+     * @return A new {@link LivelinessQosPolicyKind} object with the specified value set
+     */
     public static LivelinessQosPolicyKind fromValue(byte value) {
         switch (value) {
             case 0:

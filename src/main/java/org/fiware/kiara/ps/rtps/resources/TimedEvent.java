@@ -27,15 +27,31 @@ import org.fiware.kiara.RunningService;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 
 /**
- *
+ * This class represent an event that may occur in a certain
+ * number of microseconds.
+ * 
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public abstract class TimedEvent {
 
+    /**
+     * Executor service
+     */
     private static final ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
 
+    /**
+     * Event task to be executed
+     */
     private final EventTask task;
+    
+    /**
+     * Scheduled furute object to execute the task
+     */
     private ScheduledFuture<?> event;
+    
+    /**
+     * Time interval to execute the event
+     */
     private long intervalMicrosec;
     
     static {
@@ -51,13 +67,31 @@ public abstract class TimedEvent {
      */
     public enum EventCode {
 
+        /**
+         * Event is a Success
+         */
         EVENT_SUCCESS,
+        /**
+         * Event is Aborted
+         */
         EVENT_ABORT,
+        /**
+         * Event carries a message
+         */
         EVENT_MSG
     }
 
+    /**
+     * Event to be executed
+     * 
+     * @author @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+     *
+     */
     private class EventTask implements Runnable {
 
+        /**
+         * Main method
+         */
         @Override
         public void run() {
             event(EventCode.EVENT_SUCCESS, null);
@@ -82,13 +116,17 @@ public abstract class TimedEvent {
      */
     public abstract void event(EventCode code, String msg);
 
-    //!Method to restart the timer.
+    /**
+     * Method to restart the timer.
+     */
     public void restartTimer() {
         event.cancel(true);
         event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
     }
 
-    //!Method to stop the timer.
+    /**
+     * Method to stop the timer.
+     */
     public void stopTimer() {
         event.cancel(false);
         //service.shutdown();
@@ -108,6 +146,12 @@ public abstract class TimedEvent {
         return true;
     }
 
+    /**
+     * Changes the microseconds interval
+     * 
+     * @param inter New interval
+     * @return true on success; false otherwise
+     */
     public boolean updateInterval(Timestamp inter) {
         return updateIntervalMillisec(inter.toMilliSecondsDouble());
     }
@@ -133,9 +177,11 @@ public abstract class TimedEvent {
         return TimeUnit.MILLISECONDS.convert(intervalMicrosec, TimeUnit.MICROSECONDS);
     }
 
-    //!
+    /**
+     * Stops the post of the semaphore
+     */
     public void stopSemaphorePost() {
-
+        // Do nothing
     }
 
     /**

@@ -42,13 +42,19 @@ public class VendorId extends RTPSSubmessageElement {
     byte m_id_1;
 
     /**
-     * Default constructor
+     * Default {@link VendorId} constructor
      */
     public VendorId() {
         m_id_0 = (byte) 0x0;
         m_id_1 = (byte) 0x0;
     }
 
+    /**
+     * Alternative {@link VendorId} constructor
+     * 
+     * @param id_0 First byte of the {@link VendorId}
+     * @param id_1 Second byte of the {@link VendorId}
+     */
     public VendorId(byte id_0, byte id_1) {
         m_id_0 = id_0;
         m_id_1 = id_1;

@@ -43,17 +43,35 @@ import org.slf4j.LoggerFactory;
  */
 public class PublisherHistory extends WriterHistoryCache {
 
-    private static final Logger logger = LoggerFactory.getLogger(PublisherHistory.class);
-
+    /**
+     * List of {@link Pair} objects containing the keyed changes
+     */
     private List<Pair<InstanceHandle, List<CacheChange>>> m_keyedChanges;
 
+    /**
+     * {@link HistoryQosPolicy} of this PublisherHistory
+     */
     private final HistoryQosPolicy m_historyQos;
 
+    /**
+     * {@link ResourceLimitsQosPolicy} associated to this PublisherHistory
+     */
     private final ResourceLimitsQosPolicy m_resourceLimitsQos;
 
-    private final Publisher m_publisher;
+    /**
+     * {@link Publisher} whose CacheChanges are stored into this PublisherHistory
+     */
+    private final Publisher<?> m_publisher;
 
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
+
+    /**
+     * Logging object
+     */
+    private static final Logger logger = LoggerFactory.getLogger(PublisherHistory.class);
 
     /**
      * Constructor of the PublisherHistory.
@@ -63,7 +81,7 @@ public class PublisherHistory extends WriterHistoryCache {
      * @param history QOS of the associated History.
      * @param resource ResourceLimits for the History.
      */
-    public PublisherHistory(Publisher publisher, int payloadMaxSize, HistoryQosPolicy history, ResourceLimitsQosPolicy resource) {
+    public PublisherHistory(Publisher<?> publisher, int payloadMaxSize, HistoryQosPolicy history, ResourceLimitsQosPolicy resource) {
         super(new HistoryCacheAttributes(payloadMaxSize, resource.allocatedSamples, resource.maxSamples));
         this.m_historyQos = history;
         this.m_resourceLimitsQos = resource;
@@ -182,6 +200,13 @@ public class PublisherHistory extends WriterHistoryCache {
         return rem;
     }
 
+    /**
+     * Searches for a Pair of objects whose key is equal to the change key
+     * 
+     * @param change The CacheChange to be compared
+     * @return A Pair object containing the list of CacheChanges according to the key introduced as a parameter; 
+     * null if the key is not contained in the PublisherHistory
+     */
     private Pair<InstanceHandle, List<CacheChange>> findKey(CacheChange change) {
         for (Pair<InstanceHandle, List<CacheChange>> entry : this.m_keyedChanges) {
             if (change.getInstanceHandle().equals(entry.getFirst())) {

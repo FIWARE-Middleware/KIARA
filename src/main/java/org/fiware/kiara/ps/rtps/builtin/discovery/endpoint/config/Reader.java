@@ -28,18 +28,34 @@ import org.fiware.kiara.ps.rtps.builtin.data.ReaderProxyData;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPStaticXML;
 import org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.StaticRTPSParticipantInfo;
 import org.fiware.kiara.ps.rtps.common.LocatorKind;
+import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Represents an {@link RTPSReader}
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class Reader extends Endpoint {
 
+    /**
+     * Indicates if the {@link RTPSReader} expects inline QoS
+     */
     public boolean expectsInlineQos = false;
 
+    /**
+     * Logging object
+     */
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(EDPStaticXML.class);
 
+    /**
+     * Processes the XML information
+     * 
+     * @param pdata {@link StaticRTPSParticipantInfo} data
+     * @param endpointIds List of {@link org.fiware.kiara.ps.rtps.Endpoint} identifiers
+     * @param entityIds List of Entity identifiers
+     * @return true on success; false otherwise
+     */
     public boolean process(StaticRTPSParticipantInfo pdata, Set<Short> endpointIds, Set<Integer> entityIds) {
         ReaderProxyData rdata = new ReaderProxyData();
         if (userId <= 0 || endpointIds.add(userId) == false) {

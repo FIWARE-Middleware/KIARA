@@ -17,15 +17,8 @@
  */
 package org.fiware.kiara.ps.topic;
 
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
-import org.fiware.kiara.serialization.impl.BinaryOutputStream;
-import org.fiware.kiara.serialization.impl.CDRSerializer;
-import org.fiware.kiara.serialization.impl.Serializable;
 
 /**
  *
@@ -45,7 +38,9 @@ public abstract class TopicDataType<T> {
      */
     protected int m_typeSize;
 
-    //! Indicates whether the method to obtain the key has been implemented.
+    /**
+     *  Indicates whether the method to obtain the key has been implemented.
+     */
     protected boolean m_isGetKeyDefined;
 
     /**
@@ -121,39 +116,13 @@ public abstract class TopicDataType<T> {
         return m_typeSize;
     }
     
+    /**
+     * Get the Key associated to the data inside an {@link InstanceHandle} object
+     * 
+     * @param data The data to get the key from
+     * @param ihandle {@link InstanceHandle} to store the key into
+     * @return boolean if success; false otherwise
+     */
     public abstract boolean getKey(T data, InstanceHandle ihandle);
     
-//    public boolean getKey(T data, InstanceHandle ihandle) {
-//        if (this.m_isGetKeyDefined) {
-//            BinaryOutputStream bos = new BinaryOutputStream();
-//            CDRSerializer ser = new CDRSerializer(false);
-//    
-//            try {
-//                //System.out.println(data.getClass().getSuperclass().getName());
-//                System.out.println(data instanceof Serializable);
-//                System.out.println(data instanceof KeyedType);
-//                System.out.println(data instanceof HelloWorldType);
-//                ((KeyedType) data).serializeKey(ser, bos, "");
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//    
-//            try {
-//                MessageDigest dig = MessageDigest.getInstance("MD5");
-//                byte[] md5 = dig.digest(bos.getBuffer());
-//                for (int i=0; i < md5.length; ++i) {
-//                    ihandle.setValue(i, md5[i]);
-//                }
-//    
-//            } catch (NoSuchAlgorithmException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//    
-//            return true;
-//        }
-//
-//        return false;
-//    }
 }

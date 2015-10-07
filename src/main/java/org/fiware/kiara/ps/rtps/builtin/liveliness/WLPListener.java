@@ -37,8 +37,14 @@ import org.slf4j.LoggerFactory;
  */
 public class WLPListener extends ReaderListener {
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WLPListener.class);
 
+    /**
+     * {@link WLP} reference
+     */
     private final WLP m_WLP;
 
     /**
@@ -50,14 +56,23 @@ public class WLPListener extends ReaderListener {
         m_WLP = pwlp;
     }
 
+    /**
+     * Destroys the information related to the {@link WLPListener}
+     */
     public void destroy() {
-
+        // Do nothing
+    }
+    
+    /**
+     * Method to be called when a new {@link RTPSReader} is matched
+     */
+    @Override
+    public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
+        // Do nothing
     }
 
     /**
-     *
-     * @param reader
-     * @param change
+     * Method to be called when a new {@link CacheChange} is added
      */
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
@@ -135,10 +150,6 @@ public class WLPListener extends ReaderListener {
      */
     public boolean computeKey(CacheChange change) {
         return true;
-    }
-
-    @Override
-    public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
     }
 
 }

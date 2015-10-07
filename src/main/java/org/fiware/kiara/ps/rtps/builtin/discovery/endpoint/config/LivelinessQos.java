@@ -17,15 +17,26 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
+import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
+ * Represents the {@link LivelinessQos} defined using XML
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class LivelinessQos {
+    
+    /**
+     * String indicating the {@link LivelinessQosPolicyKind}
+     */
     @JacksonXmlProperty(localName="kind", isAttribute = true)
     public String kind = "LIVELINESS kind NOT PRESENT";
+    
+    /**
+     * String indicating the lease duration
+     */
     @JacksonXmlProperty(localName="leaseDuration_ms", isAttribute = true)
     public String leaseDuration_ms = "INF";
 }

@@ -42,13 +42,19 @@ public class SequenceNumber extends RTPSSubmessageElement implements Comparable<
     private int m_low;
 
     /**
-     * Default constructor
+     * Default {@link SequenceNumber} constructor
      */
     public SequenceNumber() {
         this.m_high = 0;
         this.m_low = 0;
     }
 
+    /**
+     * Alternative {@link SequenceNumber} constructor
+     * 
+     * @param high High value of the {@link SequenceNumber}
+     * @param low Low value of the {@link SequenceNumber}
+     */
     public SequenceNumber(int high, int low) {
         this.m_high = high;
         this.m_low = low;
@@ -56,6 +62,7 @@ public class SequenceNumber extends RTPSSubmessageElement implements Comparable<
 
     /**
      * Copy constructor
+     * 
      * @param seq The SequenceNumber object to copy
      */
     public SequenceNumber(SequenceNumber seq) {

@@ -33,39 +33,71 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class TopicDataQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link TopicDataQosPolicy} byte array value
+     */
     private final List<Byte> m_value;
 
+    /**
+     * Default {@link TopicDataQosPolicy} constructor
+     */
     public TopicDataQosPolicy() {
         super(ParameterId.PID_TOPIC_DATA, (short) 0);
         this.parent = new QosPolicy(false);
         this.m_value = new ArrayList<>();
     }
 
-    public void pushBack(byte b) {
-        this.m_value.add(b);
+    /**
+     * Adds a new value at the end of the byte array
+     * @param value The new value to be added
+     */
+    public void pushBack(byte value) {
+        this.m_value.add(value);
     }
 
+    /**
+     * Clears the content of the byte array
+     */
     public void clear() {
         this.m_value.clear();
     }
 
+    /**
+     * This method copies two instnces of {@link TopicDataQosPolicy}
+     * @param value The {@link TopicDataQosPolicy} to be copied
+     */
     public void copy(TopicDataQosPolicy value) {
         parent.copy(value.parent);
         m_value.clear();
     }
 
+    /**
+     * Set the byte array value
+     * 
+     * @param value The value to be set
+     */
     public void setValue(List<Byte> value) {
         this.m_value.clear();
         this.m_value.addAll(value);
     }
 
+    /**
+     * Get the byte array value
+     * 
+     * @return The byte array value
+     */
     public List<Byte> getValue() {
         return this.m_value;
     }
 
+    /**
+     * Deserializes only the contents of a {@link TopicDataQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

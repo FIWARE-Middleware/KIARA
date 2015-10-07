@@ -25,13 +25,18 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
      */
     private ParticipantProxyData m_participantProxyData;
 
+    /**
+     * Logging object
+     */
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(RemoteParticipantLeaseDuration.class);
 
     /**
+     * Default {@link RemoteParticipantLeaseDuration} constructor
      * 
-     * @param PDP
-     * @param pData
-     * @param interval
+     * @param PDP The {@link PDPSimple} object who uses the {@link RemoteParticipantLeaseDuration}
+     * @param pData The {@link ParticipantProxyData}
+     * @param interval Period of time
      */
     public RemoteParticipantLeaseDuration(PDPSimple PDP, ParticipantProxyData pData, double interval) {
         super(interval);
@@ -39,6 +44,9 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
         this.m_participantProxyData = pData;
     }
 
+    /**
+     * Stops the timer 
+     */
     public void delete() {
         this.stopTimer();
     }
@@ -52,6 +60,7 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
+        // TODO Activate behaviour
         /*if (code == EventCode.EVENT_SUCCESS) {
          logger.info("Checking RTPSParticipant: " + this.m_participantProxyData.getParticipantName() + " with GUID: " + this.m_participantProxyData.getGUID().getGUIDPrefix());
          if (this.m_participantProxyData.getIsAlive()) {
@@ -70,4 +79,22 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
          }*/
     }
 
+    /**
+     * Get the {@link PDPSimple} reference
+     * 
+     * @return The {@link PDPSimple} reference
+     */
+    public PDPSimple getPDP() {
+        return m_PDP;
+    }
+
+    /**
+     * Get the {@link ParticipantProxyData} reference
+     * 
+     * @return The {@link ParticipantProxyData} reference
+     */
+    public ParticipantProxyData getParticipantProxyData() {
+        return m_participantProxyData;
+    }
+    
 }

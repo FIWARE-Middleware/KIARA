@@ -33,23 +33,38 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class UserDataQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link UserDataQosPolicy} byte array value
+     */
     private List<Byte> dataBuf;
 
+    /**
+     * Default {@link UserDataQosPolicy} constructor
+     */
     public UserDataQosPolicy() {
         super(ParameterId.PID_USER_DATA, (short) 0);
         this.parent = new QosPolicy(false);
     }
 
-    /*public byte[] getDataBuf() {
-     return this.dataBuf;
-     }*/
+    /**
+     * Get the byte array policy value
+     * 
+     * @return The byte array policy value
+     */
     public List<Byte> getDataBuf() {
         return this.dataBuf;
     }
 
+    /**
+     * Set the byte array policy value
+     * 
+     * @param buf The byte array to be set
+     */
     public void setDataBuf(List<Byte> buf) {
         if (buf == null) {
             dataBuf = null;
@@ -60,11 +75,18 @@ public class UserDataQosPolicy extends Parameter {
         }
     }
 
+    /**
+     * This method copies two instnces of {@link UserDataQosPolicy}
+     * @param value The {@link UserDataQosPolicy} to be copied
+     */
     public void copy(UserDataQosPolicy value) {
         parent.copy(value.parent);
         setDataBuf(value.dataBuf);
     }
 
+    /**
+     * Deserializes only the contents of a {@link UserDataQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing

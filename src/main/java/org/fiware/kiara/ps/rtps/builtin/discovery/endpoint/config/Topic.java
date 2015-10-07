@@ -22,14 +22,27 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 
 /**
+ * Represents a Topic defined using an XML file
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class Topic {
+    
+    /**
+     * Topic name
+     */
     @JacksonXmlProperty(localName="name", isAttribute = true)
     public String name = "EPROSIMA_UNKNOWN_STRING";
+    
+    /**
+     * Topic data type name
+     */
     @JacksonXmlProperty(localName="dataType", isAttribute = true)
     public String dataType = "EPROSIMA_UNKNOWN_STRING";
+    
+    /**
+     * Topic kind
+     */
     @JacksonXmlProperty(localName="kind", isAttribute = true)
     public TopicKind kind;
 }

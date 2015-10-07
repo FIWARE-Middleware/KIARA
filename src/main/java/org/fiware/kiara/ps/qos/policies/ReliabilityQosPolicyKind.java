@@ -34,16 +34,35 @@ public enum ReliabilityQosPolicyKind {
      */
     RELIABLE_RELIABILITY_QOS((byte) 1);
 
+    /**
+     * Enumeration value
+     */
     private byte m_value;
 
+    /**
+     * Private {@link ReliabilityQosPolicyKind} constructor
+     * 
+     * @param value The enumeration value
+     */
     private ReliabilityQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }
     
+    /**
+     * Creates a new {@link ReliabilityQosPolicyKind} from its value
+     * 
+     * @param value The enumeration value
+     * @return A new {@link ReliabilityQosPolicyKind} object with the specified value set
+     */
     public static ReliabilityQosPolicyKind getFromValue(byte value) {
         switch(value) {
         case 0:

@@ -29,42 +29,81 @@ import org.fiware.kiara.ps.rtps.common.ChangeForReaderStatus;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
-import org.fiware.kiara.ps.rtps.reader.StatelessReader;
-import org.fiware.kiara.ps.rtps.reader.timedevent.HeartbeatResponseDelay;
-import org.fiware.kiara.ps.rtps.resources.TimedEvent;
+import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.writer.timedevent.NackResponseDelay;
 import org.fiware.kiara.ps.rtps.writer.timedevent.NackSupressionDuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * The class represents an {@link RTPSReader} proxy
  * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>} 
  */
 public class ReaderProxy {
     
+    /**
+     * Attributes of the {@link ReaderProxy}
+     */
     public RemoteReaderAttributes att;
     
+    /**
+     * Associated {@link StatefulWriter}
+     */
     private StatefulWriter m_SFW;
     
+    /**
+     * List of {@link CacheChange} references for the reader
+     */
     private List<ChangeForReader> m_changesForReader;
     
+    /**
+     * Indicates if there are requested {@link CacheChange}s
+     */
     public boolean isRequestedChangesEmpty;
     
+    /**
+     * {@link NackResponseDelay} reference
+     */
     private NackResponseDelay m_nackResponse;
     
+    /**
+     * {@link NackSupressionDuration} reference
+     */
     private NackSupressionDuration m_nackSupression;
     
+    /**
+     * {@link Timestamp} for the {@link NackSupressionDuration}
+     */
     private Timestamp m_nackSupressionTimestamp;
     
+    /**
+     * {@link Timestamp} for the {@link NackResponseDelay}
+     */
     private Timestamp m_nackResponseTimestamp;
     
+    /**
+     * Sent ACKNACK count
+     */
     private int m_lastAckNackCount;
     
+    /**
+     * Mutex
+     */
     private final Lock m_mutex = new ReentrantLock(true);
     
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(ReaderProxy.class);
     
+    /**
+     * {@link ReaderProxy} constructor
+     * 
+     * @param rdata Attributes of the remore {@link RTPSReader}
+     * @param times Objec containing the {@link Timestamp} information
+     * @param sw Reference to the {@link StatefulWriter}
+     */
     public ReaderProxy(RemoteReaderAttributes rdata, WriterTimes times, StatefulWriter sw) {
         this.m_changesForReader = new ArrayList<ChangeForReader>();
         this.att = rdata;
@@ -72,15 +111,22 @@ public class ReaderProxy {
         this.isRequestedChangesEmpty = true;
         this.m_nackSupressionTimestamp = new Timestamp(times.nackSupressionDuration);
         this.m_nackResponseTimestamp = new Timestamp(times.nackResponseDelay);
-        //this.m_nackResponse = new NackResponseDelay(this, times.nackResponseDelay.toMilliSecondsDouble());
-        //this.m_nackSupression = new NackSupressionDuration(this, times.nackSupressionDuration.toMilliSecondsDouble());
         this.m_lastAckNackCount = 0;
     }
     
+    /**
+     * Destroys the {@link ReaderProxy}
+     */
     public void destroy() {
         this.m_changesForReader.clear();
     }
     
+    /**
+     * Creates a {@link ChangeForReader} from a {@link CacheChange} object
+     * 
+     * @param change The {@link CacheChange} reference
+     * @return The new {@link ChangeForReader}
+     */
     public ChangeForReader getChangeForReader(CacheChange change) {
         ChangeForReader retVal = null;
         this.m_mutex.lock();
@@ -99,6 +145,12 @@ public class ReaderProxy {
         return retVal;
     }
     
+    /**
+     * Get a new {@link ChangeForReader} associated to a {@link SequenceNumber}
+     * 
+     * @param seq The {@link SequenceNumber} to search
+     * @return The associated {@link ChangeForReader}
+     */
     public ChangeForReader getChangeForReader(SequenceNumber seq) {
         ChangeForReader retVal = null;
         this.m_mutex.lock();
@@ -117,6 +169,12 @@ public class ReaderProxy {
         return retVal;
     }
     
+    /**
+     * Sets the changes below the provided {@link SequenceNumber} to ACKNOWLEDGED
+     * 
+     * @param seq The reference {@link SequenceNumber}
+     * @return true on success; false otherwise
+     */
     public boolean ackedChangesSet(SequenceNumber seq) {
         this.m_mutex.lock();
         try {
@@ -132,6 +190,12 @@ public class ReaderProxy {
         return true;
     }
     
+    /**
+     * Sets the changes below the provided {@link SequenceNumber} to REQUESTED
+     * 
+     * @param seqNumSet The reference {@link SequenceNumber}
+     * @return true on success; false otherwise
+     */
     public boolean requestedChangesSet(List<SequenceNumber> seqNumSet) {
         this.m_mutex.lock();
         try {
@@ -153,18 +217,40 @@ public class ReaderProxy {
         return true;
     }
     
-    public List<ChangeForReader> requestedChanges() { // TODO Check this is used properly. Original code returns boolean.
+    /**
+     * Get the list of requested {@link ChangeForReader} references
+     * 
+     * @return The list of requested {@link ChangeForReader} references
+     */
+    public List<ChangeForReader> requestedChanges() {
         return changesList(ChangeForReaderStatus.REQUESTED);
     }
     
-    public List<ChangeForReader> unsentChanges() { // TODO Check this is used properly. Original code returns boolean.
+    /**
+     * Get the list of unsent {@link ChangeForReader} references
+     * 
+     * @return The list of unsent {@link ChangeForReader} references
+     */
+    public List<ChangeForReader> unsentChanges() {
         return changesList(ChangeForReaderStatus.UNSENT);
     }
     
-    public List<ChangeForReader> unackedChanges() { // TODO Check this is used properly. Original code returns boolean.
+    /**
+     * Get the list of unacked {@link ChangeForReader} references
+     * 
+     * @return The list of unacked {@link ChangeForReader} references
+     */
+    public List<ChangeForReader> unackedChanges() {
         return changesList(ChangeForReaderStatus.UNACKNOWLEDGED);
     }
 
+    /**
+     * Get a list of {@link ChangeForReader} objects whose status matches
+     * the provided {@link ChangeForReaderStatus}
+     * 
+     * @param status The {@link ChangeForReaderStatus} to compare
+     * @return The List of matched {@link ChangeForReader} references
+     */
     private List<ChangeForReader> changesList(ChangeForReaderStatus status) {
         ArrayList<ChangeForReader> changes = new ArrayList<ChangeForReader>();
         this.m_mutex.lock();
@@ -182,6 +268,11 @@ public class ReaderProxy {
         return changes;
     }
     
+    /**
+     * Get the next requested {@link ChangeForReader}
+     * 
+     * @return The next requested {@link ChangeForReader}
+     */
     public ChangeForReader nextRequestedChange() {
         ChangeForReader retVal = null;
         this.m_mutex.lock();
@@ -196,6 +287,11 @@ public class ReaderProxy {
         return retVal;
     }
     
+    /**
+     * Get the next unsent {@link ChangeForReader}
+     * 
+     * @return The next unsent {@link ChangeForReader}
+     */
     public ChangeForReader nextUnsentChange() {
         ChangeForReader retVal = null;
         this.m_mutex.lock();
@@ -210,6 +306,11 @@ public class ReaderProxy {
         return retVal;
     }
     
+    /**
+     * Get the maximum acked {@link SequenceNumber}
+     * 
+     * @return The next acked {@link SequenceNumber}
+     */
     public SequenceNumber maxAckedChange() {
         SequenceNumber sn = null;
         if (!this.m_changesForReader.isEmpty()) {
@@ -227,6 +328,12 @@ public class ReaderProxy {
         return sn;
     }
     
+    /**
+     * Get the mimimum {@link ChangeForReader} from a specified list
+     * 
+     * @param changes The {@link ChangeForReader} list to check
+     * @return The mimimum {@link ChangeForReader}
+     */
     private ChangeForReader minChange(List<ChangeForReader> changes) {
         this.m_mutex.lock();
         try {
@@ -252,36 +359,73 @@ public class ReaderProxy {
         return null;
     }
     
+    /**
+     * Get the {@link StatefulWriter}
+     * 
+     * @return The {@link StatefulWriter}
+     */
     public StatefulWriter getSFW() {
         return this.m_SFW;
     }
 
+    /**
+     * Get the {@link Lock} mutex
+     * 
+     * @return The {@link Lock} mutex
+     */
     public Lock getMutex() {
         return this.m_mutex;
     }
     
+    /**
+     * Get the list of {@link ChangeForReader} references
+     * 
+     * @return The list of {@link ChangeForReader} references
+     */
     public List<ChangeForReader> getChangesForReader() {
         return this.m_changesForReader;
     }
     
+    /**
+     * Checks if the {@link CacheChange} is relevant
+     * 
+     * @param change The {@link CacheChange} to check
+     * @return true if relevant; false otherwise
+     */
     public boolean rtpsChangeIsRelevant(CacheChange change) {
         return true; // In this version, always returns true
     }
     
+    /**
+     * Get the {@link NackResponseDelay}
+     * 
+     * @return The {@link NackResponseDelay}
+     */
     public NackResponseDelay getNackResponseDelay() {
         return this.m_nackResponse;
     }
     
+    /**
+     * Get the {@link NackSupressionDuration}
+     * 
+     * @return The {@link NackSupressionDuration}
+     */
     public NackSupressionDuration getNackSupression() {
         return this.m_nackSupression;
     }
 
+    /**
+     * Starts the {@link NackSupressionDuration} thread
+     */
     public void startNackSupression() {
         if (this.m_nackSupression == null) {
             this.m_nackSupression = new NackSupressionDuration(this, this.m_nackSupressionTimestamp.toMilliSecondsDouble());
         }
     }
     
+    /**
+     * Starts the {@link NackResponseDelay} thread
+     */
     public void startNackResponseDelay() {
         if (this.m_nackResponse == null) {
             this.m_nackResponse = new NackResponseDelay(this, this.m_nackResponseTimestamp.toMilliSecondsDouble());
@@ -290,15 +434,21 @@ public class ReaderProxy {
         }
     }
     
-    public void copy(ReaderProxy other) {
-        //this.att.copy(other.att);
-        //this.m_SFW
-    }
-    
+    /**
+     * Get the last ACKNACK count registered
+     * 
+     * @return The last ACKNACK count registered
+     */
     public int getLastAcknackCount() {
         return this.m_lastAckNackCount;
     }
     
+    /**
+     * Set the last ACKNACK count registered
+     * 
+     * @param count The last ACKNACK count to be set
+     * 
+     */
     public void setLastAcknackCount(int count) {
         this.m_lastAckNackCount = count;
     }

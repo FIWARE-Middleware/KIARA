@@ -162,12 +162,9 @@ public class ParameterList extends RTPSSubmessageElement {
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         boolean isSentinel = false;
-        
         while (!isSentinel) {
-
             ParameterId pid = ParameterId.createFromValue(impl.deserializeI16(message, name));
             short length = impl.deserializeI16(message, name);
-
             Parameter param = ParameterBuilder.createParameter(pid, length);
             if (param != null) {
                 int initialPos = message.getPosition();
@@ -176,29 +173,20 @@ public class ParameterList extends RTPSSubmessageElement {
                 int deserializedBytes = finalPos - initialPos;
                 int bytesToSkip = (deserializedBytes % 4 == 0) ? 0 : 4 - (deserializedBytes % 4);/*4 - (message.getPosition() % 4);*/
                 message.skipBytes(bytesToSkip);
-
                 if (param.getParameterId() == ParameterId.PID_SENTINEL) {
                     isSentinel = true;
                 }
-
                 this.m_parameters.add(param);
                 this.m_totalBytes += param.getSerializedSize();
                 this.m_hasChanged = true;
             }
-
         }
-
-
-
     }
 
     /**
      * Removes all the Parameter references in the list
      */
     public void deleteParams() {
-//        for (Parameter param : this.m_parameters) {
-//            param.delete(); TODO Check if necessary
-//        }
         resetList();
     }
 

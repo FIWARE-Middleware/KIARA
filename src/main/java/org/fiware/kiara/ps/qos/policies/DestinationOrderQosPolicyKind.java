@@ -34,18 +34,37 @@ public enum DestinationOrderQosPolicyKind {
      */
     BY_SOURCE_TIMESTAMP_DESTINATIONORDER_QOS((byte) 1);
 
+    /**
+     * Enumeration value
+     */
     private byte m_value;
     
+    /**
+     * Provate constructor
+     * 
+     * @param value Enumeratio value
+     */
     private DestinationOrderQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }
     
-    public static DestinationOrderQosPolicyKind createFromValue(int i) {
-        switch(i) {
+    /**
+     * Creates a new {@link DestinationOrderQosPolicyKind} from its value
+     * 
+     * @param value The enumeration value
+     * @return A new {@link DestinationOrderQosPolicyKind} with the introduced parameter value set
+     */
+    public static DestinationOrderQosPolicyKind createFromValue(int value) {
+        switch(value) {
         case 0:
             return DestinationOrderQosPolicyKind.BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS;
         case 1:

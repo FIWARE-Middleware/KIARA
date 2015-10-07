@@ -46,6 +46,12 @@ public class InstanceHandle extends RTPSSubmessageElement {
         }
     }
 
+    /**
+     * Alternative {@link InstanceHandle} constructor (uses a {@link GUID} to create
+     * the KEY)
+     * 
+     * @param guid The {@link GUID} to create the KEY
+     */
     public InstanceHandle(GUID guid) {
         this.m_value = new byte[16];
         for (int i=0; i < 16; ++i) {

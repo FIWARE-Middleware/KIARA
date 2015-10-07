@@ -20,45 +20,54 @@ package org.fiware.kiara.ps.rtps.resources;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import org.fiware.kiara.ps.rtps.Endpoint;
-import org.fiware.kiara.ps.rtps.messages.MessageReceiver;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.Marker;
-
-import com.eprosima.log.Log;
 
 /**
- *
+ * This class represents the message reception thread.
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ReceptionThread implements Runnable {
 
+    /**
+     * {@link DatagramChannel} the thread will receive from
+     */
     private DatagramChannel m_channel;
 
+    /**
+     * {@link ListenResource} that created this {@link ReceptionThread}
+     */
     private ListenResource m_listenResource;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(ReceptionThread.class);
     
+    /**
+     * Indicates if the thread is in execution
+     */
     private volatile boolean running = true;
 
-    //private final Lock m_mutex = new ReentrantLock(true);
-
+    /**
+     * {@link ReceptionThread} constructor
+     * 
+     * @param channel {@link DatagramChannel} associated to the thread
+     * @param listenResource {@link ListenResource} that creates the thread
+     */
     public ReceptionThread(DatagramChannel channel, ListenResource listenResource) {
         this.m_channel = channel;
         this.m_listenResource = listenResource;
     }
 
+    /**
+     * Main method
+     */
     @Override
     public void run() {
 
@@ -70,10 +79,8 @@ public class ReceptionThread implements Runnable {
             buf = new byte[this.m_channel.socket().getReceiveBufferSize()];
             DatagramPacket dp = new DatagramPacket(buf, buf.length);
 
-            //logger.debug("Thread {} listening in " + this.m_channel.socket().getLocalAddress().getHostAddress() + ":" + this.m_channel.socket().getLocalPort());
             logger.debug("Thread {} listening in IP {}:{}", Thread.currentThread().getId(), this.m_channel.socket().getLocalAddress().getHostAddress(), this.m_channel.socket().getLocalPort());
-            //logger.info(String.format("Thread {} listening in IP <blue>%s</blue>", this.m_channel.socket().getLocalAddress().getHostAddress()));
-
+            
             while(running && this.m_channel.isOpen()) {
                 
                 dp.setLength(buf.length);
@@ -96,13 +103,17 @@ public class ReceptionThread implements Runnable {
             
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             logger.error(e.toString());
-            e.printStackTrace();
+            //e.printStackTrace();
         } 
         
     }
 
+    /**
+     * This method is executed when a new {@link RTPSMessage} has been received
+     * 
+     * @param msg Received {@link RTPSMessage}
+     */
     private void newRTPSMessage(RTPSMessage msg) {
         synchronized(this.m_listenResource) {
             if (msg.getSize() == 0) {
@@ -135,6 +146,9 @@ public class ReceptionThread implements Runnable {
         }
     }
     
+    /**
+     * Finishes the thread
+     */
     public void terminate() {
         this.running = false;
     }

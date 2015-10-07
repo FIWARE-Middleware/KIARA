@@ -33,43 +33,75 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class GroupDataQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link GroupDataQosPolicy} value
+     */
     private List<Byte> m_value;
 
+    /**
+     * Default {@link GroupDataQosPolicy} constructor
+     */
     public GroupDataQosPolicy() {
         super(ParameterId.PID_GROUP_DATA, (short) 0);
         this.parent = new QosPolicy(false);
         this.m_value = new ArrayList<Byte>();
     }
 
-    public void pushBack(byte b) {
-        this.m_value.add(b);
+    /**
+     * Adds a new boolean value to the {@link HistoryQosPolicy} value
+     * 
+     * @param value The value to be added
+     */
+    public void pushBack(byte value) {
+        this.m_value.add(value);
     }
 
+    /**
+     * Clears the {@link GroupDataQosPolicy} value
+     */
     public void clear() {
         this.m_value.clear();
     }
 
+    /**
+     * Set the {@link GroupDataQosPolicy} value
+     * 
+     * @param value The new value to be set
+     */
     public void setValue(List<Byte> value) {
         this.m_value.clear();
         this.m_value.addAll(value);
     }
 
+    /**
+     * Get the {@link GroupDataQosPolicy} value
+     * 
+     * @return The {@link GroupDataQosPolicy} value
+     */
     public List<Byte> getValue() {
         return this.m_value;
     }
 
+    /**
+     * This method copies two instnces of {@link GroupDataQosPolicy}
+     * @param value The {@link GroupDataQosPolicy} to be copied
+     */
     public void copy(GroupDataQosPolicy value) {
         parent.copy(value.parent);
         setValue(value.m_value);
     }
 
+    /**
+     * Deserializes the {@link GroupDataQosPolicy} value
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
-
+        // Not implemented
     }
 
 }

@@ -37,7 +37,7 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
      * Base SequenceNumber
      */
     private SequenceNumber m_base;
-    
+
     /**
      * Set of SequenceNumber
      */
@@ -68,7 +68,7 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
     public SequenceNumber getBase() {
         return this.m_base;
     }
-    
+
     /**
      * Get the SequenceNumber set
      * 
@@ -130,7 +130,7 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
             }
 
             int deltaN = 0;
-            
+
             for (SequenceNumber sn : this.m_set) {
                 deltaN = (int) (sn.toLong() - this.m_base.toLong());
                 bitmap[(int)(deltaN/32)] = (bitmap[(int)(deltaN/32)] | (1 << (31 - deltaN % 32)));
@@ -165,8 +165,6 @@ public class SequenceNumberSet extends RTPSSubmessageElement {
                 }
             }
         }
-
-
     }
 
     /**

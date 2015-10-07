@@ -57,6 +57,9 @@ public class TopicAttributes {
      */
     public ResourceLimitsQosPolicy resourceLimitQos;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(TopicAttributes.class);
 
     /**
@@ -146,6 +149,9 @@ public class TopicAttributes {
 
     }
 
+    /**
+     * Compares two TopicAttributes objects
+     */
     @Override
     public boolean equals(Object other) {
         if (other instanceof TopicAttributes) {

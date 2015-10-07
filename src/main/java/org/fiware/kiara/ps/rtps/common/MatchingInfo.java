@@ -36,6 +36,12 @@ public class MatchingInfo {
      */
     public GUID remoteEndpointGuid;
 
+    /**
+     * {@link MatchingInfo} constructor
+     * 
+     * @param status {@link MatchingStatus} of the {@link MatchingInfo}
+     * @param guid {@link GUID} of the matching entity
+     */
     public MatchingInfo(MatchingStatus status, GUID guid) {
         this.status = status;
         this.remoteEndpointGuid = guid;

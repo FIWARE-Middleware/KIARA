@@ -66,8 +66,6 @@ import org.slf4j.LoggerFactory;
  */
 public class WLP {
 
-    private static final Logger logger = LoggerFactory.getLogger(WLP.class);
-
     /**
      * Reference to the local RTPSParticipant.
      */
@@ -89,9 +87,13 @@ public class WLP {
     private StatefulReader m_builtinReader;
 
     /**
-     * History
+     * {@link WriterHistoryCache} of the builtin {@link RTPSWriter}
      */
     WriterHistoryCache m_builtinWriterHistory;
+    
+    /**
+     * {@link ReaderHistoryCache} of the builtin {@link RTPSRReader}
+     */
     ReaderHistoryCache m_builtinReaderHistory;
 
     /**
@@ -129,9 +131,14 @@ public class WLP {
      * Minimum time of the manual by participant writers liveliness period.
      */
     private double m_minManRTPSParticipant_MilliSec;
+    
+    /**
+     * Logging object
+     */
+    private static final Logger logger = LoggerFactory.getLogger(WLP.class);
 
     /**
-     * Constructor
+     * {@link WLP} constructor
      *
      * @param builtinProtocols Reference to the BuiltinProtocols object.
      */
@@ -586,9 +593,29 @@ public class WLP {
         return m_builtinWriterHistory;
     }
 
+    /**
+     * Deletes all the information associated to the {@link WLP}
+     */
     public void destroy() {
-        // TODO Auto-generated method stub
-
+        if (this.m_builtinReader != null) {
+            this.m_builtinReader.destroy();
+        }
+        
+        if (this.m_builtinWriter != null) {
+            this.m_builtinWriter.destroy();
+        }
+        
+        if (this.m_listener != null) {
+            this.m_listener.destroy();
+        }
+        
+        if (this.m_livelinessAutomatic != null) {
+            this.m_livelinessAutomatic.stopTimer();
+        }
+        
+        if (this.m_livelinessManRTPSParticipant != null) {
+            this.m_livelinessManRTPSParticipant.stopTimer();
+        }
     }
 
 }

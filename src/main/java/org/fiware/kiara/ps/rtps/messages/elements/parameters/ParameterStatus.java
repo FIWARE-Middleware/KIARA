@@ -23,22 +23,37 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**
- *
+ * Status RTPS DATA parameter
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
  */
 public class ParameterStatus extends Parameter {
 
+    /**
+     * {@link Parameter} value
+     */
     private byte m_status;
 
+    /**
+     * Default {@link ParameterStatus} constructor
+     */
     public ParameterStatus() {
         super(ParameterId.PID_STATUS_INFO, (short) 4);
         this.m_status = 0;
     }
 
+    /**
+     * Alternative {@link ParameterStatus} constructor that creates a {@link ParameterStatus} 
+     * depending on the introduced {@link CacheChange}
+     * 
+     * @param kind The {@link ChangeKind} to create the {@link ParameterStatus}
+     */
     public ParameterStatus(ChangeKind kind) {
         super(ParameterId.PID_STATUS_INFO, (short) 4);
         switch (kind) {
@@ -57,6 +72,9 @@ public class ParameterStatus extends Parameter {
         }
     }
     
+    /**
+     * Serializes a {@link ParameterStatus} object and its inherited attributes
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
@@ -66,22 +84,28 @@ public class ParameterStatus extends Parameter {
         impl.serializeByte(message, name, this.m_status);
     }
 
+    /**
+     * Deserializes a {@link ParameterStatus} object and its inherited attributes
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         message.skipBytes(3);
-        /*impl.deserializeByte(message, name, (byte) 0); 
-		impl.deserializeByte(message, name, (byte) 0);
-		impl.deserializeByte(message, name, (byte) 0);*/
         this.m_status = impl.deserializeByte(message, name);
     }
 
+    /**
+     * Deserializes a {@link ParameterStatus} object and not its inherited attributes
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         message.skipBytes(3);
         this.m_status = impl.deserializeByte(message, name);
     }
 
+    /**
+     * Get the serialized size
+     */
     @Override
     public short getSerializedSize() {
         return (short) (super.getSerializedSize() + this.m_length);

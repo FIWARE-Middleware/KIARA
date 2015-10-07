@@ -35,34 +35,55 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class LifespanQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link Timestamp} indicating the duration of the Lifespan
+     */
     public final Timestamp duration;
 
+    /**
+     * Default {@link LifespanQosPolicy} constructor
+     */
     public LifespanQosPolicy() {
         super(ParameterId.PID_LIFESPAN, Parameter.PARAMETER_TIME_LENGTH);
         this.parent = new QosPolicy(true);
         this.duration = new Timestamp().timeInfinite();
     }
 
+    /**
+     * This method copies two instnces of {@link LifespanQosPolicy}
+     * @param value The {@link LifespanQosPolicy} to be copied
+     */
     public void copy(LifespanQosPolicy value) {
         parent.copy(value.parent);
         duration.copy(value.duration);
     }
 
+    /**
+     * Serializes a {@link LifespanQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         this.duration.serialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link LifespanQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.duration.deserialize(impl, message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link LifespanQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.duration.deserialize(impl, message, name);

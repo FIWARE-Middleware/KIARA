@@ -113,8 +113,6 @@ public abstract class Parameter extends RTPSSubmessageElement {
      */
     public static short PARAMETER_TYPE_MAX_SIZE_SERIALIZED_LENGTH = 12;
     
-    
-    
     /**
      * Parameter identifier
      */

@@ -30,16 +30,35 @@ public enum OwnershipQosPolicyKind {
     /** Exclusive ownership */
     EXCLUSIVE_OWNERSHIP_QOS((byte) 1);
 
+    /**
+     * The enumeration value
+     */
     private final byte m_value;
 
+    /**
+     * Private {@link OwnershipQosPolicyKind} constructor
+     * 
+     * @param value The enumeration value
+     */
     private OwnershipQosPolicyKind(byte value) {
         this.m_value = value;
     }
 
+    /**
+     * Get the enumeration value
+     * 
+     * @return The enumeration value
+     */
     public byte getValue() {
         return this.m_value;
     }
     
+    /**
+     * Creates a new {@link OwnershipQosPolicyKind} from its value
+     * 
+     * @param value The enumeration value
+     * @return A new {@link OwnershipQosPolicyKind} object with the specified value set
+     */
     public static OwnershipQosPolicyKind getFromValue(byte value) {
         switch(value) {
         case 0:

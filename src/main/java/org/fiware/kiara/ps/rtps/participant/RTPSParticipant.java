@@ -24,8 +24,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.TopicAttributes;
-import org.fiware.kiara.ps.participant.ParticipantListener;
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.WriterQos;
 import org.fiware.kiara.ps.rtps.Endpoint;
@@ -40,6 +40,7 @@ import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.history.WriterHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
@@ -51,7 +52,6 @@ import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.StatelessReader;
-import org.fiware.kiara.ps.rtps.resources.EventResource;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.ps.rtps.resources.SendResource;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
@@ -62,59 +62,123 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class represents an RTPS level Participant (RTPSParticipant)
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class RTPSParticipant {
 
-    private static final Logger logger = LoggerFactory.getLogger(RTPSParticipant.class);
-
+    /**
+     * Participant {@link GUID}
+     */
     private GUID m_guid;
 
+    /**
+     * Participant attributes
+     */
     private RTPSParticipantAttributes m_att;
 
+    /**
+     * Counter to generate identifiers
+     */
     private int idCounter;
 
+    /**
+     * {@link BuiltinProtocols} object for WL Protocol, SEDP and SPDP
+     */
     private BuiltinProtocols m_builtinProtocols;
 
+    /**
+     * Object usedto send data
+     */
     private SendResource m_sendResource;
 
-    private EventResource m_eventResource;
+    /**
+     * Object used to unlock the participant when data is received
+     */
+    //private EventResource m_eventResource;
 
+    /**
+     * List of user defined {@link RTPSWriter} objects associated to this {@link RTPSParticipant}
+     */
     private List<RTPSWriter> m_userWriterList;
 
+    /**
+     * List of user defined {@link RTPSReader} objects associated to this {@link RTPSParticipant}
+     */
     private List<RTPSReader> m_userReaderList;
 
+    /**
+     * List of {@link RTPSWriter} objects associated to this {@link RTPSParticipant}
+     */
     private List<RTPSWriter> m_allWriterList;
 
+    /**
+     * List of {@link RTPSReader} objects associated to this {@link RTPSParticipant}
+     */
     private List<RTPSReader> m_allReaderList;
 
+    /**
+     * List of {@link ListenResource} objects
+     */
     private List<ListenResource> m_listenResourceList;
 
-    private final Lock m_mutex;
-
+    /**
+     * Listener associated to the {@link RTPSParticipant}
+     */
     private RTPSParticipantListener m_participantListener; 
 
-    private RTPSParticipant m_userParticipant;
-
+    /**
+     * Semaphore for resource sharing
+     */
     private final Semaphore m_resourceSemaphore;
 
+    /**
+     * Default unicast {@link LocatorList}
+     */
     private LocatorList m_defaultUnicastLocatorList;
 
+    /**
+     * Default multicast {@link LocatorList}
+     */
     private LocatorList m_defaultMulticastLocatorList;
     
+    /**
+     * Predefined unicast port for sending user data
+     */
     private int m_userUnicastPort = 0;
     
+    /**
+     * Predefined multicast port for sending user data
+     */
     private int m_userMulticastPort = 0;
 
-    //private final Object m_resourceSemaphore;
-
+    /**
+     * Thread identifier
+     */
     private int m_threadID;
+    
+    /**
+     * Mutex
+     */
+    private final Lock m_mutex;
 
+    /**
+     * Logging object
+     */
+    private static final Logger logger = LoggerFactory.getLogger(RTPSParticipant.class);
+
+    /**
+     * {@link RTPSParticipant} constructor
+     * 
+     * @param participantAtt {@link ParticipantAttributes} for configuration
+     * @param guidPrefix {@link GUIDPrefix} of the {@link RTPSParticipant}
+     * @param participantListener {@link RTPSParticipantListener} to invoke if an event should occur
+     * @throws Exception If something goes wrong while creating the {@link RTPSParticipant}
+     */
     public RTPSParticipant (
             RTPSParticipantAttributes participantAtt, 
             GUIDPrefix guidPrefix,
-            //RTPSParticipant par,
             RTPSParticipantListener participantListener
             ) throws Exception {
 
@@ -150,19 +214,12 @@ public class RTPSParticipant {
 
             this.m_sendResource = new SendResource();
             this.m_sendResource.initSend(this, loc, this.m_att.sendSocketBufferSize, this.m_att.useIPv4ToSend, this.m_att.useIPv6ToSend);
-            //this.m_eventResource = new EventResource();
-            //this.m_eventResource.initThread(this);
+
             boolean hasLocatorsDefined = true;
             if (this.m_att.defaultUnicastLocatorList.isEmpty() && this.m_att.defaultMulticastLocatorList.isEmpty()) {
                 hasLocatorsDefined = false;
                 Locator newloc = new Locator();
                 newloc.setPort(this.m_att.portParameters.getUserUnicastPort(participantAtt.builtinAtt.domainID, this.m_att.participantID));
-                /*newloc.setPort(
-                        this.m_att.portParameters.portBase + 
-                        this.m_att.portParameters.domainIDGain * participantAtt.builtinAtt.domainID + 
-                        this.m_att.portParameters.offsetd3 + 
-                        this.m_att.portParameters.participantIDGain * this.m_att.participantID
-                        );*/
                 newloc.setKind(LocatorKind.LOCATOR_KIND_UDPv4);
                 this.m_att.defaultUnicastLocatorList.pushBack(newloc);
             }
@@ -210,6 +267,10 @@ public class RTPSParticipant {
 
     }
 
+    /**
+     * Destroys all the information in the {@link RTPSParticipant} (Kiara.shutdown() has to be called before
+     * finishing the user's application)
+     */
     public void destroy() {
         logger.info("Removing RTPSParticipant: {}", this.getGUID().toString());
 
@@ -233,20 +294,22 @@ public class RTPSParticipant {
             this.m_builtinProtocols.destroy();
         }
 
-        if (this.m_userParticipant != null) {
-            this.m_userParticipant.destroy();
-        }
-
         if (this.m_sendResource != null) {
             this.m_sendResource.destroy();
         }
 
-        if (this.m_eventResource != null) {
-            this.m_eventResource.destroy();
-        }
-
     }
 
+    /**
+     * Creates a new {@link RTPSWriter}
+     * 
+     * @param watt {@link WriterAttributes} for configuration
+     * @param history {@link WriterHistoryCache} to store all the {@link CacheChange}s
+     * @param listener {@link WriterListener} to be invoked if an event should occur
+     * @param entityId {@link EntityId} of the {@link RTPSWriter}
+     * @param isBuiltin Indicates whether it is a builtin entity or not
+     * @return The new {@link RTPSWriter}
+     */
     public RTPSWriter createWriter(WriterAttributes watt, WriterHistoryCache history, WriterListener listener, EntityId entityId, boolean isBuiltin) {
 
         String type = watt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE ? "RELIABLE" : "BEST_EFFORT";
@@ -334,6 +397,16 @@ public class RTPSParticipant {
         return writer;
     }
 
+    /**
+     * Creates a new {@link RTPSReader}
+     * 
+     * @param ratt {@link ReaderAttributes} for configuration
+     * @param history {@link ReaderHistoryCache} to store all {@link CacheChange}s
+     * @param listener {@link ReaderListener} to invoke if an event should occur
+     * @param entityId {@link EntityId} of the {@link RTPSReader}
+     * @param isBuiltin Indicates whether it is a builtin entity or not
+     * @return The new {@link RTPSReader}
+     */
     public RTPSReader createReader(ReaderAttributes ratt, ReaderHistoryCache history, ReaderListener listener, EntityId entityId, boolean isBuiltin) {
 
         String type = ratt.endpointAtt.reliabilityKind == ReliabilityKind.RELIABLE ? "RELIABLE" : "BEST_EFFORT";
@@ -424,26 +497,58 @@ public class RTPSParticipant {
         return reader;
     }
 
+    /**
+     * Registers an {@link RTPSWriter} into the {@link RTPSParticipant}
+     * 
+     * @param writer The {@link RTPSWriter} to register
+     * @param topicAtt {@link TopicAttributes} for configuration
+     * @param wqos {@link WriterQos} to check
+     * @return true on success; false otherwise
+     */
     public boolean registerWriter(RTPSWriter writer, TopicAttributes topicAtt, WriterQos wqos) {
         return this.m_builtinProtocols.addLocalWriter(writer, topicAtt, wqos);
     }
 
+    /***
+     * Registers an {@link RTPSReader} into the {@link RTPSParticipant}
+     * 
+     * @param reader The {@link RTPSWriter} to register
+     * @param topicAtt
+     * @param rqos {@link ReaderQos} to check
+     * @return true on success; false otherwise
+     */
     public boolean registerReader(RTPSReader reader, TopicAttributes topicAtt, ReaderQos rqos) {
         return this.m_builtinProtocols.addLocalReader(reader, topicAtt, rqos);
     }
 
+    /**
+     * Updates an already registered {@link RTPSWriter} into the {@link RTPSParticipant}
+     * 
+     * @param writer The {@link RTPSWriter} to register
+     * @param wqos {@link WriterQos} to check
+     * @return true on success; false otherwise
+     */
     public boolean updateLocalWriter(RTPSWriter writer, WriterQos wqos) {
         return this.m_builtinProtocols.updateLocalWriter(writer, wqos);
     }
 
+    /**
+     * Updates an already registered {@link RTPSWriter} into the {@link RTPSParticipant}
+     * 
+     * @param reader The {@link RTPSReader} to register
+     * @param rqos {@link ReaderQos} to check
+     * @return true on success; false otherwise
+     */
     public boolean updateLocalReader(RTPSReader reader, ReaderQos rqos) {
         return this.m_builtinProtocols.updateLocalReader(reader, rqos);
     }
 
-    /*
-     * AUXILIARY METHODS
+    /**
+     * Creates a trusted {@link EntityId} depending on the provided {@link EntityId}
+     * 
+     * @param reader The {@link EntityId} of the {@link RTPSReader}
+     * @return The new {@link EntityId}
      */
-
     private EntityId createTrustedWriter(EntityId reader) {
         if (reader.equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
             return new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER);
@@ -464,6 +569,12 @@ public class RTPSParticipant {
         return new EntityId();
     }
 
+    /**
+     * Checks if an {@link EntityId} exists among the {@link RTPSParticipant} readers and writers
+     * @param ent The {@link EntityId} to search
+     * @param kind The {@link EndpointKind}
+     * @return true if the entity exists; false otherwise
+     */
     public boolean existsEntityId(EntityId ent, EndpointKind kind) {
         if (kind == EndpointKind.WRITER) {
             for (RTPSWriter it : this.m_userWriterList) {
@@ -481,10 +592,13 @@ public class RTPSParticipant {
         return false;
     }
 
-    /*
-     * LISTEN RESOURCE METHODS
+    /**
+     * Assigns an {@link Endpoint}
+     * 
+     * @param endp The {@link Endpoint} to be assigned
+     * @param isBuiltin Indicates if it is a builtin {@link Endpoint} or not
+     * @return true on success; false otherwise
      */
-
     private boolean assignEndpointListenResources(Endpoint endp, boolean isBuiltin) {
         boolean valid = true;
 
@@ -546,6 +660,15 @@ public class RTPSParticipant {
         return valid;
     }
 
+    /**
+     * Assigns an {@link Endpoint} to a {@link LocatorList}
+     * 
+     * @param endp The {@link Endpoint} to be assigned
+     * @param list The {@link LocatorList} to assign the {@link Endpoint} to
+     * @param isMulti Indicates whether it is a multicast {@link Endpoint} or not
+     * @param isFixed Indicates whether it is a fixed {@link Endpoint} or not
+     * @return true on success; false otherwise
+     */
     private boolean assignEndpointToLocatorList(Endpoint endp, LocatorList list, boolean isMulti, boolean isFixed) {
         boolean valid = true;
         LocatorList finalList = new LocatorList();
@@ -590,6 +713,12 @@ public class RTPSParticipant {
         return valid;
     }
 
+    /**
+     * Deletes a user created {@link Endpoint}
+     * 
+     * @param endpoint The {@link Endpoint} to be deleted
+     * @return true on success; false otherwise
+     */
     public boolean deleteUserEndpoint(Endpoint endpoint) {
         boolean found = false;
         GUID endpointGUID = null;
@@ -675,34 +804,63 @@ public class RTPSParticipant {
 
     }
 
+    /**
+     * Send a synchronous {@link RTPSMessage}
+     * 
+     * @param msg The {@link RTPSMessage} to be sent
+     * @param loc The {@link Locator} to send the {@link RTPSMessage} to
+     */
     public void sendSync(RTPSMessage msg, Locator loc) {
         this.m_sendResource.sendSync(msg, loc);
     }
 
+    /**
+     * Announces the {@link RTPSParticipant} state
+     */
     public void announceRTPSParticipantState() {
         this.m_builtinProtocols.announceRTPSParticipantState();
     }
 
+    /**
+     * Stop the {@link RTPSParticipant} state announcement
+     */
     public void stopRTPSParticipantAnnouncement() {
         this.m_builtinProtocols.stopRTPSParticipantAnnouncement();
     }
 
+    /**
+     * Resets the {@link RTPSParticipant} state announcement timer
+     */
     public void resetRTPSParticipantAnnouncement() {
         this.m_builtinProtocols.resetRTPSParticipantAnnouncement();
     }
 
+    /**
+     * Frees the next {@link CacheChange}
+     */
     public void looseNextChange() {
         this.m_sendResource.looseNextChange();
     }
 
-    public boolean newRemoteEndpointDiscovered(GUID pguid, short userDefienedId, EndpointKind kind) {
+    /**
+     * Adds a new remote {@link Endpoint}
+     * 
+     * @param pguid Remote {@link RTPSParticipant} received {@link GUID}
+     * @param userDefinedId User defined id
+     * @param kind The {@link EndpointKind}
+     * @return true on success; false otherwise
+     */
+    public boolean newRemoteEndpointDiscovered(GUID pguid, short userDefinedId, EndpointKind kind) {
         if (this.m_att.builtinAtt.useStaticEDP == false) {
             logger.warn("Remote Endpoints can only be activated with static discovery protocol");
             return false;
         }
-        return this.m_builtinProtocols.getPDP().newRemoteEndpointStaticallyDiscovered(pguid, userDefienedId, kind);
+        return this.m_builtinProtocols.getPDP().newRemoteEndpointStaticallyDiscovered(pguid, userDefinedId, kind);
     }
 
+    /**
+     * Semaphore post method
+     */
     public void resourceSemaphorePost() {
         synchronized(this.m_resourceSemaphore) {
             if (this.m_resourceSemaphore != null) {
@@ -711,6 +869,9 @@ public class RTPSParticipant {
         }
     }
 
+    /**
+     * Semaphore wait method
+     */
     public void resourceSemaphoreWait() {
         synchronized(this.m_resourceSemaphore) {
             if (this.m_resourceSemaphore != null) {
@@ -724,61 +885,120 @@ public class RTPSParticipant {
         }
     }
 
+    /**
+     * Get the {@link RTPSParticipant} {@link GUID}
+     * 
+     * @return The {@link RTPSParticipant} {@link GUID}
+     */
     public GUID getGUID() {
         return this.m_guid;
     }
 
+    /**
+     * Set the {@link RTPSParticipant} {@link GUID}
+     * 
+     * @param guid The {@link RTPSParticipant} {@link GUID} to be set
+     */
     public void setGUID(GUID guid) {
         this.m_guid = guid;
     }
 
+    /**
+     * Get the {@link RTPSParticipant} identifier
+     * 
+     * @return The {@link RTPSParticipant} identifier
+     */
     public int getRTPSParticipantID() {
         return m_att.participantID;
     }
 
+    /**
+     * Get the {@link RTPSParticipantAttributes}
+     * 
+     * @return The {@link RTPSParticipantAttributes}
+     */
     public RTPSParticipantAttributes getAttributes() {
         return this.m_att;
     }
 
+    /**
+     * Updates the information of an {@link RTPSReader}
+     * 
+     * @param m_reader The {@link RTPSReader} to update
+     * @param qos The {@link ReaderQos}
+     */
     public void updateReader(RTPSReader m_reader, ReaderQos qos) {
-        // TODO Auto-generated method stub
-
+        this.updateLocalReader(m_reader, qos);
     }
 
+    /**
+     * Triggers the remote {@link RTPSParticipant} liveliness assertion
+     * 
+     * @param guidPrefix The {@link RTPSParticipant} {@link GUIDPrefix}
+     */
     public void assertRemoteRTPSParticipantLiveliness(GUIDPrefix guidPrefix) {
         this.m_builtinProtocols.getPDP().assertRemoteParticipantLiveliness(guidPrefix);
-
     }
 
+    /**
+     * Get the Mutex
+     * 
+     * @return The Mutex
+     */
     public Lock getParticipantMutex() {
         return this.m_mutex;
     }
 
+    /**
+     * Get the user defined {@link RTPSReader}s
+     * 
+     * @return The user defined {@link RTPSReader}s
+     */
     public List<RTPSReader> getUserReaders() {
         return this.m_userReaderList;
     }
 
+    /**
+     * Get the user defined {@link RTPSWriter}s
+     * 
+     * @return The user defined {@link RTPSWriter}s
+     */
     public List<RTPSWriter> getUserWriters() {
         return this.m_userWriterList;
     }
 
+    /**
+     * Get the {@link RTPSParticipantListener}
+     * 
+     * @return The {@link RTPSParticipantListener}
+     */
     public RTPSParticipantListener getListener() {
         return this.m_participantListener;
     }
 
-    /*public RTPSParticipant getUserRTPSParticipant() {
-        // TODO Auto-generated method stub
-        return null;
-    }*/
-
+    /**
+     * Get the default {@link LocatorList}
+     * 
+     * @return The default {@link LocatorList}
+     */
     public LocatorList getDefaultUnicastLocatorList() {
         return this.m_defaultUnicastLocatorList;
     }
 
+    /**
+     * Get the default multicast {@link LocatorList}
+     * 
+     * @return The default multicast {@link LocatorList}
+     */
     public LocatorList getDefaultMulticastLocatorList() {
         return this.m_defaultMulticastLocatorList;
     }
 
+    /**
+     * Get the SPDP unicast port
+     * 
+     * @return The SPDP unicast port
+     */
     public int getSPDPUnicastPort() {
         if (this.m_builtinProtocols != null) {
             return this.m_builtinProtocols.getSPDPUnicastPort();
@@ -786,6 +1006,11 @@ public class RTPSParticipant {
         return -1;
     }
 
+    /**
+     * Get the SPDP multicast port
+     * 
+     * @return The SPDP multicast port
+     */
     public int getSPDPMulticastPort() {
         if (this.m_builtinProtocols != null) {
             return this.m_builtinProtocols.getSPDPMulticastPort();
@@ -793,10 +1018,20 @@ public class RTPSParticipant {
         return -1;
     }
 
+    /**
+     * Get the user unicast port
+     * 
+     * @return The user unicast port
+     */
     public int getUserUnicastPort() {
         return this.m_userUnicastPort;
     }
 
+    /**
+     * Get the user multicast port
+     * 
+     * @return The user multicast port
+     */
     public int getUserMulticastPort() {
         return this.m_userMulticastPort;
     }

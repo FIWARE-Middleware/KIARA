@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint;
 
 import java.util.concurrent.locks.Lock;
 
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.rtps.attributes.BuiltinAttributes;
 import org.fiware.kiara.ps.rtps.attributes.HistoryCacheAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
@@ -94,10 +95,9 @@ public class EDPSimple extends EDP {
      */
     public EDPSimpleSubListener subListener;
 
-    /*
-     * Private Attributes
+    /**
+     * Logging object
      */
-
     private static final Logger logger = LoggerFactory.getLogger(EDPSimple.class);
 
     /**
@@ -484,6 +484,9 @@ public class EDPSimple extends EDP {
         }
     }
 
+    /**
+     * Reoves the remote {@link Participant} information stored in a {@link ParticipantProxyData} object
+     */
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
         logger.debug("Removing remote endpoints for RTPSParticipant {}", pdata.getGUID());
         Lock mutex = pdata.getMutex();

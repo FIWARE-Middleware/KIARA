@@ -40,17 +40,53 @@ public class EntityId extends RTPSSubmessageElement {
      */
     public enum EntityIdEnum {
 
+        /**
+         * Unknown entity
+         */
         ENTITYID_UNKNOWN(0x00000000),
+        /**
+         * Participant
+         */
         ENTITYID_RTPSPARTICIPANT(0x000001C1),
+        /**
+         * Builtin Topic Writer (Metatraffic)
+         */
         ENTITYID_SEDP_BUILTIN_TOPIC_WRITER(0x000002C2),
+        /**
+         * Builtin Topic Reader (Metatraffic)
+         */
         ENTITYID_SEDP_BUILTIN_TOPIC_READER(0x000002C7),
+        /**
+         * Builtin Publications Writer (SEDP)
+         */
         ENTITYID_SEDP_BUILTIN_PUBLICATIONS_WRITER(0x000003C2),
+        /**
+         * Builtin Publications Reader (SEDP)
+         */
         ENTITYID_SEDP_BUILTIN_PUBLICATIONS_READER(0x000003C7),
+        /**
+         * Builtin Subscriptions Writer (SEDP)
+         */
         ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_WRITER(0x000004C2),
+        /**
+         * Builtin Subscriptions Reader (SEDP)
+         */
         ENTITYID_SEDP_BUILTIN_SUBSCRIPTIONS_READER(0x000004C7),
+        /**
+         * Builtin Participant Writer (SPDP)
+         */
         ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_WRITER(0x000100C2),
+        /**
+         * Builtin Participant Reader (SPDP)
+         */
         ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER(0x000100C7),
+        /**
+         * Builtin Message Writer (P2P)
+         */
         ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_WRITER(0x000200C2),
+        /**
+         * Builtin Message Reader (P2P)
+         */
         ENTITYID_P2P_BUILTIN_RTPSPARTICIPANT_MESSAGE_READER(0x000200C7);
 
         /**
@@ -63,6 +99,11 @@ public class EntityId extends RTPSSubmessageElement {
          */
         private final int m_intValue;
 
+        /**
+         * {@link EntityId} constructor
+         * 
+         * @param value The enumeration identifier
+         */
         EntityIdEnum(int value) {
             this.m_value = ByteBuffer.allocate(4).putInt(value).array();
             this.m_intValue = value;
@@ -92,6 +133,9 @@ public class EntityId extends RTPSSubmessageElement {
      */
     byte m_value[];
 
+    /**
+     * Default {@link EntityId} constructor (creates an UNKNOWN {@link EntityId})
+     */
     public EntityId() {
         this.m_value = new byte[4];
         this.m_value[0] = 0x00;
@@ -100,10 +144,22 @@ public class EntityId extends RTPSSubmessageElement {
         this.m_value[3] = 0x00;
     }
 
+    /**
+     * Alternative {@link EntityId} constructor (creates a different {@link EntityId} depending
+     * on the introduced parameter)
+     * 
+     * @param value Indicates the type of Entity
+     */
     public EntityId(int value) {
         this.m_value = ByteBuffer.allocate(4).putInt(value).array();
     }
 
+    /**
+     * Alternative {@link EntityId} copy constructor (creates a different {@link EntityId} depending
+     * on the introduced {@link EntityId})
+     * 
+     * @param value {@link EntityId} to be copied
+     */
     public EntityId(EntityIdEnum value) {
         this.m_value = value.getValue().clone();
     }

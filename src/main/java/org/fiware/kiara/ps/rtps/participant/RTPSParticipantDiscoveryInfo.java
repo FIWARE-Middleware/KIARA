@@ -18,25 +18,39 @@
 package org.fiware.kiara.ps.rtps.participant;
 
 import java.util.List;
-import java.util.Map.Entry;
-
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.util.Pair;
 
 /**
-*
+* Discovery information in a Participant discovery
+* 
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class RTPSParticipantDiscoveryInfo {
-    
+  
+    /**
+     * Status of the discovery
+     */
     public DiscoveryStatus status;
     
+    /**
+     * Discovered {@link GUID}
+     */
     public GUID guid;
     
+    /**
+     * List of properties
+     */
     public List<Pair<String, String>> propertyList;
     
+    /**
+     * User's data
+     */
     public List<Byte> userData;
     
+    /**
+     * Name of the {@link RTPSParticipant}
+     */
     public String RTPSParticipantName;
     
 

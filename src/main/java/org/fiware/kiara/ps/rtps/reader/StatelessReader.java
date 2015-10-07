@@ -17,14 +17,10 @@
  */
 package org.fiware.kiara.ps.rtps.reader;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
-import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
@@ -34,39 +30,36 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-*
+* This class represents an Stateless RTPReader
+* 
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class StatelessReader extends RTPSReader {
 
+    /**
+     * Matched writers
+     */
     private final List<RemoteWriterAttributes> m_matchedWriters;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(StatelessReader.class);
 
+    /**
+     * {@link StatelessReader} constructor
+     * 
+     * @param participant {@link RTPSParticipant} who created the {@link StatelessReader}
+     * @param guid {@link GUID} of the reader
+     * @param att {@link ReaderAttributes} for configuration
+     * @param history {@link ReaderHistoryCache} to store {@link CacheChange} objects
+     * @param listener listener Listener to invoke
+     */
     public StatelessReader(RTPSParticipant participant, GUID guid,
             ReaderAttributes att, ReaderHistoryCache history,
             ReaderListener listener) {
         super(participant, guid, att, history, listener);
         this.m_matchedWriters = new ArrayList<>();
-
-        /*RemoteWriterAttributes test = new RemoteWriterAttributes();
-        Locator l = new Locator();
-        try {
-            byte [] addr = new byte[16];
-            byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
-            //byte [] obtainedAddr = InetAddress.getByName("192.168.1.133").getAddress();
-            addr[12] = obtainedAddr[0];
-            addr[13] = obtainedAddr[1];
-            addr[14] = obtainedAddr[2];
-            addr[15] = obtainedAddr[3];
-            l.setAddress(addr);
-            l.setPort(7400);
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        test.endpoint.unicastLocatorList.pushBack(l);
-        matchedWriterAdd(test);*/
     }
 
     @Override
@@ -199,10 +192,7 @@ public class StatelessReader extends RTPSReader {
     public boolean nextUntakenCache(ReturnParam<CacheChange> change, ReturnParam<WriterProxy> proxy) {
         this.m_mutex.lock();
         try {
-            /*CacheChange retChange = new CacheChange();
-            retChange.copy(this.m_history.getMinChange(change))*/
             return this.m_history.getMinChange(change);
-            //return retChange;
         } finally {
             this.m_mutex.unlock();
         }

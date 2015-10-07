@@ -33,34 +33,55 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class OwnershipQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link OwnershipQosPolicyKind} idnicating the type of Ownership
+     */
     public OwnershipQosPolicyKind kind;
 
+    /**
+     * Default {@link OwnershipQosPolicy} constructor
+     */
     public OwnershipQosPolicy() {
         super(ParameterId.PID_OWNERSHIP, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(true);
         this.kind = OwnershipQosPolicyKind.SHARED_OWNERSHIP_QOS;
     }
 
+    /**
+     * This method copies two instnces of {@link OwnershipQosPolicy}
+     * @param value The {@link OwnershipQosPolicy} to be copied
+     */
     public void copy(OwnershipQosPolicy value) {
         parent.copy(value.parent);
         kind = value.kind;
     }
 
+    /**
+     * Serializes a {@link OwnershipQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         impl.serializeUI32(message, name, this.kind.getValue());
     }
 
+    /**
+     * Deserializes a {@link OwnershipQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.kind = OwnershipQosPolicyKind.getFromValue((byte) impl.deserializeUI32(message, name)); 
     }
 
+    /**
+     * Deserializes only the contents of a {@link OwnershipQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.kind = OwnershipQosPolicyKind.getFromValue((byte) impl.deserializeUI32(message, name));

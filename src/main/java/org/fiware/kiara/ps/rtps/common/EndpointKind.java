@@ -18,11 +18,18 @@
 package org.fiware.kiara.ps.rtps.common;
 
 /**
-* This enumeration represents the kind of an {@link org.fiware.kiara.ps.rtps.Endpoint}.
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This enumeration represents the kind of an {@link org.fiware.kiara.ps.rtps.Endpoint}.
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum EndpointKind {
-	READER,
-	WRITER
+    
+    /**
+     * Endpoint is a READER
+     */
+    READER,
+    /**
+     * Endpoint is a WRITER
+     */
+    WRITER
 }

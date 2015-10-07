@@ -34,6 +34,6 @@ public abstract class PublisherListener {
      * @param pub Reference to the associated Publisher
      * @param info Information regarding the matched subscriber
      */
-    public abstract void onPublicationMatched(Publisher pub, MatchingInfo info);
+    public abstract void onPublicationMatched(Publisher<?> pub, MatchingInfo info);
 
 }

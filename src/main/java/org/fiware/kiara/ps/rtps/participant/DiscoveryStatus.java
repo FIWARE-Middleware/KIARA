@@ -17,12 +17,25 @@
  */
 package org.fiware.kiara.ps.rtps.participant;
 
+import org.fiware.kiara.ps.participant.Participant;
+
 /**
+* This class represents the status of a {@link Participant} regarding the discovery protocol.
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public enum DiscoveryStatus {
+    
+    /**
+     * Status DISCOVERED (the Participant has been discovered)
+     */
     DISCOVERED_PARTICIPANT,
+    /**
+     * Status CANGED_QOS (the Participant has changed its QoS)
+     */
     CHANGED_QOS_RTPSPARTICIPANT,
+    /**
+     * Status REMOVED (the Participant is no longer alive)
+     */
     REMOVED_PARTICIPANT
 }

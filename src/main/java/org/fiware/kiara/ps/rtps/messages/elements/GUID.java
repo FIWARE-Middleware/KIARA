@@ -18,7 +18,6 @@
 package org.fiware.kiara.ps.rtps.messages.elements;
 
 import java.io.IOException;
-import java.util.Comparator;
 
 import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
@@ -51,6 +50,13 @@ public class GUID implements Serializable {
         this.m_entityId = new EntityId();
     }
 
+    /**
+     * Alternative {@link GUID} constructor (using the {@link GUIDPrefix} and 
+     * the {@link EntityId})
+     * 
+     * @param guidPrefix
+     * @param entityId
+     */
     public GUID(GUIDPrefix guidPrefix, EntityId entityId) {
         this.m_guidPrefix = guidPrefix;
         this.m_entityId = entityId;
@@ -149,6 +155,9 @@ public class GUID implements Serializable {
         return retVal;
     }
 
+    /**
+     * Returns a different value for every different {@link GUID}
+     */
     @Override
     public int hashCode() {
         return this.m_guidPrefix.hashCode() + this.m_entityId.hashCode();

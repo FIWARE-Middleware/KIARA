@@ -56,21 +56,45 @@ import org.slf4j.LoggerFactory;
  */
 public class Participant {
 
-    private static final Logger logger = LoggerFactory.getLogger(Participant.class);
-
+    /**
+     * Attributes of the Participant contained in a {@link ParticipantAttributes} object 
+     */
     private ParticipantAttributes m_att;
 
+    /**
+     * {@link RTPSParticipant} object storing a reference to the Participant in the RTPS layer
+     */
     private RTPSParticipant m_rtpsParticipant;
 
+    /**
+     * {@link ParticipantListener} object conteining a reference tothe object to be called whan en event should occur
+     */
     private ParticipantListener m_listener;
 
+    /**
+     * {@link MyRTPSParticipantListener} objec extending the {@link RTPSParticipantListener} abstract class 
+     */
     private MyRTPSParticipantListener m_rtpsListener;
 
+    /**
+     * List of {@link Publisher} objects associated to this Participant
+     */
     private List<Publisher<?>> m_publishers;
 
+    /**
+     * List of @{link Subscriber} objects associated to this Participant
+     */
     private List<Subscriber<?>> m_subscribers;
 
+    /**
+     * List of {@link TopicDataType} objects registered into this Participant
+     */
     private List<TopicDataType<?>> m_types;
+    
+    /**
+     * Logging object
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Participant.class);
 
     /**
      * RTPSParticipantListener implementation to be used in the Participant class
@@ -213,7 +237,6 @@ public class Participant {
 
         writerAtt.times = att.times;
 
-        //RTPSWriter writer = RTPSDomain. TODO continue impl
         RTPSWriter writer = RTPSDomain.createRTPSWriter(this.m_rtpsParticipant, writerAtt, (WriterHistoryCache) publisher.getHistory(), publisher.getWriterListener());
         if (writer == null) {
             logger.error("Problem creating associated Writer");

@@ -37,6 +37,9 @@ public class WriterAttributes {
      */
     public WriterTimes times;
 
+    /**
+     * Default {@link WriterAttributes} constructor
+     */
     public WriterAttributes() {
         this.endpointAtt = new EndpointAttributes();
         this.endpointAtt.endpointKind = EndpointKind.WRITER;

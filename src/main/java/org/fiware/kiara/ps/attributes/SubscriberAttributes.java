@@ -71,7 +71,7 @@ public class SubscriberAttributes {
     public boolean expectsInlineQos;
 
     /**
-     * Main Constructor
+     * Main SubscriberAttributes constructor
      */
     public SubscriberAttributes() {
         this.m_userDefinedID = -1;

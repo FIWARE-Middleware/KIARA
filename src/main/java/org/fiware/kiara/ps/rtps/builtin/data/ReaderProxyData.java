@@ -1,3 +1,20 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.builtin.data;
 
 import static org.fiware.kiara.ps.qos.parameter.ParameterId.PID_ENDPOINT_GUID;
@@ -22,7 +39,6 @@ import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_BOO
 import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUID_LENGTH;
 import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
 
-import java.beans.ParameterDescriptor;
 import java.io.IOException;
 
 import org.fiware.kiara.ps.qos.ReaderQos;
@@ -65,54 +81,71 @@ import org.slf4j.LoggerFactory;
 /**
  * Class ReaderProxyData, used to represent all the information on a Reader
  * (both local and remote) with the purpose of implementing the discovery.
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ReaderProxyData {
 
     /**
-     * GUID
+     * {@link ReaderProxyData} GUID
      */
     private final GUID m_guid;
+    
+    /**
+     * Boolean value indicating if the inlineQos are going to be used 
+     */
     private boolean m_expectsInlineQos;
+    
     /**
      * Unicast locator list
      */
     private final LocatorList m_unicastLocatorList;
+    
     /**
      * Multicast locator list
      */
     private final LocatorList m_multicastLocatorList;
+    
     /**
      * GUID_t of the Reader converted to InstanceHandle_t
      */
     private final InstanceHandle m_key;
+    
     /**
      * GUID_t of the participant converted to InstanceHandle
      */
     private InstanceHandle m_RTPSParticipantKey;
+    
     /**
      * Type name
      */
     private String m_typeName;
+    
     /**
      * Topic name
      */
     private String m_topicName;
+    
     /**
      * User defined ID
      */
     private short m_userDefinedId;
+    
     /**
      * Reader Qos
      */
     private final ReaderQos m_qos;
+    
     /**
      * Field to indicate if the Reader is Alive.
      */
     private boolean m_isAlive;
+    
     /**
      * Topic kind
      */
     private TopicKind m_topicKind;
+    
     /**
      * Parameter list
      */
@@ -123,8 +156,14 @@ public class ReaderProxyData {
      */
     private final RemoteReaderAttributes m_remoteAtt;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxyData.class);
 
+    /**
+     * Default {@link ReaderProxyData} constructor
+     */
     public ReaderProxyData() {
         this.m_guid = new GUID();
         m_unicastLocatorList = new LocatorList();

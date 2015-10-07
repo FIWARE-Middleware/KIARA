@@ -51,18 +51,31 @@ public class Locator {
         }
     }
 
+    /**
+     * Default {@link Locator} constructor
+     */
     public Locator() {
         this.m_kind = LocatorKind.LOCATOR_KIND_UDPv4;
         this.m_port = 0;
         this.initAddr();
     }
 
+    /**
+     * Alternative {@link Locator} constructor
+     * 
+     * @param port The {@link Locator} port
+     */
     public Locator(int port) {
         this.m_kind = LocatorKind.LOCATOR_KIND_UDPv4;
         this.m_port = port;
         this.initAddr();
     }
 
+    /**
+     * Alternative {@link Locator} copy constructor
+     * 
+     * @param other The {@link Locator} to be copied
+     */
     public Locator(Locator other) {
         this.m_kind = other.m_kind;
         this.m_port = other.m_port;

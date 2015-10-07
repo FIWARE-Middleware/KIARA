@@ -3,7 +3,6 @@ package org.fiware.kiara.ps.rtps.builtin.discovery.participant;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
@@ -35,13 +34,15 @@ public class PDPSimpleListener extends ReaderListener {
      */
     private final PDPSimple m_SPDP;
 
+    /**
+     * {@link ParticipantProxyData} associated to the {@link PDPSimpleListener}
+     */
     private final ParticipantProxyData m_participantProxyData;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(PDPSimpleListener.class);
-
-    private final Lock m_lock = new ReentrantLock(true);
-
-    private final Lock m_guard = new ReentrantLock(true);
 
     /**
      * Main Constructor
@@ -53,6 +54,9 @@ public class PDPSimpleListener extends ReaderListener {
         this.m_participantProxyData = new ParticipantProxyData();
     }
 
+    /**
+     * Method to be executed when a new {@link RTPSReader} has matched
+     */
     @Override
     public void onReaderMatched(RTPSReader reader, MatchingInfo info) {
         // Do Nothing

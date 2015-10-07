@@ -19,6 +19,7 @@ package org.fiware.kiara.ps.rtps.attributes;
 
 import java.util.List;
 
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 
 /**
@@ -95,6 +96,9 @@ public class RTPSParticipantAttributes {
      */
     private String m_name;
 
+    /**
+     * Default {@link RTPSParticipantAttributes} constructor
+     */
     public RTPSParticipantAttributes() {
         this.defaultUnicastLocatorList = new LocatorList();
         this.defaultMulticastLocatorList = new LocatorList();
@@ -109,6 +113,9 @@ public class RTPSParticipantAttributes {
         this.portParameters = new PortParameters();
     }
 
+    /**
+     * Resets the {@link Participant} identifier
+     */
     public void resetParticipantID() {
         this.participantID = -1;
     }

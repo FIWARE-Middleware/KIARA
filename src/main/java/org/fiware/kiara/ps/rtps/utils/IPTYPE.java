@@ -18,12 +18,26 @@
 package org.fiware.kiara.ps.rtps.utils;
 
 /**
-*
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * Enumeration representing the different IP types
+ *
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public enum IPTYPE {
-	IPv4,
-	IPv6,
-	IPv4_LOCAL,
-	IPv6_LOCAL
+
+    /**
+     * Remote IPv4
+     */
+    IPv4,
+    /**
+     * Remote IPv6
+     */
+    IPv6,
+    /**
+     * Local IPv4
+     */
+    IPv4_LOCAL,
+    /**
+     * Local IPv6
+     */
+    IPv6_LOCAL
 }

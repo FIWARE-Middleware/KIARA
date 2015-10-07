@@ -35,34 +35,55 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class DeadLineQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link Timestamp} object containing the Deadline period
+     */
     public Timestamp period;
 
+    /**
+     * Default {@link DeadLineQosPolicy} constructor
+     */
     public DeadLineQosPolicy() {
         super(ParameterId.PID_DEADLINE, Parameter.PARAMETER_DEADLINE_QOS_LENGTH);
         this.parent = new QosPolicy(true);
         this.period = new Timestamp().timeInfinite();
     }
 
+    /**
+     * This method copies two instnces of {@link DeadLineQosPolicy}
+     * @param value The {@link DeadLineQosPolicy} to be copied
+     */
     public void copy(DeadLineQosPolicy value) {
         parent.copy(value.parent);
         period.copy(value.period);
     }
 
+    /**
+     * Serializes a {@link DeadLineQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         this.period.serialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link DeadLineQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.period.deserialize(impl, message, name);
     }
 
+    /**
+     * Deserializes only the contents of a {@link DeadLineQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.period.deserialize(impl, message, name);

@@ -51,16 +51,34 @@ public class Timestamp extends RTPSSubmessageElement {
         this.m_fraction =  0;
     }
 
+    /**
+     * Alternative {@link Timestamp} copy constructor
+     * 
+     * @param timestamp {@link Timestamp} object to be copied
+     */
     public Timestamp(Timestamp timestamp) {
         this.m_seconds = timestamp.m_seconds;
         this.m_fraction = timestamp.m_fraction;
     }
 
+    /**
+     * Alternative {@link Timestamp} constructor (uses a {@link java.sql.Timestamp} object
+     * to create the {@link Timestamp})
+     * 
+     * @param timestamp The {@link java.sql.Timestamp} 
+     */
     public Timestamp(java.sql.Timestamp timestamp) {
         this.m_seconds = (int) (timestamp.getTime() / 1000);
         this.m_fraction =  (int) ((timestamp.getTime() % 1000) * (Math.pow(10, -6)) * (Math.pow(2, 32)));
     }
 
+    /**
+     * Alternative {@link Timestamp} constructor (uses the seconds and fraction
+     * to create the object)
+     * 
+     * @param seconds Time seconds
+     * @param fraction Time fraction
+     */
     public Timestamp(int seconds, int fraction) {
         this.m_seconds = seconds;
         this.m_fraction =  fraction;

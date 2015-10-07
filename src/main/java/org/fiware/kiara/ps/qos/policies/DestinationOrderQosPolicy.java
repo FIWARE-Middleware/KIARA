@@ -35,34 +35,55 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  */
 public class DestinationOrderQosPolicy extends Parameter {
 
-    // TODO
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link DestinationOrderQosPolicyKind} indicating the kind of Order policy
+     */
     public DestinationOrderQosPolicyKind kind;
 
+    /**
+     * Default {@link DestinationOrderQosPolicy} constructor
+     */
     public DestinationOrderQosPolicy() {
         super(ParameterId.PID_DESTINATION_ORDER, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(true);
         this.kind = DestinationOrderQosPolicyKind.BY_RECEPTION_TIMESTAMP_DESTINATIONORDER_QOS;
     }
 
+    /**
+     * This method copies two instnces of {@link DeadLineQosPolicy}
+     * @param value
+     */
     public void copy(DestinationOrderQosPolicy value) {
         parent.copy(value.parent);
         kind = value.kind;
     }
 
+    /**
+     * Serializes a {@link DestinationOrderQosPolicy}
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
         impl.serializeUI32(message, name, this.kind.getValue());
     }
 
+    /**
+     * Deserializes a {@link DestinationOrderQosPolicy} and its parent {@link QosPolicy}
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
         this.kind = DestinationOrderQosPolicyKind.createFromValue(impl.deserializeUI32(message, name));
     }
 
+    /**
+     * Deserializes only the contents of a {@link DestinationOrderQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         this.kind = DestinationOrderQosPolicyKind.createFromValue(impl.deserializeUI32(message, name));

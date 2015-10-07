@@ -18,14 +18,13 @@
 package org.fiware.kiara.ps.rtps.messages;
 
 import java.io.IOException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
 import org.fiware.kiara.ps.rtps.common.Locator;
-import org.fiware.kiara.ps.rtps.common.LocatorKind;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
 import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
@@ -36,7 +35,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.Count;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
-import org.fiware.kiara.ps.rtps.messages.elements.InstanceHandle;
 import org.fiware.kiara.ps.rtps.messages.elements.OctectsToInlineQos;
 import org.fiware.kiara.ps.rtps.messages.elements.Pad;
 import org.fiware.kiara.ps.rtps.messages.elements.ParameterList;
@@ -60,49 +58,94 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *
+ * This class is the one used to parse every message received through the
+ * RTPS protocol. It also fires all the events and changes in the status of
+ * the receiver.
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class MessageReceiver {
 
-    private CacheChange m_change;
-
+    /**
+     * {@link ProtocolVersion} indicating the sourceVersion of the source message
+     */
+    @SuppressWarnings("unused")
     private ProtocolVersion m_sourceVersion;
 
+    /**
+     * {@link VendorId} from the source of the message
+     */
+    @SuppressWarnings("unused")
     private VendorId m_sourceVendorId;
 
+    /**
+     * {@link GUIDPrefix} of the entity that created the message
+     */
     private GUIDPrefix m_sourceGuidPrefix;
 
+    /**
+     * {@link GUIDPrefix} of the entity that receives the message. GuidPrefix of the RTPSParticipant.
+     */
     private GUIDPrefix m_destGuidPrefix;
 
+    /**
+     * Reply addresses (unicast).
+     */
     private LocatorList m_unicastReplyLocatorList;
 
+    /**
+     * Reply addresses (multicast).
+     */
     private LocatorList m_multicastReplyLocatorList;
 
-    private boolean m_haveTimestamp;
+    /**
+     * Indicates if the messahe has a timestamp
+     */
+    private boolean m_hasTimestamp;
 
+    /**
+     * {@link Timestamp} associated with the message
+     */
     private Timestamp m_timestamp;
 
+    /**
+     * {@link ProtocolVersion} of the protocol used by the receiving end
+     */
     private ProtocolVersion m_destVersion;
 
+    /**
+     * Locator used in reset
+     */
     private Locator m_defUniLoc;
 
-
-
+    /**
+     * Reference to the {@link ListenResource} that contains this MessageReceiver.
+     */
     private ListenResource m_listenResource;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(MessageReceiver.class);
 
+    /**
+     * Mutex
+     */
     private final Lock m_guardWriterMutex = new ReentrantLock(true);
 
+    /**
+     * {@link MessageReceiver} constructor (receives the size of the reception buffer)
+     * 
+     * @param recBufferSize Reception buffer size
+     */
     public MessageReceiver(int recBufferSize) {
-        // this.m_rec_msg(recBufferSize); TODO Fix this
+
         this.m_destVersion = new ProtocolVersion();
         this.m_sourceVersion = new ProtocolVersion();
         this.m_sourceVendorId = new VendorId().setVendorUnknown();
         this.m_sourceGuidPrefix = new GUIDPrefix();
         this.m_destGuidPrefix = new GUIDPrefix();
-        this.m_haveTimestamp = false;
+        this.m_hasTimestamp = false;
         this.m_timestamp = new Timestamp().timeInvalid();
 
         this.m_unicastReplyLocatorList = new LocatorList();
@@ -112,17 +155,18 @@ public class MessageReceiver {
 
         this.m_listenResource = null;
 
-        short maxPayload = (Short.MAX_VALUE < recBufferSize) ? Short.MAX_VALUE : (short) recBufferSize;
-        this.m_change = new CacheChange(/*maxPayload*/);
     }
 
+    /**
+     * Resets all the {@link MessageReceiver} information
+     */
     public void reset() {
         this.m_destVersion = new ProtocolVersion();
         this.m_sourceVersion = new ProtocolVersion();
         this.m_sourceVendorId = new VendorId().setVendorUnknown();
         this.m_sourceGuidPrefix = new GUIDPrefix();
         this.m_destGuidPrefix = new GUIDPrefix();
-        this.m_haveTimestamp = false;
+        this.m_hasTimestamp = false;
         this.m_timestamp = new Timestamp().timeInvalid();
 
         this.m_unicastReplyLocatorList.clear();
@@ -137,22 +181,15 @@ public class MessageReceiver {
         this.m_unicastReplyLocatorList.pushBack(loc);
         this.m_multicastReplyLocatorList.pushBack(this.m_defUniLoc);
 
-        this.m_change.setKind(ChangeKind.ALIVE);
-        this.m_change.getSequenceNumber().setHigh(0);
-        this.m_change.getSequenceNumber().setLow(0);
-        this.m_change.setWriterGUID(new GUID());
-        //this.m_change.getSerializedPayload().setLength // TODO Check this
-        //this.m_change.getSerializedPayload().setPos // TODO Check this
-        this.m_change.setInstanceHandle(new InstanceHandle());
-        this.m_change.setRead(false);
-        this.m_change.setSourceTimestamp(new Timestamp(0, 0));
-
     }
 
-    public void setListenResource(ListenResource listenResource) {
-        this.m_listenResource = listenResource;
-    }
-
+    /**
+     * Processes each RTPS Message received over the wire
+     * 
+     * @param RTPSParticipantGuidPrefix {@link GUIDPrefix} of the {@link Participant} who receives the message
+     * @param loc {@link Locator} of the {@link Participant}
+     * @param msg {@link RTPSMessage} object containing the RTPS message
+     */
     public void processCDRMessage(GUIDPrefix RTPSParticipantGuidPrefix, Locator loc, RTPSMessage msg) {
         if (msg.getBuffer().length < RTPSMessage.RTPS_MESSAGE_HEADER_SIZE) {
             logger.warn("Received message is too short, ignoring");
@@ -163,26 +200,13 @@ public class MessageReceiver {
         this.m_destGuidPrefix = RTPSParticipantGuidPrefix;
         this.m_unicastReplyLocatorList.begin().setKind(loc.getKind());
 
-        byte nStart = 0;
-
-        if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv4) {
-            nStart = 12;
-        } else if (loc.getKind() == LocatorKind.LOCATOR_KIND_UDPv6) {
-            nStart = 0;
-        } else {
-            logger.warn("Locator kind invalid");
-            return;
-        }
-
         this.m_unicastReplyLocatorList.begin().setAddress(loc.getAddress());
 
         if (!checkRTPSHeader(msg)) {
             return;
         }
 
-        boolean lastSubmsg = false;
         boolean valid = false;
-        int count = 0;
 
         while (msg.getBinaryInputStream().getPosition() < msg.getBuffer().length) {
             RTPSSubmessage subMsg = new RTPSSubmessage();
@@ -199,10 +223,7 @@ public class MessageReceiver {
                 logger.warn("Submessage of invalid length"); 
             }
 
-            //if (header.getOctectsToNextHeader())
-
             valid = true;
-            count++;
             subMsg.setSubmessageHeader(header);
 
             switch(header.getSubmessageId()) {
@@ -304,6 +325,12 @@ public class MessageReceiver {
 
     }
 
+    /**
+     * Checks the integrity of the RTPS header
+     * 
+     * @param msg The {@link RTPSMessage} containing the header
+     * @return true if the header is OK; false otherwise
+     */
     private boolean checkRTPSHeader(RTPSMessage msg) {
 
         RTPSMessageHeader header = new RTPSMessageHeader();
@@ -333,13 +360,20 @@ public class MessageReceiver {
         // Set source GUIDPrefix
         this.m_sourceGuidPrefix = header.getGUIDPrefix();
 
-        this.m_haveTimestamp = false;
+        this.m_hasTimestamp = false;
 
         msg.setHeader(header);
 
         return true;
     }
 
+    /**
+     * Processes a DATA submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageData(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -364,7 +398,7 @@ public class MessageReceiver {
         try {
 
             int initialDataMsgPos = msg.getBinaryInputStream().getPosition();
-            
+
             // Extra flags don't matter for now
             msg.getBinaryInputStream().skipBytes(2);
 
@@ -378,9 +412,6 @@ public class MessageReceiver {
             // Look for the reader
 
             RTPSReader firstReader = null;
-            // TODO: Delete this
-            //firstReader = new RTPSReader();
-            // TODO: Uncomment this
             if (this.m_listenResource.getAssocReaders().isEmpty()) {
                 logger.warn("Data received in locator: {} when NO readers are listening", this.m_listenResource.getListenLocators());
                 return false;
@@ -402,7 +433,6 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(readerId);
 
             // Reader has been found
-            //CacheChange ch = this.m_change;
             CacheChange ch = new CacheChange();
             GUID writerGUID = new GUID();
             writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
@@ -462,7 +492,6 @@ public class MessageReceiver {
                     ch.setKind(ChangeKind.ALIVE);
                     subMsg.addSubmessageElement(payload);
                 } else if (keyFlag) {
-                    // TODO Complete this
                     SerializedPayload payload = new SerializedPayload();
                     payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
                     payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
@@ -496,7 +525,7 @@ public class MessageReceiver {
                 if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), retProxy)) {
                     logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
                     CacheChange changeToAdd = it.reserveCache();
-                    //if (it.reserveCache(changeToAdd)) {
+
                     if (changeToAdd != null) {
                         if (!changeToAdd.copy(ch)) {
                             logger.warn("Problem copying CacheChange");
@@ -508,7 +537,7 @@ public class MessageReceiver {
                         return false;
                     }
 
-                    if (this.m_haveTimestamp) {
+                    if (this.m_hasTimestamp) {
                         changeToAdd.setSourceTimestamp(this.m_timestamp);
                     }
 
@@ -536,14 +565,19 @@ public class MessageReceiver {
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
         }
 
         return true;
     }
 
+    /**
+     * Processes a GAP submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageGap(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -587,8 +621,6 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(gapList);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
@@ -597,6 +629,13 @@ public class MessageReceiver {
 
     }
 
+    /**
+     * Processes a ACKNACK submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageAcknack(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -680,14 +719,19 @@ public class MessageReceiver {
             return false;
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
 
     }
 
+    /**
+     * Processes a HEARTBEAT submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageHeartbeat(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -785,8 +829,6 @@ public class MessageReceiver {
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
@@ -794,6 +836,13 @@ public class MessageReceiver {
         return true;
     }
 
+    /**
+     * Processes a PAD submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessagePad(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -813,17 +862,20 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(pad);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
 
-        // TODO Writer changes
-
         return true;
     }
 
+    /**
+     * Processes a INFO_DST submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageInfoDst(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -844,17 +896,20 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(guidPrefix);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
 
-        // TODO Writer changes
-
         return true;
     }
 
+    /**
+     * Processes a INFO_SRC submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageInfoSrc(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -890,17 +945,20 @@ public class MessageReceiver {
             subMsg.addSubmessageElement(guidPrefix);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
 
-        // TODO Writer changes
-
         return true;
     }
 
+    /**
+     * Processes a INFO_TS submessage
+     * 
+     * @param msg The {@link RTPSMessage} containing the data
+     * @param subMsg {@link RTPSSubmessage} to map the information info
+     * @return true on success; false otherwise
+     */
     private boolean processSubmessageInfoTs(RTPSMessage msg, RTPSSubmessage subMsg) {
 
         SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
@@ -923,15 +981,22 @@ public class MessageReceiver {
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            //e.printStackTrace();
             logger.error(e.getStackTrace().toString());
             return false;
         }
 
-        // TODO Writer changes
-
         return true;
     }
+    
+    /**
+     * Set the {@link ListenResource} attribute
+     * 
+     * @param listenResource The {@link ListenResource} to be set
+     */
+    public void setListenResource(ListenResource listenResource) {
+        this.m_listenResource = listenResource;
+    }
+
+    
 
 }

@@ -24,13 +24,13 @@ import org.fiware.kiara.ps.rtps.RTPSDomain;
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
+import org.fiware.kiara.ps.rtps.history.HistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.ReaderListener;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.topic.TopicDataType;
-import org.fiware.kiara.serialization.impl.Serializable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * This class should not be instantiated directly. DomainRTPSParticipant class should be used to correctly create this element.
  *
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
- * @param <T>
+ * @param <T> The type the {@link Subscriber} will subscribe to
  */
 public class Subscriber<T> {
 
@@ -51,10 +51,17 @@ public class Subscriber<T> {
      */
     private class SubscriberReaderListener extends ReaderListener {
 
+        /**
+         * {@link Subscriber} that will create and use the {@link SubscriberReaderListener}
+         */
         private Subscriber<T> m_subscriber;
 
-        public SubscriberReaderListener(Subscriber<T> s) {
-            this.m_subscriber = s;
+        /**
+         * Default {@link SubscriberReaderListener} constructor
+         * @param subscriber The {@link Subscriber} thet creates this {@link SubscriberReaderListener}
+         */
+        public SubscriberReaderListener(Subscriber<T> subscriber) {
+            this.m_subscriber = subscriber;
         }
 
         /**
@@ -80,34 +87,61 @@ public class Subscriber<T> {
 
     }
 
+    /**
+     * {@link Participant} that creates the {@link Subscriber}
+     */
     private Participant m_participant;
 
+    /**
+     * {@link TopicDataType} the {@link Subscriber} is able to subscribe to
+     */
     private TopicDataType<T> m_type;
 
+    /**
+     * Attributes of the {@link Subscriber}
+     */
     private SubscriberAttributes m_att;
 
-    private SubscriberHistory m_history;
+    /**
+     * {@link HistoryCache} of the {@link Subscriber}
+     */
+    private SubscriberHistory<T> m_history;
 
+    /**
+     * Listener of the {@link Subscriber}
+     */
     private SubscriberListener m_listener;
 
+    /**
+     * Internal Reader listener implementing the {@link ReaderListener} interface
+     */
     private SubscriberReaderListener m_readerListener;
 
+    /**
+     * {@link RTPSReader} associated to this {@link Subscriber}
+     */
     private RTPSReader m_reader;
 
+    /**
+     * {@link RTPSParticipant} in which the {@link Subscriber} is registered
+     */
     private RTPSParticipant m_rtpsParticipant;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(Subscriber.class);
 
     /**
      * Publisher constructor
      * 
-     * @param p {@link Participant} that creates the Subscriber 
+     * @param participant {@link Participant} that creates the Subscriber 
      * @param type {@link TopicDataType} associated to the Subscriber
      * @param att {@link SubscriberAttributes} of the Subscriber
      * @param listener {@link SubscriberListener} reference to be called when an event occurs
      */
-    public Subscriber(Participant p, TopicDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
-        this.m_participant = p;
+    public Subscriber(Participant participant, TopicDataType<T> type, SubscriberAttributes att, SubscriberListener listener) {
+        this.m_participant = participant;
         this.m_readerListener = null;
         this.m_type = type;
         this.m_att = att;
@@ -139,7 +173,6 @@ public class Subscriber<T> {
      * @param info The SampleInfo
      * @return The sample data type
      */
-    @SuppressWarnings("unchecked")
     public T readNextData(SampleInfo info) {
         return (T) this.m_history.readNextData(info);
     }
@@ -150,7 +183,6 @@ public class Subscriber<T> {
      * @param info The SampleInfo
      * @return The sample data type
      */
-    @SuppressWarnings("unchecked")
     public T takeNextData(SampleInfo info) {
         return (T) this.m_history.takeNextData(info);
     }
@@ -259,7 +291,7 @@ public class Subscriber<T> {
      * 
      * @return The SubscriberHistory
      */
-    public SubscriberHistory getHistory() {
+    public SubscriberHistory<T> getHistory() {
         return this.m_history;
     }
 
@@ -296,6 +328,15 @@ public class Subscriber<T> {
     public void destroy() {
         logger.info("Destroying Subscriber (Reader GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSReader(this.m_reader);
+    }
+
+    /**
+     * Get the {@link Participant} who created the {@link Subscriber}
+     * 
+     * @return The {@link Participant} who created the {@link Subscriber}
+     */
+    public Participant getParticipant() {
+        return m_participant;
     }
 
 }

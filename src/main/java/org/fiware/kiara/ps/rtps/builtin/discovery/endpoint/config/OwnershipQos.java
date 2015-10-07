@@ -17,15 +17,28 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.config;
 
+import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicy;
+import org.fiware.kiara.ps.qos.policies.OwnershipQosPolicyKind;
+import org.fiware.kiara.ps.qos.policies.OwnershipStrengthQosPolicy;
+
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
+ * Represents the {@link OwnershipQosPolicy} and {@link OwnershipStrengthQosPolicy} defined using XML
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class OwnershipQos {
+    
+    /**
+     * Indicates the {@link OwnershipQosPolicyKind}
+     */
     @JacksonXmlProperty(localName="kind", isAttribute = true)
     public String kind = "OWNERHSIP kind NOT PRESENT";
+    
+    /**
+     * Indicates the Ownership strength
+     */
     @JacksonXmlProperty(localName="strength", isAttribute = true)
     public long strength = 0;
 }

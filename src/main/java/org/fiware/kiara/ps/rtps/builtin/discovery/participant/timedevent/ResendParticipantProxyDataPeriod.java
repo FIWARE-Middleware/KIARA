@@ -31,6 +31,9 @@ public class ResendParticipantProxyDataPeriod extends TimedEvent {
         this.m_PDP = PDP;
     }
 
+    /**
+     * Stops the timer
+     */
     public void delete() {
         this.stopTimer();
     }
@@ -54,6 +57,14 @@ public class ResendParticipantProxyDataPeriod extends TimedEvent {
         } else {
             logger.debug("MSG: {}", msg);
         }
+    }
+
+    /**
+     * Get the DATA message
+     * @return The {@link RTPSMessage} containing the DATA message
+     */
+    public RTPSMessage getDataMsg() {
+        return m_dataMsg;
     }
 
 }

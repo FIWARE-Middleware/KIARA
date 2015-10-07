@@ -104,6 +104,9 @@ public abstract class SerializableDataType<T extends Serializable & KeyedType> e
         }
     }
     
+    /**
+     * Get the key stored in an {@link InstanceHandle} object
+     */
     @Override
     public boolean getKey(T data, InstanceHandle ihandle) {
         if (this.m_isGetKeyDefined) {
@@ -111,9 +114,6 @@ public abstract class SerializableDataType<T extends Serializable & KeyedType> e
             CDRSerializer ser = new CDRSerializer(false);
     
             try {
-                //System.out.println(data.getClass().getSuperclass().getName());
-                Class c = data.getClass();
-                Class<?>[] classes = data.getClass().getClasses();
                 data.serializeKey(ser, bos, "");
             } catch (IOException e) {
                 // TODO Auto-generated catch block

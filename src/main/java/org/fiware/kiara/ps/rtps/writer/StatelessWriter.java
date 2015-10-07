@@ -17,12 +17,8 @@
  */
 package org.fiware.kiara.ps.rtps.writer;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.rtps.attributes.RemoteReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.WriterAttributes;
@@ -41,61 +37,48 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+* This class represents a Stateless {@link RTPSWriter}
 *
 * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
 */
 public class StatelessWriter extends RTPSWriter {
     
-    // TODO Implement
-    
+    /**
+     * The {@link ReaderLocator} list
+     */
     private List<ReaderLocator> m_readerLocator;
     
+    /**
+     * The list of {@link RemoteReaderAttributes} references
+     */
     private List<RemoteReaderAttributes> m_matchedReaders;
     
-    //private final Lock m_mutex;
-    
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(StatelessWriter.class);
 
+    /**
+     * {@link StatelessWriter} constructor
+     * 
+     * @param participant The {@link RTPSParticipant} that creates the {@link StatelessWriter}
+     * @param guid The {@link StatelessWriter} {@link GUID}
+     * @param att The {@link WriterAttributes} for configuration
+     * @param history The {@link WriterHistoryCache} to store the new {@link CacheChange}
+     * @param listener The {@link WriterListener} to be called
+     */
     public StatelessWriter(RTPSParticipant participant, GUID guid, WriterAttributes att, WriterHistoryCache history, WriterListener listener) {
         super(participant, guid, att, history, listener);
-        //this.m_mutex = new ReentrantLock(true);
         this.m_readerLocator = new ArrayList<ReaderLocator>();
         this.m_matchedReaders = new ArrayList<RemoteReaderAttributes>();
-        /*
-        // TODO Remove this:
-        RemoteReaderAttributes rratt = new RemoteReaderAttributes();
-        //rratt.endpoint.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-        
-        Locator l = new Locator();
-        try {
-            byte [] addr = new byte[16];
-            //byte [] obtainedAddr = InetAddress.getByName("239.255.0.1").getAddress();
-            byte [] obtainedAddr = InetAddress.getByName("192.168.1.151").getAddress();
-            addr[12] = obtainedAddr[0];
-            addr[13] = obtainedAddr[1];
-            addr[14] = obtainedAddr[2];
-            addr[15] = obtainedAddr[3];
-            l.setAddress(addr);
-            l.setPort(27413);
-        } catch (UnknownHostException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        rratt.endpoint.multicastLocatorList.pushBack(l);
-        matchedReaderAdd(rratt);*/
     }
     
+    @Override
     public void unsentChangeAddedToHistory(CacheChange change) {
         this.m_mutex.lock();
         try {
             List<CacheChange> changes = new ArrayList<CacheChange>();
-            /*if (change.getSerializedPayload().getData() != null) {
-                for (int i=0; i < 300; ++i) {
-                    changes.add(change);
-                }
-            } else {*/
-                changes.add(change);
-            //}
+            changes.add(change);
             
             LocatorList locList = new LocatorList();
             LocatorList locList2 = new LocatorList();
@@ -152,11 +135,6 @@ public class StatelessWriter extends RTPSWriter {
         }
     }
     
-    /*
-     * MATCHED_READER-RELATED METHODS 
-     */
-
-    
     @Override
     public boolean matchedReaderAdd(RemoteReaderAttributes ratt) {
        
@@ -184,8 +162,6 @@ public class StatelessWriter extends RTPSWriter {
             
             if (unsentChangesNotEmpty) {
                 this.m_unsentChangesNotEmpty = new UnsentChangesNotEmptyEvent(this, 1000);
-                //this.m_unsentChangesNotEmpty.restartTimer();
-                //this.m_unsentChangesNotEmpty = null;
             }
             
             this.m_matchedReaders.add(ratt);
@@ -197,6 +173,13 @@ public class StatelessWriter extends RTPSWriter {
         return true;
     }
     
+    /**
+     * Adds a new {@link Locator} to the {@link StatelessWriter}
+     * 
+     * @param ratt The attributes of the {@link StatelessWriter}
+     * @param loc The {@link Locator} to be added
+     * @return true on success; false otherwise
+     */
     public boolean addLocator(RemoteReaderAttributes ratt, Locator loc) {
         logger.debug("Adding Locator {} to StatelessWriter with GUID {}", loc.toString(), this.m_guid);
         boolean found = false;
@@ -266,6 +249,12 @@ public class StatelessWriter extends RTPSWriter {
         }
     }
     
+    /**
+     * Removes the specified {@link Locator}
+     * 
+     * @param loc The {@link Locator} to remove
+     * @return true on success; false otherwise
+     */
     private boolean removeLocator(Locator loc) {
         for (int i=0; i < this.m_readerLocator.size(); ++i) {
             ReaderLocator it = this.m_readerLocator.get(i);
@@ -298,6 +287,9 @@ public class StatelessWriter extends RTPSWriter {
         }
     }
     
+    /**
+     * Resets all the unsent {@link CacheChange} references and sends them
+     */
     public void unsentChangesReset() {
         this.m_mutex.lock();
         try {
@@ -317,7 +309,7 @@ public class StatelessWriter extends RTPSWriter {
 
     @Override
     public void updateAttributes(WriterAttributes att) {
-        // TODO Do Nothing (for now)
+        // Do Nothing (for now)
     }
 
    

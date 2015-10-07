@@ -50,6 +50,12 @@ public class ProtocolVersion extends RTPSSubmessageElement {
         m_minor = (byte) 1;
     }
 
+    /**
+     * Alternative {@link ProtocolVersion} constructor
+     * 
+     * @param major Mayor byte value
+     * @param minor Minor byte value
+     */
     public ProtocolVersion(byte major, byte minor) {
         m_major = major;
         m_minor = minor;

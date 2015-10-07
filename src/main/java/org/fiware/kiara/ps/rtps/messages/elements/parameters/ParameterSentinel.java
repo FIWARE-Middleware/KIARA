@@ -26,30 +26,47 @@ import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.messages.elements.Parameter;
 
 /**
- *
+ * Sentinel RTPS DATA parameter (last one in every ParameterList)
+ * 
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
  */
 public class ParameterSentinel extends Parameter {
 
+    /**
+     * Default {@link ParameterSentinel} constructor
+     */
     public ParameterSentinel() {
         super(ParameterId.PID_SENTINEL, (short) 0);
     }
 
+    /**
+     * Serializes a {@link ParameterSentinel} object and its inherited attributes
+     */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
         super.serialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link ParameterSentinel} object and its inherited attributes
+     */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         super.deserialize(impl, message, name);
     }
 
+    /**
+     * Deserializes a {@link ParameterSentinel} object and not its inherited attributes
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
         // Do nothing
     }
 
+    /**
+     * Get the serialized size
+     */
     @Override
     public short getSerializedSize() {
         return (short) (super.getSerializedSize() + this.m_length);

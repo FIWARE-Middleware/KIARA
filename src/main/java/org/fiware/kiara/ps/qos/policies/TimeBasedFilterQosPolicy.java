@@ -33,27 +33,41 @@ import org.fiware.kiara.serialization.impl.SerializerImpl;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class TimeBasedFilterQosPolicy extends Parameter {
-    // TODO
 
+    /**
+     * {@link QosPolicy} acting as a parent class
+     */
     public QosPolicy parent;
 
+    /**
+     * {@link Timestamp} indicating the minimum separation in time for the time based filter
+     */
     public Timestamp minimumSeparation;
 
+    /**
+     * Default {@link TimeBasedFilterQosPolicy} constructor
+     */
     public TimeBasedFilterQosPolicy() {
         super(ParameterId.PID_TIME_BASED_FILTER, Parameter.PARAMETER_KIND_LENGTH);
         this.parent = new QosPolicy(false);
         this.minimumSeparation = new Timestamp().timeZero();
     }
 
+    /**
+     * This method copies two instnces of {@link TimeBasedFilterQosPolicy}
+     * @param value The {@link TimeBasedFilterQosPolicy} to be copied
+     */
     public void copy(TimeBasedFilterQosPolicy value) {
         parent.copy(value.parent);
         minimumSeparation.copy(value.minimumSeparation);
     }
 
+    /**
+     * Deserializes only the contents of a {@link TimeBasedFilterQosPolicy} (not the {@link QosPolicy} contents)
+     */
     @Override
     public void deserializeContent(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
-        // Do nothing
-
+        this.minimumSeparation.deserialize(impl, message, name);
     }
 
 }

@@ -1,6 +1,21 @@
+/* KIARA - Middleware for efficient and QoS/Security-aware invocation of services and exchange of messages
+ *
+ * Copyright (C) 2015 Proyectos y Sistemas de Mantenimiento S.L. (eProsima)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.fiware.kiara.ps.rtps.reader.timedevent;
-
-import java.util.concurrent.TimeUnit;
 
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.MatchingStatus;
@@ -10,8 +25,18 @@ import org.fiware.kiara.ps.rtps.resources.TimedEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * {@link TimedEvent} class to periodically check the writer liveliness
+ * and remove not alive {@link WriterProxy}s
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ *
+ */
 public class WriterProxyLiveliness extends TimedEvent {
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
 
     /**
@@ -19,13 +44,25 @@ public class WriterProxyLiveliness extends TimedEvent {
      */
     public WriterProxy writerProxy;
     
+    /**
+     * Boolean value to not execute the event the first time
+     */
     private boolean recentlyCreated = true;
 
-    public WriterProxyLiveliness(WriterProxy p_WP, double interval) {
+    /**
+     * {@link WriterProxyLiveliness} constructor
+     * 
+     * @param proxy {@link WriterProxy} to remove writers from
+     * @param interval Time interval to execute the event
+     */
+    public WriterProxyLiveliness(WriterProxy proxy, double interval) {
         super(interval);
-        writerProxy = p_WP;
+        writerProxy = proxy;
     }
 
+    /**
+     * Main event behaviour
+     */
     @Override
     public void event(EventCode code, String msg) {
         if (code == EventCode.EVENT_SUCCESS) {
@@ -51,6 +88,9 @@ public class WriterProxyLiveliness extends TimedEvent {
         }
     }
     
+    /**
+     * Restarts the timer and sets the recentlyCreated attribute to true again
+     */
     @Override
     public void restartTimer() {
         this.recentlyCreated = true;

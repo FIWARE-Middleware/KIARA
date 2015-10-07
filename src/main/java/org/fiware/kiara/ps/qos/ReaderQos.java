@@ -125,6 +125,9 @@ public class ReaderQos {
      */
     public LifespanQosPolicy lifespan;
 
+    /**
+     * Logging object
+     */
     private static final Logger logger = LoggerFactory.getLogger(ReaderQos.class);
 
     public ReaderQos() {
@@ -287,6 +290,11 @@ public class ReaderQos {
         return updatable;
     }
 
+    /**
+     * This method copies all the contents of a ReaderQos object
+     * 
+     * @param qos The ReaderQos to copy
+     */
     public void copy(ReaderQos qos) {
         durability.copy(qos.durability);
         deadline.copy(qos.deadline);
