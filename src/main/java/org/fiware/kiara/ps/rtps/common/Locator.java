@@ -89,7 +89,7 @@ public class Locator {
      * @return True if the Locator is valid
      */
     public boolean isValid() {
-        return true;
+        return this.m_port >= 0;
     }
 
     /**

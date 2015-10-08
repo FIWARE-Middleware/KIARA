@@ -253,7 +253,7 @@ public class RTPSParticipant {
             logger.info("RTPSParticipant {} with guidPrefix {}", m_att.getName(), this.m_guid.getGUIDPrefix());
             this.m_builtinProtocols = new BuiltinProtocols();
             if (!this.m_builtinProtocols.initBuiltinProtocols(this, this.m_att.builtinAtt)) {
-                logger.warn("The builtin protocols were not corecctly initialized"); // TODO Check if this should be logger.error
+                logger.error("The builtin protocols were not corecctly initialized");
                 this.destroy();
                 throw new Exception("The builtin protocols were not correctly initialized");
             }
@@ -273,7 +273,6 @@ public class RTPSParticipant {
      */
     public void destroy() {
         logger.info("Removing RTPSParticipant: {}", this.getGUID().toString());
-
         while (this.m_userReaderList.size() > 0) {
             RTPSDomain.removeRTPSReader(this.m_userReaderList.get(0));
         }
@@ -297,7 +296,8 @@ public class RTPSParticipant {
         if (this.m_sendResource != null) {
             this.m_sendResource.destroy();
         }
-
+        
+        
     }
 
     /**

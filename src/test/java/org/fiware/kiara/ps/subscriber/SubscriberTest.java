@@ -495,7 +495,7 @@ public class SubscriberTest {
         
         Participant participant = Domain.createParticipant(pParam, null );
         if (participant == null) {
-            System.out.println("Error when creating participant");
+            //System.out.println("Error when creating participant");
             return;
         }
         
@@ -515,7 +515,7 @@ public class SubscriberTest {
         satt.setUserDefinedID((short) 1);
         Subscriber<HelloWorld> subscriber = Domain.createSubscriber(participant, satt, new SubListener());
         if (subscriber == null) {
-            System.out.println("Error creating subscriber");
+            //System.out.println("Error creating subscriber");
             return;
         }
         
@@ -529,7 +529,7 @@ public class SubscriberTest {
         Scanner scan = new Scanner(System.in);
         String line = null;
         while (line == null) {
-            System.out.println("Press any key to remove Subscriber...");
+            //System.out.println("Press any key to remove Subscriber...");
             line = scan.nextLine();
         }
         
@@ -537,7 +537,7 @@ public class SubscriberTest {
         
         line = null;
         while (line == null) {
-            System.out.println("Press any key to remove Participant...");
+            //System.out.println("Press any key to remove Participant...");
             line = scan.nextLine();
         }
         

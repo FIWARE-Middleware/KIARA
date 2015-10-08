@@ -117,7 +117,7 @@ public class EDPStaticXML {
             StaticDiscovery config = StaticDiscovery.fromXML(new File(filename));
             config.process(m_RTPSParticipants, m_endpointIds, m_entityIds);
         } catch (Exception ex) {
-            logger.error("RTPS EDP: Error reading xml file ({})", ex);
+            logger.error("Error reading xml file ({})", ex.toString());
             return false;
         }
         return true;
@@ -134,7 +134,7 @@ public class EDPStaticXML {
             StaticDiscovery config = StaticDiscovery.fromXML(edpXml);
             config.process(m_RTPSParticipants, m_endpointIds, m_entityIds);
         } catch (Exception ex) {
-            logger.error("RTPS EDP: Error reading xml file ({})", ex);
+            logger.error("RTPS EDP: Error reading xml file ({})", ex.toString());
             return false;
         }
         return true;

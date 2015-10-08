@@ -27,6 +27,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import io.netty.channel.socket.nio.NioDatagramChannel;
 
+//import org.fiware.kiara.Kiara;
+//import org.fiware.kiara.RunningService;
 import org.fiware.kiara.netty.NioDatagramChannelFactory;
 import org.fiware.kiara.transport.impl.Global;
 import org.slf4j.Logger;
@@ -132,7 +134,7 @@ public class SendResource {
         this.m_sendNext = true;
         this.m_mutex = new ReentrantLock(true);
     }
-
+    
     /**
      * Initialize the sending socket.
      *
@@ -144,7 +146,7 @@ public class SendResource {
      * @return true on success; false otherwise
      */
     public boolean initSend(RTPSParticipant participant, Locator loc, int sendSockBuffer, boolean useIPv4, boolean useIPv6) {
-
+        
         this.m_useIPv4 = useIPv4;
         this.m_useIPv6 = useIPv6;
 
@@ -405,21 +407,25 @@ public class SendResource {
      * Destroys the {@link SendResource} and all the associated objects
      */
     public void destroy() {
-        this.m_mutex.lock();
-        try {
-            for (DatagramChannel channel : this.m_sendSocketIPv4) {
-                channel.eventLoop().shutdownGracefully();
-                channel.disconnect();
-                channel.close();
-            }
-            for (DatagramChannel channel : this.m_sendSocketIPv6) {
-                channel.eventLoop().shutdownGracefully();
-                channel.disconnect();
-                channel.close();
-            }
-        } finally {
-            this.m_mutex.unlock();
-        }
+//        this.m_mutex.lock();
+//        try {
+//            for (DatagramChannel channel : this.m_sendSocketIPv4) {
+//                if (channel.isOpen()) {
+//                    //channel.eventLoop().shutdownGracefully();
+//                    //channel.disconnect();
+//                    //channel.close();
+//                }
+//            }
+//            for (DatagramChannel channel : this.m_sendSocketIPv6) {
+//                if (channel.isOpen()) {
+//                    //channel.eventLoop().shutdownGracefully();
+//                    //channel.disconnect();
+//                    //channel.close();
+//                }
+//            }
+//        } finally {
+//            this.m_mutex.unlock();
+//        }
     }
 
 }

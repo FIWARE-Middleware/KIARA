@@ -124,11 +124,13 @@ public class RTPSDomain {
         }
 
         if (!att.defaultUnicastLocatorList.isValid()) {
-            logger.error("Default unicast Locator List contains invalid locator0");
+            logger.error("Default unicast Locator List contains invalid locator");
+            m_rtpsParticipantsIDs.remove(ID);
             return null;
         }
 
         if (!att.defaultMulticastLocatorList.isValid()) {
+            m_rtpsParticipantsIDs.remove(ID);
             logger.error("Default Multicast Locator List contains invalid Locator");
             return null;
         }
@@ -166,6 +168,7 @@ public class RTPSDomain {
             m_maxRTPSParticipantID = participant.getRTPSParticipantID();
             m_rtpsParticipants.add(participant);
         } catch (Exception e) {
+            m_rtpsParticipantsIDs.remove(ID);
             logger.error(e.toString());
         }
 
