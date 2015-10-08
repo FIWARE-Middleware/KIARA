@@ -64,8 +64,8 @@ public class PDPSimpleListener extends ReaderListener {
 
     /**
      * New added cache
-     * @param reader
-     * @param change_in
+     * @param reader The {@link RTPSReader} who receives the {@link CacheChange}
+     * @param change_in The received {@link CacheChange}
      */
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change_in) {
@@ -141,7 +141,7 @@ public class PDPSimpleListener extends ReaderListener {
                                     pData.setIsAlive(true);
                                     this.m_SPDP.getParticipantProxies().add(pData);
                                     // TODO Uncomment this and handle RejectException
-                                    // pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
+                                    //pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
                                     // pData.getLeaseDurationTimer().restartTimer();
                                     this.m_SPDP.assignRemoteEndpoints(pData);
                                     this.m_SPDP.announceParticipantState(false);

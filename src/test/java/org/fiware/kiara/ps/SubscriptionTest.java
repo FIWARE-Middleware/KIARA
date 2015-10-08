@@ -106,8 +106,7 @@ public class SubscriptionTest {
             pParam.rtps.builtinAtt.useStaticEDP = true;
 
             final String ipAddr = IPFinder.getFirstIPv4Address().getHostAddress();
-            System.out.println("IP Addr " + ipAddr);
-
+            
             final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                     + "<staticdiscovery>"
                     + "    <participant>"
@@ -132,11 +131,6 @@ public class SubscriptionTest {
                 System.out.println("Error when creating participant");
                 return false;
             }
-
-            System.out.println("Subscriber participant SPDP MC Port: " + participant.getSPDPMulticastPort());
-            System.out.println("Subscriber participant SPDP UC Port: " + participant.getSPDPUnicastPort());
-            System.out.println("Subscriber participant User MC Port: " + participant.getUserMulticastPort());
-            System.out.println("Subscriber participant User UC Port: " + participant.getUserUnicastPort());
 
             initSignal.countDown();
 
@@ -164,15 +158,12 @@ public class SubscriptionTest {
 
                 @Override
                 public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber<?> sub) {
-                    System.out.println("Message received");
                     //SampleInfo info = new SampleInfo();
                     HelloWorld type = (HelloWorld) sub.takeNextData(null);
                     while (type != null) {
                         //HelloWorld instance = (HelloWorld) type;
-                        System.out.println(type.getInnerStringAtt());
                         type = (HelloWorld) sub.takeNextData(null);
                         workDoneSignal.countDown();
-                        System.out.println("workDoneSignal sent");
                     }
                 }
 
@@ -180,11 +171,9 @@ public class SubscriptionTest {
                 public void onSubscriptionMatched(org.fiware.kiara.ps.subscriber.Subscriber<?> sub, MatchingInfo info) {
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
-                        System.out.println("Publisher Matched. Total : " + this.n_matched);
                         workInitSignal.countDown();
                     } else {
                         n_matched--;
-                        System.out.println("Publisher Unmatched. Total : " + this.n_matched);
                     }
                 }
 
@@ -203,10 +192,6 @@ public class SubscriptionTest {
 
             assertEquals(0, workInitSignal.getCount());
             assertEquals(0, workDoneSignal.getCount());
-
-            //Domain.removeParticipant(participant);
-            //Kiara.shutdown();
-            System.out.println("Subscriber finished");
 
             return true;
         }
@@ -243,7 +228,6 @@ public class SubscriptionTest {
             pAtt.rtps.builtinAtt.useStaticEDP = true;
 
             final String ipAddr = IPFinder.getFirstIPv4Address().getHostAddress();
-            System.out.println("IP Addr " + ipAddr);
             final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                     + "<staticdiscovery>"
                     + "    <participant>"
@@ -263,11 +247,6 @@ public class SubscriptionTest {
             pAtt.rtps.setName("participant2");
 
             Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
-
-            System.out.println("Publisher participant SPDP MC Port: " + participant.getSPDPMulticastPort());
-            System.out.println("Publisher participant SPDP UC Port: " + participant.getSPDPUnicastPort());
-            System.out.println("Publisher participant User MC Port: " + participant.getUserMulticastPort());
-            System.out.println("Publisher participant User UC Port: " + participant.getUserUnicastPort());
 
             assertNotNull("Error when creating participant", participant);
 
@@ -306,22 +285,15 @@ public class SubscriptionTest {
 
             int i = 1;
             while (true) {
-                System.out.println("Send message " + i);
                 ++i;
                 publisher.write(hw);
                 try {
                     if (doneSignal.await(10, TimeUnit.MILLISECONDS)) {
-                        System.out.println("Work done !!!");
                         break;
                     }
                 } catch (InterruptedException e) {
-                    System.out.println("Interrupted !!!");
                 }
             }
-
-            //Domain.removeParticipant(participant);
-
-            System.out.println("Publisher finished");
 
             return true;
         }

@@ -337,7 +337,7 @@ public class WLP {
      * Add a local writer to the liveliness protocol.
      *
      * @param writer Reference to the RTPSWriter.
-     * @param wqos
+     * @param wqos The {@link RTPSWriter} QoS for configuration
      * @return True if correct.
      */
     public boolean addLocalWriter(RTPSWriter writer, WriterQos wqos) {

@@ -85,7 +85,7 @@ public class Count extends RTPSSubmessageElement {
     /**
      * Get the value of the Count class
      * 
-     * @return
+     * @return The {@link Count} value
      */
     public int getValue() {
         return m_value;
@@ -94,14 +94,14 @@ public class Count extends RTPSSubmessageElement {
     /**
      * Set the Count value
      * 
-     * @param m_value
+     * @param m_value The new {@link Count} value to be set
      */
     public void setValue(int m_value) {
         this.m_value = m_value;
     }
 
     /**
-     * Increases the Count value
+     * Increases the {@link Count} value
      */
     public void increase() {
         this.m_value++;

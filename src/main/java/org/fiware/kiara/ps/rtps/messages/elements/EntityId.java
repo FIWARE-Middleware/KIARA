@@ -110,18 +110,18 @@ public class EntityId extends RTPSSubmessageElement {
         }
 
         /**
-         * Get the EntityIdEnum value as a byte array
+         * Get the {@link EntityIdEnum} value as a byte array
          * 
-         * @return
+         * @return The byte array value of the {@link EntityIdEnum}
          */
         public byte[] getValue() {
             return this.m_value;
         }
 
         /**
-         * Get the EntityIdEnum as an integer value
+         * Get the {@link EntityIdEnum} as an integer value
          * 
-         * @return
+         * @return The integer value of the {@link EntityIdEnum}
          */
         public int getIntValue() {
             return this.m_intValue;
@@ -345,7 +345,7 @@ public class EntityId extends RTPSSubmessageElement {
     }
 
     /**
-     * Get the value of the EntityId
+     * Get the value of the {@link EntityId}
      * 
      * @param index The index
      * @param value The value to be set
@@ -355,18 +355,19 @@ public class EntityId extends RTPSSubmessageElement {
     }
 
     /**
-     * Get the byte value of the EntityId
+     * Get the byte value of the {@link EntityId}
      * 
-     * @return The byte value of the EntityId
+     * @param index The index of the desired value
+     * @return The byte value of the {@link EntityId}
      */
     public byte getValue(int index) {
         return this.m_value[index];
     }
 
     /**
-     * Copies the content of an instance of EntityId
+     * Copies the content of an instance of {@link EntityId}
      * 
-     * @param value
+     * @param value The {@link EntityId} to be copied
      */
     public void copy(EntityId value) {
         for (int i = 0; i < 4; ++i) {

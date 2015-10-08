@@ -61,8 +61,11 @@ public class RTPSSubmessage {
 
     /**
      * Serializes the {@link RTPSSubmessage}
+     * 
+     * @param ser {@link CDRSerializer} reference
+     * @param bos {@link BinaryOutputStream} to serialize the data into
      */
-    public void serialize(CDRSerializer ser, BinaryOutputStream bos/*, boolean isLast*/) {
+    public void serialize(CDRSerializer ser, BinaryOutputStream bos) {
         if (this.m_serializer == null) {
             this.initSerializer();
         }

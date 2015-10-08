@@ -108,6 +108,7 @@ public class StaticDiscovery {
     /**
      * Transforms the discovery information into an XML String and writes into a file
      * 
+     * @param xmlFile The XML {@link File} object
      * @throws IOException If the writing operation goes wrong
      */
     public void toXML(File xmlFile) throws IOException {

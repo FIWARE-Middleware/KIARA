@@ -200,7 +200,7 @@ public class WriterProxyData {
     /**
      * Update certain parameters from another object.
      *
-     * @param wdata
+     * @param wdata The {@link WriterProxyData} to copy the values from
      */
     public void update(WriterProxyData wdata) {
         m_unicastLocatorList.copy(wdata.m_unicastLocatorList);
@@ -212,7 +212,7 @@ public class WriterProxyData {
     /**
      * Copy all information from another object.
      *
-     * @param wdata
+     * @param wdata The {@link WriterProxyData} to copy the values from
      */
     public void copy(WriterProxyData wdata) {
         m_guid.copy(wdata.m_guid);

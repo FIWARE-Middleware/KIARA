@@ -240,6 +240,7 @@ public class QosList {
      * @param pid PID of the parameter to add to the QosList.
      * @param str1 Parameter to add.
      * @param str2 Parameter to add.
+     * @return true on success; false otherwise
      */
     public boolean addQos(ParameterId pid, String str1, String str2) {
         if (pid == ParameterId.PID_PROPERTY_LIST) {
@@ -269,6 +270,7 @@ public class QosList {
      * Add QoS parameter to the list
      * @param pid PID of the parameter to add to the QosList.
      * @param list Parameter property list.
+     * @return true on success; false otherwise
      */
     public boolean addQos(ParameterId pid, ParameterPropertyList list) {
         if (pid == ParameterId.PID_PROPERTY_LIST) {
@@ -287,6 +289,7 @@ public class QosList {
      * Add QoS parameter to the list
      * @param pid PID of the parameter to add to the QosList.
      * @param entityId Entity ID.
+     * @return true on success; false otherwise
      */
     public boolean addQos(ParameterId pid, EntityId entityId) {
         if (pid == ParameterId.PID_GROUP_ENTITYID) {
@@ -303,6 +306,7 @@ public class QosList {
      * Add QoS parameter to the list
      * @param pid PID of the parameter to add to the QosList.
      * @param timestamp Entity ID.
+     * @return true on success; false otherwise
      */
     public boolean addQos(ParameterId pid, Timestamp timestamp) {
         if (pid == ParameterId.PID_PARTICIPANT_LEASE_DURATION) {

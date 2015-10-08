@@ -364,8 +364,8 @@ public class Publisher<T> {
 
     /**
      * Set the RTPS participant.
-     *
-     * @see RTPSParticipant
+     * 
+     * @param participant The {@link RTPSParticipant} to be set
      */
     public void setRTPSParticipant(RTPSParticipant participant) {
         this.m_rtpsParticipant = participant;

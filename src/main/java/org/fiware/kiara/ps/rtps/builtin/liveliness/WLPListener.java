@@ -129,10 +129,10 @@ public class WLPListener extends ReaderListener {
     }
 
     /**
-     * Separate the Key between the GUIDPrefix and the liveliness Kind
+     * Separate the Key between the {@link GUIDPrefix} and the liveliness Kind
      *
-     * @param key InstanceHandle_t to separate.
-     * @param guidP GUIDPrefix reference to store the info.
+     * @param key {@link InstanceHandle} to separate.
+     * @param guidP {@link GUIDPrefix} reference to store the info.
      * @return True if correctly separated.
      */
     public LivelinessQosPolicyKind separateKey(InstanceHandle key, GUIDPrefix guidP) {
@@ -143,9 +143,9 @@ public class WLPListener extends ReaderListener {
     }
 
     /**
-     * Compute the key from a CacheChange
+     * Compute the key from a {@link CacheChange}
      *
-     * @param change
+     * @param change The {@link CacheChange} to be computed
      * @return true if operation was successful
      */
     public boolean computeKey(CacheChange change) {

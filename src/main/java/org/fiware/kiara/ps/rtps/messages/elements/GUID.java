@@ -54,8 +54,8 @@ public class GUID implements Serializable {
      * Alternative {@link GUID} constructor (using the {@link GUIDPrefix} and 
      * the {@link EntityId})
      * 
-     * @param guidPrefix
-     * @param entityId
+     * @param guidPrefix The {@link GUIDPrefix} of the {@link GUID}
+     * @param entityId The {@link EntityId} of the {@link GUID}
      */
     public GUID(GUIDPrefix guidPrefix, EntityId entityId) {
         this.m_guidPrefix = guidPrefix;
@@ -63,44 +63,44 @@ public class GUID implements Serializable {
     }
 
     /**
-     * Get the GUIDPrefix part of the GUID
+     * Get the {@link GUIDPrefix} part of the {@link GUID}
      * 
-     * @return The GUIDPrefix
+     * @return The {@link GUIDPrefix}
      */
     public GUIDPrefix getGUIDPrefix() {
         return this.m_guidPrefix;
     }
 
     /**
-     * Set the GUIDPrefix part of the GUID
+     * Set the {@link GUIDPrefix} part of the {@link GUID}
      * 
-     * @param guidPrefix The GUIDPrefix to be set
+     * @param guidPrefix The {@link GUIDPrefix} to be set
      */
     public void setGUIDPrefix(GUIDPrefix guidPrefix) {
         this.m_guidPrefix.copy(guidPrefix);
     }
 
     /**
-     * Get the EntityId of the GUID
+     * Get the {@link EntityId} of the GUID
      * 
-     * @return The EntityId
+     * @return The {@link EntityId}
      */
     public EntityId getEntityId() {
         return this.m_entityId;
     }
 
     /**
-     * Set the EntityId of the GUID
-     * @param id The EntityId to be set
+     * Set the {@link EntityId} of the GUID
+     * @param id The {@link EntityId} to be set
      */
     public void setEntityId(EntityId id) {
         this.m_entityId.copy(id);
     }
 
     /**
-     * Copies the content of a GUID object
+     * Copies the content of a {@link GUID} object
      * 
-     * @param value The GUID to be copied
+     * @param value The {@link GUID} to be copied
      */
     public void copy(GUID value) {
         m_guidPrefix.copy(value.m_guidPrefix);
@@ -108,7 +108,7 @@ public class GUID implements Serializable {
     }
 
     /**
-     * Compares two GUID objects
+     * Compares two {@link GUID} objects
      */
     @Override
     public boolean equals(Object other) {
@@ -120,7 +120,7 @@ public class GUID implements Serializable {
     }
     
     /**
-     * Converts a GUID object to its String representation
+     * Converts a {@link GUID} object to its String representation
      */
     @Override
     public String toString() {
@@ -128,7 +128,7 @@ public class GUID implements Serializable {
     }
     
     /**
-     * Serializes a GUID object
+     * Serializes a {@link GUID} object
      */
     @Override
     public void serialize(SerializerImpl impl, BinaryOutputStream message, String name) throws IOException {
@@ -137,7 +137,7 @@ public class GUID implements Serializable {
     }
     
     /**
-     * Deserializes a GUID object
+     * Deserializes a {@link GUID} object
      */
     @Override
     public void deserialize(SerializerImpl impl, BinaryInputStream message, String name) throws IOException {
@@ -146,8 +146,9 @@ public class GUID implements Serializable {
     }
     
     /**
-     * Creates an InstanceHandle object whose GUID is the object on which this method is invoked
-     * @return
+     * Creates an {@link InstanceHandle} object whose GUID is the object on which this method is invoked
+     * 
+     * @return The created {@link InstanceHandle}
      */
     public InstanceHandle toInstanceHandle() {
         InstanceHandle retVal = new InstanceHandle();

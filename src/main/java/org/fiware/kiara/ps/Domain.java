@@ -146,7 +146,7 @@ public class Domain {
     /**
      * Create a Publisher in a Participant.
      *
-     * @param <T>
+     * @param <T> A generic user data type
      * @param part reference to the participant where you want to create the
      * {@link Publisher}.
      * @param att PublisherAttributes.
@@ -165,7 +165,7 @@ public class Domain {
     /**
      * Create a Subscriber in a Participant.
      *
-     * @param <T>
+     * @param <T> A generic user data type
      * @param part reference to the participant where you want to create the
      * {@link Publisher}.
      * @param att subscriber attributes.
