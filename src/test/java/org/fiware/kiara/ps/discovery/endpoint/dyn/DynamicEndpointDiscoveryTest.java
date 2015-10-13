@@ -83,7 +83,7 @@ public class DynamicEndpointDiscoveryTest {
 
     private static final HelloWorldType hwtype = new HelloWorldType();
 
-    private static class SubscriberEntity implements Callable<Boolean> {
+    private static class SubscriberEntity implements Callable<Boolean> { 
 
         private boolean isReliable;
         private boolean isStatic;
@@ -394,18 +394,6 @@ public class DynamicEndpointDiscoveryTest {
                 e.printStackTrace();
             }
 
-            //            doneSignal.await(15000, TimeUnit.MILLISECONDS);
-
-            /*while (true) {
-                publisher.write(hw);
-                try {
-                    if (doneSignal.await(10, TimeUnit.MILLISECONDS)) {
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                }
-            }*/
-
             assertEquals(0, matchedSignal.getCount());
             if (this.waitForUnmatching) {
                 assertEquals(0, unmatchedSignal.getCount());
@@ -416,14 +404,6 @@ public class DynamicEndpointDiscoveryTest {
             
             this.myCt.countDown();
 
-//            synchronized(myCt) {
-//            }
-//            synchronized(this.remoteCt) {
-//                this.remoteCt.await(10000, TimeUnit.MILLISECONDS);
-//                assertEquals(0, remoteCt.getCount());
-//            }
-            
-            
             return true;
         }
 

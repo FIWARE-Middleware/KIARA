@@ -68,7 +68,6 @@ public class ParticipantDiscoveryTest {
     
     @Before
     public void prepare() throws InterruptedException {
-        System.out.println("---------------------------------------------------");
         if (this.participantCt != null) {
             this.participantCt.await(10000, TimeUnit.MILLISECONDS);
         }
@@ -128,7 +127,7 @@ public class ParticipantDiscoveryTest {
             }
 
             pParam.rtps.setName(this.participantName);
-            pParam.rtps.participantID = this.participantID;
+            //pParam.rtps.participantID = this.participantID;
 
             final CountDownLatch workInitSignal = new CountDownLatch(this.totalDisc);
             
@@ -153,12 +152,14 @@ public class ParticipantDiscoveryTest {
                 e.printStackTrace();
             }
             
-            Domain.removeParticipant(participant);
+            //Domain.removeParticipant(participant);
             
             assertEquals(0, workInitSignal.getCount());
 
+            //assertTrue(true);
+            
             this.myCt.countDown();
-
+            
             return true;
         }
 
@@ -170,7 +171,7 @@ public class ParticipantDiscoveryTest {
         participantCt = new CountDownLatch(2);
 
         Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 1, "Participant1", new String[] {"Participant2"}, 1));
-        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 2, "Participant2", new String[] {"Participant2"}, 1));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 2, "Participant2", new String[] {"Participant1"}, 1));
 
         assertTrue(participant1.get());
         assertTrue(participant2.get());
@@ -180,13 +181,14 @@ public class ParticipantDiscoveryTest {
     @Test
     public void dynamicSingleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
-        participantCt = new CountDownLatch(2);
+        CountDownLatch ct = new CountDownLatch(2);
 
-        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 3, "Participant3", null, 1));
-        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 4, "Participant4", null, 1));
+        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(ct, 3, "Participant3", null, 1));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(ct, 4, "Participant4", null, 1));
 
         assertTrue(participant1.get());
         assertTrue(participant2.get());
+        assertEquals(0, ct.getCount());
 
     }
     
