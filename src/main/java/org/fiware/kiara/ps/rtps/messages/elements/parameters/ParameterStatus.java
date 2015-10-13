@@ -110,5 +110,21 @@ public class ParameterStatus extends Parameter {
     public short getSerializedSize() {
         return (short) (super.getSerializedSize() + this.m_length);
     }
+    
+    public ChangeKind getStatus() {
+        switch (this.m_status) {
+        case 0:
+            return ChangeKind.ALIVE;
+        case 1:
+            return ChangeKind.NOT_ALIVE_DISPOSED;
+        case 2:
+            return ChangeKind.NOT_ALIVE_DISPOSED_UNREGISTERED;
+        case 3:
+            return ChangeKind.NOT_ALIVE_UNREGISTERED;
+        default:
+            return ChangeKind.ALIVE;
+        }
+        
+    }
 
 }

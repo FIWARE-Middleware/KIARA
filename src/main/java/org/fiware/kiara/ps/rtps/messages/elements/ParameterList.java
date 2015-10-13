@@ -25,9 +25,12 @@ import org.fiware.kiara.serialization.impl.BinaryInputStream;
 import org.fiware.kiara.serialization.impl.BinaryOutputStream;
 import org.fiware.kiara.serialization.impl.SerializerImpl;
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
+import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.RTPSSubmessageElement;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterBuilder;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterKey;
 import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterSentinel;
+import org.fiware.kiara.ps.rtps.messages.elements.parameters.ParameterStatus;
 
 /**
  * This class contains a list of Parameter references.
@@ -196,6 +199,37 @@ public class ParameterList extends RTPSSubmessageElement {
     public void resetList() {
         this.m_parameters.clear();
         this.m_hasChanged = true;
+    }
+
+    /**
+     * Updates the {@link CacheChange} with the data inside the {@link ParameterList}
+     * 
+     * @param ch The {@link CacheChange} to be updated
+     */
+    public void updateCacheChange(CacheChange ch) {
+        for (Parameter param : this.m_parameters) {
+            if (param.getParameterId() != ParameterId.PID_SENTINEL) {
+                switch (param.getParameterId()) {
+                case PID_KEY_HASH:
+                {
+                    ParameterKey p = (ParameterKey) param;
+                    ch.getInstanceHandle().copy(p.getKey());
+                    break;
+                }
+                case PID_STATUS_INFO:
+                {
+                    ParameterStatus p = (ParameterStatus) param;
+                    ch.setKind(p.getStatus());
+                    break;
+                }
+                default:
+                        
+                    
+                }
+            } else {
+                break;
+            }
+        }
     }
 
 }

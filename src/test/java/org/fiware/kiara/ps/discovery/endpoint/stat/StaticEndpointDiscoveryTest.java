@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.fiware.kiara.ps.discovery.endpoint.dyn;
+package org.fiware.kiara.ps.discovery.endpoint.stat;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -53,13 +53,16 @@ import static org.junit.Assert.*;
  *
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
-public class DynamicDiscoveryTest {
+public class StaticEndpointDiscoveryTest {
+    
+    CountDownLatch subEndCt;
+    CountDownLatch pubEndCt;
 
     static {
         System.setProperty("java.util.logging.config.file", "logging.properties");
     }
 
-    public DynamicDiscoveryTest() {
+    public StaticEndpointDiscoveryTest() {
     }
 
     @BeforeClass
@@ -69,6 +72,14 @@ public class DynamicDiscoveryTest {
     @AfterClass
     public static void tearDownClass() {
     }
+    
+    @Before
+    public void prepare() throws InterruptedException {
+        if (this.subEndCt != null && this.pubEndCt != null) {
+            this.subEndCt.await(10000, TimeUnit.MILLISECONDS);
+            this.pubEndCt.await(10000, TimeUnit.MILLISECONDS);
+        }
+    }
 
     private static final HelloWorldType hwtype = new HelloWorldType();
 
@@ -76,12 +87,22 @@ public class DynamicDiscoveryTest {
 
         private boolean isReliable;
         private boolean isStatic;
+        private boolean isKeyed;
         private static int matchedEntities;
+        private boolean waitForUnmatching;
+        private boolean useWLP;
+        
+        private final CountDownLatch myCt;
 
-        public SubscriberEntity(boolean isReliable, boolean isStatic, int nEntities) {
+        public SubscriberEntity(CountDownLatch myCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
             this.isReliable = isReliable;
             this.isStatic = isStatic;
+            this.isKeyed = isKeyed;
             matchedEntities = nEntities;
+            this.waitForUnmatching = waitForUnmatching;
+            this.useWLP = useWLP;
+            
+            this.myCt = myCt;
         }
 
         @Override
@@ -94,17 +115,25 @@ public class DynamicDiscoveryTest {
             // Create participant
             ParticipantAttributes pParam = new ParticipantAttributes();
             pParam.rtps.builtinAtt.useSimplePDP = true;
-            pParam.rtps.builtinAtt.useWriterLP = false;
+            pParam.rtps.builtinAtt.useWriterLP = this.useWLP;
             if (this.isStatic) {
                 pParam.rtps.builtinAtt.useSimpleEDP = false;
                 pParam.rtps.builtinAtt.useStaticEDP = true;
+
                 String reliabilityQos = "";
                 if (this.isReliable) { 
                     reliabilityQos = "RELIABLE_RELIABILITY_QOS";
                 } else {
                     reliabilityQos = "BEST_EFFORT_RELIABILITY_QOS";
                 }
-                
+
+                String keyChain = "";
+                if (this.isKeyed) {
+                    keyChain = "WITH_KEY";
+                } else {
+                    keyChain = "NO_KEY";
+                }
+
                 final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                         + "<staticdiscovery>"
                         + "    <participant>"
@@ -113,9 +142,9 @@ public class DynamicDiscoveryTest {
                         + "            <userId>1</userId>"
                         + "            <topicName>HelloWorldTopic</topicName>"
                         + "            <topicDataType>HelloWorld</topicDataType>"
-                        + "            <topicKind>NO_KEY</topicKind>"
+                        + "            <topicKind>" + keyChain + "</topicKind>"
                         + "            <reliabilityQos>" + reliabilityQos + "</reliabilityQos>"
-                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
+                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"5000\"></livelinessQos>"
                         + "        </writer>"
                         + "     </participant>"
                         + "    </staticdiscovery>";
@@ -145,6 +174,11 @@ public class DynamicDiscoveryTest {
             satt.topic.historyQos.depth = 30;
             satt.topic.resourceLimitQos.maxSamples = 50;
             satt.topic.resourceLimitQos.allocatedSamples = 20;
+
+            satt.qos.liveliness.kind = LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
+            satt.qos.liveliness.leaseDuration = new Timestamp(5, 0);
+            satt.qos.liveliness.announcementPeriod = new Timestamp(3, 0);
+
             if (this.isReliable) {
                 satt.qos.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
             } else {
@@ -154,6 +188,7 @@ public class DynamicDiscoveryTest {
             satt.setUserDefinedID((short) 1);
 
             final CountDownLatch matchedSignal = new CountDownLatch(matchedEntities);
+            final CountDownLatch unmatchedSignal = new CountDownLatch(matchedEntities);
 
             org.fiware.kiara.ps.subscriber.Subscriber<HelloWorld> subscriber = Domain.createSubscriber(participant, satt, new SubscriberListener() {
 
@@ -162,22 +197,25 @@ public class DynamicDiscoveryTest {
 
                 @Override
                 public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber<?> sub) {
-//                    //SampleInfo info = new SampleInfo();
-//                    HelloWorld type = (HelloWorld) sub.takeNextData(null);
-//                    while (type != null) {
-//                        //HelloWorld instance = (HelloWorld) type;
-//                        type = (HelloWorld) sub.takeNextData(null);
-//                        workDoneSignal.countDown();
-//                    }
+                    //                   //SampleInfo info = new SampleInfo();
+                    //                   HelloWorld type = (HelloWorld) sub.takeNextData(null);
+                    //                   while (type != null) {
+                    //                       //HelloWorld instance = (HelloWorld) type;
+                    //                       type = (HelloWorld) sub.takeNextData(null);
+                    //                       workDoneSignal.countDown();
+                    //                   }
                 }
 
                 @Override
                 public void onSubscriptionMatched(org.fiware.kiara.ps.subscriber.Subscriber<?> sub, MatchingInfo info) {
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
+                        System.out.println("Subscriber matched: " + n_matched);
                         matchedSignal.countDown();
                     } else {
                         n_matched--;
+                        System.out.println("Subscriber unmatched: " + n_matched);
+                        unmatchedSignal.countDown();
                     }
                 }
 
@@ -186,13 +224,21 @@ public class DynamicDiscoveryTest {
 
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
+                if (this.waitForUnmatching) {
+                    unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             assertEquals(0, matchedSignal.getCount());
+            if (this.waitForUnmatching) {
+                assertEquals(0, unmatchedSignal.getCount());
+            }
+
+            Domain.removeSubscriber(subscriber);
             
-            Domain.removeParticipant(participant);
+            this.myCt.countDown();
 
             return true;
         }
@@ -203,12 +249,22 @@ public class DynamicDiscoveryTest {
 
         private boolean isReliable;
         private boolean isStatic;
+        private boolean isKeyed;
         private static int matchedEntities;
+        private boolean waitForUnmatching;
+        private boolean useWLP;
+        
+        private final CountDownLatch myCt;
 
-        public PublisherEntity(boolean isReliable, boolean isStatic, int nEntities) {
+        public PublisherEntity(CountDownLatch myCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
             this.isReliable = isReliable;
             this.isStatic = isStatic;
+            this.isKeyed = isKeyed;
             matchedEntities = nEntities;
+            this.waitForUnmatching = waitForUnmatching;
+            this.useWLP = useWLP;
+            
+            this.myCt = myCt;
         }
 
         @Override
@@ -222,18 +278,25 @@ public class DynamicDiscoveryTest {
             ParticipantAttributes pAtt = new ParticipantAttributes();
             pAtt.rtps.useIPv4ToSend = true;
             pAtt.rtps.builtinAtt.useSimplePDP = true;
-            pAtt.rtps.builtinAtt.useWriterLP = false;
+            pAtt.rtps.builtinAtt.useWriterLP = this.useWLP;
             if (this.isStatic) {
                 pAtt.rtps.builtinAtt.useSimpleEDP = false;
                 pAtt.rtps.builtinAtt.useStaticEDP = true;
-                
+
                 String reliabilityQos = "";
                 if (this.isReliable) { 
                     reliabilityQos = "RELIABLE_RELIABILITY_QOS";
                 } else {
                     reliabilityQos = "BEST_EFFORT_RELIABILITY_QOS";
                 }
-                
+
+                String keyChain = "";
+                if (this.isKeyed) {
+                    keyChain = "WITH_KEY";
+                } else {
+                    keyChain = "NO_KEY";
+                }
+
                 final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
                         + "<staticdiscovery>"
                         + "    <participant>"
@@ -242,9 +305,9 @@ public class DynamicDiscoveryTest {
                         + "            <userId>1</userId>"
                         + "            <topicName>HelloWorldTopic</topicName>"
                         + "            <topicDataType>HelloWorld</topicDataType>"
-                        + "            <topicKind>NO_KEY</topicKind>"
+                        + "            <topicKind>" + keyChain + "</topicKind>"
                         + "            <reliabilityQos>" + reliabilityQos + "</reliabilityQos>"
-                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
+                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"5000\"></livelinessQos>"
                         + "        </reader>"
                         + "     </participant>"
                         + "    </staticdiscovery>";
@@ -275,18 +338,20 @@ public class DynamicDiscoveryTest {
             pubAtt.topic.resourceLimitQos.maxSamples = 50;
             pubAtt.topic.resourceLimitQos.allocatedSamples = 20;
             pubAtt.times.heartBeatPeriod = new Timestamp(2, 200 * 1000 * 1000);
-            
+
             pubAtt.qos.liveliness.kind = LivelinessQosPolicyKind.AUTOMATIC_LIVELINESS_QOS;
-            pubAtt.qos.liveliness.leaseDuration = new Timestamp(5, 1);
-            pubAtt.qos.liveliness.announcementPeriod = new Timestamp(5, 0);
+            pubAtt.qos.liveliness.leaseDuration = new Timestamp(5, 0);
+            pubAtt.qos.liveliness.announcementPeriod = new Timestamp(3, 0);
+
             if (isReliable) {
                 pubAtt.qos.reliability.kind = ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
             } else {
                 pubAtt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
             }
-            
-            
+
+
             final CountDownLatch matchedSignal = new CountDownLatch(matchedEntities);
+            final CountDownLatch unmatchedSignal = new CountDownLatch(matchedEntities);
 
             org.fiware.kiara.ps.publisher.Publisher<HelloWorld> publisher = Domain.createPublisher(participant, pubAtt, new PublisherListener() {
 
@@ -296,9 +361,12 @@ public class DynamicDiscoveryTest {
                 public void onPublicationMatched(org.fiware.kiara.ps.publisher.Publisher<?> pub, MatchingInfo info) {
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
+                        System.out.println("Publisher matched: " + n_matched);
                         matchedSignal.countDown();
                     } else {
                         n_matched--;
+                        System.out.println("Publisher unmatched: " + n_matched);
+                        unmatchedSignal.countDown();
                     }
                 }
             });
@@ -310,25 +378,21 @@ public class DynamicDiscoveryTest {
 
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
+                if (this.waitForUnmatching) {
+                    unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            
-//            doneSignal.await(15000, TimeUnit.MILLISECONDS);
 
-            /*while (true) {
-                publisher.write(hw);
-                try {
-                    if (doneSignal.await(10, TimeUnit.MILLISECONDS)) {
-                        break;
-                    }
-                } catch (InterruptedException e) {
-                }
-            }*/
-            
             assertEquals(0, matchedSignal.getCount());
+            if (this.waitForUnmatching) {
+                assertEquals(0, unmatchedSignal.getCount());
+            }
+
+            Domain.removePublisher(publisher);
             
-            Domain.removeParticipant(participant);
+            this.myCt.countDown();
 
             return true;
         }
@@ -344,92 +408,61 @@ public class DynamicDiscoveryTest {
     }
 
     @Test
-    public void dynamicDiscovery() throws InterruptedException, ExecutionException {
-
-        ExecutorService es = Executors.newCachedThreadPool();
-        CountDownLatch initSignal = new CountDownLatch(1);
-        CountDownLatch startSignal = new CountDownLatch(1);
-        CountDownLatch doneSignal = new CountDownLatch(1);
-
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(false, false, 1));
-
-        assertTrue(subscriber.get());
-        assertTrue(publisher.get());
-
-    }
-    
-    @Test
     public void staticDiscovery() throws InterruptedException, ExecutionException {
 
         ExecutorService es = Executors.newCachedThreadPool();
-       
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(false, true, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(false, true, 1));
+        
+        subEndCt = new CountDownLatch(1);
+        pubEndCt = new CountDownLatch(1);
+
+        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, false, true, false, false, false, 1));
+        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, false, true, false, false, false, 1));
 
         assertTrue(subscriber.get());
         assertTrue(publisher.get());
 
     }
-    
-    @Test
-    public void dynamicDiscoveryMultipleSubscribers() throws InterruptedException, ExecutionException {
 
-        ExecutorService es = Executors.newCachedThreadPool();
-
-        Future<Boolean> subscriber1 = es.submit(new SubscriberEntity(false, false, 1));
-        Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(false, false, 2));
-
-        assertTrue(subscriber1.get());
-        assertTrue(subscriber2.get());
-        assertTrue(publisher.get());
-
-    }
-    
     @Test
     public void staticDiscoveryMultipleSubscribers() throws InterruptedException, ExecutionException {
 
         ExecutorService es = Executors.newCachedThreadPool();
+        
+        subEndCt = new CountDownLatch(2);
+        pubEndCt = new CountDownLatch(1);
 
-        Future<Boolean> subscriber1 = es.submit(new SubscriberEntity(false, true, 1));
-        Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(false, true, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(false, true, 2));
+        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+        Future<Boolean> subscriber1 = es.submit(new SubscriberEntity(subEndCt, false, true, false, false, false, 1));
+        Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(subEndCt, false, true, false, false, false, 1));
+        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, false, true, false, false, false, 2));
 
         assertTrue(subscriber1.get());
         assertTrue(subscriber2.get());
         assertTrue(publisher.get());
 
     }
-    
-    @Test
-    public void dynamicDiscoveryMultiplePublishers() throws InterruptedException, ExecutionException {
 
-        ExecutorService es = Executors.newCachedThreadPool();
-     
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(false, false, 2));
-        Future<Boolean> publisher1 = es.submit(new PublisherEntity(false, false, 1));
-        Future<Boolean> publisher2 = es.submit(new PublisherEntity(false, false, 1));
-
-        assertTrue(subscriber.get());
-        assertTrue(publisher1.get());
-        assertTrue(publisher2.get());
-
-    }
-    
     @Test
     public void staticDiscoveryMultiplePublishers() throws InterruptedException, ExecutionException {
 
         ExecutorService es = Executors.newCachedThreadPool();
-     
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(false, true, 2));
-        Future<Boolean> publisher1 = es.submit(new PublisherEntity(false, true, 1));
-        Future<Boolean> publisher2 = es.submit(new PublisherEntity(false, true, 1));
+        
+        subEndCt = new CountDownLatch(1);
+        pubEndCt = new CountDownLatch(2);
+
+        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, false, true, false, false, false, 2));
+        Future<Boolean> publisher1 = es.submit(new PublisherEntity(pubEndCt, false, true, false, false, false, 1));
+        Future<Boolean> publisher2 = es.submit(new PublisherEntity(pubEndCt, false, true, false, false, false, 1));
 
         assertTrue(subscriber.get());
         assertTrue(publisher1.get());
         assertTrue(publisher2.get());
 
     }
+    
+    
+    
 }
 

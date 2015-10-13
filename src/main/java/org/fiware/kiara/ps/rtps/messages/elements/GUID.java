@@ -124,7 +124,7 @@ public class GUID implements Serializable {
      */
     @Override
     public String toString() {
-        return this.m_guidPrefix.toString() + "-" + this.m_entityId.toString();
+        return this.m_guidPrefix.toString() + " - " + this.m_entityId.toString();
     }
     
     /**

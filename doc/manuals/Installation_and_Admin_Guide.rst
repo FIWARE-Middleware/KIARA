@@ -87,7 +87,7 @@ To verify that the installation is correct please open a terminal/shell/command 
 ::
 
     $ java -version
-    java version &quot;1.7.0_65&quot;
+    java version 1.7.0_65
     OpenJDK Runtime Environment (IcedTea 2.5.3) (7u71-2.5.3-0ubuntu0.14.04.1)
     OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode)
 
@@ -116,9 +116,9 @@ Open CLI (cmd.exe)
 
 ::
 
-    unzip ~\Download\gradle-x.x.x-all.zip -d &quot;C:\Program Files&quot;
-    setx GRADLE_HOME &quot;C:\Program Files\gradle-x.x.x&quot; /M
-    setx PATH &quot;%PATH%;%GRADLE_HOME%\bin&quot; /M
+    unzip ~\Download\gradle-x.x.x-all.zip -d C:\Program Files
+    setx GRADLE_HOME C:\Program Files\gradle-x.x.x /M
+    setx PATH %PATH%;%GRADLE_HOME%\bin /M
 
 /M sets the value on a machine level, which means for all users. The values are stored permanently and will be available in any new cmd.exe session.
 
@@ -241,7 +241,7 @@ Open a new shell or cmd.exe session and test if maven is available:
     Java version: 1.8.0_20, vendor: Oracle Corporation
     Java home: /Library/Java/JavaVirtualMachines/jdk1.8.0_20.jdk/Contents/Home/jre
     Default locale: en_US, platform encoding: UTF-8
-    OS name: &quot;mac os x&quot;, version: &quot;10.10.2&quot;, arch: &quot;x86_64&quot;, family: &quot;mac&quot;
+    OS name: mac os x, version: 10.10.2, arch: x86_64, family: mac
 
 Integraded Development Environments (IDE)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -339,7 +339,7 @@ To use KIARA in your project you have to extend your build.gradle file:
 
     // In this section declare the dependencies for your production and test code
     dependencies {
-        compile group: 'org.fiware.kiara', name: 'kiara', version: '0.2.0'
+        compile group: 'org.fiware.kiara', name: 'KIARA', version: '0.3.0'
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
         testCompile group: 'junit', name: 'junit', version: '4.11'
     }

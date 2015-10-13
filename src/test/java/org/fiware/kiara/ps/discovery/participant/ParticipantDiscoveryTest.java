@@ -30,6 +30,7 @@ import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.participant.ParticipantDiscoveryInfo;
 import org.fiware.kiara.ps.participant.ParticipantListener;
+import org.fiware.kiara.ps.rtps.participant.DiscoveryStatus;
 import org.fiware.kiara.ps.rtps.utils.IPFinder;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
@@ -46,6 +47,8 @@ import static org.junit.Assert.*;
  * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
  */
 public class ParticipantDiscoveryTest {
+    
+    CountDownLatch participantCt;
 
 
     static {
@@ -62,23 +65,31 @@ public class ParticipantDiscoveryTest {
     @AfterClass
     public static void tearDownClass() {
     }
+    
+    @Before
+    public void prepare() throws InterruptedException {
+        System.out.println("---------------------------------------------------");
+        if (this.participantCt != null) {
+            this.participantCt.await(10000, TimeUnit.MILLISECONDS);
+        }
+    }
 
     private static final HelloWorldType hwtype = new HelloWorldType();
 
     private static class SingleDiscoveryParticipant implements Callable<Boolean> {
 
         private final String participantName;
-        private final String remoteParticipantName;
-        private final CountDownLatch initSignal;
-        /*private final CountDownLatch startSignal;
-        private final CountDownLatch doneSignal;*/
+        private final String[] remoteParticipantNames;
+        private final CountDownLatch myCt;
+        private int participantID;
+        private int totalDisc;
 
-        public SingleDiscoveryParticipant(String participantName, String remoteParticipantName, CountDownLatch initSignal) {
+        public SingleDiscoveryParticipant(CountDownLatch myCt, int id, String participantName, String[] remoteParticipantNames, int totalDisc) {
             this.participantName = participantName;
-            this.remoteParticipantName = remoteParticipantName;
-            this.initSignal = initSignal;
-            /*this.startSignal = startSignal;
-            this.doneSignal = doneSignal;*/
+            this.remoteParticipantNames = remoteParticipantNames;
+            this.myCt = myCt;
+            this.participantID = id;
+            this.totalDisc = totalDisc;
         }
 
         @Override
@@ -92,43 +103,42 @@ public class ParticipantDiscoveryTest {
             ParticipantAttributes pParam = new ParticipantAttributes();
             pParam.rtps.builtinAtt.useSimplePDP = true;
             pParam.rtps.builtinAtt.useWriterLP = false;
-            pParam.rtps.builtinAtt.useSimpleEDP = true;
-            pParam.rtps.builtinAtt.useStaticEDP = true;
+            
+            boolean staticDiscovery = false;
 
-            final String ipAddr = IPFinder.getFirstIPv4Address().getHostAddress();
-            System.out.println("IP Addr " + ipAddr);
-
-            final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                    + "<staticdiscovery>"
-                    + "    <participant>"
-                    + "        <name>" + this.remoteParticipantName + "</name>"
-                    + "        <writer>"
-                    + "            <userId>1</userId>"
-                    + "            <topicName>HelloWorldTopic</topicName>"
-                    + "            <topicDataType>HelloWorld</topicDataType>"
-                    + "            <topicKind>NO_KEY</topicKind>"
-                    + "            <reliabilityQos>BEST_EFFORT_RELIABILITY_QOS</reliabilityQos>"
-                    + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"100\"></livelinessQos>"
-                    + "        </writer>"
-                    + "     </participant>"
-                    + "    </staticdiscovery>";
-
-            pParam.rtps.builtinAtt.setStaticEndpointXML(edpXml);
+            if (this.remoteParticipantNames != null) { // Static
+                pParam.rtps.builtinAtt.useSimpleEDP = false;
+                pParam.rtps.builtinAtt.useStaticEDP = true;
+                staticDiscovery = true;
+            } else { // Dynamic
+                pParam.rtps.builtinAtt.useSimpleEDP = true;
+                pParam.rtps.builtinAtt.useStaticEDP = false;
+            }
+            
+            if (staticDiscovery) {
+                final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+                        + "<staticdiscovery>";
+                        
+                String participants = "";
+                for (int i=0; i < remoteParticipantNames.length; ++i) {
+                    participants = participants + "+<participant><name>" + remoteParticipantNames[i] + "</name></participant>";
+                }
+                final String edpXmlEnd = "</staticdiscovery>";
+                pParam.rtps.builtinAtt.setStaticEndpointXML(edpXml + participants + edpXmlEnd);
+            }
 
             pParam.rtps.setName(this.participantName);
+            pParam.rtps.participantID = this.participantID;
 
-            final CountDownLatch workInitSignal = new CountDownLatch(1);
-            final String name = this.participantName;
-
+            final CountDownLatch workInitSignal = new CountDownLatch(this.totalDisc);
+            
             Participant participant = Domain.createParticipant(pParam, new ParticipantListener() {
-
-                private int nMatched = 0;
-
                 @Override
                 public void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info) {
-                    workInitSignal.countDown();
-                    this.nMatched++;
-                    System.out.println(name + ": Discovery message received. Total: " + this.nMatched);
+                    if (info.rtps.status == DiscoveryStatus.DISCOVERED_PARTICIPANT) {
+                        workInitSignal.countDown();
+                        //System.out.println(participantName + " - DISCOVERED: " + info.rtps.guid);
+                    }
                 }
             });
 
@@ -137,49 +147,80 @@ public class ParticipantDiscoveryTest {
                 return false;
             }
 
-            System.out.println("Subscriber participant SPDP MC Port: " + participant.getSPDPMulticastPort());
-            System.out.println("Subscriber participant SPDP UC Port: " + participant.getSPDPUnicastPort());
-            System.out.println("Subscriber participant User MC Port: " + participant.getUserMulticastPort());
-            System.out.println("Subscriber participant User UC Port: " + participant.getUserUnicastPort());
-
-            this.initSignal.countDown();
-
             try {
                 workInitSignal.await(15000, TimeUnit.MILLISECONDS);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
+            
+            Domain.removeParticipant(participant);
+            
             assertEquals(0, workInitSignal.getCount());
 
-            System.out.println("SingleDiscoveryParticipant finished");
+            this.myCt.countDown();
 
             return true;
         }
 
     }
 
-    @Before
-    public void setUp() {
-    }
-
-    @After
-    public void tearDown() {
-    }
-
     @Test
-    public void singleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
+    public void staticSingleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
-        CountDownLatch initSignal = new CountDownLatch(1);
+        participantCt = new CountDownLatch(2);
 
-        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant("Participant1", "Participant2", initSignal));
-        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant("Participant2", "Participant1", initSignal));
+        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 1, "Participant1", new String[] {"Participant2"}, 1));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 2, "Participant2", new String[] {"Participant2"}, 1));
 
         assertTrue(participant1.get());
         assertTrue(participant2.get());
 
     }
+    
+    @Test
+    public void dynamicSingleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newCachedThreadPool();
+        participantCt = new CountDownLatch(2);
+
+        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 3, "Participant3", null, 1));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 4, "Participant4", null, 1));
+
+        assertTrue(participant1.get());
+        assertTrue(participant2.get());
+
+    }
+    
+    @Test
+    public void staticMultipleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newCachedThreadPool();
+        participantCt = new CountDownLatch(3);
+
+        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 5, "Participant5", new String[] {"Participant6", "Participant7"}, 2));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 6, "Participant6", new String[] {"Participant5", "Participant7"}, 2));
+        Future<Boolean> participant3 = es.submit(new SingleDiscoveryParticipant(participantCt, 7, "Participant7", new String[] {"Participant5", "Participant6"}, 2));
+
+        assertTrue(participant1.get());
+        assertTrue(participant2.get());
+        assertTrue(participant3.get());
+
+    }
+    
+    @Test
+    public void dynamicMultipleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
+        ExecutorService es = Executors.newCachedThreadPool();
+        participantCt = new CountDownLatch(3);
+
+        Future<Boolean> participant1 = es.submit(new SingleDiscoveryParticipant(participantCt, 8, "Participant8", null, 2));
+        Future<Boolean> participant2 = es.submit(new SingleDiscoveryParticipant(participantCt, 9, "Participant9", null, 2));
+        Future<Boolean> participant3 = es.submit(new SingleDiscoveryParticipant(participantCt, 10, "Participant10", null, 2));
+
+        assertTrue(participant1.get());
+        assertTrue(participant2.get());
+        assertTrue(participant3.get());
+
+    }
+    
+    
 }
 
 

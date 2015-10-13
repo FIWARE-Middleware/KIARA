@@ -153,7 +153,7 @@ public class GUIDPrefix extends RTPSSubmessageElement {
     public String toString() {
         StringBuffer sb = new StringBuffer("");
         for (Byte b : this.m_value) {
-            sb.append(b);
+            sb.append(String.format("%02X ", b));
         }
         return sb.toString();
     }

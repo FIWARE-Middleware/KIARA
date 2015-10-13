@@ -33,9 +33,10 @@ public class EntityIdTest {
     /**
      * Test of isUnknown method, of class EntityId.
      */
+    /*
     @Test
     public void testIsUnknown() {
-        /*EntityId instance = new EntityId(EntityId.EntityIdEnum.ENTITYID_UNKNOWN);
+        EntityId instance = new EntityId(EntityId.EntityIdEnum.ENTITYID_UNKNOWN);
         System.out.println(System.identityHashCode(instance.m_value));
         
         assertEquals(true, instance.equals(new EntityId(EntityId.EntityIdEnum.ENTITYID_UNKNOWN)));
@@ -47,7 +48,8 @@ public class EntityIdTest {
         
         instance = new EntityId(EntityId.EntityIdEnum.ENTITYID_UNKNOWN);
         System.out.println(System.identityHashCode(instance.m_value));
-        assertEquals(false, instance.equals(new EntityId(EntityId.EntityIdEnum.ENTITYID_RTPSPARTICIPANT)));*/
+        assertEquals(false, instance.equals(new EntityId(EntityId.EntityIdEnum.ENTITYID_RTPSPARTICIPANT)));
     }
+    */
     
 }

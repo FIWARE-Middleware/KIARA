@@ -425,7 +425,8 @@ public class EntityId extends RTPSSubmessageElement {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.m_value.length; ++i) {
-            sb.append(this.m_value[i]);
+            //sb.append(this.m_value[i]);
+            sb.append(String.format("%02X ", this.m_value[i]));
         }
         return sb.toString();
     }

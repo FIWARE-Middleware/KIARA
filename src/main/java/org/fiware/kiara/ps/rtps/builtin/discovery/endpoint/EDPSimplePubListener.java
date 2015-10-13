@@ -131,10 +131,10 @@ public class EDPSimplePubListener extends ReaderListener {
                 }
             }
         } else {
-            logger.info("Disposed Remote Reader, removing...");
+            logger.info("Disposed Remote Writer, removing...");
             GUID auxGUID = change.getInstanceHandle().toGUID();
-            this.edpSimple.pubReaderPair.getSecond().removeChange(change);
-            this.edpSimple.removeReaderProxy(auxGUID);
+            this.edpSimple.pubWriterPair.getSecond().removeChange(change);
+            this.edpSimple.removeWriterProxy(auxGUID);
         }
     }
     

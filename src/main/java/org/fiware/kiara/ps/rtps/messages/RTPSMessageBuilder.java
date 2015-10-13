@@ -470,20 +470,31 @@ public class RTPSMessageBuilder {
         submessageData.addSubmessageElement(change.getWriterGUID().getEntityId());
 
         submessageData.addSubmessageElement(change.getSequenceNumber());
+        
+        ParameterStatus status = new ParameterStatus(change.getKind());
+        
 
         if (inlineQosFlag) {
             // TODO Insert in the following order: InstanceHandle, Status, inlineQos, Sentinel
+            ParameterList list = new ParameterList();
             if (inlineQos != null) {
                 if (inlineQos.getHasChanged()) {
                     submessageData.addSubmessageElement(inlineQos);
                 }
             }
             if (topicKind == TopicKind.WITH_KEY) {
-
+                list.addParameter(new ParameterKey(change.getInstanceHandle()));
+            }
+            if (change.getKind() != ChangeKind.ALIVE) {
+                list.addParameter(status);
             }
             if (inlineQos != null) {
-
+                
+            } else {
+                list.addSentinel();
             }
+
+            submessageData.addSubmessageElement(list);
         }
 
         // Add SerializedPayload
