@@ -145,104 +145,110 @@ public class EDPSimple extends EDP {
         boolean created = true;
         HistoryCacheAttributes historyAtt;
 
-        if (this.discoveryAttributes.simpleEDP.usePulicationWriterAndSubscriptionReader) {
+        this.m_RTPSParticipant.getParticipantMutex().lock();
+        try {
 
-            historyAtt = new HistoryCacheAttributes();
-            WriterAttributes writerAtt = new WriterAttributes();
-            ReaderAttributes readerAtt = new ReaderAttributes();
+            if (this.discoveryAttributes.simpleEDP.usePulicationWriterAndSubscriptionReader) {
 
-            historyAtt.initialReservedCaches = 100;
-            historyAtt.maximumReservedCaches = 5000;
-            historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PUBLICATION_DATA_MAX_SIZE;
+                historyAtt = new HistoryCacheAttributes();
+                WriterAttributes writerAtt = new WriterAttributes();
+                ReaderAttributes readerAtt = new ReaderAttributes();
 
-            this.pubWriterPair.setSecond(new WriterHistoryCache(historyAtt));
-            writerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
-            writerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-            writerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
-            writerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
-            writerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-            RTPSWriter writer = this.m_RTPSParticipant.createWriter(writerAtt, this.pubWriterPair.getSecond(), null, EntityId.createSEDPPubWriter(), true);
-            if (writer != null) {
-                this.pubWriterPair.setFirst((StatefulWriter) writer);
-                logger.debug("SEDP Publication Writer created");
-            } else {
-                // TODO
-                created &= false;
+                historyAtt.initialReservedCaches = 100;
+                historyAtt.maximumReservedCaches = 5000;
+                historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PUBLICATION_DATA_MAX_SIZE;
+
+                this.pubWriterPair.setSecond(new WriterHistoryCache(historyAtt));
+                writerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
+                writerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+                writerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
+                writerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
+                writerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+                RTPSWriter writer = this.m_RTPSParticipant.createWriter(writerAtt, this.pubWriterPair.getSecond(), null, EntityId.createSEDPPubWriter(), true);
+                if (writer != null) {
+                    this.pubWriterPair.setFirst((StatefulWriter) writer);
+                    logger.debug("SEDP Publication Writer created");
+                } else {
+                    // TODO
+                    created &= false;
+                }
+
+                historyAtt = new HistoryCacheAttributes();
+                historyAtt.initialReservedCaches = 100;
+                historyAtt.maximumReservedCaches = 1000000;
+                historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_SUBSCRIPTION_DATA_MAX_SIZE;
+
+                this.subReaderPair.setSecond(new ReaderHistoryCache(historyAtt));
+                readerAtt.expectsInlineQos = false;
+                readerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
+                readerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+                readerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
+                readerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
+                readerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+
+                this.subListener = new EDPSimpleSubListener(this);
+                RTPSReader reader = this.m_RTPSParticipant.createReader(readerAtt, this.subReaderPair.getSecond(), this.subListener, EntityId.createSEDPSubReader(), true);
+                if (reader != null) {
+                    this.subReaderPair.setFirst((StatefulReader) reader);
+                    logger.debug("SEDP Subscription Reader created");
+                } else {
+                    //TODO
+                }
+
             }
 
-            historyAtt = new HistoryCacheAttributes();
-            historyAtt.initialReservedCaches = 100;
-            historyAtt.maximumReservedCaches = 1000000;
-            historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_SUBSCRIPTION_DATA_MAX_SIZE;
+            if (this.discoveryAttributes.simpleEDP.usePulicationReaderAndSubscriptionWriter) {
 
-            this.subReaderPair.setSecond(new ReaderHistoryCache(historyAtt));
-            readerAtt.expectsInlineQos = false;
-            readerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
-            readerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-            readerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
-            readerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
-            readerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+                historyAtt = new HistoryCacheAttributes();
+                WriterAttributes writerAtt = new WriterAttributes();
+                ReaderAttributes readerAtt = new ReaderAttributes();
 
-            this.subListener = new EDPSimpleSubListener(this);
-            RTPSReader reader = this.m_RTPSParticipant.createReader(readerAtt, this.subReaderPair.getSecond(), this.subListener, EntityId.createSEDPSubReader(), true);
-            if (reader != null) {
-                this.subReaderPair.setFirst((StatefulReader) reader);
-                logger.debug("SEDP Subscription Reader created");
-            } else {
-                //TODO
+                historyAtt.initialReservedCaches = 100;
+                historyAtt.maximumReservedCaches = 1000000;
+                historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PUBLICATION_DATA_MAX_SIZE;
+
+                this.pubReaderPair.setSecond(new ReaderHistoryCache(historyAtt));
+                readerAtt.expectsInlineQos = false;
+                readerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
+                readerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+                readerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
+                readerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
+                readerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+
+                this.pubListener = new EDPSimplePubListener(this);
+                RTPSReader reader = this.m_RTPSParticipant.createReader(readerAtt, this.pubReaderPair.getSecond(), this.pubListener, EntityId.createSEDPPubReader(), true);
+                if (reader != null) {
+                    this.pubReaderPair.setFirst((StatefulReader) reader);
+                    logger.debug("SEDP Publication Reader created");
+                } else {
+                    // TODO
+                    created &= false;
+                }
+
+                historyAtt = new HistoryCacheAttributes();
+                historyAtt.initialReservedCaches = 100;
+                historyAtt.maximumReservedCaches = 5000;
+                historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_SUBSCRIPTION_DATA_MAX_SIZE;
+
+                this.subWriterPair.setSecond(new WriterHistoryCache(historyAtt));
+                writerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
+                writerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
+                writerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
+                writerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
+                writerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
+
+                RTPSWriter writer = this.m_RTPSParticipant.createWriter(writerAtt, this.subWriterPair.getSecond(), null, EntityId.createSEDPSubWriter(), true);
+                if (writer != null) {
+                    this.subWriterPair.setFirst((StatefulWriter) writer);
+                    logger.debug("SEDP Subscription Writer created");
+                } else {
+                    // TODO
+                    created &= false;
+                }
+
             }
-
-        }
-
-        if (this.discoveryAttributes.simpleEDP.usePulicationReaderAndSubscriptionWriter) {
-
-            historyAtt = new HistoryCacheAttributes();
-            WriterAttributes writerAtt = new WriterAttributes();
-            ReaderAttributes readerAtt = new ReaderAttributes();
-
-            historyAtt.initialReservedCaches = 100;
-            historyAtt.maximumReservedCaches = 1000000;
-            historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_PUBLICATION_DATA_MAX_SIZE;
-
-            this.pubReaderPair.setSecond(new ReaderHistoryCache(historyAtt));
-            readerAtt.expectsInlineQos = false;
-            readerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
-            readerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-            readerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
-            readerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
-            readerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-
-            this.pubListener = new EDPSimplePubListener(this);
-            RTPSReader reader = this.m_RTPSParticipant.createReader(readerAtt, this.pubReaderPair.getSecond(), this.pubListener, EntityId.createSEDPPubReader(), true);
-            if (reader != null) {
-                this.pubReaderPair.setFirst((StatefulReader) reader);
-                logger.debug("SEDP Publication Reader created");
-            } else {
-                // TODO
-                created &= false;
-            }
-
-            historyAtt = new HistoryCacheAttributes();
-            historyAtt.initialReservedCaches = 100;
-            historyAtt.maximumReservedCaches = 5000;
-            historyAtt.payloadMaxSize = ParticipantProxyData.DISCOVERY_SUBSCRIPTION_DATA_MAX_SIZE;
-
-            this.subWriterPair.setSecond(new WriterHistoryCache(historyAtt));
-            writerAtt.endpointAtt.reliabilityKind = ReliabilityKind.RELIABLE;
-            writerAtt.endpointAtt.topicKind = TopicKind.WITH_KEY;
-            writerAtt.endpointAtt.unicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficUnicastLocatorList());
-            writerAtt.endpointAtt.multicastLocatorList.copy(this.m_PDP.getLocalParticipantProxyData().getMetatrafficMulticastLocatorList());
-            writerAtt.endpointAtt.durabilityKind = DurabilityKind.TRANSIENT_LOCAL;
-
-            RTPSWriter writer = this.m_RTPSParticipant.createWriter(writerAtt, this.subWriterPair.getSecond(), null, EntityId.createSEDPSubWriter(), true);
-            if (writer != null) {
-                this.subWriterPair.setFirst((StatefulWriter) writer);
-                logger.debug("SEDP Subscription Writer created");
-            } else {
-                // TODO
-                created &= false;
-            }
-
+        } finally {
+            this.m_RTPSParticipant.getParticipantMutex().unlock();
         }
 
         logger.info("SEDP Endpoints creation finished");
@@ -321,7 +327,6 @@ public class EDPSimple extends EDP {
                 } finally {
                     mutex.unlock();
                 }
-                // this.lock(); // TODO FIXME
                 this.pubWriterPair.getSecond().addChange(change);
                 return true;
             }

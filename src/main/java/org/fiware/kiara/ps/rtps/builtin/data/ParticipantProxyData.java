@@ -418,7 +418,8 @@ public class ParticipantProxyData {
      * @param change cache change
      * @return True on success
      */
-    public synchronized boolean readFromCDRMessage(CacheChange change) {
+    public boolean readFromCDRMessage(CacheChange change) {
+        this.m_mutex.lock();
         try {
             SerializedPayload payload = change.getSerializedPayload();
             payload.updateSerializer();
@@ -499,6 +500,8 @@ public class ParticipantProxyData {
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        } finally {
+            this.m_mutex.unlock();
         }
         return false;
     }

@@ -286,7 +286,7 @@ public class SendResource {
      * @param msg Reference to the message.
      * @param loc Locator where to send the message.
      */
-    public synchronized void sendSync(RTPSMessage msg, Locator loc) {
+    public void sendSync(RTPSMessage msg, Locator loc) {
         m_mutex.lock();
 
         try {

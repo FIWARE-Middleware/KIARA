@@ -41,12 +41,12 @@ public class CacheChangePool {
      * The payload size associated with the pool.
      */
     private int m_payloadSize;
-    
+
     /**
      * The initial pool size
      */
     private int m_poolSize;
-    
+
     /**
      * Maximum payload size. If set to 0 the pool will keep reserving until something breaks.
      */
@@ -56,7 +56,7 @@ public class CacheChangePool {
      * List of free {@link CacheChange} objects
      */
     private List<CacheChange> m_freeChanges;
-    
+
     /**
      * List of {@link CacheChange} objects
      */
@@ -81,23 +81,26 @@ public class CacheChangePool {
      */
     public CacheChangePool(int poolSize, int payloadSize, int maxPoolSize) {
         this.m_mutex.lock();
-        this.m_payloadSize = payloadSize;
-        this.m_poolSize = 0;
+        try {
+            this.m_payloadSize = payloadSize;
+            this.m_poolSize = 0;
 
-        this.m_freeChanges = new ArrayList<CacheChange>();
-        this.m_allChanges = new ArrayList<CacheChange>();
+            this.m_freeChanges = new ArrayList<CacheChange>();
+            this.m_allChanges = new ArrayList<CacheChange>();
 
-        if (maxPoolSize > 0) {
-            if (poolSize > maxPoolSize) {
-                this.m_maxPoolSize = (int) Math.abs(poolSize);
+            if (maxPoolSize > 0) {
+                if (poolSize > maxPoolSize) {
+                    this.m_maxPoolSize = (int) Math.abs(poolSize);
+                } else {
+                    this.m_maxPoolSize = (int) Math.abs(maxPoolSize);
+                }
             } else {
-                this.m_maxPoolSize = (int) Math.abs(maxPoolSize);
+                this.m_maxPoolSize = 0;
             }
-        } else {
-            this.m_maxPoolSize = 0;
+            this.allocateGroup(poolSize);
+        } finally {
+            this.m_mutex.unlock();
         }
-        this.allocateGroup(poolSize);
-        this.m_mutex.unlock();
 
     }
 
@@ -163,20 +166,20 @@ public class CacheChangePool {
      * @param change CacheChange to be freed
      */
     public void releaseCache(CacheChange change) {
-        //synchronized(this) {
         this.m_mutex.lock();
-        change.setKind(ChangeKind.ALIVE);
-        change.getSequenceNumber().setHigh(0);
-        change.getSequenceNumber().setLow(0);
-        change.setWriterGUID(new GUID());
-        // TODO Check serializedPayload length
-        change.setInstanceHandle(new InstanceHandle());
-        change.setRead(false);
-        change.getSourceTimestamp().timeZero();
+        try {
+            change.setKind(ChangeKind.ALIVE);
+            change.getSequenceNumber().setHigh(0);
+            change.getSequenceNumber().setLow(0);
+            change.setWriterGUID(new GUID());
+            change.setInstanceHandle(new InstanceHandle());
+            change.setRead(false);
+            change.getSourceTimestamp().timeZero();
 
-        this.m_freeChanges.add(change);
-        //}
-        this.m_mutex.unlock();
+            this.m_freeChanges.add(change);
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
     /**

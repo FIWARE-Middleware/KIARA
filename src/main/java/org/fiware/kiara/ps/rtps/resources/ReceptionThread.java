@@ -21,6 +21,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.Inet4Address;
 import java.nio.channels.DatagramChannel;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessageBuilder;
 import org.fiware.kiara.ps.rtps.messages.common.types.RTPSEndian;
@@ -53,6 +56,11 @@ public class ReceptionThread implements Runnable {
      * Indicates if the thread is in execution
      */
     private volatile boolean running = true;
+    
+    /**
+     * Mutex
+     */
+    private Lock m_mutex = new ReentrantLock(true);
 
     /**
      * {@link ReceptionThread} constructor
@@ -115,7 +123,8 @@ public class ReceptionThread implements Runnable {
      * @param msg Received {@link RTPSMessage}
      */
     private void newRTPSMessage(RTPSMessage msg) {
-        synchronized(this.m_listenResource) {
+        this.m_mutex.lock();
+        try {
             if (msg.getSize() == 0) {
                 return;
             }
@@ -143,6 +152,8 @@ public class ReceptionThread implements Runnable {
 
             this.m_listenResource.getMessageReceiver().processCDRMessage(this.m_listenResource.getRTPSParticipant().getGUID().getGUIDPrefix(), this.m_listenResource.getSenderLocator(), msg);
 
+        } finally {
+            this.m_mutex.unlock();
         }
     }
     

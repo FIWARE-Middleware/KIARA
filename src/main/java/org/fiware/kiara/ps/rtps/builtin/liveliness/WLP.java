@@ -243,8 +243,7 @@ public class WLP {
     public boolean assignRemoteEndpoints(ParticipantProxyData pdata) {
         m_mutex.lock();
         try {
-            final Lock mutex2 = pdata.getMutex();
-            mutex2.lock();
+            pdata.getMutex().lock();
             try {
 
                 logger.debug("RTPS LIVELINESS: For remote RTPSParticipant {}", pdata.getGUID());
@@ -289,7 +288,7 @@ public class WLP {
 
                 return true;
             } finally {
-                mutex2.unlock();
+                pdata.getMutex().unlock();
             }
         } finally {
             m_mutex.unlock();
@@ -304,8 +303,7 @@ public class WLP {
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
         m_mutex.lock();
         try {
-            final Lock mutex2 = pdata.getMutex();
-            mutex2.lock();
+            pdata.getMutex().lock();
             try {
                 logger.debug("RTPS LIVELINESS: for RTPSParticipant: {}", pdata.getGUID());
 
@@ -326,7 +324,7 @@ public class WLP {
                 }
 
             } finally {
-                mutex2.unlock();
+                pdata.getMutex().unlock();
             }
         } finally {
             m_mutex.unlock();
@@ -356,7 +354,7 @@ public class WLP {
                         m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                         m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
                         //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                        if (m_livelinessAutomatic.isWaiting() && m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
+                        if (m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
                             m_livelinessAutomatic.stopTimer();
                         }
                         m_livelinessAutomatic.restartTimer();
@@ -372,7 +370,7 @@ public class WLP {
                         m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
                         m_livelinessManRTPSParticipant.updateIntervalMillisec(m_minManRTPSParticipant_MilliSec);
                         //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                        if (m_livelinessManRTPSParticipant.isWaiting() && m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
+                        if (m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
                             m_livelinessManRTPSParticipant.stopTimer();
                         }
                         m_livelinessManRTPSParticipant.restartTimer();
@@ -509,7 +507,7 @@ public class WLP {
                     m_minAutomatic_MilliSec = wAnnouncementPeriodMilliSec;
                     m_livelinessAutomatic.updateIntervalMillisec(wAnnouncementPeriodMilliSec);
                     //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                    if (m_livelinessAutomatic.isWaiting() && m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
+                    if (m_livelinessAutomatic.getRemainingTimeMilliSec() > m_minAutomatic_MilliSec) {
                         m_livelinessAutomatic.stopTimer();
                     }
                     m_livelinessAutomatic.restartTimer();
@@ -527,7 +525,7 @@ public class WLP {
                     m_minManRTPSParticipant_MilliSec = wAnnouncementPeriodMilliSec;
                     m_livelinessManRTPSParticipant.updateIntervalMillisec(m_minManRTPSParticipant_MilliSec);
                     //CHECK IF THE TIMER IS GOING TO BE CALLED AFTER THIS NEW SET LEASE DURATION
-                    if (m_livelinessManRTPSParticipant.isWaiting() && m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
+                    if (m_livelinessManRTPSParticipant.getRemainingTimeMilliSec() > m_minManRTPSParticipant_MilliSec) {
                         m_livelinessManRTPSParticipant.stopTimer();
                     }
                     m_livelinessManRTPSParticipant.restartTimer();

@@ -304,6 +304,6 @@ public class ParticipantInitializationTest {
 
     }
     
-    
+ 
 
 }

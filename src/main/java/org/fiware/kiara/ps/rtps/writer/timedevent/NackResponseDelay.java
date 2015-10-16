@@ -42,17 +42,17 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NackResponseDelay extends TimedEvent {
-    
+
     /**
      * The {@link ReaderProxy} that sends the ACKNACK
      */
     private ReaderProxy m_RP;
-    
+
     /**
      * {@link RTPSMessage} to send in response
      */
     private RTPSMessage m_rtpsMessage;
-    
+
     /**
      * Logging object
      */
@@ -77,83 +77,88 @@ public class NackResponseDelay extends TimedEvent {
     @Override
     public void event(EventCode code, String msg) {
         // TODO Check if creating an RTPSMessage inside each if block solves sending all the NACK responses
-        if (code == EventCode.EVENT_SUCCESS) {
-            logger.debug("Responding to Acknack msg");
-            Lock guardW = this.m_RP.getSFW().getMutex();
-            guardW.lock();
-            try {
-                Lock guard = this.m_RP.getMutex();
-                guard.lock();
+        this.m_mutex.lock();
+        try {
+            if (code == EventCode.EVENT_SUCCESS) {
+                logger.debug("Responding to Acknack msg");
+                Lock guardW = this.m_RP.getSFW().getMutex();
+                guardW.lock();
                 try {
-                    List<ChangeForReader> vec = this.m_RP.requestedChanges();
-                    if (!vec.isEmpty()) {
-                        logger.debug("Requested {} changes", vec.size());
-                        List<CacheChange> relevantChanges = new ArrayList<CacheChange>();
-                        List<SequenceNumber> notRelevantChanges = new ArrayList<SequenceNumber>();
-                        for (ChangeForReader cit : vec) {
-                            cit.status = ChangeForReaderStatus.UNDERWAY;
-                            if (cit.isRelevant && cit.isValid()) { 
-                                relevantChanges.add(cit.getChange());
-                            } else {
-                                notRelevantChanges.add(cit.getSequenceNumber());
+                    Lock guard = this.m_RP.getMutex();
+                    guard.lock();
+                    try {
+                        List<ChangeForReader> vec = this.m_RP.requestedChanges();
+                        if (!vec.isEmpty()) {
+                            logger.debug("Requested {} changes", vec.size());
+                            List<CacheChange> relevantChanges = new ArrayList<CacheChange>();
+                            List<SequenceNumber> notRelevantChanges = new ArrayList<SequenceNumber>();
+                            for (ChangeForReader cit : vec) {
+                                cit.status = ChangeForReaderStatus.UNDERWAY;
+                                if (cit.isRelevant && cit.isValid()) { 
+                                    relevantChanges.add(cit.getChange());
+                                } else {
+                                    notRelevantChanges.add(cit.getSequenceNumber());
+                                }
+                            }
+                            this.m_RP.isRequestedChangesEmpty = true;
+                            if (!relevantChanges.isEmpty()) {
+                                RTPSMessageGroup.sendChangesAsData(
+                                        this.m_RP.getSFW(), 
+                                        relevantChanges, 
+                                        this.m_RP.att.endpoint.unicastLocatorList, 
+                                        this.m_RP.att.endpoint.multicastLocatorList, 
+                                        this.m_RP.att.expectsInlineQos, 
+                                        this.m_RP.att.guid.getEntityId());
+                            }
+                            if (!notRelevantChanges.isEmpty()) {
+                                RTPSMessageGroup.sendChangesAsGap(
+                                        this.m_RP.getSFW(), 
+                                        notRelevantChanges, 
+                                        this.m_RP.att.guid.getEntityId(),
+                                        this.m_RP.att.endpoint.unicastLocatorList, 
+                                        this.m_RP.att.endpoint.multicastLocatorList);
+                            }
+                            if (relevantChanges.isEmpty() && notRelevantChanges.isEmpty()) {
+                                RTPSMessage message = RTPSMessageBuilder.createMessage();
+                                SequenceNumber first = this.m_RP.getSFW().getSeqNumMin();
+                                SequenceNumber last = this.m_RP.getSFW().getSeqNumMin(); // TODO Review if this should be getSeqNumMax()
+                                if (!first.isUnknown() && !last.isUnknown() && last.isGreaterOrEqualThan(first)) {
+                                    this.m_RP.getSFW().incrementHBCount();
+                                    RTPSMessageBuilder.addSubmessageHeartbeat(
+                                            message, 
+                                            this.m_RP.att.guid.getEntityId(), 
+                                            this.m_RP.getSFW().getGuid().getEntityId(), 
+                                            first, 
+                                            last, 
+                                            this.m_RP.getSFW().getHeartbeatCount(), 
+                                            true, 
+                                            false);
+                                }
+                                for (Locator lit : this.m_RP.att.endpoint.unicastLocatorList.getLocators()) {
+                                    this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
+                                }
+                                for (Locator lit : this.m_RP.att.endpoint.multicastLocatorList.getLocators()) {
+                                    this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
+                                }
+
                             }
                         }
-                        this.m_RP.isRequestedChangesEmpty = true;
-                        if (!relevantChanges.isEmpty()) {
-                            RTPSMessageGroup.sendChangesAsData(
-                                    this.m_RP.getSFW(), 
-                                    relevantChanges, 
-                                    this.m_RP.att.endpoint.unicastLocatorList, 
-                                    this.m_RP.att.endpoint.multicastLocatorList, 
-                                    this.m_RP.att.expectsInlineQos, 
-                                    this.m_RP.att.guid.getEntityId());
-                        }
-                        if (!notRelevantChanges.isEmpty()) {
-                            RTPSMessageGroup.sendChangesAsGap(
-                                    this.m_RP.getSFW(), 
-                                    notRelevantChanges, 
-                                    this.m_RP.att.guid.getEntityId(),
-                                    this.m_RP.att.endpoint.unicastLocatorList, 
-                                    this.m_RP.att.endpoint.multicastLocatorList);
-                        }
-                        if (relevantChanges.isEmpty() && notRelevantChanges.isEmpty()) {
-                            RTPSMessage message = RTPSMessageBuilder.createMessage();
-                            SequenceNumber first = this.m_RP.getSFW().getSeqNumMin();
-                            SequenceNumber last = this.m_RP.getSFW().getSeqNumMin(); // TODO Review if this should be getSeqNumMax()
-                            if (!first.isUnknown() && !last.isUnknown() && last.isGreaterOrEqualThan(first)) {
-                                this.m_RP.getSFW().incrementHBCount();
-                                RTPSMessageBuilder.addSubmessageHeartbeat(
-                                        message, 
-                                        this.m_RP.att.guid.getEntityId(), 
-                                        this.m_RP.getSFW().getGuid().getEntityId(), 
-                                        first, 
-                                        last, 
-                                        this.m_RP.getSFW().getHeartbeatCount(), 
-                                        true, 
-                                        false);
-                            }
-                            for (Locator lit : this.m_RP.att.endpoint.unicastLocatorList.getLocators()) {
-                                this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
-                            }
-                            for (Locator lit : this.m_RP.att.endpoint.multicastLocatorList.getLocators()) {
-                                this.m_RP.getSFW().getRTPSParticipant().sendSync(message, lit);
-                            }
-                            
-                        }
+                        this.stopTimer();
+                    } finally {
+                        guard.unlock();
                     }
-                    this.stopTimer();
                 } finally {
-                    guard.unlock();
+                    guardW.unlock();
                 }
-            } finally {
-                guardW.unlock();
+
+            } else if (code == EventCode.EVENT_ABORT) {
+                logger.debug("Nack response aborted");
+                //this.stopSemaphorePost();
+            } else {
+                logger.debug("Nack response message: {}", msg);
             }
-            
-        } else if (code == EventCode.EVENT_ABORT) {
-            logger.info("Nack response aborted");
-            this.stopSemaphorePost();
-        } else {
-            logger.info("Nack response message: {}", msg);
+        } finally {
+            this.m_mutex.unlock();
         }
     }
 

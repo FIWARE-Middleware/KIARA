@@ -67,19 +67,16 @@ public class WriterHistoryCache extends HistoryCache {
         try {
             if (this.m_writer == null) {
                 logger.error("You need to create a Writer with this History before adding any changes");
-                this.m_mutex.unlock();
                 return false;
             }
     
             if (!change.getWriterGUID().equals(this.m_writer.getGuid())) {
                 logger.error("Change writerGUID {} different from Writer GUID {}", change.getWriterGUID(), this.m_writer.getGuid());
-                this.m_mutex.unlock();
                 return false;
             }
     
             if (change.getSerializedPayload().getSerializedSize() > this.m_attributes.payloadMaxSize) {
                 logger.error("The Payload length is larger than the maximum payload size");
-                this.m_mutex.unlock();
                 return false;
             }
     

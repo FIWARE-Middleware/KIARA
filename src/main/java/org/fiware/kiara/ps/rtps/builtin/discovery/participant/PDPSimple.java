@@ -144,17 +144,17 @@ public class PDPSimple {
     /**
      * Guard Mutex
      */
-    private final Object m_guardMutex = new Object();
+    private final Lock m_guardMutex = new ReentrantLock(true);
 
     /**
      * Guard writer Mutex
      */
-    private final Object m_guardW = new Object();
+    private final Lock m_guardW = new ReentrantLock(true);
 
     /**
      * Guard reader Mutex
      */
-    private final Object m_guardR = new Object();
+    private final Lock m_guardR = new ReentrantLock(true);
 
     /**
      * Default {@link PDPSimple} constructor
@@ -281,34 +281,30 @@ public class PDPSimple {
      * sent; if false the last change is re-sent
      */
     public void announceParticipantState(boolean newChange) {
-        this.m_mutex.lock();
-        try {
-            logger.debug("Announcing RTPSParticipant State (new change: {})", newChange);
-            CacheChange change = null;
+        logger.debug("Announcing RTPSParticipant State (new change: {})", newChange);
+        CacheChange change = null;
 
-            if (newChange || this.m_hasChangedLocalPDP) {
-                this.getLocalParticipantProxyData().increaseManualLivelinessCount();
-                if (this.m_SPDPWriterHistory.getHistorySize() > 0) {
-                    this.m_SPDPWriterHistory.removeMinChange();
-                }
-                change = this.m_SPDPWriter.newChange(ChangeKind.ALIVE, getLocalParticipantProxyData().getKey());
-                ParticipantProxyData proxyData = getLocalParticipantProxyData();
-                proxyData.setHasChanged(true);
-                ParameterList paramList = proxyData.toParameterList();
-                //ParameterList paramList = getLocalParticipantProxyData().toParameterList();
-                if (paramList != null) {
-                    change.getSerializedPayload().setEncapsulationKind(InfoEndianness.checkMachineEndianness() == RTPSEndian.BIG_ENDIAN ? EncapsulationKind.PL_CDR_BE : EncapsulationKind.PL_CDR_LE);
-                    change.getSerializedPayload().deleteParameters();
-                    change.getSerializedPayload().addParameters(paramList);
-                    this.m_SPDPWriterHistory.addChange(change);
-                }
-                this.m_hasChangedLocalPDP = false;
-            } else {
-                this.m_SPDPWriter.unsentChangesReset();
+        if (newChange || this.m_hasChangedLocalPDP) {
+            this.getLocalParticipantProxyData().increaseManualLivelinessCount();
+            if (this.m_SPDPWriterHistory.getHistorySize() > 0) {
+                this.m_SPDPWriterHistory.removeMinChange();
             }
-        } finally {
-            this.m_mutex.unlock();
+            change = this.m_SPDPWriter.newChange(ChangeKind.ALIVE, getLocalParticipantProxyData().getKey());
+            ParticipantProxyData proxyData = getLocalParticipantProxyData();
+            proxyData.setHasChanged(true);
+            ParameterList paramList = proxyData.toParameterList();
+            //ParameterList paramList = getLocalParticipantProxyData().toParameterList();
+            if (paramList != null) {
+                change.getSerializedPayload().setEncapsulationKind(InfoEndianness.checkMachineEndianness() == RTPSEndian.BIG_ENDIAN ? EncapsulationKind.PL_CDR_BE : EncapsulationKind.PL_CDR_LE);
+                change.getSerializedPayload().deleteParameters();
+                change.getSerializedPayload().addParameters(paramList);
+                this.m_SPDPWriterHistory.addChange(change);
+            }
+            this.m_hasChangedLocalPDP = false;
+        } else {
+            this.m_SPDPWriter.unsentChangesReset();
         }
+    
     }
 
     /**
@@ -324,12 +320,15 @@ public class PDPSimple {
         logger.debug("Lookup ReaderProxyData: " + reader);
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     for (ReaderProxyData rit : pit.getReaders()) {
                         if (rit.getGUID().equals(reader)) {
                             return rit;
                         }
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return null;
@@ -351,12 +350,15 @@ public class PDPSimple {
         logger.debug("Lookup WriterProxyData " + writer);
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     for (WriterProxyData wit : pit.getWriters()) {
                         if (wit.getGUID().equals(writer)) {
                             return wit;
                         }
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return null;
@@ -377,12 +379,15 @@ public class PDPSimple {
         logger.debug("Removing ReaderProxyData " + rdata.getGUID());
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     for (ReaderProxyData rit : pit.getReaders()) {
                         if (rit.getGUID().equals(rdata.getGUID())) {
                             return pit.getReaders().remove(rdata);
                         }
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return false;
@@ -403,12 +408,15 @@ public class PDPSimple {
         logger.debug("Removing WriterProxyData " + wdata.getGUID());
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     for (WriterProxyData wit : pit.getWriters()) {
                         if (wit.getGUID().equals(wdata.getGUID())) {
                             return pit.getWriters().remove(wdata);
                         }
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return false;
@@ -539,7 +547,8 @@ public class PDPSimple {
         this.m_mutex.lock();
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     if (pit.getGUID().getGUIDPrefix().equals(rdata.getGUID().getGUIDPrefix())) {
                         // Check that it is not already
                         for (ReaderProxyData rit : pit.getReaders()) {
@@ -562,6 +571,8 @@ public class PDPSimple {
                         }
                         return true;
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return false;
@@ -608,7 +619,8 @@ public class PDPSimple {
         this.m_mutex.lock();
         try {
             for (ParticipantProxyData pit : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                pit.getMutex().lock();
+                try {
                     if (pit.getGUID().getGUIDPrefix().equals(wdata.getGUID().getGUIDPrefix())) {
                         // Check that it is not already
                         for (WriterProxyData rit : pit.getWriters()) {
@@ -631,6 +643,8 @@ public class PDPSimple {
                         }
                         return true;
                     }
+                } finally {
+                    pit.getMutex().unlock();
                 }
             }
             return false;
@@ -648,7 +662,7 @@ public class PDPSimple {
     public void assignRemoteEndpoints(ParticipantProxyData pdata) {
         logger.debug("Assign remote Endpoints for RTPSParticipant {}", pdata.getGUID().getGUIDPrefix());
         int endp = pdata.getAvailableBuiltinEndpoints();
-        this.m_mutex.lock();
+        pdata.getMutex().lock();
         try {
             int auxEndp = endp;
             auxEndp &= ParticipantProxyData.DISC_BUILTIN_ENDPOINT_PARTICIPANT_ANNOUNCER;
@@ -687,7 +701,7 @@ public class PDPSimple {
                 this.m_builtin.getWLP().assignRemoteEndpoints(pdata);
             }
         } finally {
-            this.m_mutex.unlock();
+            pdata.getMutex().unlock();
         }
     }
 
@@ -698,7 +712,7 @@ public class PDPSimple {
      */
     public void removeRemoteEndpoints(ParticipantProxyData pdata) {
         logger.debug("For RTPSParticipant: " + pdata.getGUID());
-        this.m_mutex.lock();
+        pdata.getMutex().lock();
         try {
             for (RemoteReaderAttributes it : pdata.getBuiltinReaders()) {
                 if (it.guid.getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER)) && this.m_SPDPWriter != null) {
@@ -711,7 +725,7 @@ public class PDPSimple {
                 }
             }
         } finally {
-            this.m_mutex.unlock();
+            pdata.getMutex().unlock();
         }
     }
 
@@ -724,8 +738,10 @@ public class PDPSimple {
      */
     public boolean removeRemoteParticipant(GUID partGUID) {
         logger.debug("Removing RemoteParticipant: " + partGUID);
-        synchronized (this.m_guardW) {
-            synchronized (this.m_guardR) {
+        this.m_SPDPWriter.getMutex().lock();
+        try {
+            this.m_SPDPReader.getMutex().unlock();
+            try {
                 ParticipantProxyData pdata = null;
                 this.m_mutex.lock();
                 try {
@@ -768,7 +784,11 @@ public class PDPSimple {
                 } finally {
                     this.m_mutex.unlock();
                 }
+            } finally {
+                this.m_SPDPReader.getMutex().unlock();
             }
+        } finally {
+            this.m_SPDPWriter.getMutex().unlock();
         }
         return false;
     }
@@ -783,11 +803,14 @@ public class PDPSimple {
         this.m_mutex.lock();
         try {
             for (ParticipantProxyData it : this.m_participantProxies) {
-                synchronized (this.m_guardMutex) {
+                it.getMutex().lock();
+                try {
                     if (it.getGUID().getGUIDPrefix().equals(guidPrefix)) {
                         logger.debug("RTPSParticipant " + it.getGUID() + " is Alive");
                         it.setIsAlive(true);
                     }
+                } finally {
+                    it.getMutex().unlock();
                 }
             }
         } finally {

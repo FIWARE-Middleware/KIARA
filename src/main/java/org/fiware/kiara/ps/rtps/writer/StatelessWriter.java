@@ -73,6 +73,16 @@ public class StatelessWriter extends RTPSWriter {
         this.m_matchedReaders = new ArrayList<RemoteReaderAttributes>();
     }
     
+    /**
+     * Destroys the {@link StatelessWriter}
+     */
+    @Override
+    public void destroy() {
+        logger.debug("RTPS WRITER: StatefulWriter destructor");
+        super.destroy();
+        m_matchedReaders.clear();
+    }
+    
     @Override
     public void unsentChangeAddedToHistory(CacheChange change) {
         this.m_mutex.lock();

@@ -128,7 +128,7 @@ public class WriterProxy {
      * Logging object
      */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxy.class);
-    
+
     /**
      * Liveliness multiplier
      */
@@ -143,8 +143,16 @@ public class WriterProxy {
      * Destroys the {@link WriterProxy}
      */
     public void destroy() {
-        if (writerProxyLiveliness != null) {
-            writerProxyLiveliness.stopTimer();
+        this.m_mutex.lock();
+        try {
+            if (writerProxyLiveliness != null) {
+                writerProxyLiveliness.stopTimer();
+            }
+            if (this.heartBeatResponse != null) {
+                this.heartBeatResponse.stopTimer();
+            }
+        } finally {
+            this.m_mutex.unlock();
         }
     }
 
@@ -198,7 +206,7 @@ public class WriterProxy {
             }
 
             if (hasMinAvailableSeqNumChanged) {
-		//Order changesFromWriter
+                //Order changesFromWriter
                 seqNum.setHigh(0);
                 seqNum.setLow(0);
                 for (ChangeFromWriter it : changesFromWriter) {
@@ -253,8 +261,9 @@ public class WriterProxy {
             if (this.lastRemovedSeqNum.toLong() <= 0 && this.changesFromWriter.isEmpty()) { // Nothing received
                 return null;
             }
-            if (seqNum == null)
+            if (seqNum == null) {
                 seqNum = new SequenceNumber();
+            }
             if (this.hasMaxAvailableSeqNumChanged) {
                 seqNum.setHigh(0);
                 seqNum.setLow(0);
@@ -294,7 +303,7 @@ public class WriterProxy {
         if (!this.changesFromWriter.isEmpty()) {
             this.m_mutex.lock();
             try {
-                
+
                 for (ChangeFromWriter it : this.changesFromWriter) {
                     if (it.status == ChangeFromWriterStatus.MISSING && it.isRelevant) {
                         missing.add(it);
@@ -319,6 +328,7 @@ public class WriterProxy {
         logger.debug("Liveliness asserted");
         this.m_isAlive = true;
         if (this.writerProxyLiveliness != null) {
+            this.writerProxyLiveliness.stopTimer();
             this.writerProxyLiveliness.restartTimer();
         }
     }
@@ -382,7 +392,7 @@ public class WriterProxy {
         } else {
             firstSN.copy(changesFromWriter.get(changesFromWriter.size() - 1).seqNum);
         }
-        
+
         firstSN.increment();
         while (firstSN.isLowerOrEqualThan(seq)) {
             ChangeFromWriter chw = new ChangeFromWriter();
@@ -489,7 +499,7 @@ public class WriterProxy {
         }
         return true;
     }
-    
+
     /**
      * Starts the HEARTBEAT response thread
      */
@@ -499,6 +509,43 @@ public class WriterProxy {
         } else {
             this.heartBeatResponse.restartTimer();
         }
+    }
+
+    /**
+     * Get the mutex {@link Lock} object
+     * 
+     * @return The {@link Lock} mutex
+     */
+    public Lock getMutex() {
+        return this.m_mutex;
+    }
+
+    /**
+     * Sets a {@link SequenceNumber} as irrelevant
+     * 
+     * @param seq The {@link SequenceNumber} to be set as irrelevant
+     */
+    public boolean irrelevantChangeSet(SequenceNumber seq) {
+        this.m_mutex.lock();
+        try {
+            this.hasMinAvailableSeqNumChanged = true;
+            this.hasMaxAvailableSeqNumChanged = true;
+            this.addChangesFromWriterUpTo(seq);
+            ListIterator<ChangeFromWriter> it = this.changesFromWriter.listIterator(this.changesFromWriter.size());
+            while (it.hasPrevious()) {
+                ChangeFromWriter current = it.previous();
+                if (current.seqNum.equals(seq)) {
+                    current.status = ChangeFromWriterStatus.RECEIVED;
+                    current.isRelevant = false;
+                    return true;
+                }
+            }
+            logger.error("Something went wrong");
+        } finally {
+            this.m_mutex.unlock();
+        }
+        return false; 
+        
     }
 
 }

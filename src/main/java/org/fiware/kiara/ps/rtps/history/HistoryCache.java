@@ -167,19 +167,21 @@ public abstract class HistoryCache {
      * @return true if the CacheChange has been found; false otherwise
      */
     public boolean getChange(SequenceNumber seq, GUID guid, CacheChange change) {
-        this.m_mutex.lock();
-        Iterator<CacheChange> it = this.m_changes.iterator();
-        while(it.hasNext()) {
-            CacheChange current = it.next();
-            if (current.getSequenceNumber() == seq && current.getWriterGUID() == guid) {
-                change = current;
-                this.m_mutex.unlock();
-                return true;
-            } else if (current.getSequenceNumber().isGreaterThan(seq)) {
-                break;
+        try {
+            this.m_mutex.lock();
+            Iterator<CacheChange> it = this.m_changes.iterator();
+            while(it.hasNext()) {
+                CacheChange current = it.next();
+                if (current.getSequenceNumber() == seq && current.getWriterGUID() == guid) {
+                    change = current;
+                    return true;
+                } else if (current.getSequenceNumber().isGreaterThan(seq)) {
+                    break;
+                }
             }
+        } finally {
+            this.m_mutex.unlock();
         }
-        this.m_mutex.unlock();
         return false;
     }
 
@@ -285,6 +287,6 @@ public abstract class HistoryCache {
         }
     }
 
-    
+
 
 }

@@ -78,62 +78,66 @@ public class PeriodicHeartbeat extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
-        if (code == EVENT_SUCCESS) {
-            final SequenceNumber firstSeq = new SequenceNumber();
-            final SequenceNumber lastSeq = new SequenceNumber();
-            final LocatorList locList = new LocatorList();
-            boolean unacked_changes = false;
+        this.m_mutex.lock();
+        try {
+            if (code == EVENT_SUCCESS) {
+                final SequenceNumber firstSeq = new SequenceNumber();
+                final SequenceNumber lastSeq = new SequenceNumber();
+                final LocatorList locList = new LocatorList();
+                boolean unacked_changes = false;
 
-            final Lock mutex = m_SFW.getMutex();
-            mutex.lock();
-            try {
-                List<ChangeForReader> unack = new ArrayList<ChangeForReader>();
-                for (ReaderProxy it : m_SFW.getMatchedReaders()) {
-                    unack.clear();
-                    if (!unacked_changes) {
-                        unack = it.unackedChanges();
-                        if (!unack.isEmpty()) {
-                            unacked_changes = true;
+                final Lock mutex = m_SFW.getMutex();
+                mutex.lock();
+                try {
+                    List<ChangeForReader> unack = new ArrayList<ChangeForReader>();
+                    for (ReaderProxy it : m_SFW.getMatchedReaders()) {
+                        unack.clear();
+                        if (!unacked_changes) {
+                            unack = it.unackedChanges();
+                            if (!unack.isEmpty()) {
+                                unacked_changes = true;
+                            }
                         }
+                        locList.pushBack(it.att.endpoint.unicastLocatorList);
+                        locList.pushBack(it.att.endpoint.multicastLocatorList);
                     }
-                    locList.pushBack(it.att.endpoint.unicastLocatorList);
-                    locList.pushBack(it.att.endpoint.multicastLocatorList);
+                    firstSeq.copy(m_SFW.getSeqNumMin());
+                    lastSeq.copy(m_SFW.getSeqNumMax());
+                } finally {
+                    mutex.unlock();
                 }
-                firstSeq.copy(m_SFW.getSeqNumMin());
-                lastSeq.copy(m_SFW.getSeqNumMax());
-            } finally {
-                mutex.unlock();
-            }
 
-            if (unacked_changes) {
-                if (!firstSeq.isUnknown() && !lastSeq.isUnknown() && lastSeq.isGreaterOrEqualThan(firstSeq)) {
-                    m_SFW.incrementHBCount();
-                    RTPSMessage rtpsMessage = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN); // TODO Think about default endian
-                    RTPSMessageBuilder.addHeader(rtpsMessage, m_SFW.getGuid().getGUIDPrefix());
-                    RTPSMessageBuilder.addSubmessageHeartbeat(rtpsMessage,
-                            m_SFW.getHBReaderEntityId(),
-                            m_SFW.getGuid().getEntityId(),
-                            firstSeq,
-                            lastSeq,
-                            m_SFW.getHeartbeatCount(),
-                            false,
-                            false);
+                if (unacked_changes) {
+                    if (!firstSeq.isUnknown() && !lastSeq.isUnknown() && lastSeq.isGreaterOrEqualThan(firstSeq)) {
+                        m_SFW.incrementHBCount();
+                        RTPSMessage rtpsMessage = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN); // TODO Think about default endian
+                        RTPSMessageBuilder.addHeader(rtpsMessage, m_SFW.getGuid().getGUIDPrefix());
+                        RTPSMessageBuilder.addSubmessageHeartbeat(rtpsMessage,
+                                m_SFW.getHBReaderEntityId(),
+                                m_SFW.getGuid().getEntityId(),
+                                firstSeq,
+                                lastSeq,
+                                m_SFW.getHeartbeatCount(),
+                                false,
+                                false);
 
-                     rtpsMessage.serialize();
-                    for (Locator lit : locList) {
-                        m_SFW.getRTPSParticipant().sendSync(rtpsMessage, lit);
+                        rtpsMessage.serialize();
+                        for (Locator lit : locList) {
+                            m_SFW.getRTPSParticipant().sendSync(rtpsMessage, lit);
+                        }
+
                     }
-
+                } else {
+                    stopTimer();
                 }
+
+            } else if (code == EVENT_ABORT) {
+                logger.info("RTPS WRITER: Aborted");
             } else {
-                stopTimer();
+                logger.info("RTPS WRITER: Boost message: {}");
             }
-
-        } else if (code == EVENT_ABORT) {
-            logger.info("RTPS WRITER: Aborted");
-            stopSemaphorePost();
-        } else {
-            logger.info("RTPS WRITER: Boost message: {}");
+        } finally {
+            this.m_mutex.unlock();
         }
 
     }

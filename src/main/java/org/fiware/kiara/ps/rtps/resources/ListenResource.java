@@ -151,23 +151,28 @@ public class ListenResource {
      * Destroys the {@link ListenResource}
      */
     public void destroy() {
-        if (this.m_thread != null) {
-            logger.debug("Removing listening thread {}", this.m_thread.getId());
-            try {
-                this.m_listenChannel.socket().close();
-                this.m_listenChannel.disconnect();
-                this.m_listenChannel.close();
-            } catch (IOException e) {
-                logger.error(e.getStackTrace().toString());
+        this.m_mutex.lock();
+        try {
+            if (this.m_thread != null) {
+                logger.info("Removing listening thread {}", this.m_thread.getId());
+                try {
+                    this.m_listenChannel.socket().close();
+                    this.m_listenChannel.disconnect();
+                    this.m_listenChannel.close();
+                } catch (IOException e) {
+                    logger.error(e.getStackTrace().toString());
+                }
+                logger.info("Joining thread {}", this.m_thread.getId());
+                //try {
+                    this.m_receptionThread.terminate();
+                    //this.m_thread.join();
+                //} catch (InterruptedException e) {
+                //    logger.error(e.getStackTrace().toString());
+                //}
+                logger.info("Listening thread {} closed successfully", this.m_thread.getId());
             }
-            logger.debug("Joining thread {}", this.m_thread.getId());
-            try {
-                this.m_receptionThread.terminate();
-                this.m_thread.join();
-            } catch (InterruptedException e) {
-                logger.error(e.getStackTrace().toString());
-            }
-            logger.debug("Listening thread {} closed successfully", this.m_thread.getId());
+        } finally {
+            this.m_mutex.unlock();
         }
     }
 
@@ -672,6 +677,15 @@ public class ListenResource {
 
     public boolean isDefaultListenResource() {
         return this.m_isDefaultListenResource;
+    }
+    
+    /**
+     * Get the {@link Lock} mutex
+     * 
+     * @return The {@link Lock} mutex
+     */
+    public Lock getMutex() {
+        return this.m_mutex;
     }
 
 

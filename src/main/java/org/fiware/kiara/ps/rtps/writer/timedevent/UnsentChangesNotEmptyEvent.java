@@ -56,16 +56,21 @@ public class UnsentChangesNotEmptyEvent extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
-        if (code == EventCode.EVENT_SUCCESS) {
-            logger.debug("Sending unsent changes");
-            this.m_writer.unsentChangesNotEmpty();
-        } else if (code == EventCode.EVENT_ABORT) {
-            logger.debug("Aborting automatic change sending");
-            this.stopSemaphorePost();
-        } else {
-            logger.debug("MSG: {}", msg);
+        this.m_mutex.lock();
+        try {
+            if (code == EventCode.EVENT_SUCCESS) {
+                logger.debug("Sending unsent changes");
+                this.m_writer.unsentChangesNotEmpty();
+                this.stopTimer();
+            } else if (code == EventCode.EVENT_ABORT) {
+                logger.debug("Aborting automatic change sending");
+                this.stopSemaphorePost();
+            } else {
+                logger.debug("MSG: {}", msg);
+            }
+        } finally {
+            this.m_mutex.unlock();
         }
-        this.stopTimer();
     }
 
 }

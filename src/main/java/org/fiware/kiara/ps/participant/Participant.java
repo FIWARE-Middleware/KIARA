@@ -250,6 +250,8 @@ public class Participant {
         this.m_rtpsParticipant.registerWriter(writer, att.topic, att.qos);
 
         logger.info("Publisher {} created in topic {}", publisher.getGuid(), att.topic.topicName);
+        
+        System.out.println("Par createPublisher");
 
         return publisher;
     }
@@ -339,6 +341,8 @@ public class Participant {
         this.m_rtpsParticipant.registerReader(reader, att.topic, att.qos);
         
         logger.info("Subscriber {} created in topic {}", subscriber.getGuid(), att.topic.topicName);
+        
+        System.out.println("Par createSubscriber");
 
         return subscriber;
     }

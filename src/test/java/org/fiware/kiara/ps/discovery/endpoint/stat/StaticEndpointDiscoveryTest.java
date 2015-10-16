@@ -461,7 +461,7 @@ public class StaticEndpointDiscoveryTest {
         assertTrue(publisher2.get());
 
     }
-    
+  
     
     
 }

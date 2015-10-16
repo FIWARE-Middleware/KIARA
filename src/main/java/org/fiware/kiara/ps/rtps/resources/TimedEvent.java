@@ -21,6 +21,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.Kiara;
 import org.fiware.kiara.RunningService;
@@ -53,6 +55,11 @@ public abstract class TimedEvent {
      * Time interval to execute the event
      */
     private long intervalMicrosec;
+    
+    /**
+     * Mutex
+     */
+    protected final Lock m_mutex = new ReentrantLock(true);
     
     static {
         Kiara.addRunningService(new RunningService() {
@@ -103,6 +110,7 @@ public abstract class TimedEvent {
      * @param milliseconds Interval of the timedEvent.
      */
     public TimedEvent(double milliseconds) {
+        //this.m_mutex = new ReentrantLock(true);
         this.task = new EventTask();
         this.intervalMicrosec = TimeUnit.MICROSECONDS.convert((long) milliseconds, TimeUnit.MILLISECONDS);
         event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
@@ -120,15 +128,25 @@ public abstract class TimedEvent {
      * Method to restart the timer.
      */
     public void restartTimer() {
-        event.cancel(true);
-        event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
+        this.m_mutex.lock();
+        try {
+            event.cancel(true);
+            event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
     /**
      * Method to stop the timer.
      */
     public void stopTimer() {
-        event.cancel(false);
+        this.m_mutex.lock();
+        try {
+            event.cancel(false);
+        } finally {
+            this.m_mutex.unlock();
+        }
         //service.shutdown();
     }
 
@@ -142,8 +160,13 @@ public abstract class TimedEvent {
      * @return true on success
      */
     public boolean updateInterval(long inter, TimeUnit timeUnit) {
-        intervalMicrosec = TimeUnit.MICROSECONDS.convert(inter, timeUnit);
-        return true;
+        this.m_mutex.lock();
+        try {
+            intervalMicrosec = TimeUnit.MICROSECONDS.convert(inter, timeUnit);
+            return true;
+        } finally {
+            this.m_mutex.unlock();
+        }
     }
 
     /**

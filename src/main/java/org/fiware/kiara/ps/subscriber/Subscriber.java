@@ -328,6 +328,7 @@ public class Subscriber<T> {
     public void destroy() {
         logger.info("Destroying Subscriber (Reader GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSReader(this.m_reader);
+        logger.info("Subscriber destroyed (Reader GUID: {})", this.getGuid());
     }
 
     /**

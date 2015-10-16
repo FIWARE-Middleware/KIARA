@@ -100,6 +100,16 @@ public abstract class RTPSWriter extends Endpoint {
     }
     
     /**
+     * Destroys the information associated to this {@link RTPSReader}
+     */
+    public void destroy() {
+        if (this.m_unsentChangesNotEmpty != null) {
+            this.m_unsentChangesNotEmpty.stopTimer();
+            System.out.println("Timer stopped");
+        }
+    }
+    
+    /**
      * Initializes the {@link RTPSMessage} header
      */
     private void initHeader() {

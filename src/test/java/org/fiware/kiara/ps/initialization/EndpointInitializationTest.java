@@ -86,7 +86,7 @@ public class EndpointInitializationTest {
    @After
    public void tearDown() {
    }
-   
+ 
    @Test
    public void publisherNoType() throws InterruptedException, ExecutionException {
 
@@ -717,9 +717,6 @@ public class EndpointInitializationTest {
        Domain.removeSubscriber(subscriber2);
 
    }
-   
-   
-   
    
 
 }

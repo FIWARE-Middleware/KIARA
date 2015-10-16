@@ -77,11 +77,9 @@ public class WLPListener extends ReaderListener {
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
 
-        final Lock mutex = reader.getMutex();
-        mutex.lock();
+        reader.getMutex().lock();
         try {
-            final Lock mutex2 = m_WLP.getMutex();
-            mutex2.lock();
+            m_WLP.getMutex().lock();
             try {
 
                 logger.debug("RTPS LIVELINESS");
@@ -121,10 +119,10 @@ public class WLPListener extends ReaderListener {
                 }
                 m_WLP.getBuiltinProtocols().getPDP().assertRemoteWritersLiveliness(guidP, livelinessKind);
             } finally {
-                mutex2.unlock();
+                m_WLP.getMutex().unlock();
             }
         } finally {
-            mutex.unlock();
+            reader.getMutex().unlock();
         }
     }
 

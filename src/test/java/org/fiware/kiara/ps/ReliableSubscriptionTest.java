@@ -335,9 +335,9 @@ public class ReliableSubscriptionTest {
     // TODO add test methods here.
     // The methods must be annotated with annotation @Test. For example:
     //
-    @Test
+   /* @Test
     public void testReliableSubscribePublish() throws InterruptedException, ExecutionException {
-        /*ExecutorService es = Executors.newCachedThreadPool();
+        ExecutorService es = Executors.newCachedThreadPool();
         CountDownLatch initSignal = new CountDownLatch(1);
         CountDownLatch startSignal = new CountDownLatch(1);
         CountDownLatch doneSignal = new CountDownLatch(1);
@@ -345,10 +345,10 @@ public class ReliableSubscriptionTest {
         Future<Boolean> publisher = es.submit(new ReliablePublisher(initSignal, startSignal, doneSignal));
 
         assertTrue(subscriber.get());
-        assertTrue(publisher.get());*/
+        assertTrue(publisher.get());
         
         assertTrue(true);
 
-    }
+    }*/
 
 }

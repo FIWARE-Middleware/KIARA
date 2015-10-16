@@ -43,7 +43,7 @@ public class WriterProxyLiveliness extends TimedEvent {
      * Reference to the WriterProxy associated with this specific event.
      */
     public WriterProxy writerProxy;
-    
+
     /**
      * Boolean value to not execute the event the first time
      */
@@ -65,29 +65,32 @@ public class WriterProxyLiveliness extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
-        if (code == EventCode.EVENT_SUCCESS) {
-            if (recentlyCreated) {
-                recentlyCreated = false;
-            } else {
-                logger.debug("Deleting writer {}", this.writerProxy.att.guid);
-                if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
-                    if (this.writerProxy.statefulReader.getListener() != null) {
-                        MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
-                        this.writerProxy.statefulReader.getListener().onReaderMatched((RTPSReader) this.writerProxy.statefulReader, info);
+        this.m_mutex.lock();
+        try {
+            if (code == EventCode.EVENT_SUCCESS) {
+                if (recentlyCreated) {
+                    recentlyCreated = false;
+                } else {
+                    logger.debug("Deleting writer {}", this.writerProxy.att.guid);
+                    if (this.writerProxy.statefulReader.matchedWriterRemove(this.writerProxy.att)) {
+                        if (this.writerProxy.statefulReader.getListener() != null) {
+                            MatchingInfo info = new MatchingInfo(MatchingStatus.REMOVED_MATCHING, this.writerProxy.att.guid);
+                            this.writerProxy.statefulReader.getListener().onReaderMatched((RTPSReader) this.writerProxy.statefulReader, info);
+                        }
                     }
+                    this.writerProxy.writerProxyLiveliness = null;
+                    this.writerProxy.destroy();
                 }
-                // Now delete objects
-                this.writerProxy.writerProxyLiveliness = null;
-                this.writerProxy.destroy();
+            } else if (code == EventCode.EVENT_ABORT) {
+                logger.debug("WriterProxyLiveliness aborted");
+            } else {
+                logger.debug("Message: {}", msg);
             }
-            //this.stopTimer();
-        } else if (code == EventCode.EVENT_ABORT) {
-            this.stopSemaphorePost();
-        } else {
-            logger.debug("Message: {}", msg);
+        } finally {
+            this.m_mutex.unlock();
         }
     }
-    
+
     /**
      * Restarts the timer and sets the recentlyCreated attribute to true again
      */

@@ -26,7 +26,12 @@ import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.RTPSMessage;
 import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,6 +99,13 @@ public abstract class RTPSReader extends Endpoint {
         this.m_expectsInlineQos = att.expectsInlineQos;
         
         logger.debug("RTPSReader created successfully");
+    }
+    
+    /**
+     * Destroys the information associated to the {@link RTPSReader}
+     */
+    public void destroy() {
+       // Do nothing
     }
     
     /**
@@ -178,9 +190,39 @@ public abstract class RTPSReader extends Endpoint {
      * @param entityGUID GUID to check
      * @param proxy Reference of the WriterProxy. Since we already look for it wee return the references
      * so the execution can run faster.
+     * @param checktrusted Asks to check trusted entities
      * @return true if the reader accepts messages from the writer with GUID_t entityGUID.
      */
-    public abstract boolean acceptMsgFrom(GUID entityGUID, ReturnParam<WriterProxy> proxy);
+    public abstract boolean acceptMsgFrom(GUID entityGUID, ReturnParam<WriterProxy> proxy, boolean checktrusted);
+    
+    
+    /**
+     * Processes the {@link CacheChange} according to the RTPSReader behaviour
+     * 
+     * @param change The {@link CacheChange} to process
+     * @param listenResource The associated {@link ListenResource}
+     * @param hasTimestamp Indicates if timestamp should be provided
+     * @param timestamp The {@link Timestamp} to be provided
+     * @param sourceGuidPrefix Source {@link GUIDPrefix}
+     * @return true if success; false otherwise
+     */
+    public abstract boolean processDataMsg(CacheChange change, ListenResource listenResource, boolean hasTimestamp, Timestamp timestamp, GUIDPrefix sourceGuidPrefix);
+    
+    /**
+     * Processes the received HEARTBEAT message
+     * 
+     * @param writerGUID The {@link GUID} of the writer
+     * @param hbCount The HEARTBEAT count
+     * @param firstSN The first {@link SequenceNumber}
+     * @param lastSN The last {@link SequenceNumber}
+     * @param finalFlag Flag indicating if the message is final
+     * @param livelinessFlag FLag indicating if the liveliness is activated
+     * @return
+     */
+    public abstract boolean processHeartbeatMsg(GUID writerGUID, int hbCount, SequenceNumber firstSN, SequenceNumber lastSN, boolean finalFlag, boolean livelinessFlag);
+    
+    
+    public abstract boolean processGapMsg(GUID writerGUID, SequenceNumber gapStart, SequenceNumberSet gapList);
 
     /**
      * Gets a free {@link CacheChange} from the {@link HistoryCache}
@@ -277,4 +319,6 @@ public abstract class RTPSReader extends Endpoint {
     public ReaderListener getListener() {
         return m_listener;
     }
+
+    
 }

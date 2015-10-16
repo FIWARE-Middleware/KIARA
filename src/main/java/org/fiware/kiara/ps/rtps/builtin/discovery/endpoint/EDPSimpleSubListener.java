@@ -81,61 +81,67 @@ public class EDPSimpleSubListener extends ReaderListener {
     @Override
     public void onNewCacheChangeAdded(RTPSReader reader, CacheChange change) {
         // TODO Auto-generated method stub
-        if (!computeKey(change)) {
-            logger.warn("Received change with no Key");
-        }
-        if (change.getKind() == ChangeKind.ALIVE) {
-            
-            this.readerProxyData.clear();
-            if (this.readerProxyData.readFromCDRMessage(change)) {
-                change.setInstanceHandle(this.readerProxyData.getKey());
-                if (this.readerProxyData.getGUID().getGUIDPrefix().equals(this.edpSimple.m_RTPSParticipant.getGUID().getGUIDPrefix())) {
-                    logger.info("Message from own RTPSParticipant, ignoring");
-                    this.edpSimple.subReaderPair.getSecond().removeChange(change);
-                    return;
-                }
-
-                // Look if it is an updated information
-                ReaderProxyData rdata = new ReaderProxyData();
-                ParticipantProxyData pdata = new ParticipantProxyData();
-                ParticipantProxyData pdataAux = new ParticipantProxyData();
-                if (this.edpSimple.m_PDP.addReaderProxyData(this.readerProxyData, true, rdata, pdata)) { // Added new data
-                    // Check locators
-                    if (rdata.getUnicastLocatorList().isEmpty() && rdata.getMulticastLocatorList().isEmpty()) {
-                        rdata.getUnicastLocatorList().copy(pdata.getDefaultMulticastLocatorList());
-                        rdata.getMulticastLocatorList().copy(pdata.getDefaultMulticastLocatorList());
-                    }
-                    rdata.setIsAlive(true);
-                    this.edpSimple.pairingReaderProxy(rdata);
-                } else if (pdataAux.equals(pdata) == true) {
-                    logger.warn("Message from UNKNOWN RTPSParticipant, removing");
-                    this.edpSimple.subReaderPair.getSecond().removeChange(change);
-                    return;
-                } else { // Not added, it was already there
-                    Lock mutex = this.edpSimple.subReaderPair.getSecond().getMutex();
-                    mutex.lock();
-                    try {
-                        List<CacheChange> changes = this.edpSimple.subReaderPair.getSecond().getChanges();
-                        for (int i = 0; i < changes.size(); ++i) {
-                            CacheChange ch = changes.get(i);
-                            if (ch.getInstanceHandle().equals(change.getInstanceHandle())) {
-                                this.edpSimple.subReaderPair.getSecond().removeChange(ch);
-                                i--;
-                            }
-                        }
-                        rdata.update(this.readerProxyData);
-                        this.edpSimple.pairingReaderProxy(rdata);
-                    } finally {
-                        mutex.unlock();
-                    }
-                }
+//        Lock guard = this.edpSimple.subReaderPair.getFirst().getMutex();
+//        guard.lock();
+//        try {
+            if (!computeKey(change)) {
+                logger.warn("Received change with no Key");
             }
-        } else {
-            logger.info("Disposed Remote Reader, removing...");
-            GUID auxGUID = change.getInstanceHandle().toGUID();
-            this.edpSimple.subReaderPair.getSecond().removeChange(change);
-            this.edpSimple.removeReaderProxy(auxGUID);
-        }
+            if (change.getKind() == ChangeKind.ALIVE) {
+                
+                this.readerProxyData.clear();
+                if (this.readerProxyData.readFromCDRMessage(change)) {
+                    change.setInstanceHandle(this.readerProxyData.getKey());
+                    if (this.readerProxyData.getGUID().getGUIDPrefix().equals(this.edpSimple.m_RTPSParticipant.getGUID().getGUIDPrefix())) {
+                        logger.info("Message from own RTPSParticipant, ignoring");
+                        this.edpSimple.subReaderPair.getSecond().removeChange(change);
+                        return;
+                    }
+    
+                    // Look if it is an updated information
+                    ReaderProxyData rdata = new ReaderProxyData();
+                    ParticipantProxyData pdata = new ParticipantProxyData();
+                    ParticipantProxyData pdataAux = new ParticipantProxyData();
+                    if (this.edpSimple.m_PDP.addReaderProxyData(this.readerProxyData, true, rdata, pdata)) { // Added new data
+                        // Check locators
+                        if (rdata.getUnicastLocatorList().isEmpty() && rdata.getMulticastLocatorList().isEmpty()) {
+                            rdata.getUnicastLocatorList().copy(pdata.getDefaultMulticastLocatorList());
+                            rdata.getMulticastLocatorList().copy(pdata.getDefaultMulticastLocatorList());
+                        }
+                        rdata.setIsAlive(true);
+                        this.edpSimple.pairingReaderProxy(rdata);
+                    } else if (pdataAux.equals(pdata) == true) {
+                        logger.warn("Message from UNKNOWN RTPSParticipant, removing");
+                        this.edpSimple.subReaderPair.getSecond().removeChange(change);
+                        return;
+                    } else { // Not added, it was already there
+                        Lock mutex = this.edpSimple.subReaderPair.getSecond().getMutex();
+                        mutex.lock();
+                        try {
+                            List<CacheChange> changes = this.edpSimple.subReaderPair.getSecond().getChanges();
+                            for (int i = 0; i < changes.size(); ++i) {
+                                CacheChange ch = changes.get(i);
+                                if (ch.getInstanceHandle().equals(change.getInstanceHandle())) {
+                                    this.edpSimple.subReaderPair.getSecond().removeChange(ch);
+                                    i--;
+                                }
+                            }
+                            rdata.update(this.readerProxyData);
+                            this.edpSimple.pairingReaderProxy(rdata);
+                        } finally {
+                            mutex.unlock();
+                        }
+                    }
+                }
+            } else {
+                logger.info("Disposed Remote Reader {}, removing...", change.getInstanceHandle().toGUID());
+                GUID auxGUID = change.getInstanceHandle().toGUID();
+                this.edpSimple.subReaderPair.getSecond().removeChange(change);
+                this.edpSimple.removeReaderProxy(auxGUID);
+            }
+//        } finally {
+//            guard.unlock();
+//        }
     }
 
     /**
@@ -145,7 +151,7 @@ public class EDPSimpleSubListener extends ReaderListener {
      */
     public boolean computeKey(CacheChange change) {
         if (change.getInstanceHandle().equals(new InstanceHandle())) {
-            // TODO Review
+            // TODO Implement
         }
         return true;
     }

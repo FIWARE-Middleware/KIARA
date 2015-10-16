@@ -34,12 +34,12 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class NackSupressionDuration extends TimedEvent {
-    
+
     /**
      * {@link ReaderProxy} to send data to
      */
     private ReaderProxy m_RP;
-    
+
     /**
      * Logging object 
      */
@@ -61,33 +61,37 @@ public class NackSupressionDuration extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
-        if (code == EventCode.EVENT_SUCCESS) {
-            
-            logger.debug("Nack supression event");
-            Lock guardW = this.m_RP.getSFW().getMutex();
-            guardW.lock();
-            try {
-                for (ChangeForReader cit : this.m_RP.getChangesForReader()) {
-                    if (cit.status == ChangeForReaderStatus.UNDERWAY) {
-                        if (this.m_RP.att.endpoint.reliabilityKind == ReliabilityKind.RELIABLE) {
-                            cit.status = ChangeForReaderStatus.UNACKNOWLEDGED;
-                        } else {
-                            cit.status = ChangeForReaderStatus.ACKNOWLEDGED;
+        this.m_mutex.lock();
+        try {
+            if (code == EventCode.EVENT_SUCCESS) {
+
+                logger.debug("Nack supression event");
+                Lock guardW = this.m_RP.getSFW().getMutex();
+                guardW.lock();
+                try {
+                    for (ChangeForReader cit : this.m_RP.getChangesForReader()) {
+                        if (cit.status == ChangeForReaderStatus.UNDERWAY) {
+                            if (this.m_RP.att.endpoint.reliabilityKind == ReliabilityKind.RELIABLE) {
+                                cit.status = ChangeForReaderStatus.UNACKNOWLEDGED;
+                            } else {
+                                cit.status = ChangeForReaderStatus.ACKNOWLEDGED;
+                            }
                         }
                     }
+
+                    this.stopTimer();
+
+                } finally {
+                    guardW.unlock();
                 }
-                
-                this.stopTimer();
-                
-            } finally {
-                guardW.unlock();
+
+            } else if (code == EventCode.EVENT_ABORT) {
+                logger.info("Nack supression aborted");
+            } else {
+                logger.info("Nack response message: {}", msg);
             }
-            
-        } else if (code == EventCode.EVENT_ABORT) {
-            logger.info("Nack supression aborted");
-            this.stopSemaphorePost();
-        } else {
-            logger.info("Nack response message: {}", msg);
+        } finally {
+            this.m_mutex.unlock();
         }
     }
 

@@ -109,13 +109,15 @@ public class StatefulWriter extends RTPSWriter {
     /**
      * Destroys the {@link StatefulWriter}
      */
+    @Override
     public void destroy() {
         logger.debug("RTPS WRITER: StatefulWriter destructor");
+        super.destroy();
         if (m_periodicHB != null)
             m_periodicHB.destroy();
-	for (ReaderProxy it : m_matchedReaders) {
+        for (ReaderProxy it : m_matchedReaders) {
             it.destroy();
-	}
+        }
         m_matchedReaders.clear();
     }
 
@@ -127,7 +129,7 @@ public class StatefulWriter extends RTPSWriter {
     public List<ReaderProxy> getMatchedReaders() {
         return m_matchedReaders;
     }
-    
+
     @Override
     public void unsentChangeAddedToHistory(CacheChange change) {
 
@@ -135,14 +137,14 @@ public class StatefulWriter extends RTPSWriter {
         try {
             LocatorList uniLocList = new LocatorList();
             LocatorList multiLocList = new LocatorList();
-            
+
             List<CacheChange> changeV = new ArrayList<CacheChange>();
             changeV.add(change);
-            
+
             boolean expectsInlineQos = false;
-            
+
             this.setLivelinessAsserted(true);
-            
+
             if (!this.m_matchedReaders.isEmpty()) {
                 for (ReaderProxy it : this.m_matchedReaders) {
                     ChangeForReader changeForReader = new ChangeForReader();
@@ -164,7 +166,7 @@ public class StatefulWriter extends RTPSWriter {
                         it.getNackSupression().restartTimer();
                     }
                 }
-                
+
                 RTPSMessageGroup.sendChangesAsData(this, changeV, uniLocList, multiLocList, expectsInlineQos, EntityId.createUnknown());
                 if (this.m_periodicHB == null) { // TODO Review this
                     this.m_periodicHB = new PeriodicHeartbeat(this, this.m_times.heartBeatPeriod.toMilliSecondsDouble());
@@ -177,7 +179,7 @@ public class StatefulWriter extends RTPSWriter {
         } finally {
             this.m_mutex.unlock();
         }
-        
+
     }
 
     @Override
@@ -198,7 +200,7 @@ public class StatefulWriter extends RTPSWriter {
         }
         return true;
     }
-    
+
     @Override
     public void unsentChangesNotEmpty() {
         this.m_mutex.lock();
@@ -228,7 +230,7 @@ public class StatefulWriter extends RTPSWriter {
                                         rit.att.endpoint.multicastLocatorList, 
                                         rit.att.expectsInlineQos, 
                                         rit.att.guid.getEntityId());
-                                
+
                             }
                             if (!notRelevantChanges.isEmpty()) {
                                 RTPSMessageGroup.sendChangesAsGap(
@@ -282,7 +284,7 @@ public class StatefulWriter extends RTPSWriter {
         }
         logger.debug("Finished sending unsent changes");
     }
-    
+
     @Override
     public boolean matchedReaderAdd(RemoteReaderAttributes ratt) {
         this.m_mutex.lock();
@@ -301,19 +303,25 @@ public class StatefulWriter extends RTPSWriter {
             /*if (this.m_periodicHB == null) {
                 this.m_periodicHB = new PeriodicHeartbeat(this, this.m_times.heartBeatPeriod.toMilliSecondsDouble());
             }*/
-            if (rp.att.endpoint.durabilityKind == DurabilityKind.TRANSIENT_LOCAL) {
-                for (CacheChange cit : this.m_history.getChanges()) {
-                    ChangeForReader changeForReader = new ChangeForReader();
-                    changeForReader.setChange(cit);
+            //if (rp.att.endpoint.durabilityKind == DurabilityKind.TRANSIENT_LOCAL) {
+            for (CacheChange cit : this.m_history.getChanges()) {
+                ChangeForReader changeForReader = new ChangeForReader();
+                changeForReader.setChange(cit);
+                if (rp.att.endpoint.durabilityKind == DurabilityKind.TRANSIENT_LOCAL && 
+                        this.getAttributes().durabilityKind == DurabilityKind.TRANSIENT_LOCAL) {
                     changeForReader.isRelevant = rp.rtpsChangeIsRelevant(cit);
-                    if (this.m_pushMode) {
-                        changeForReader.status = ChangeForReaderStatus.UNSENT;
-                    } else {
-                        changeForReader.status = ChangeForReaderStatus.UNACKNOWLEDGED;
-                    }
-                    rp.getChangesForReader().add(changeForReader);
+                } else {
+                    changeForReader.isRelevant = false;
                 }
+
+                if (this.m_pushMode) {
+                    changeForReader.status = ChangeForReaderStatus.UNSENT;
+                } else {
+                    changeForReader.status = ChangeForReaderStatus.UNACKNOWLEDGED;
+                }
+                rp.getChangesForReader().add(changeForReader);
             }
+            //}
             this.m_matchedReaders.add(rp);
             logger.debug(
                     "Reader Proxy {} added to {} with {}(u) - {}(m) locators", 
@@ -323,8 +331,6 @@ public class StatefulWriter extends RTPSWriter {
                     rp.att.endpoint.multicastLocatorList.getLocators().size());
             if (rp.getChangesForReader().size() > 0) {
                 this.m_unsentChangesNotEmpty = new UnsentChangesNotEmptyEvent(this, 1000);
-                //this.m_unsentChangesNotEmpty.restartTimer();
-                //this.m_unsentChangesNotEmpty = null;
             }
         } finally {
             this.m_mutex.unlock();
@@ -381,7 +387,7 @@ public class StatefulWriter extends RTPSWriter {
         }
         return null;
     }
-    
+
     @Override
     public boolean isAckedByAll(CacheChange change) {
         if (!change.getWriterGUID().equals(this.m_guid)) {
@@ -401,12 +407,12 @@ public class StatefulWriter extends RTPSWriter {
         }
         return true;
     }
-    
+
     @Override
     public void updateAttributes(WriterAttributes att) {
         this.updateTimes(att.times);
     }
-    
+
     /**
      * Updates the {@link WriterTimes}
      * 
@@ -428,7 +434,7 @@ public class StatefulWriter extends RTPSWriter {
         }
         this.m_times.copy(times);
     }
-    
+
     /**
      * Get heartbeat reader entity id
      *

@@ -164,7 +164,7 @@ public class ParticipantDiscoveryTest {
         }
 
     }
-
+/*
     @Test
     public void staticSingleParticipantDiscoveryTest() throws InterruptedException, ExecutionException {
         ExecutorService es = Executors.newCachedThreadPool();
@@ -221,7 +221,7 @@ public class ParticipantDiscoveryTest {
         assertTrue(participant3.get());
 
     }
-    
+  */  
     
 }
 

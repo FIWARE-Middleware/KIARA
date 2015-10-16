@@ -72,18 +72,22 @@ public class PDPSimpleListener extends ReaderListener {
         try {
             CacheChange change = change_in;
             logger.debug("PDP Message Received");
-            
-            if (change.getInstanceHandle().equals(new InstanceHandle())) {
-                if (!this.getKey(change)) {
-                    logger.warn("Problem getting the key of the change, removing.");
-                    this.m_SPDP.getSPDPReaderHistory().removeChange(change);
-                    return;
-                }
-            }
 
-            final Lock mutex = this.m_participantProxyData.getMutex();
-            mutex.lock();
+            Lock guard = reader.getMutex();
+            guard.lock();
             try {
+
+                if (change.getInstanceHandle().equals(new InstanceHandle())) {
+                    if (!this.getKey(change)) {
+                        logger.warn("Problem getting the key of the change, removing.");
+                        this.m_SPDP.getSPDPReaderHistory().removeChange(change);
+                        return;
+                    }
+                }
+
+                //                final Lock mutex = this.m_participantProxyData.getMutex();
+                //                mutex.lock();
+                //                try {
                 if (change.getKind() == ChangeKind.ALIVE) {
                     // Load information in temporal RTPSParticipant PROXY DATA
                     this.m_participantProxyData.clear();
@@ -185,8 +189,13 @@ public class PDPSimpleListener extends ReaderListener {
                         this.m_SPDP.getRTPSParticipant().getListener().onRTPSParticipantDiscovery(this.m_SPDP.getRTPSParticipant(), info);
                     }
                 }
+                //            } 
+                //                finally {
+                //                    mutex.unlock();
+                //                }
+
             } finally {
-                mutex.unlock();
+                guard.unlock();
             }
 
             return;
@@ -195,6 +204,7 @@ public class PDPSimpleListener extends ReaderListener {
         } catch (Exception e2) {
             e2.printStackTrace();
         }
+
     }
 
     /**

@@ -17,19 +17,24 @@
  */
 package org.fiware.kiara.ps.discovery.endpoint.dyn;
 
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import org.fiware.kiara.ps.Domain;
 import org.fiware.kiara.ps.attributes.ParticipantAttributes;
 import org.fiware.kiara.ps.attributes.PublisherAttributes;
 import org.fiware.kiara.ps.attributes.SubscriberAttributes;
 import org.fiware.kiara.ps.participant.Participant;
+import org.fiware.kiara.ps.participant.ParticipantDiscoveryInfo;
+import org.fiware.kiara.ps.participant.ParticipantListener;
 import org.fiware.kiara.ps.publisher.PublisherListener;
 import org.fiware.kiara.ps.qos.policies.HistoryQosPolicyKind;
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
@@ -38,6 +43,7 @@ import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.common.MatchingStatus;
 import org.fiware.kiara.ps.rtps.common.TopicKind;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
+import org.fiware.kiara.ps.rtps.participant.DiscoveryStatus;
 import org.fiware.kiara.ps.subscriber.SubscriberListener;
 import org.fiware.kiara.ps.types.HelloWorld;
 import org.fiware.kiara.ps.types.HelloWorldType;
@@ -54,9 +60,9 @@ import static org.junit.Assert.*;
  * @author Dmitri Rubinstein {@literal <dmitri.rubinstein@dfki.de>}
  */
 public class DynamicEndpointDiscoveryTest {
-    
-    CountDownLatch subEndCt;
-    CountDownLatch pubEndCt;
+
+    //    CountDownLatch subEndCt;
+    //    CountDownLatch pubEndCt;
 
     static {
         System.setProperty("java.util.logging.config.file", "logging.properties");
@@ -72,13 +78,11 @@ public class DynamicEndpointDiscoveryTest {
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void prepare() throws InterruptedException {
-        if (this.subEndCt != null && this.pubEndCt != null) {
-            this.subEndCt.await(10000, TimeUnit.MILLISECONDS);
-            this.pubEndCt.await(10000, TimeUnit.MILLISECONDS);
-        }
+        //Thread.sleep(2000);
+        System.out.println("---------------------------------------------------------------------------------------");
     }
 
     private static final HelloWorldType hwtype = new HelloWorldType();
@@ -88,21 +92,25 @@ public class DynamicEndpointDiscoveryTest {
         private boolean isReliable;
         private boolean isStatic;
         private boolean isKeyed;
-        private static int matchedEntities;
+        private int matchedEntities;
         private boolean waitForUnmatching;
         private boolean useWLP;
-        private final CountDownLatch myCt;
+        private CyclicBarrier myCt;
         private final CountDownLatch remoteCt;
+        private CyclicBarrier barrier;
+        private CyclicBarrier subscriberBarrier;
 
-        public SubscriberEntity(CountDownLatch myCt, CountDownLatch remoteCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
+        public SubscriberEntity(CyclicBarrier barrier, CyclicBarrier myCt, CyclicBarrier subscriberBarrier, CountDownLatch remoteCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
             this.isReliable = isReliable;
             this.isStatic = isStatic;
             this.isKeyed = isKeyed;
-            matchedEntities = nEntities;
+            this.matchedEntities = nEntities;
             this.waitForUnmatching = waitForUnmatching;
             this.useWLP = useWLP;
             this.myCt = myCt;
             this.remoteCt = remoteCt;
+            this.barrier = barrier;
+            this.subscriberBarrier = subscriberBarrier;
         }
 
         @Override
@@ -116,52 +124,31 @@ public class DynamicEndpointDiscoveryTest {
             ParticipantAttributes pParam = new ParticipantAttributes();
             pParam.rtps.builtinAtt.useSimplePDP = true;
             pParam.rtps.builtinAtt.useWriterLP = this.useWLP;
-            if (this.isStatic) {
-                pParam.rtps.builtinAtt.useSimpleEDP = false;
-                pParam.rtps.builtinAtt.useStaticEDP = true;
 
-                String reliabilityQos = "";
-                if (this.isReliable) { 
-                    reliabilityQos = "RELIABLE_RELIABILITY_QOS";
-                } else {
-                    reliabilityQos = "BEST_EFFORT_RELIABILITY_QOS";
-                }
-
-                String keyChain = "";
-                if (this.isKeyed) {
-                    keyChain = "WITH_KEY";
-                } else {
-                    keyChain = "NO_KEY";
-                }
-
-                final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                        + "<staticdiscovery>"
-                        + "    <participant>"
-                        + "        <name>" + "participant2" + "</name>"
-                        + "        <writer>"
-                        + "            <userId>1</userId>"
-                        + "            <topicName>HelloWorldTopic</topicName>"
-                        + "            <topicDataType>HelloWorld</topicDataType>"
-                        + "            <topicKind>" + keyChain + "</topicKind>"
-                        + "            <reliabilityQos>" + reliabilityQos + "</reliabilityQos>"
-                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"5000\"></livelinessQos>"
-                        + "        </writer>"
-                        + "     </participant>"
-                        + "    </staticdiscovery>";
-
-                pParam.rtps.builtinAtt.setStaticEndpointXML(edpXml);
-            } else {
-                pParam.rtps.builtinAtt.useSimpleEDP = true;
-                pParam.rtps.builtinAtt.useStaticEDP = false;
-            }
+            pParam.rtps.builtinAtt.useSimpleEDP = true;
+            pParam.rtps.builtinAtt.useStaticEDP = false;
 
             pParam.rtps.setName("participant1");
 
-            Participant participant = Domain.createParticipant(pParam, null /*new PartListener()*/);
+            final CountDownLatch discoveryCt = new CountDownLatch(1);
+
+            Participant participant = Domain.createParticipant(pParam, new ParticipantListener() {
+
+                @Override
+                public void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info) {
+                    if (info.rtps.status == DiscoveryStatus.DISCOVERED_PARTICIPANT) {
+                        //System.out.println("Participant Discovered by SubscriberEntity");
+                        discoveryCt.countDown();
+                    }
+                }
+            });
+
             if (participant == null) {
                 System.out.println("Error when creating participant");
                 return false;
             }
+
+            discoveryCt.await(5000, TimeUnit.MILLISECONDS);
 
             // Type registration
             Domain.registerType(participant, hwtype);
@@ -185,35 +172,28 @@ public class DynamicEndpointDiscoveryTest {
                 satt.qos.reliability.kind = ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
             }
 
-            satt.setUserDefinedID((short) 1);
+            //satt.setUserDefinedID((short) 1);
 
             final CountDownLatch matchedSignal = new CountDownLatch(matchedEntities);
             final CountDownLatch unmatchedSignal = new CountDownLatch(matchedEntities);
-            
+
             org.fiware.kiara.ps.subscriber.Subscriber<HelloWorld> subscriber = Domain.createSubscriber(participant, satt, new SubscriberListener() {
 
                 private int n_matched;
 
                 @Override
-                public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber<?> sub) {
-                    //                    //SampleInfo info = new SampleInfo();
-                    //                    HelloWorld type = (HelloWorld) sub.takeNextData(null);
-                    //                    while (type != null) {
-                    //                        //HelloWorld instance = (HelloWorld) type;
-                    //                        type = (HelloWorld) sub.takeNextData(null);
-                    //                        workDoneSignal.countDown();
-                    //                    }
-                }
+                public void onNewDataMessage(org.fiware.kiara.ps.subscriber.Subscriber<?> sub) { }
 
                 @Override
                 public void onSubscriptionMatched(org.fiware.kiara.ps.subscriber.Subscriber<?> sub, MatchingInfo info) {
+                    //System.out.println("Publisher recv: " + n_matched);
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
-                        System.out.println("Subscriber matched: " + n_matched);
+                        System.out.println("Publisher matched: " + n_matched);
                         matchedSignal.countDown();
                     } else {
                         n_matched--;
-                        System.out.println("Subscriber unmatched: " + n_matched);
+                        System.out.println("Publisher unmatched: " + n_matched);
                         unmatchedSignal.countDown();
                     }
                 }
@@ -221,10 +201,14 @@ public class DynamicEndpointDiscoveryTest {
             });
             assertNotNull("Error creating subscriber", subscriber);
 
+            this.myCt.await();
+            
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
+                System.out.println("Sub PASA MATCH");
                 if (this.waitForUnmatching) {
                     unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
+                    System.out.println("Sub PASA UNMATCH");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -234,20 +218,21 @@ public class DynamicEndpointDiscoveryTest {
             if (this.waitForUnmatching) {
                 assertEquals(0, unmatchedSignal.getCount());
             }
+            
+            /*System.out.println("Sleeping...");
+            Thread.sleep(500);*/
+            
+            System.out.println("SUb WAITING");
+            this.subscriberBarrier.await();
 
             System.out.println("Removing Subscriber");
             Domain.removeSubscriber(subscriber);
-            //this.remoteCt.countDown();
-            //this.myCt.await(10000, TimeUnit.MILLISECONDS);
+            System.out.println("Subscriber removed");
             
-            this.myCt.countDown();
-            
-//            synchronized(myCt) {
-//            }
-//            synchronized(this.remoteCt) {
-//                this.remoteCt.await(10000, TimeUnit.MILLISECONDS);
-//                assertEquals(0, remoteCt.getCount());
-//            }
+            Domain.removeParticipant(participant);
+            System.out.println("Participant Removed");
+
+            this.barrier.await();
 
             return true;
         }
@@ -259,21 +244,25 @@ public class DynamicEndpointDiscoveryTest {
         private boolean isReliable;
         private boolean isStatic;
         private boolean isKeyed;
-        private static int matchedEntities;
+        private int matchedEntities;
         private boolean waitForUnmatching;
         private boolean useWLP;
         private final CountDownLatch myCt;
         private final CountDownLatch remoteCt;
+        private CyclicBarrier barrier;
+        private CyclicBarrier subscriberBarrier;
 
-        public PublisherEntity(CountDownLatch myCt, CountDownLatch remoteCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
+        public PublisherEntity(CyclicBarrier barrier, CyclicBarrier subscriberBarrier, CountDownLatch myCt, CountDownLatch remoteCt, boolean isReliable, boolean isStatic, boolean isKeyed, boolean waitForUnmatching, boolean useWLP, int nEntities) {
             this.isReliable = isReliable;
             this.isStatic = isStatic;
             this.isKeyed = isKeyed;
-            matchedEntities = nEntities;
+            this.matchedEntities = nEntities;
             this.waitForUnmatching = waitForUnmatching;
             this.useWLP = useWLP;
             this.myCt = myCt;
             this.remoteCt = remoteCt;
+            this.barrier = barrier;
+            this.subscriberBarrier = subscriberBarrier;
         }
 
         @Override
@@ -288,57 +277,35 @@ public class DynamicEndpointDiscoveryTest {
             pAtt.rtps.useIPv4ToSend = true;
             pAtt.rtps.builtinAtt.useSimplePDP = true;
             pAtt.rtps.builtinAtt.useWriterLP = this.useWLP;
-            if (this.isStatic) {
-                pAtt.rtps.builtinAtt.useSimpleEDP = false;
-                pAtt.rtps.builtinAtt.useStaticEDP = true;
 
-                String reliabilityQos = "";
-                if (this.isReliable) { 
-                    reliabilityQos = "RELIABLE_RELIABILITY_QOS";
-                } else {
-                    reliabilityQos = "BEST_EFFORT_RELIABILITY_QOS";
-                }
-
-                String keyChain = "";
-                if (this.isKeyed) {
-                    keyChain = "WITH_KEY";
-                } else {
-                    keyChain = "NO_KEY";
-                }
-
-                final String edpXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
-                        + "<staticdiscovery>"
-                        + "    <participant>"
-                        + "        <name>" + "participant2" + "</name>"
-                        + "        <reader>"
-                        + "            <userId>1</userId>"
-                        + "            <topicName>HelloWorldTopic</topicName>"
-                        + "            <topicDataType>HelloWorld</topicDataType>"
-                        + "            <topicKind>" + keyChain + "</topicKind>"
-                        + "            <reliabilityQos>" + reliabilityQos + "</reliabilityQos>"
-                        + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"5000\"></livelinessQos>"
-                        + "        </reader>"
-                        + "     </participant>"
-                        + "    </staticdiscovery>";
-
-                pAtt.rtps.builtinAtt.setStaticEndpointXML(edpXml);
-            } else {
-                pAtt.rtps.builtinAtt.useSimpleEDP = true;
-                pAtt.rtps.builtinAtt.useStaticEDP = false;
-            }
+            pAtt.rtps.builtinAtt.useSimpleEDP = true;
+            pAtt.rtps.builtinAtt.useStaticEDP = false;
 
             pAtt.rtps.setName("participant2");
 
-            Participant participant = Domain.createParticipant(pAtt, null /*new PartListener()*/);
+            final CountDownLatch discoveryCt = new CountDownLatch(1);
+
+            Participant participant = Domain.createParticipant(pAtt, new ParticipantListener() {
+
+                @Override
+                public void onParticipantDiscovery(Participant p, ParticipantDiscoveryInfo info) {
+                    if (info.rtps.status == DiscoveryStatus.DISCOVERED_PARTICIPANT) {
+                        //System.out.println("Participant Discovered by PublisherEntity");
+                        discoveryCt.countDown();
+                    }
+                }
+            });
 
             assertNotNull("Error when creating participant", participant);
+
+            discoveryCt.await(5000, TimeUnit.MILLISECONDS);
 
             boolean registered = Domain.registerType(participant, hwtype);
             assertTrue("Error registering type", registered);
 
             // Create publisher
             PublisherAttributes pubAtt = new PublisherAttributes();
-            pubAtt.setUserDefinedID((short) 1);
+            //pubAtt.setUserDefinedID((short) 1);
             pubAtt.topic.topicKind = TopicKind.NO_KEY;
             pubAtt.topic.topicDataTypeName = "HelloWorld";
             pubAtt.topic.topicName = "HelloWorldTopic";
@@ -368,13 +335,14 @@ public class DynamicEndpointDiscoveryTest {
 
                 @Override
                 public void onPublicationMatched(org.fiware.kiara.ps.publisher.Publisher<?> pub, MatchingInfo info) {
+                    //System.out.println("Publisher recv: " + n_matched);
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
-                        System.out.println("Publisher matched: " + n_matched);
+                        System.out.println("Subscriber matched: " + n_matched);
                         matchedSignal.countDown();
                     } else {
                         n_matched--;
-                        System.out.println("Publisher unmatched: " + n_matched);
+                        System.out.println("Subscriber unmatched: " + n_matched);
                         unmatchedSignal.countDown();
                     }
                 }
@@ -384,25 +352,42 @@ public class DynamicEndpointDiscoveryTest {
                 Domain.removeParticipant(participant);
             }
             assertNotNull("Error creating publisher", publisher);
-
+            
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
+                System.out.println("Pub PASA MATCH");
+                
+                System.out.println("PUb WAITING");
+                this.subscriberBarrier.await();
+                
                 if (this.waitForUnmatching) {
                     unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
+                    System.out.println("Pub PASA UNMATCH");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            System.out.println("ONE");
             assertEquals(0, matchedSignal.getCount());
+            
             if (this.waitForUnmatching) {
+                System.out.println("TWO");                
                 assertEquals(0, unmatchedSignal.getCount());
             }
-
+            
+//            System.out.println("PUb WAITING");
+//            Thread.sleep(800);
+//            this.subscriberBarrier.await();
+            
             System.out.println("Removing Publisher");
             Domain.removePublisher(publisher);
+            System.out.println("Publisher removed");
             
-            this.myCt.countDown();
+            Domain.removeParticipant(participant);
+            System.out.println("Participant Removed");
+
+           this.barrier.await();
 
             return true;
         }
@@ -418,113 +403,301 @@ public class DynamicEndpointDiscoveryTest {
     }
 
     @Test
-    public void dynamicDiscovery() throws InterruptedException, ExecutionException {
+    public void dynamicDiscovery() {
 
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(1);
-        pubEndCt = new CountDownLatch(1);
-        
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, false, false, 1));
+        try {
+            ExecutorService es = Executors.newCachedThreadPool();
 
-        assertTrue(subscriber.get());
-        assertTrue(publisher.get());
+            CyclicBarrier barrier = new CyclicBarrier(3);
+            CyclicBarrier subscriberBarrier = new CyclicBarrier(2);
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
+
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, subscriberBarrier, null, false, false, false, false, false, 1));
+            subCt1.await();
+            Future<Boolean> publisher = es.submit(new PublisherEntity(barrier, subscriberBarrier, null, null, false, false, false, false, false, 1));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+            assertTrue(subscriber.get());
+            assertTrue(publisher.get());
+            
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
+    }
+
+    /*@Test
+    public void dynamicSubscriberUndiscovery() {
+
+        try {
+            ExecutorService es = Executors.newCachedThreadPool();
+
+            CyclicBarrier barrier = new CyclicBarrier(3);
+
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
+
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, null, false, false, false, false, false, 1));
+            subCt1.await();
+            Future<Boolean> publisher = es.submit(new PublisherEntity(barrier, null, null, false, false, false, true, false, 1));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+
+            assertTrue(subscriber.get());
+            assertTrue(publisher.get());
+
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }*/
+
+    /*@Test
+    public void dynamicPublisherUndiscovery() {
+        try {
+
+            ExecutorService es = Executors.newCachedThreadPool();
+
+            CyclicBarrier barrier = new CyclicBarrier(3);
+
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
+
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, null, false, false, false, true, false, 1));
+            subCt1.await();
+
+            Future<Boolean> publisher = es.submit(new PublisherEntity(barrier, null, null, false, false, false, false, false, 1));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+            assertTrue(subscriber.get());
+            assertTrue(publisher.get());
+
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } 
+
+    }*/
+
+    @Test
+    public void dynamicMultipleSubscriberDiscovery() {
+        try {
+
+            ExecutorService es = Executors.newCachedThreadPool();
+
+            CyclicBarrier barrier = new CyclicBarrier(4);
+            CyclicBarrier subscriberBarrier = new CyclicBarrier(3);
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
+            CyclicBarrier subCt2 = new CyclicBarrier(2);
+
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber1 = es.submit(new SubscriberEntity(barrier, subCt1, subscriberBarrier, null, false, false, false, false, false, 1));
+            subCt1.await();
+
+            Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(barrier, subCt2, subscriberBarrier, null, false, false, false, false, false, 1));
+            subCt2.await();
+            Future<Boolean> publisher1 = es.submit(new PublisherEntity(barrier, subscriberBarrier, null, null, false, false, false, false, false, 2));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+            assertTrue(subscriber1.get());
+            assertTrue(subscriber2.get());
+            assertTrue(publisher1.get());
+
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
 
     }
 
     @Test
-    public void dynamicSubscriberUndiscovery() throws InterruptedException, ExecutionException {
+    public void dynamicMultipleSubscriberUndiscovery() {
 
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(1);
-        pubEndCt = new CountDownLatch(1);
+        try {
+            ExecutorService es = Executors.newCachedThreadPool();
 
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, true, false, 1));
+            CyclicBarrier barrier = new CyclicBarrier(4);
+            CyclicBarrier subscriberBarrier = new CyclicBarrier(3);
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
+            CyclicBarrier subCt2 = new CyclicBarrier(2);
 
-        assertTrue(subscriber.get());
-        assertTrue(publisher.get());
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, subscriberBarrier, null, false, false, false, false, false, 1));
+            subCt1.await();
 
-    }
- 
-    @Test
-    public void dynamicPublisherUndiscovery() throws InterruptedException, ExecutionException {
+            Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(barrier, subCt2, subscriberBarrier, null, false, false, false, false, false, 1));
+            subCt2.await();
 
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(1);
-        pubEndCt = new CountDownLatch(1);
+            Future<Boolean> publisher = es.submit(new PublisherEntity(barrier, subscriberBarrier, null, null, false, false, false, true, false, 2));
 
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, true, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, false, false, 1));
+            barrier.await(30000, TimeUnit.MILLISECONDS);
 
-        assertTrue(subscriber.get());
-        assertTrue(publisher.get());
+            assertTrue(subscriber.get());
+            assertTrue(subscriber2.get());
+            assertTrue(publisher.get());
 
-    }
-
-    @Test
-    public void dynamicDiscoveryMultipleSubscribers() throws InterruptedException, ExecutionException {
-
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(2);
-        pubEndCt = new CountDownLatch(1);
-
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber1 = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, false, false, 2));
-
-        assertTrue(subscriber1.get());
-        assertTrue(subscriber2.get());
-        assertTrue(publisher.get());
-
-    }
-   
-    @Test
-    public void dynamicSubscriberMultipleUndiscovery() throws InterruptedException, ExecutionException {
-
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(1);
-        pubEndCt = new CountDownLatch(2);
-
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> subscriber2 = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 1));
-        Future<Boolean> publisher = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, true, false, 2));
-
-        assertTrue(subscriber.get());
-        assertTrue(subscriber2.get());
-        assertTrue(publisher.get());
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } 
 
     }
 
-    @Test
-    public void dynamicDiscoveryMultiplePublishers() throws InterruptedException, ExecutionException {
+   /* @Test
+    public void dynamicMultiplePublisherDiscovery() {
+        try {
 
-        ExecutorService es = Executors.newCachedThreadPool();
-        
-        subEndCt = new CountDownLatch(1);
-        pubEndCt = new CountDownLatch(2);
+            ExecutorService es = Executors.newCachedThreadPool();
 
-        //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
-        Future<Boolean> subscriber = es.submit(new SubscriberEntity(subEndCt, pubEndCt, false, false, false, false, false, 2));
-        Future<Boolean> publisher1 = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, false, false, 1));
-        Future<Boolean> publisher2 = es.submit(new PublisherEntity(pubEndCt, subEndCt, false, false, false, false, false, 1));
+            CyclicBarrier barrier = new CyclicBarrier(4);
 
-        assertTrue(subscriber.get());
-        assertTrue(publisher1.get());
-        assertTrue(publisher2.get());
+            CyclicBarrier subCt1 = new CyclicBarrier(2);
 
-    }
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, null, false, false, false, false, false, 2));
+            subCt1.await();
 
+            Future<Boolean> publisher1 = es.submit(new PublisherEntity(barrier, null, null, false, false, false, false, false, 1));
+            Future<Boolean> publisher2 = es.submit(new PublisherEntity(barrier, null, null, false, false, false, false, false, 1));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+            assertTrue(subscriber.get());
+            assertTrue(publisher1.get());
+            assertTrue(publisher2.get());
+
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }*/
     
+   /* @Test
+    public void dynamicMultiplePublisherUndiscovery() {
+        try {
+
+            ExecutorService es = Executors.newCachedThreadPool();
+
+            CyclicBarrier barrier = new CyclicBarrier(4);
+
+            CyclicBarrier pubCt1 = new CyclicBarrier(2);
+
+            //Future<Boolean> subscriber = es.submit(new SubscriberEntity(isReliable, isStatic, isKeyed, waitForUnmatching, useWLP, nEntities));
+            Future<Boolean> subscriber = es.submit(new SubscriberEntity(barrier, subCt1, null, false, false, false, true, false, 2));
+            subCt1.await();
+
+            Future<Boolean> publisher1 = es.submit(new PublisherEntity(barrier, null, null, false, false, false, false, false, 1));
+            Future<Boolean> publisher2 = es.submit(new PublisherEntity(barrier, null, null, false, false, false, false, false, 1));
+
+            barrier.await(30000, TimeUnit.MILLISECONDS);
+
+            assertTrue(subscriber.get());
+            assertTrue(publisher1.get());
+            assertTrue(publisher2.get());
+
+        } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            assertTrue(false);
+        } catch (BrokenBarrierException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (TimeoutException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        } catch (ExecutionException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            assertTrue(false);
+        }
+
+    }*/
+
+
 }
 

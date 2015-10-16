@@ -45,7 +45,6 @@ import org.fiware.kiara.ps.rtps.messages.elements.SerializedPayload;
 import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.Unused;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
-import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
 import org.fiware.kiara.ps.rtps.reader.StatefulReader;
 import org.fiware.kiara.ps.rtps.reader.WriterProxy;
@@ -376,201 +375,225 @@ public class MessageReceiver {
      */
     private boolean processSubmessageData(RTPSMessage msg, RTPSSubmessage subMsg) {
 
-        SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
-
-        boolean endiannessFlag = flags.getFlagValue(0);
-        boolean inlineQosFlag = flags.getFlagValue(1);
-        boolean dataFlag = flags.getFlagValue(2);
-        boolean keyFlag = flags.getFlagValue(3);
-
-        if (keyFlag && dataFlag) {
-            logger.warn("Message received with Data and Key Flag set, ignoring");
-            return false;
-        }
-
-        // Assign message endianness
-        if (endiannessFlag) {
-            msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
-        } else {
-            msg.setEndiannes(RTPSEndian.BIG_ENDIAN);
-        }
-
+        this.m_listenResource.getMutex().lock();
         try {
 
-            int initialDataMsgPos = msg.getBinaryInputStream().getPosition();
+            SubmessageFlags flags = subMsg.m_submessageHeader.getFlags();
 
-            // Extra flags don't matter for now
-            msg.getBinaryInputStream().skipBytes(2);
+            boolean endiannessFlag = flags.getFlagValue(0);
+            boolean inlineQosFlag = flags.getFlagValue(1);
+            boolean dataFlag = flags.getFlagValue(2);
+            boolean keyFlag = flags.getFlagValue(3);
 
-            OctectsToInlineQos otiQos = new OctectsToInlineQos((short) 0);
-            otiQos.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-
-            // Reader and Writer ID
-            EntityId readerId = new EntityId();
-            readerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-
-            // Look for the reader
-
-            RTPSReader firstReader = null;
-            if (this.m_listenResource.getAssocReaders().isEmpty()) {
-                logger.warn("Data received in locator: {} when NO readers are listening", this.m_listenResource.getListenLocators());
+            if (keyFlag && dataFlag) {
+                logger.warn("Message received with Data and Key Flag set, ignoring");
                 return false;
             }
 
-            for (RTPSReader reader : this.m_listenResource.getAssocReaders()) {
-                if (reader.acceptMsgDirectedTo(readerId)) {
-                    firstReader = reader;
-                    break;
-                }
+            // Assign message endianness
+            if (endiannessFlag) {
+                msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
+            } else {
+                msg.setEndiannes(RTPSEndian.BIG_ENDIAN);
             }
 
-            if (firstReader == null) { // Reader not found
-                logger.warn("No Reader in this Locator {} accepts this message (directed to: {})", this.m_listenResource.getListenLocators(), readerId);
-                return false;
-            }
+            try {
 
-            // Add readerId
-            subMsg.addSubmessageElement(readerId);
+                int initialDataMsgPos = msg.getBinaryInputStream().getPosition();
 
-            // Reader has been found
-            CacheChange ch = new CacheChange();
-            GUID writerGUID = new GUID();
-            writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
-            EntityId writerId = new EntityId();
-            writerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-            writerGUID.setEntityId(writerId);
-            ch.setWriterGUID(writerGUID);
+                // Extra flags don't matter for now
+                msg.getBinaryInputStream().skipBytes(2);
 
-            // Add writerId
-            subMsg.addSubmessageElement(writerId);
+                OctectsToInlineQos otiQos = new OctectsToInlineQos((short) 0);
+                otiQos.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
 
-            // Get SequenceNumber
-            SequenceNumber writerSN = new SequenceNumber();
-            writerSN.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                // Reader and Writer ID
+                EntityId readerId = new EntityId();
+                readerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
 
-            if (writerSN.toLong() <= 0 || writerSN.getHigh() == -1 || writerSN.getLow() == 0) { // Message is invalid
-                logger.warn("Invalid message received, bad sequence Number"); 
-                return false;
-            }
+                // Look for the reader
 
-            subMsg.addSubmessageElement(writerSN);
-            ch.setSequenceNumber(writerSN);
-
-            if (otiQos.getSerializedSize() > RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG) {
-                msg.getBinaryInputStream().skipBytes(otiQos.getSerializedSize() - RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG);
-            }
-
-            int inlineQosSize = 0;
-
-            if (inlineQosFlag) {
-                // Data MSG contains inline QOS
-                ParameterList paramList = new ParameterList();
-                paramList.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-                inlineQosSize = paramList.getListSize(); // TODO Check this
-                
-                paramList.updateCacheChange(ch);
-
-                if (inlineQosSize <= 0) {
-                    logger.error("SubMessage Data ERROR, Inline Qos ParameterList error");
+                RTPSReader firstReader = null;
+                if (this.m_listenResource.getAssocReaders().isEmpty()) {
+                    logger.warn("Data received in locator: {} when NO readers are listening", this.m_listenResource.getListenLocators());
                     return false;
                 }
-            }
 
-            if (dataFlag || keyFlag) {
-
-                int payloadSize;
-                if (subMsg.m_submessageHeader.m_octectsToNextHeader > 0) {
-                    payloadSize = subMsg.m_submessageHeader.m_octectsToNextHeader - (RTPSMessage.DATA_EXTRA_INLINEQOS_SIZE + otiQos.getValue() + inlineQosSize);
-                } else {
-                    payloadSize = subMsg.m_submessageHeader.m_submessageLengthLarger;
+                for (RTPSReader reader : this.m_listenResource.getAssocReaders()) {
+                    if (reader.acceptMsgDirectedTo(readerId)) {
+                        firstReader = reader;
+                        break;
+                    }
                 }
 
-                if (dataFlag) {
-                    SerializedPayload payload = new SerializedPayload();
-                    payload.setDataFlag(true);
-                    payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
-                    payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-                    ch.setSerializedPayload(payload);
-                    ch.setKind(ChangeKind.ALIVE);
-                    subMsg.addSubmessageElement(payload);
-                } else if (keyFlag) {
-                    SerializedPayload payload = new SerializedPayload();
-                    payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
-                    payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-                    RTPSEndian previousEndian = msg.getEndiannes();
-                    ch.setSerializedPayload(payload);
-                    if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_BE) {
-                        msg.setEndiannes(RTPSEndian.BIG_ENDIAN);
-                    } else if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_LE) {
-                        msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
-                    } else {
-                        logger.error("Bad encapsulation for KeyHash and status parameter list");
+                if (firstReader == null) { // Reader not found
+                    logger.warn("No Reader in this Locator {} accepts this message (directed to: {})", this.m_listenResource.getListenLocators(), readerId);
+                    return false;
+                }
+
+                // Add readerId
+                subMsg.addSubmessageElement(readerId);
+
+                // Reader has been found
+                CacheChange ch = new CacheChange();
+                GUID writerGUID = new GUID();
+                writerGUID.setGUIDPrefix(this.m_sourceGuidPrefix);
+                EntityId writerId = new EntityId();
+                writerId.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                writerGUID.setEntityId(writerId);
+                ch.setWriterGUID(writerGUID);
+
+                // Add writerId
+                subMsg.addSubmessageElement(writerId);
+
+                // Get SequenceNumber
+                SequenceNumber writerSN = new SequenceNumber();
+                writerSN.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+
+                if (writerSN.toLong() <= 0 || writerSN.getHigh() == -1 || writerSN.getLow() == 0) { // Message is invalid
+                    logger.warn("Invalid message received, bad sequence Number"); 
+                    return false;
+                }
+
+                subMsg.addSubmessageElement(writerSN);
+                ch.setSequenceNumber(writerSN);
+
+                if (otiQos.getSerializedSize() > RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG) {
+                    msg.getBinaryInputStream().skipBytes(otiQos.getSerializedSize() - RTPSMessage.OCTETSTOINLINEQOS_DATASUBMSG);
+                }
+
+                int inlineQosSize = 0;
+
+                if (inlineQosFlag) {
+                    // Data MSG contains inline QOS
+                    ParameterList paramList = new ParameterList();
+                    paramList.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                    inlineQosSize = paramList.getListSize(); 
+
+                    paramList.updateCacheChange(ch);
+
+                    if (inlineQosSize <= 0) {
+                        logger.error("SubMessage Data ERROR, Inline Qos ParameterList error");
                         return false;
                     }
-                    msg.setEndiannes(previousEndian);
-                    subMsg.addSubmessageElement(payload);
                 }
 
-            } else {
-                int finalDataMsgPosition = msg.getBinaryInputStream().getPosition();
-                int bytesToSkip = 0;
-                if (finalDataMsgPosition - initialDataMsgPos < 24) {
-                    bytesToSkip = 24 - (finalDataMsgPosition - initialDataMsgPos);
-                }
-                msg.getBinaryInputStream().skipBytes(bytesToSkip);
-            }
+                if (dataFlag || keyFlag) {
 
-            logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
+                    int payloadSize;
+                    if (subMsg.m_submessageHeader.m_octectsToNextHeader > 0) {
+                        payloadSize = subMsg.m_submessageHeader.m_octectsToNextHeader - (RTPSMessage.DATA_EXTRA_INLINEQOS_SIZE + otiQos.getValue() + inlineQosSize);
+                    } else {
+                        payloadSize = subMsg.m_submessageHeader.m_submessageLengthLarger;
+                    }
 
-            for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
-                ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
-                if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), retProxy)) {
-                    logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
-                    CacheChange changeToAdd = it.reserveCache();
-
-                    if (changeToAdd != null) {
-                        if (!changeToAdd.copy(ch)) {
-                            logger.warn("Problem copying CacheChange");
-                            it.releaseCache(changeToAdd);
+                    if (dataFlag) {
+                        SerializedPayload payload = new SerializedPayload();
+                        payload.setDataFlag(true);
+                        payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
+                        payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                        ch.setSerializedPayload(payload);
+                        ch.setKind(ChangeKind.ALIVE);
+                        subMsg.addSubmessageElement(payload);
+                    } else if (keyFlag) {
+                        SerializedPayload payload = new SerializedPayload();
+                        payload.setLength((short) (payloadSize-RTPSMessage.DATA_EXTRA_ENCODING_SIZE));
+                        payload.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+                        RTPSEndian previousEndian = msg.getEndiannes();
+                        ch.setSerializedPayload(payload);
+                        if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_BE) {
+                            msg.setEndiannes(RTPSEndian.BIG_ENDIAN);
+                        } else if (ch.getSerializedPayload().getEncapsulation() == EncapsulationKind.PL_CDR_LE) {
+                            msg.setEndiannes(RTPSEndian.LITTLE_ENDIAN);
+                        } else {
+                            logger.error("Bad encapsulation for KeyHash and status parameter list");
                             return false;
                         }
-                    } else {
-                        logger.error("Problem reserving CacheChange in reader");
-                        return false;
+                        msg.setEndiannes(previousEndian);
+                        subMsg.addSubmessageElement(payload);
                     }
 
-                    if (this.m_hasTimestamp) {
-                        changeToAdd.setSourceTimestamp(this.m_timestamp);
+                } else {
+                    int finalDataMsgPosition = msg.getBinaryInputStream().getPosition();
+                    int bytesToSkip = 0;
+                    if (finalDataMsgPosition - initialDataMsgPos < 24) {
+                        bytesToSkip = 24 - (finalDataMsgPosition - initialDataMsgPos);
                     }
+                    msg.getBinaryInputStream().skipBytes(bytesToSkip);
+                }
 
-                    if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE && retProxy.value != null) {
-                        this.m_guardWriterMutex.lock();
-                        try {
-                            retProxy.value.assertLiveliness();
-                            if (!it.changeReceived(changeToAdd, retProxy.value)) {
-                                logger.debug("MessageReceiver not adding CacheChange");
-                                it.releaseCache(changeToAdd);
-                            }
-                        } finally {
-                            this.m_guardWriterMutex.unlock();
-                        }
-                    } else {
-                        if (!it.changeReceived(changeToAdd, null)) {
-                            logger.debug("MessageReceiver not adding CacheChange");
-                            it.releaseCache(changeToAdd);
-                            if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
-                                this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(this.m_sourceGuidPrefix);
-                            }
-                        } 
+                logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
+
+                //            if (this.m_hasTimestamp) {
+                //                ch.setSourceTimestamp(this.m_timestamp);
+                //            }
+
+
+                for (RTPSReader it : this.m_listenResource.getAssocReaders()) { 
+
+                    //ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
+                    if (it.acceptMsgDirectedTo(readerId)) {
+                        it.processDataMsg(ch, this.m_listenResource, this.m_hasTimestamp, this.m_timestamp, this.m_sourceGuidPrefix);
+
+
+                        //                ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
+                        //                if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), retProxy)) {
+                        //                    if(it.getListener().getClass().getName() == "org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPSimpleSubListener") {
+                        //                        System.out.println("");
+                        //                    }
+                        //                    logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
+                        //                    CacheChange changeToAdd = it.reserveCache();
+                        //
+                        //                    if (changeToAdd != null) {
+                        //                        if (!changeToAdd.copy(ch)) {
+                        //                            logger.warn("Problem copying CacheChange");
+                        //                            it.releaseCache(changeToAdd);
+                        //                            return false;
+                        //                        }
+                        //                    } else {
+                        //                        logger.error("Problem reserving CacheChange in reader");
+                        //                        return false;
+                        //                    }
+                        //
+                        //                    if (this.m_hasTimestamp) {
+                        //                        changeToAdd.setSourceTimestamp(this.m_timestamp);
+                        //                    }
+                        //
+                        //                    if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE && retProxy.value != null) {
+                        //                        this.m_guardWriterMutex.lock();
+                        //                        try {
+                        //                            retProxy.value.assertLiveliness();
+                        //                            if (!it.changeReceived(changeToAdd, retProxy.value)) {
+                        //                                logger.debug("MessageReceiver not adding CacheChange");
+                        //                                it.releaseCache(changeToAdd);
+                        //                            }
+                        //                        } finally {
+                        //                            this.m_guardWriterMutex.unlock();
+                        //                        }
+                        //                    } else {
+                        //                        if (!it.changeReceived(changeToAdd, null)) {
+                        //                            logger.debug("MessageReceiver not adding CacheChange");
+                        //                            it.releaseCache(changeToAdd);
+                        //                            if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
+                        //                                this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(changeToAdd.getWriterGUID().getGUIDPrefix()/*this.m_sourceGuidPrefix*/);
+                        //                            }
+                        //                        } 
+                        //                    }
+
+
                     }
                 }
+
+
+            } catch (IOException e) {
+                logger.error(e.getStackTrace().toString());
             }
 
-        } catch (IOException e) {
-            logger.error(e.getStackTrace().toString());
-        }
+            return true;
 
-        return true;
+        } finally {
+            this.m_listenResource.getMutex().unlock();
+        }
     }
 
     /**
@@ -610,17 +633,31 @@ public class MessageReceiver {
             writerGUID.setEntityId(writerId);
             subMsg.addSubmessageElement(writerId);
 
-
-
             SequenceNumberSet gapList = new SequenceNumberSet();
             gapList.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
-            //gapStart.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
+            
             if (gapList.getBase().toLong() <= 0) {
                 logger.warn("Wrong gapStart value. It should be greater than zero.");
                 return false;
             }
-            subMsg.addSubmessageElement(gapList.getBase());
-            subMsg.addSubmessageElement(gapList);
+
+            this.m_listenResource.getMutex().lock();
+            try {
+                
+                subMsg.addSubmessageElement(gapList.getBase());
+                subMsg.addSubmessageElement(gapList);
+                
+                for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
+                    if (it.acceptMsgDirectedTo(readerId)) {
+                        it.processGapMsg(writerGUID, gapList.getBase(), gapList);
+                    }
+                }
+                
+//                subMsg.addSubmessageElement(gapList.getBase());
+//                subMsg.addSubmessageElement(gapList);
+            } finally {
+                this.m_listenResource.getMutex().unlock();
+            }
 
         } catch (IOException e) {
             logger.error(e.getStackTrace().toString());
@@ -678,44 +715,47 @@ public class MessageReceiver {
             count.deserialize(msg.getSerializer(), msg.getBinaryInputStream(), "");
             subMsg.addSubmessageElement(count);
 
-            for (RTPSWriter it : this.m_listenResource.getAssocWriters()) {
-                Lock mutex = it.getMutex();
-                mutex.lock();
-                try {
+            this.m_listenResource.getMutex().lock();
+            try {
+                for (RTPSWriter it : this.m_listenResource.getAssocWriters()) {
+                    it.getMutex().lock();
+                    try {
 
-                    if (it.getGuid().equals(writerGUID)) {
-                        if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
-                            StatefulWriter statefulWriter = (StatefulWriter) it;
-                            for (ReaderProxy readerProxy : statefulWriter.getMatchedReaders()) {
-                                Lock proxyMutex = readerProxy.getMutex();
-                                proxyMutex.lock();
-                                try {
-                                    if (readerProxy.att.guid.equals(readerGUID)) {
-                                        if (readerProxy.getLastAcknackCount() < count.getValue()) {
-                                            readerProxy.setLastAcknackCount(count.getValue());
-                                            readerProxy.ackedChangesSet(readerSNState.getBase());
-                                            List<SequenceNumber> set_list = readerSNState.getSet();
-                                            readerProxy.requestedChangesSet(set_list);
-                                            if (!readerProxy.isRequestedChangesEmpty|| !finalFlag) {
-                                                readerProxy.startNackResponseDelay();
+                        if (it.getGuid().equals(writerGUID)) {
+                            if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+                                StatefulWriter statefulWriter = (StatefulWriter) it;
+                                for (ReaderProxy readerProxy : statefulWriter.getMatchedReaders()) {
+                                    readerProxy.getMutex().lock();
+                                    try {
+                                        if (readerProxy.att.guid.equals(readerGUID)) {
+                                            if (readerProxy.getLastAcknackCount() < count.getValue()) {
+                                                readerProxy.setLastAcknackCount(count.getValue());
+                                                readerProxy.ackedChangesSet(readerSNState.getBase());
+                                                List<SequenceNumber> set_list = readerSNState.getSet();
+                                                readerProxy.requestedChangesSet(set_list);
+                                                if (!readerProxy.isRequestedChangesEmpty|| !finalFlag) {
+                                                    readerProxy.startNackResponseDelay();
+                                                }
                                             }
+                                            break;
                                         }
-                                        break;
+                                    } finally {
+                                        readerProxy.getMutex().unlock();
                                     }
-                                } finally {
-                                    proxyMutex.unlock();
                                 }
+                                return true;
+                            } else {
+                                logger.debug("Acknack msg received by a NOT stateful writer");
+                                return false;
                             }
-                            return true;
-                        } else {
-                            logger.debug("Acknack msg received by a NOT stateful writer");
-                            return false;
                         }
-                    }
 
-                } finally {
-                    mutex.unlock();
+                    } finally {
+                        it.getMutex().unlock();
+                    }
                 }
+            } finally {
+                this.m_listenResource.getMutex().unlock();
             }
             logger.debug("Acknack msg to UNKNOWN writer (a total of {} writers have been checked", this.m_listenResource.getAssocWriters().size());
             return false;
@@ -787,47 +827,55 @@ public class MessageReceiver {
 
             // Status changes
 
-            for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
-                Lock lock = it.getMutex();
-                lock.lock();
-                try {
-                    if (it.acceptMsgFrom(writerGUID, null) && it.acceptMsgDirectedTo(readerId)) {
-                        if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
-                            StatefulReader sr = (StatefulReader) it;
-                            WriterProxy wp = sr.matchedWriterLookup(writerGUID);
-                            if (wp != null) {
-                                this.m_guardWriterMutex.lock();
-                                try {
-                                    if (wp.lastHeartbeatCount < hbCount) {
-                                        wp.lastHeartbeatCount = hbCount;
-                                        wp.lostChangesUpdate(firstSN);
-                                        wp.missingChangesUpdate(lastSN);
-                                        wp.hearbeatFinalFlag = finalFlag;
-
-                                        // Analyze whether if an ACKNACK message is needed
-                                        if (!finalFlag) {
-                                            wp.startHeartbeatResponse();
-                                        } else if (!livelinessFlag) {
-                                            if (!wp.isMissingChangesEmpty) {
-                                                wp.startHeartbeatResponse();
-                                            }
-                                        }
-
-                                        if (livelinessFlag) {
-                                            wp.assertLiveliness();
-                                        }
-                                    }
-                                } finally {
-                                    this.m_guardWriterMutex.unlock();
-                                }
-                            } else {
-                                logger.debug("HB received is NOT from an associated writer");
-                            }
+            this.m_listenResource.getMutex().lock();
+            try {
+                for (RTPSReader it : this.m_listenResource.getAssocReaders()) {
+                    Lock lock = it.getMutex();
+                    lock.lock();
+                    try {
+                        if (it.acceptMsgDirectedTo(readerId)) {
+                            it.processHeartbeatMsg(writerGUID, hbCount, firstSN, lastSN, finalFlag, livelinessFlag);
                         }
+//                        if (it.acceptMsgFrom(writerGUID, null) && it.acceptMsgDirectedTo(readerId)) {
+//                            if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+//                                StatefulReader sr = (StatefulReader) it;
+//                                WriterProxy wp = sr.matchedWriterLookup(writerGUID);
+//                                if (wp != null) {
+//                                    this.m_guardWriterMutex.lock();
+//                                    try {
+//                                        if (wp.lastHeartbeatCount < hbCount) {
+//                                            wp.lastHeartbeatCount = hbCount;
+//                                            wp.lostChangesUpdate(firstSN);
+//                                            wp.missingChangesUpdate(lastSN);
+//                                            wp.hearbeatFinalFlag = finalFlag;
+//
+//                                            // Analyze whether if an ACKNACK message is needed
+//                                            if (!finalFlag) {
+//                                                wp.startHeartbeatResponse();
+//                                            } else if (!livelinessFlag) {
+//                                                if (!wp.isMissingChangesEmpty) {
+//                                                    wp.startHeartbeatResponse();
+//                                                }
+//                                            }
+//
+//                                            if (livelinessFlag) {
+//                                                wp.assertLiveliness();
+//                                            }
+//                                        }
+//                                    } finally {
+//                                        this.m_guardWriterMutex.unlock();
+//                                    }
+//                                } else {
+//                                    logger.debug("HB received is NOT from an associated writer");
+//                                }
+//                            }
+//                        }
+                    } finally {
+                        lock.unlock();
                     }
-                } finally {
-                    lock.unlock();
-                }
+                } 
+            } finally {
+                this.m_listenResource.getMutex().unlock();
             }
 
         } catch (IOException e) {
@@ -989,7 +1037,7 @@ public class MessageReceiver {
 
         return true;
     }
-    
+
     /**
      * Set the {@link ListenResource} attribute
      * 
@@ -999,6 +1047,6 @@ public class MessageReceiver {
         this.m_listenResource = listenResource;
     }
 
-    
+
 
 }

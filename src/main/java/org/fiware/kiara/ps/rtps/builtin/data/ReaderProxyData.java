@@ -40,6 +40,8 @@ import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_GUI
 import static org.fiware.kiara.ps.rtps.messages.elements.Parameter.PARAMETER_LOCATOR_LENGTH;
 
 import java.io.IOException;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.qos.ReaderQos;
 import org.fiware.kiara.ps.qos.policies.DeadLineQosPolicy;
@@ -90,62 +92,62 @@ public class ReaderProxyData {
      * {@link ReaderProxyData} GUID
      */
     private final GUID m_guid;
-    
+
     /**
      * Boolean value indicating if the inlineQos are going to be used 
      */
     private boolean m_expectsInlineQos;
-    
+
     /**
      * Unicast locator list
      */
     private final LocatorList m_unicastLocatorList;
-    
+
     /**
      * Multicast locator list
      */
     private final LocatorList m_multicastLocatorList;
-    
+
     /**
      * GUID_t of the Reader converted to InstanceHandle_t
      */
     private final InstanceHandle m_key;
-    
+
     /**
      * GUID_t of the participant converted to InstanceHandle
      */
     private InstanceHandle m_RTPSParticipantKey;
-    
+
     /**
      * Type name
      */
     private String m_typeName;
-    
+
     /**
      * Topic name
      */
     private String m_topicName;
-    
+
     /**
      * User defined ID
      */
     private short m_userDefinedId;
-    
+
     /**
      * Reader Qos
      */
     private final ReaderQos m_qos;
-    
+
     /**
      * Field to indicate if the Reader is Alive.
      */
     private boolean m_isAlive;
-    
+
     /**
      * Topic kind
      */
     private TopicKind m_topicKind;
-    
+
     /**
      * Parameter list
      */
@@ -160,6 +162,11 @@ public class ReaderProxyData {
      * Logging object
      */
     private static final Logger logger = LoggerFactory.getLogger(WriterProxyData.class);
+
+    /**
+     * Mutex
+     */
+    private Lock m_mutex = new ReentrantLock(true);
 
     /**
      * Default {@link ReaderProxyData} constructor
@@ -208,7 +215,7 @@ public class ReaderProxyData {
     public void setKey(GUID value) {
         m_key.setGuid(m_guid);
     }
-    
+
     /**
      * Get the Key
      * 
@@ -549,7 +556,7 @@ public class ReaderProxyData {
             m_parameterList.addParameter(p);
         }
         this.m_parameterList.addSentinel();
-        
+
         logger.debug("DiscoveredReaderData converted to ParameterList with {} parameters", m_parameterList.getParameters().size());
         return this.m_parameterList;
     }
@@ -625,7 +632,7 @@ public class ReaderProxyData {
         m_remoteAtt.endpoint.multicastLocatorList.copy(this.m_multicastLocatorList);
         return m_remoteAtt;
     }
-    
+
     /**
      * Get the ParameterList
      * 
@@ -634,178 +641,183 @@ public class ReaderProxyData {
     public ParameterList getParameterList() {
         return this.m_parameterList;
     }
-    
-    public synchronized boolean readFromCDRMessage(CacheChange change) {
-        
-        SerializedPayload payload = change.getSerializedPayload();
-        payload.updateSerializer();
-        BinaryInputStream bis = new BinaryInputStream(payload.getBuffer());
-        ParameterList parameterList = new ParameterList();
+
+    public boolean readFromCDRMessage(CacheChange change) {
+        this.m_mutex.lock();
         try {
-            parameterList.deserialize(payload.getSerializer(), bis, "");
-        } catch (IOException e) {
-            logger.error(e.getMessage());
-            return false;
-            //e.printStackTrace();
+            SerializedPayload payload = change.getSerializedPayload();
+            payload.updateSerializer();
+            BinaryInputStream bis = new BinaryInputStream(payload.getBuffer());
+            ParameterList parameterList = new ParameterList();
+            try {
+                parameterList.deserialize(payload.getSerializer(), bis, "");
+            } catch (IOException e) {
+                logger.error(e.getMessage());
+                return false;
+                //e.printStackTrace();
+            }
+            for (Parameter param : parameterList.getParameters()) {
+
+                switch (param.getParameterId()) {
+                case PID_DURABILITY: 
+                {
+                    DurabilityQosPolicy p = (DurabilityQosPolicy) param;
+                    this.m_qos.durability.copy(p);
+                    break;
+                }
+                case PID_DURABILITY_SERVICE:
+                {
+                    DurabilityServiceQosPolicy p = (DurabilityServiceQosPolicy) param;
+                    this.m_qos.durabilityService.copy(p);
+                    break;
+                }
+                case PID_DEADLINE:
+                {
+                    DeadLineQosPolicy p = (DeadLineQosPolicy) param;
+                    this.m_qos.deadline.copy(p);
+                    break;
+                }
+                case PID_LATENCY_BUDGET:
+                {
+                    LatencyBudgetQosPolicy p = (LatencyBudgetQosPolicy) param;
+                    this.m_qos.latencyBudget.copy(p);
+                    break;
+                }
+                case PID_LIVELINESS:
+                {
+                    LivelinessQosPolicy p = (LivelinessQosPolicy) param;
+                    this.m_qos.liveliness.copy(p);
+                    break;
+                }
+                case PID_RELIABILITY:
+                {
+                    ReliabilityQosPolicy p = (ReliabilityQosPolicy) param;
+                    this.m_qos.reliability.copy(p);
+                    break;
+                }
+
+                case PID_LIFESPAN:
+                {
+                    LifespanQosPolicy p = (LifespanQosPolicy) param;
+                    this.m_qos.lifespan.copy(p);
+                    break;
+                }
+                case PID_USER_DATA:
+                {
+                    UserDataQosPolicy p = (UserDataQosPolicy) param;
+                    this.m_qos.userData.copy(p);
+                    break;
+                }
+                case PID_TIME_BASED_FILTER:
+                {
+                    TimeBasedFilterQosPolicy p = (TimeBasedFilterQosPolicy) param;
+                    this.m_qos.timeBasedFilter.copy(p);
+                    break;
+                }
+                case PID_OWNERSHIP:
+                {
+                    OwnershipQosPolicy p = (OwnershipQosPolicy) param;
+                    this.m_qos.ownership.copy(p);
+                    break;
+                }
+                case PID_DESTINATION_ORDER:
+                {
+                    DestinationOrderQosPolicy p = (DestinationOrderQosPolicy) param;
+                    this.m_qos.destinationOrder.copy(p);
+                    break;
+                }
+                case PID_PRESENTATION:
+                {
+                    PresentationQosPolicy p = (PresentationQosPolicy) param;
+                    this.m_qos.presentation.copy(p);
+                    break;
+                }
+                case PID_PARTITION:
+                {
+                    PartitionQosPolicy p = (PartitionQosPolicy) param;
+                    this.m_qos.partition.copy(p);
+                    break;
+                }
+                case PID_TOPIC_DATA:
+                {
+                    TopicDataQosPolicy p = (TopicDataQosPolicy) param;
+                    this.m_qos.topicData.copy(p);
+                    break;
+                }
+                case PID_GROUP_DATA:
+                {
+                    GroupDataQosPolicy p = (GroupDataQosPolicy) param;
+                    this.m_qos.groupData.copy(p);
+                    break;
+                }
+                case PID_TOPIC_NAME:
+                {
+                    ParameterString p = (ParameterString) param;
+                    this.m_topicName = new String(p.getString());
+                    break;
+                }
+                case PID_TYPE_NAME:
+                {
+                    ParameterString p = (ParameterString) param;
+                    this.m_typeName = new String(p.getString());
+                    break;
+                }
+                case PID_PARTICIPANT_GUID:
+                {
+                    ParameterGuid pGuid = (ParameterGuid) param;
+                    this.m_RTPSParticipantKey = new InstanceHandle(pGuid.getGUID());
+                    break;
+                }
+                case PID_ENDPOINT_GUID:
+                {
+                    ParameterGuid pGuid = (ParameterGuid) param;
+                    this.m_guid.copy(pGuid.getGUID());
+                    break;
+                }
+                case PID_UNICAST_LOCATOR:
+                {
+                    ParameterLocator p = (ParameterLocator) param;
+                    this.m_unicastLocatorList.pushBack(p.getLocator());
+                    break;
+                }
+                case PID_MULTICAST_LOCATOR:
+                {
+                    ParameterLocator p = (ParameterLocator) param;
+                    this.m_multicastLocatorList.pushBack(p.getLocator());
+                    break;
+                }
+                case PID_EXPECTS_INLINE_QOS:
+                {
+                    ParameterBool p = (ParameterBool) param;
+                    this.m_expectsInlineQos = p.getBool();
+                    break;
+                }
+                case PID_KEY_HASH:
+                {
+                    ParameterKey p = (ParameterKey) param;
+                    this.m_key.copy(p.getKey());
+                    this.m_guid.copy(this.m_key.toGUID());
+                    break;
+                }
+                default:
+                    logger.debug("Parameter with ID {} NOT CONSIDERED", param.getParameterId());
+                    break;
+                }
+
+            }
+
+            if (this.m_guid.getEntityId().getValue(3) == 0x04) {
+                this.m_topicKind = NO_KEY;
+            } else if (this.m_guid.getEntityId().getValue(3) == 0x07) {
+                this.m_topicKind = TopicKind.WITH_KEY;
+            }
+
+        } finally {
+            this.m_mutex.unlock();
         }
-        for (Parameter param : parameterList.getParameters()) {
-            
-            switch (param.getParameterId()) {
-            case PID_DURABILITY: 
-            {
-                DurabilityQosPolicy p = (DurabilityQosPolicy) param;
-                this.m_qos.durability.copy(p);
-                break;
-            }
-            case PID_DURABILITY_SERVICE:
-            {
-                DurabilityServiceQosPolicy p = (DurabilityServiceQosPolicy) param;
-                this.m_qos.durabilityService.copy(p);
-                break;
-            }
-            case PID_DEADLINE:
-            {
-                DeadLineQosPolicy p = (DeadLineQosPolicy) param;
-                this.m_qos.deadline.copy(p);
-                break;
-            }
-            case PID_LATENCY_BUDGET:
-            {
-                LatencyBudgetQosPolicy p = (LatencyBudgetQosPolicy) param;
-                this.m_qos.latencyBudget.copy(p);
-                break;
-            }
-            case PID_LIVELINESS:
-            {
-                LivelinessQosPolicy p = (LivelinessQosPolicy) param;
-                this.m_qos.liveliness.copy(p);
-                break;
-            }
-            case PID_RELIABILITY:
-            {
-                ReliabilityQosPolicy p = (ReliabilityQosPolicy) param;
-                this.m_qos.reliability.copy(p);
-                break;
-            }
-            
-            case PID_LIFESPAN:
-            {
-                LifespanQosPolicy p = (LifespanQosPolicy) param;
-                this.m_qos.lifespan.copy(p);
-                break;
-            }
-            case PID_USER_DATA:
-            {
-                UserDataQosPolicy p = (UserDataQosPolicy) param;
-                this.m_qos.userData.copy(p);
-                break;
-            }
-            case PID_TIME_BASED_FILTER:
-            {
-                TimeBasedFilterQosPolicy p = (TimeBasedFilterQosPolicy) param;
-                this.m_qos.timeBasedFilter.copy(p);
-                break;
-            }
-            case PID_OWNERSHIP:
-            {
-                OwnershipQosPolicy p = (OwnershipQosPolicy) param;
-                this.m_qos.ownership.copy(p);
-                break;
-            }
-            case PID_DESTINATION_ORDER:
-            {
-                DestinationOrderQosPolicy p = (DestinationOrderQosPolicy) param;
-                this.m_qos.destinationOrder.copy(p);
-                break;
-            }
-            case PID_PRESENTATION:
-            {
-                PresentationQosPolicy p = (PresentationQosPolicy) param;
-                this.m_qos.presentation.copy(p);
-                break;
-            }
-            case PID_PARTITION:
-            {
-                PartitionQosPolicy p = (PartitionQosPolicy) param;
-                this.m_qos.partition.copy(p);
-                break;
-            }
-            case PID_TOPIC_DATA:
-            {
-                TopicDataQosPolicy p = (TopicDataQosPolicy) param;
-                this.m_qos.topicData.copy(p);
-                break;
-            }
-            case PID_GROUP_DATA:
-            {
-                GroupDataQosPolicy p = (GroupDataQosPolicy) param;
-                this.m_qos.groupData.copy(p);
-                break;
-            }
-            case PID_TOPIC_NAME:
-            {
-                ParameterString p = (ParameterString) param;
-                this.m_topicName = new String(p.getString());
-                break;
-            }
-            case PID_TYPE_NAME:
-            {
-                ParameterString p = (ParameterString) param;
-                this.m_typeName = new String(p.getString());
-                break;
-            }
-            case PID_PARTICIPANT_GUID:
-            {
-                ParameterGuid pGuid = (ParameterGuid) param;
-                this.m_RTPSParticipantKey = new InstanceHandle(pGuid.getGUID());
-                break;
-            }
-            case PID_ENDPOINT_GUID:
-            {
-                ParameterGuid pGuid = (ParameterGuid) param;
-                this.m_guid.copy(pGuid.getGUID());
-                break;
-            }
-            case PID_UNICAST_LOCATOR:
-            {
-                ParameterLocator p = (ParameterLocator) param;
-                this.m_unicastLocatorList.pushBack(p.getLocator());
-                break;
-            }
-            case PID_MULTICAST_LOCATOR:
-            {
-                ParameterLocator p = (ParameterLocator) param;
-                this.m_multicastLocatorList.pushBack(p.getLocator());
-                break;
-            }
-            case PID_EXPECTS_INLINE_QOS:
-            {
-                ParameterBool p = (ParameterBool) param;
-                this.m_expectsInlineQos = p.getBool();
-                break;
-            }
-            case PID_KEY_HASH:
-            {
-                ParameterKey p = (ParameterKey) param;
-                this.m_key.copy(p.getKey());
-                this.m_guid.copy(this.m_key.toGUID());
-                break;
-            }
-            default:
-                logger.debug("Parameter with ID {} NOT CONSIDERED", param.getParameterId());
-                break;
-            }
-        
-        }
-        
-        if (this.m_guid.getEntityId().getValue(3) == 0x04) {
-            this.m_topicKind = NO_KEY;
-        } else if (this.m_guid.getEntityId().getValue(3) == 0x07) {
-            this.m_topicKind = TopicKind.WITH_KEY;
-        }
-        
+
         return true;
-        
+
     }
 
 }

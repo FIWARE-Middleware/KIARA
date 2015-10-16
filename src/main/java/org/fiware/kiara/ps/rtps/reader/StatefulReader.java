@@ -28,11 +28,16 @@ import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.RECEIVED;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
+import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
 import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,11 +85,16 @@ public class StatefulReader extends RTPSReader {
      * Destroys all the related entities
      */
     public void destroy() {
-        logger.debug("RTPS READER: StatefulReader destructor.");
-        for (WriterProxy it : matchedWriters) {
-            it.destroy();
+        this.m_mutex.lock();
+        try {
+            logger.debug("RTPS READER: StatefulReader destructor.");
+            for (WriterProxy it : matchedWriters) {
+                it.destroy();
+            }
+            matchedWriters.clear();
+        } finally {
+            this.m_mutex.unlock();
         }
-        matchedWriters.clear();
     }
 
     @Override
@@ -165,8 +175,12 @@ public class StatefulReader extends RTPSReader {
     }
 
     @Override
-    public boolean acceptMsgFrom(GUID writerId, ReturnParam<WriterProxy> wp) {
-        if (writerId.getEntityId().equals(this.m_trustedWriterEntityId)) {
+    public boolean acceptMsgFrom(GUID writerId, ReturnParam<WriterProxy> wp, boolean checktrusted) {
+        if (wp == null) {
+            return false;
+        }
+        
+        if (checktrusted && writerId.getEntityId().equals(this.m_trustedWriterEntityId)) {
             return true;
         }
 
@@ -232,7 +246,7 @@ public class StatefulReader extends RTPSReader {
     @Override
     public boolean changeReceived(CacheChange change, WriterProxy prox) {
         //First look for WriterProxy in case is not provided
-        m_mutex.lock();
+        this.m_mutex.lock();
         try {
             if (prox == null) {
                 prox = matchedWriterLookup(change.getWriterGUID());
@@ -243,31 +257,75 @@ public class StatefulReader extends RTPSReader {
                     }
                 }
             }
-            //WITH THE WRITERPROXY FOUND:
-            //Check if we can add it
-            if (change.getSequenceNumber().isLowerOrEqualThan(prox.lastRemovedSeqNum)) {
-                logger.debug("RTPS READER: Change {} <= than last Removed Seq Number {}", change.getSequenceNumber(), prox.lastRemovedSeqNum);
-                return false;
-            }
-            SequenceNumber maxSeq = prox.getAvailableChangesMax();
-            if (maxSeq != null && change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
-                logger.debug("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
-                return false;
-            }
-            if (m_history.receivedChange(change)) {
-                if (prox.receivedChangeSet(change)) {
-                    final SequenceNumber maxSeqNumAvailable = prox.getAvailableChangesMax();
 
-                    if (change.getSequenceNumber().isLowerOrEqualThan(maxSeqNumAvailable)) {
-                        if (getListener() != null) {
-                            //System.out.println("CALLING NEWDATAMESSAGE ");
-                            getListener().onNewCacheChangeAdded(this, change);
-                            //cout << "FINISH CALLING " <<endl;
-                        }
-                        m_history.postChange();
-                    }
-                    return true;
+            prox.getMutex().lock();
+            try {
+                //WITH THE WRITERPROXY FOUND:
+                //Check if we can add it
+                if (change.getSequenceNumber().isLowerOrEqualThan(prox.lastRemovedSeqNum)) {
+                    logger.debug("RTPS READER: Change {} <= than last Removed Seq Number {}", change.getSequenceNumber(), prox.lastRemovedSeqNum);
+                    return false;
                 }
+                SequenceNumber maxSeq = prox.getAvailableChangesMax();
+                if (maxSeq != null && change.getSequenceNumber().isLowerOrEqualThan(maxSeq)) {
+                    logger.debug("RTPS READER: Change {} <= than max available Seqnum {}", change.getSequenceNumber(), maxSeq);
+                    return false;
+                }
+                if (m_history.receivedChange(change)) {
+                    if (prox.receivedChangeSet(change)) {
+                        if (getListener() != null) {
+                            GUID proxGUID = prox.att.guid;
+                            final SequenceNumber maxSeqNumAvailable = prox.getAvailableChangesMax();
+                            if (change.getSequenceNumber().equals(maxSeqNumAvailable)) {
+                                this.m_mutex.unlock();
+                                try {
+                                    getListener().onNewCacheChangeAdded(this, change);
+                                } finally {
+                                    this.m_mutex.lock();
+                                }
+                            } else if (change.getSequenceNumber().isLowerThan(maxSeqNumAvailable)) {
+                                System.out.println("------ TWO ------");
+                                SequenceNumber notifySeqNum = new SequenceNumber(change.getSequenceNumber());
+                                notifySeqNum.increment();
+                                this.m_mutex.unlock();
+                                try {
+                                    getListener().onNewCacheChangeAdded(this, change);
+                                } finally {
+                                    this.m_mutex.lock();
+                                }
+
+                                CacheChange chToGive = null;
+                                while (notifySeqNum.isLowerOrEqualThan(maxSeqNumAvailable)) {
+                                    chToGive = new CacheChange();
+                                    if (this.m_history.getChange(notifySeqNum, proxGUID, chToGive)) {
+                                        if (chToGive.isRead()) {
+                                            this.m_mutex.unlock();
+                                            try {
+                                                getListener().onNewCacheChangeAdded(this, chToGive);
+                                            } finally {
+                                                this.m_mutex.lock();
+                                            }
+                                        }
+                                    }
+                                    notifySeqNum.increment();
+                                }
+                            } else {
+                                // Do nothing
+                            }
+                        }
+                        //                        if (change.getSequenceNumber().isLowerOrEqualThan(maxSeqNumAvailable)) {
+                        //                            if (getListener() != null) {
+                        //                                //System.out.println("CALLING NEWDATAMESSAGE ");
+                        //                                getListener().onNewCacheChangeAdded(this, change);
+                        //                                //cout << "FINISH CALLING " <<endl;
+                        //                            }
+                        //                            m_history.postChange();
+                        //                        }
+                        return true;
+                    }
+                }
+            } finally {
+                prox.getMutex().unlock();
             }
             return false;
         } finally {
@@ -399,4 +457,176 @@ public class StatefulReader extends RTPSReader {
         return m_times;
     }
 
+    /**
+     * Data processing for the Stateful RTPSReader
+     */
+    @Override
+    public boolean processDataMsg(CacheChange change, ListenResource listenResource, boolean hasTimestamp, Timestamp timestamp, GUIDPrefix sourceGuidPrefix) {
+
+        this.m_mutex.lock();
+        try {
+
+            ReturnParam<WriterProxy> retProxy = new ReturnParam<WriterProxy>();
+            if (acceptMsgFrom(change.getWriterGUID(), retProxy, true)) {
+                logger.debug("Trying to add change {} to Reader {}", change.getSequenceNumber().toLong(), getGuid().getEntityId());
+                CacheChange changeToAdd = reserveCache();
+
+                if (changeToAdd != null) {
+                    if (!changeToAdd.copy(change)) {
+                        logger.warn("Problem copying CacheChange");
+                        releaseCache(changeToAdd);
+                        return false;
+                    }
+                } else {
+                    logger.error("Problem reserving CacheChange in reader");
+                    return false;
+                }
+
+                if (hasTimestamp) {
+                    changeToAdd.setSourceTimestamp(timestamp);
+                }
+
+                if (retProxy.value != null) {
+                    retProxy.value.assertLiveliness();
+                }
+
+                if (!changeReceived(changeToAdd, retProxy.value)) {
+                    logger.debug("MessageReceiver not adding CacheChange");
+                    releaseCache(changeToAdd);
+                }
+
+
+
+            }
+            return true;
+
+        } finally {
+            this.m_mutex.unlock();
+        }
+
+    }
+
+    @Override
+    public boolean processHeartbeatMsg(GUID writerGUID, int hbCount, SequenceNumber firstSN, SequenceNumber lastSN, boolean finalFlag, boolean livelinessFlag) {
+        
+        ReturnParam<WriterProxy> wp = new ReturnParam<WriterProxy>();
+        
+        this.m_mutex.lock();
+        try {
+            
+            if (this.acceptMsgFrom(writerGUID, wp, false)) {
+                
+                wp.value.getMutex().lock();
+                try {
+                    if (wp.value.lastHeartbeatCount < hbCount) {
+                        wp.value.lastHeartbeatCount = hbCount;
+                        wp.value.lostChangesUpdate(firstSN);
+                        wp.value.missingChangesUpdate(lastSN);
+                        wp.value.hearbeatFinalFlag = finalFlag;
+
+                        // Analyze whether if an ACKNACK message is needed
+                        if (!finalFlag) {
+                            wp.value.startHeartbeatResponse();
+                        } else if (!livelinessFlag) {
+                            if (!wp.value.isMissingChangesEmpty) {
+                                wp.value.startHeartbeatResponse();
+                            }
+                        }
+
+                        if (livelinessFlag) {
+                            wp.value.assertLiveliness();
+                        }
+                    }
+                } finally {
+                    wp.value.getMutex().unlock();
+                }
+                
+            } else {
+                logger.debug("HB received is NOT from an associated writer");
+            }
+            
+            
+            
+//            if (this.acceptMsgFrom(writerGUID, null)) {
+//                if (this.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
+//                    StatefulReader sr = (StatefulReader) this;
+//                    WriterProxy wp = sr.matchedWriterLookup(writerGUID);
+//                    if (wp != null) {
+//                        this.m_guardWriterMutex.lock();
+//                        try {
+//                            if (wp.lastHeartbeatCount < hbCount) {
+//                                wp.lastHeartbeatCount = hbCount;
+//                                wp.lostChangesUpdate(firstSN);
+//                                wp.missingChangesUpdate(lastSN);
+//                                wp.hearbeatFinalFlag = finalFlag;
+//
+//                                // Analyze whether if an ACKNACK message is needed
+//                                if (!finalFlag) {
+//                                    wp.startHeartbeatResponse();
+//                                } else if (!livelinessFlag) {
+//                                    if (!wp.isMissingChangesEmpty) {
+//                                        wp.startHeartbeatResponse();
+//                                    }
+//                                }
+//
+//                                if (livelinessFlag) {
+//                                    wp.assertLiveliness();
+//                                }
+//                            }
+//                        } finally {
+//                            this.m_guardWriterMutex.unlock();
+//                        }
+//                    } else {
+//                        logger.debug("HB received is NOT from an associated writer");
+//                    }
+//                }
+//            }
+            
+        } finally {
+            this.m_mutex.unlock();
+        }
+        
+        return true;
+    }
+
+    @Override
+    public boolean processGapMsg(GUID writerGUID, SequenceNumber gapStart, SequenceNumberSet gapList) {
+        
+        ReturnParam<WriterProxy> wp = new ReturnParam<WriterProxy>();
+        
+        this.m_mutex.lock();
+        try {
+            
+            if (this.acceptMsgFrom(writerGUID, wp, false)) {
+                wp.value.getMutex().lock();
+                try {
+                    
+                    SequenceNumber auxSN = new SequenceNumber();
+                    SequenceNumber finalSN = new SequenceNumber(gapList.getBase());
+                    finalSN.decrement();
+                    for (auxSN = gapList.getBase(); auxSN.isLowerOrEqualThan(finalSN); auxSN.increment()) {
+                        wp.value.irrelevantChangeSet(auxSN);
+                    }
+                    
+                    for (SequenceNumber seqIt : gapList.getSet()) {
+                        wp.value.irrelevantChangeSet(seqIt);
+                    }
+                    
+                } finally {
+                    wp.value.getMutex().unlock();
+                }
+            }
+            
+        } finally {
+            this.m_mutex.unlock();
+        }
+        
+//        subMsg.addSubmessageElement(gapList.getBase());
+//        subMsg.addSubmessageElement(gapList);
+        
+        return true;
+    }
+
+
 }
+

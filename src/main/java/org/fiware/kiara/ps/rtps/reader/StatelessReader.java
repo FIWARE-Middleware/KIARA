@@ -19,21 +19,29 @@ package org.fiware.kiara.ps.rtps.reader;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
+import org.fiware.kiara.ps.rtps.messages.elements.GUIDPrefix;
+import org.fiware.kiara.ps.rtps.messages.elements.EntityId.EntityIdEnum;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumber;
+import org.fiware.kiara.ps.rtps.messages.elements.SequenceNumberSet;
+import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.participant.RTPSParticipant;
+import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
-* This class represents an Stateless RTPReader
-* 
-* @author Rafael Lara {@literal <rafaellara@eprosima.com>}
-*/
+ * This class represents an Stateless RTPReader
+ * 
+ * @author Rafael Lara {@literal <rafaellara@eprosima.com>}
+ */
 public class StatelessReader extends RTPSReader {
 
     /**
@@ -150,32 +158,27 @@ public class StatelessReader extends RTPSReader {
             this.m_mutex.unlock();
         }
     }
-    
+
     @Override
     public boolean changeRemovedByHistory(CacheChange change, WriterProxy proxy) {
         return true;
     }
 
     @Override
-    public boolean acceptMsgFrom(GUID writerID, ReturnParam<WriterProxy> proxy) {
-        this.m_mutex.lock();
-        try {
-            if (this.m_acceptMessagesFromUnknownWriters) {
+    public boolean acceptMsgFrom(GUID writerID, ReturnParam<WriterProxy> proxy, boolean checktrusted) {
+        if (this.m_acceptMessagesFromUnknownWriters) {
+            return true;
+        } else {
+            if (writerID.getEntityId().equals(this.m_trustedWriterEntityId)) {
                 return true;
-            } else {
-                if (writerID.getEntityId().equals(this.m_trustedWriterEntityId)) {
+            }
+            for (RemoteWriterAttributes it : this.m_matchedWriters) {
+                if (it.guid.equals(writerID)) {
                     return true;
                 }
-                for (RemoteWriterAttributes it : this.m_matchedWriters) {
-                    if (it.guid.equals(writerID)) {
-                        return true;
-                    }
-                }
             }
-            return false;
-        } finally {
-            this.m_mutex.unlock();
         }
+        return false;
     }
 
     @Override
@@ -213,6 +216,96 @@ public class StatelessReader extends RTPSReader {
         } finally {
             this.m_mutex.unlock();
         }
+    }
+
+    /**
+     * Data processing for the Stateles RTPSReader
+     */
+    @Override
+    public boolean processDataMsg(CacheChange change, ListenResource listenResource, boolean hasTimestamp, Timestamp timestamp, GUIDPrefix sourceGuidPrefix) {
+
+        this.m_mutex.lock();
+        try {
+
+            if (this.acceptMsgFrom(change.getWriterGUID(), null, true)) {
+
+
+                logger.debug("Trying to add change {} to Reader {}", change.getSequenceNumber().toLong(), getGuid().getEntityId());
+
+                CacheChange changeToAdd = reserveCache();
+
+                if (changeToAdd != null) {
+                    if (!changeToAdd.copy(change)) {
+                        logger.warn("Problem copying CacheChange");
+                        releaseCache(changeToAdd);
+                        return false;
+                    }
+                } else {
+                    logger.error("Problem reserving CacheChange in reader");
+                    return false;
+                }
+
+                if (hasTimestamp) {
+                    changeToAdd.setSourceTimestamp(timestamp);
+                }
+
+                this.m_mutex.unlock();
+                try {
+                    if (!changeReceived(changeToAdd, null)) {
+                        logger.debug("MessageReceiver not adding CacheChange");
+                        releaseCache(changeToAdd);
+                        if (getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
+                            listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(sourceGuidPrefix);
+                        }
+                    } 
+                } finally {
+                    this.m_mutex.lock();
+                }
+
+
+
+                //            logger.debug("Trying to add change {} to Reader {}", change.getSequenceNumber().toLong(), this.getGuid().getEntityId());
+                //            CacheChange changeToAdd = this.reserveCache();
+                //
+                //            if (changeToAdd != null) {
+                //                if (!changeToAdd.copy(change)) {
+                //                    logger.warn("Problem copying CacheChange");
+                //                    this.releaseCache(changeToAdd);
+                //                    return false;
+                //                }
+                //            } else {
+                //                logger.error("Problem reserving CacheChange in reader");
+                //                return false;
+                //            }
+                //
+                //            if (hasTimestamp) {
+                //                changeToAdd.setSourceTimestamp(timestamp);
+                //            }
+                //
+                //            if (!this.changeReceived(changeToAdd, null)) {
+                //                logger.debug("MessageReceiver not adding CacheChange");
+                //                this.releaseCache(changeToAdd);
+                //                if (this.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
+                //                    listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(changeToAdd.getWriterGUID().getGUIDPrefix());
+                //                }
+                //            }
+
+            }
+        } finally {
+            this.m_mutex.unlock();
+        }
+        return true;
+
+    }
+
+    @Override
+    public boolean processHeartbeatMsg(GUID writerGUID, int hbCount, SequenceNumber firstSN, SequenceNumber lastSN, boolean finalFlag, boolean livelinessFlag) {
+        return true;
+    }
+
+    @Override
+    public boolean processGapMsg(GUID writerGUID, SequenceNumber gapStart, SequenceNumberSet gapList) {
+        return true;
     }
 
 }

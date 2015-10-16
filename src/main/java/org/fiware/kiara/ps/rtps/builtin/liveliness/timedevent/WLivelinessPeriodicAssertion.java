@@ -143,35 +143,42 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
         mutex.lock();
         try {
             if (m_WLP.getLivAutomaticWriters().size() > 0) {
-                CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, this.m_iHandle);
-                if (change != null) {
-                    //change.setInstanceHandle(m_iHandle);
+                this.m_WLP.getBuiltinWriter().getMutex().lock();
+                try {
+                    CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, this.m_iHandle);
+                    if (change != null) {
+                        //change.setInstanceHandle(m_iHandle);
 
-                    SerializedPayload sp = change.getSerializedPayload();
+                        SerializedPayload sp = change.getSerializedPayload();
 
-                    sp.setEncapsulationKind(EncapsulationKind.CDR_BE);
-                    byte[] buf = new byte[12 + 4 + 4 + 4];
-                    System.arraycopy(m_guidP.getValue(), 0, buf, 0, 12);
-                    for (int i = 12; i < 24; ++i) {
-                        buf[i] = 0;
-                    }
-                    buf[15] = (byte) (m_livelinessKind.getValue() + 1);
-
-                    sp.setBuffer(buf);
-                    sp.setLength((short) buf.length);
-
-                    Iterator<CacheChange> chi = m_WLP.getBuiltinWriterHistory().getChanges().iterator();
-                    while (chi.hasNext()) {
-                        CacheChange ch = chi.next();
-                        if (ch.getInstanceHandle().equals(change.getInstanceHandle())) {
-                            chi.remove();
+                        sp.setEncapsulationKind(EncapsulationKind.CDR_BE);
+                        byte[] buf = new byte[12 + 4 + 4 + 4];
+                        System.arraycopy(m_guidP.getValue(), 0, buf, 0, 12);
+                        for (int i = 12; i < 24; ++i) {
+                            buf[i] = 0;
                         }
-                    }
+                        buf[15] = (byte) (m_livelinessKind.getValue() + 1);
 
-                    m_WLP.getBuiltinWriterHistory().addChange(change);
+                        sp.setBuffer(buf);
+                        sp.setLength((short) buf.length);
+
+                        Iterator<CacheChange> chi = m_WLP.getBuiltinWriterHistory().getChanges().iterator();
+                        while (chi.hasNext()) {
+                            CacheChange ch = chi.next();
+                            if (ch.getInstanceHandle().equals(change.getInstanceHandle())) {
+                                chi.remove();
+                            }
+                        }
+
+                        m_WLP.getBuiltinWriterHistory().addChange(change);
+                    }
+                } finally {
+                    this.m_WLP.getBuiltinWriter().getMutex().unlock();
                 }
             }
+
             return true;
+
         } finally {
             mutex.unlock();
         }
@@ -195,8 +202,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
             }
 
             if (livelinessAsserted) {
-                final Lock mutex2 = m_WLP.getBuiltinWriter().getMutex();
-                mutex2.lock();
+                m_WLP.getBuiltinWriter().getMutex().lock();
                 try {
                     CacheChange change = m_WLP.getBuiltinWriter().newChange(ALIVE, new InstanceHandle());
                     if (change != null) {
@@ -226,7 +232,7 @@ public class WLivelinessPeriodicAssertion extends TimedEvent {
                         m_WLP.getBuiltinWriterHistory().addChange(change);
                     }
                 } finally {
-                    mutex2.unlock();
+                    m_WLP.getBuiltinWriter().getMutex().unlock();
                 }
             }
             return false;
