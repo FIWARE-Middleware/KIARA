@@ -719,18 +719,15 @@ public class RTPSParticipant {
      * @return true on success; false otherwise
      */
     public boolean deleteUserEndpoint(Endpoint endpoint) {
-        System.out.println("Deleting endpoint");
         boolean found = false;
         GUID endpointGUID = null;
         if (endpoint.getAttributes().endpointKind == EndpointKind.WRITER) {
             this.m_mutex.lock();
             try {
-                System.out.println("----LOCK: " + Thread.currentThread().getId() + " deleteUserEndpoint");
                 for (int i=0; i < this.m_userWriterList.size(); ++i) {
                     RTPSWriter wit = this.m_userWriterList.get(i);
                     if (wit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-                        System.out.println("Writers: " + this.m_userWriterList.size());
-                        logger.info("Deleting Writer {} from RTPSParticipant", wit.getGuid());
+                        logger.debug("Deleting Writer {} from RTPSParticipant", wit.getGuid());
                         wit.destroy();
                         this.m_userWriterList.remove(wit);
                         endpointGUID = wit.getGuid();
@@ -740,17 +737,15 @@ public class RTPSParticipant {
                     }
                 }
             } finally {
-                System.out.println("----UNLOCK: " + Thread.currentThread().getId() + " deleteUserEndpoint");
                 this.m_mutex.unlock();
             }
         } else {
             this.m_mutex.lock();
             try {
-                System.out.println("----LOCK: " + Thread.currentThread().getId() + " deleteUserEndpoint");
                 for (int i=0; i < this.m_userReaderList.size(); ++i) {
                     RTPSReader rit = this.m_userReaderList.get(i);
                     if (rit.getGuid().getEntityId().equals(endpoint.getGuid().getEntityId())) {
-                        logger.info("Deleting Reader {} from RTPSParticipant", rit.getGuid());
+                        logger.debug("Deleting Reader {} from RTPSParticipant", rit.getGuid());
                         rit.destroy();
                         this.m_userReaderList.remove(rit);
                         endpointGUID = rit.getGuid();
@@ -760,7 +755,6 @@ public class RTPSParticipant {
                     }
                 }
             } finally {
-                System.out.println("----UNLOCK: " + Thread.currentThread().getId() + " deleteUserEndpoint");
                 this.m_mutex.unlock();
             }
         }
@@ -786,16 +780,13 @@ public class RTPSParticipant {
 
         this.m_mutex.lock();
         try {
-            System.out.println("----LOCK - LRL: " + Thread.currentThread().getId() + " deleteUserEndpoint");
             boolean continueRemoving = true;
             while (continueRemoving) {
                 continueRemoving = false;
                 for (int i=0; i < this.m_listenResourceList.size(); ++i) {
                     ListenResource lrit = this.m_listenResourceList.get(i);
                     if (lrit.hasAssociatedEndpoints() && !lrit.isDefaultListenResource()) {
-                        logger.info("ENTRA");
                         lrit.destroy();
-                        logger.info("SALE");
                         this.m_listenResourceList.remove(lrit);
                         continueRemoving = true;
                         i--;
@@ -805,7 +796,6 @@ public class RTPSParticipant {
             }
 
         } finally {
-            System.out.println("----UNLOCK - LRL: " + Thread.currentThread().getId() + " deleteUserEndpoint");
             this.m_mutex.unlock();
         }
 

@@ -189,11 +189,9 @@ public class DynamicEndpointDiscoveryTest {
                     //System.out.println("Publisher recv: " + n_matched);
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
-                        System.out.println("Publisher matched: " + n_matched);
                         matchedSignal.countDown();
                     } else {
                         n_matched--;
-                        System.out.println("Publisher unmatched: " + n_matched);
                         unmatchedSignal.countDown();
                     }
                 }
@@ -205,10 +203,8 @@ public class DynamicEndpointDiscoveryTest {
             
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
-                System.out.println("Sub PASA MATCH");
                 if (this.waitForUnmatching) {
                     unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
-                    System.out.println("Sub PASA UNMATCH");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -222,16 +218,12 @@ public class DynamicEndpointDiscoveryTest {
             /*System.out.println("Sleeping...");
             Thread.sleep(500);*/
             
-            System.out.println("SUb WAITING");
             this.subscriberBarrier.await();
 
-            System.out.println("Removing Subscriber");
             Domain.removeSubscriber(subscriber);
-            System.out.println("Subscriber removed");
             
             Domain.removeParticipant(participant);
-            System.out.println("Participant Removed");
-
+            
             this.barrier.await();
 
             return true;
@@ -335,7 +327,6 @@ public class DynamicEndpointDiscoveryTest {
 
                 @Override
                 public void onPublicationMatched(org.fiware.kiara.ps.publisher.Publisher<?> pub, MatchingInfo info) {
-                    //System.out.println("Publisher recv: " + n_matched);
                     if (info.status == MatchingStatus.MATCHED_MATHING) {
                         n_matched++;
                         System.out.println("Subscriber matched: " + n_matched);
@@ -355,39 +346,27 @@ public class DynamicEndpointDiscoveryTest {
             
             try {
                 matchedSignal.await(5000, TimeUnit.MILLISECONDS);
-                System.out.println("Pub PASA MATCH");
                 
-                System.out.println("PUb WAITING");
                 this.subscriberBarrier.await();
                 
                 if (this.waitForUnmatching) {
                     unmatchedSignal.await(10000, TimeUnit.MILLISECONDS);
-                    System.out.println("Pub PASA UNMATCH");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            System.out.println("ONE");
             assertEquals(0, matchedSignal.getCount());
             
             if (this.waitForUnmatching) {
-                System.out.println("TWO");                
                 assertEquals(0, unmatchedSignal.getCount());
             }
             
-//            System.out.println("PUb WAITING");
-//            Thread.sleep(800);
-//            this.subscriberBarrier.await();
-            
-            System.out.println("Removing Publisher");
             Domain.removePublisher(publisher);
-            System.out.println("Publisher removed");
             
             Domain.removeParticipant(participant);
-            System.out.println("Participant Removed");
 
-           this.barrier.await();
+            this.barrier.await();
 
             return true;
         }

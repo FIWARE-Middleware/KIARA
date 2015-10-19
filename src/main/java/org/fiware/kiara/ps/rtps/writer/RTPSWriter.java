@@ -105,7 +105,6 @@ public abstract class RTPSWriter extends Endpoint {
     public void destroy() {
         if (this.m_unsentChangesNotEmpty != null) {
             this.m_unsentChangesNotEmpty.stopTimer();
-            System.out.println("Timer stopped");
         }
     }
     

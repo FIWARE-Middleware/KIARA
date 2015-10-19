@@ -17,8 +17,6 @@
  */
 package org.fiware.kiara.ps.rtps.builtin.liveliness;
 
-import java.util.concurrent.locks.Lock;
-
 import org.fiware.kiara.ps.qos.policies.LivelinessQosPolicyKind;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;

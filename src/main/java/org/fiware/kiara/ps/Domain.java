@@ -68,12 +68,10 @@ public class Domain {
     public static void stopAll() {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  stopAll");
             while (m_participants.size() > 0) {
                 Domain.removeParticipant(m_participants.get(0));
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  stopAll");
             m_mutex.unlock();
         }
     }
@@ -87,7 +85,6 @@ public class Domain {
     public static boolean removeParticipant(Participant part) {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  removeParticipant");
             if (part != null) {
                 for (Participant current : m_participants) {
                     if (current.getGuid().equals(part.getGuid())) {
@@ -100,7 +97,6 @@ public class Domain {
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  removeParticipant");
             m_mutex.unlock();
         }
         return false;
@@ -113,25 +109,19 @@ public class Domain {
      * @return true if correctly removed.
      */
     public static boolean removePublisher(Publisher<?> pub) {
-        System.out.println("Pub Getting lock: " + Thread.currentThread().getId());
         boolean result = false;
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  removePublisher");
-            System.out.println("Starting to remove Pub: " + Thread.currentThread().getId());
             if (pub != null) {
                 for (Participant it : m_participants) {
                     if (it.getGuid().getGUIDPrefix().equals(pub.getGuid().getGUIDPrefix())) {
                         // Found
-                        System.out.println("Removing Pub: " + Thread.currentThread().getId());
                         result = it.removePublisher(pub);
                         return result;
                     }
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  removePublisher");
-            System.out.println("Pub Unlocking: " + Thread.currentThread().getId());
             m_mutex.unlock();
         }
         return result;
@@ -144,27 +134,19 @@ public class Domain {
      * @return true if correctly removed.
      */
     public static boolean removeSubscriber(Subscriber<?> sub) {
-        System.out.println("Sub Getting lock: " + Thread.currentThread().getId());
         boolean result = false;
-        System.out.println("Locked: " + ((ReentrantLock) m_mutex).isLocked() + " - " + ((ReentrantLock) m_mutex).hasQueuedThreads());
-        System.out.println("By me?: " + ((ReentrantLock) m_mutex).isHeldByCurrentThread());
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + " removeSubscriber");
-            System.out.println("Starting to remove Sub: " + Thread.currentThread().getId());
             if (sub != null) {
                 for (Participant it : m_participants) {
                     if (it.getGuid().getGUIDPrefix().equals(sub.getGuid().getGUIDPrefix())) {
                         // Found
-                        System.out.println("Removing Sub: " + Thread.currentThread().getId());
                         result = it.removeSubscriber(sub);
                         return result;
                     }
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  removeSubscriber");
-            System.out.println("Sub Unlocking: " + Thread.currentThread().getId());
             m_mutex.unlock();
         }
         return result;
@@ -180,7 +162,6 @@ public class Domain {
     public static Participant createParticipant(ParticipantAttributes att, ParticipantListener listener) {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  createParticipant");
             Participant pubSubParticipant = new Participant(att, listener);
 
             RTPSParticipant part = RTPSDomain.createParticipant(att.rtps, pubSubParticipant.getListener());
@@ -194,7 +175,6 @@ public class Domain {
             m_participants.add(pubSubParticipant);
             return pubSubParticipant;
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  createParticipant");
             m_mutex.unlock();
         }
     }
@@ -212,14 +192,12 @@ public class Domain {
     public static <T extends Serializable> Publisher<T> createPublisher(Participant part, PublisherAttributes att, PublisherListener listener) {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  createPublisher");
             for (Participant it : m_participants) {
                 if (it.getGuid().equals(part.getGuid())) {
                     return part.createPublisher(att, listener);
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  createPublisher");
             m_mutex.unlock();
         }
         return null;
@@ -238,14 +216,12 @@ public class Domain {
     public static <T extends Serializable> Subscriber<T> createSubscriber(Participant part, SubscriberAttributes att, SubscriberListener listener) {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  createSubscriber");
             for (Participant it : m_participants) {
                 if (it.getGuid().equals(part.getGuid())) {
                     return part.createSubscriber(att, listener);
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  createSubscriber");
             m_mutex.unlock();
         }
         return null;
@@ -261,14 +237,12 @@ public class Domain {
     public static boolean registerType(Participant part, TopicDataType<?> type) {
         m_mutex.lock();
         try {
-            System.out.println("----LOCK: " + Thread.currentThread().getId() + "  registerType");
             for (Participant it : m_participants) {
                 if (it.getGuid().equals(part.getGuid())) {
                     return part.registerType(type);
                 }
             }
         } finally {
-            System.out.println("----UNLOCK: " + Thread.currentThread().getId() + "  registerType");
             m_mutex.unlock();
         }
         return false;

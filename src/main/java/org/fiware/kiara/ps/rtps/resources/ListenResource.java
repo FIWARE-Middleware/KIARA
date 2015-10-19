@@ -154,7 +154,7 @@ public class ListenResource {
         this.m_mutex.lock();
         try {
             if (this.m_thread != null) {
-                logger.info("Removing listening thread {}", this.m_thread.getId());
+                logger.debug("Removing listening thread {}", this.m_thread.getId());
                 try {
                     this.m_listenChannel.socket().close();
                     this.m_listenChannel.disconnect();
@@ -162,14 +162,14 @@ public class ListenResource {
                 } catch (IOException e) {
                     logger.error(e.getStackTrace().toString());
                 }
-                logger.info("Joining thread {}", this.m_thread.getId());
+                logger.debug("Joining thread {}", this.m_thread.getId());
                 //try {
                     this.m_receptionThread.terminate();
                     //this.m_thread.join();
                 //} catch (InterruptedException e) {
                 //    logger.error(e.getStackTrace().toString());
                 //}
-                logger.info("Listening thread {} closed successfully", this.m_thread.getId());
+                logger.debug("Listening thread {} closed successfully", this.m_thread.getId());
             }
         } finally {
             this.m_mutex.unlock();

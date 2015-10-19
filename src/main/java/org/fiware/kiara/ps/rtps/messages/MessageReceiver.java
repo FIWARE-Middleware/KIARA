@@ -20,7 +20,6 @@ package org.fiware.kiara.ps.rtps.messages;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.participant.Participant;
 import org.fiware.kiara.ps.rtps.common.EncapsulationKind;
@@ -126,11 +125,6 @@ public class MessageReceiver {
      * Logging object
      */
     private static final Logger logger = LoggerFactory.getLogger(MessageReceiver.class);
-
-    /**
-     * Mutex
-     */
-    private final Lock m_guardWriterMutex = new ReentrantLock(true);
 
     /**
      * {@link MessageReceiver} constructor (receives the size of the reception buffer)

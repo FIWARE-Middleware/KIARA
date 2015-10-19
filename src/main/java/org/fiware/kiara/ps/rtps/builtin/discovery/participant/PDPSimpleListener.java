@@ -97,12 +97,10 @@ public class PDPSimpleListener extends ReaderListener {
                         change.setInstanceHandle(this.m_participantProxyData.getKey());
                         if (this.m_participantProxyData.getGUID().equals(this.m_SPDP.getRTPSParticipant().getGUID())) {
                             logger.debug("Message from own RTPSParticipant, removing");
-                            //System.out.println("Message from own RTPSParticipant, removing");
                             this.m_SPDP.getSPDPReaderHistory().removeChange(change);
                             return;
                         }
 
-                        //System.out.println("Diferente");
                         //this.m_lock.lock();
                         this.m_SPDP.getSPDPReaderHistory().m_mutex.lock();
                         try {

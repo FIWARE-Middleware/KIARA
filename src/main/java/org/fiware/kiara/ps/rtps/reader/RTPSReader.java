@@ -204,7 +204,7 @@ public abstract class RTPSReader extends Endpoint {
      * @param hasTimestamp Indicates if timestamp should be provided
      * @param timestamp The {@link Timestamp} to be provided
      * @param sourceGuidPrefix Source {@link GUIDPrefix}
-     * @return true if success; false otherwise
+     * @return true on success; false otherwise
      */
     public abstract boolean processDataMsg(CacheChange change, ListenResource listenResource, boolean hasTimestamp, Timestamp timestamp, GUIDPrefix sourceGuidPrefix);
     
@@ -217,11 +217,18 @@ public abstract class RTPSReader extends Endpoint {
      * @param lastSN The last {@link SequenceNumber}
      * @param finalFlag Flag indicating if the message is final
      * @param livelinessFlag FLag indicating if the liveliness is activated
-     * @return
+     * @return true on success; false otherwise
      */
     public abstract boolean processHeartbeatMsg(GUID writerGUID, int hbCount, SequenceNumber firstSN, SequenceNumber lastSN, boolean finalFlag, boolean livelinessFlag);
     
-    
+    /**
+     * Processes the received GAP message
+     * 
+     * @param writerGUID The {@link GUID} of the writer
+     * @param gapStart Starting {@link SequenceNumber}
+     * @param gapList List of {@link SequenceNumber} ({@link SequenceNumberSet})
+     * @return true on success; false otherwise
+     */
     public abstract boolean processGapMsg(GUID writerGUID, SequenceNumber gapStart, SequenceNumberSet gapList);
 
     /**

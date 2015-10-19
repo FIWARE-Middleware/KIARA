@@ -147,16 +147,6 @@ public class PDPSimple {
     private final Lock m_guardMutex = new ReentrantLock(true);
 
     /**
-     * Guard writer Mutex
-     */
-    private final Lock m_guardW = new ReentrantLock(true);
-
-    /**
-     * Guard reader Mutex
-     */
-    private final Lock m_guardR = new ReentrantLock(true);
-
-    /**
      * Default {@link PDPSimple} constructor
      *
      * @param builtinProtocols Reference to the BuiltinProcols object.

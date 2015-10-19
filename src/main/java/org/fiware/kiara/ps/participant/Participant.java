@@ -251,8 +251,6 @@ public class Participant {
 
         logger.info("Publisher {} created in topic {}", publisher.getGuid(), att.topic.topicName);
         
-        System.out.println("Par createPublisher");
-
         return publisher;
     }
 
@@ -342,8 +340,6 @@ public class Participant {
         
         logger.info("Subscriber {} created in topic {}", subscriber.getGuid(), att.topic.topicName);
         
-        System.out.println("Par createSubscriber");
-
         return subscriber;
     }
 

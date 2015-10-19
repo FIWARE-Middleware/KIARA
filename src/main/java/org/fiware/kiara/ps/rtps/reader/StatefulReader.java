@@ -284,7 +284,6 @@ public class StatefulReader extends RTPSReader {
                                     this.m_mutex.lock();
                                 }
                             } else if (change.getSequenceNumber().isLowerThan(maxSeqNumAvailable)) {
-                                System.out.println("------ TWO ------");
                                 SequenceNumber notifySeqNum = new SequenceNumber(change.getSequenceNumber());
                                 notifySeqNum.increment();
                                 this.m_mutex.unlock();
