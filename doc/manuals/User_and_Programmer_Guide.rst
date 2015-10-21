@@ -3,7 +3,7 @@ KIARA User and Programmer Guide
 
 **Date: 10th October 2015**
 
-- Version: `0.3.0 <#>`__
+- Version: `0.3.5 <#>`__
 - Latest version: :doc:`latest <User_and_Programmer_Guide>`
 
 Editors:
