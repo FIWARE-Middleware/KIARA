@@ -74,6 +74,7 @@ public class ReliablePublisher {
         boolean registered = Domain.registerType(participant, hwtype);
         assertTrue("Error registering type", registered);
 
+        /*
         // Create publisher
         PublisherAttributes pubAtt = new PublisherAttributes();
         pubAtt.setUserDefinedID((short) 1);
@@ -120,12 +121,12 @@ public class ReliablePublisher {
         //publisher.write(hw);
 
 
-
+         */
 
         //Domain.removeParticipant(participant);
 
         try {
-            Thread.sleep(300000);
+            Thread.sleep(500000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

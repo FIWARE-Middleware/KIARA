@@ -55,7 +55,7 @@ public class ReliableSubscriber {
                 + "            <topicDataType>HelloWorld</topicDataType>"
                 + "            <topicKind>WITH_KEY</topicKind>"
                 + "            <reliabilityQos>RELIABLE_RELIABILITY_QOS</reliabilityQos>"
-                + "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"20000\"></livelinessQos>"
+                //+ "            <livelinessQos kind=\"AUTOMATIC_LIVELINESS_QOS\" leaseDuration_ms=\"20000\"></livelinessQos>"
                 + "        </writer>"
                 + "     </participant>"
                 + "    </staticdiscovery>";
@@ -78,6 +78,7 @@ public class ReliableSubscriber {
         // Type registration
         Domain.registerType(participant, hwtype);
 
+        /*
         SubscriberAttributes satt = new SubscriberAttributes();
         satt.topic.topicKind = TopicKind.WITH_KEY;
         satt.topic.topicDataTypeName = "HelloWorld";
@@ -126,9 +127,10 @@ public class ReliableSubscriber {
         if (subscriber == null) {
             System.out.println("Error creating subscriber");
         }
+        */
         
         try {
-            Thread.sleep(15000);
+            Thread.sleep(500000);
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
