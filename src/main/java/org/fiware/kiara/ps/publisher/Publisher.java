@@ -141,8 +141,8 @@ public class Publisher<T> {
      * Function used to destroy the contents of the Publisher. The associated RTPSWirited will be stopped. 
      */
     public void destroy() {
-        logger.info("Destroying Publisher (Writer GUID: {})", this.getGuid());
         RTPSDomain.removeRTPSWriter(this.m_writer);
+        logger.debug("Publisher destroyed (Reader GUID: {})", this.getGuid());
     }
 
     /**

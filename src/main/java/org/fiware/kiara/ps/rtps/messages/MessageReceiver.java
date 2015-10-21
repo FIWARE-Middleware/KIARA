@@ -45,13 +45,10 @@ import org.fiware.kiara.ps.rtps.messages.elements.Timestamp;
 import org.fiware.kiara.ps.rtps.messages.elements.Unused;
 import org.fiware.kiara.ps.rtps.messages.elements.VendorId;
 import org.fiware.kiara.ps.rtps.reader.RTPSReader;
-import org.fiware.kiara.ps.rtps.reader.StatefulReader;
-import org.fiware.kiara.ps.rtps.reader.WriterProxy;
 import org.fiware.kiara.ps.rtps.resources.ListenResource;
 import org.fiware.kiara.ps.rtps.writer.RTPSWriter;
 import org.fiware.kiara.ps.rtps.writer.ReaderProxy;
 import org.fiware.kiara.ps.rtps.writer.StatefulWriter;
-import org.fiware.kiara.util.ReturnParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -518,63 +515,11 @@ public class MessageReceiver {
 
                 logger.debug(" Message from Writer {}; Possible RTPSReaders: ", ch.getWriterGUID(), this.m_listenResource.getAssocReaders().size());
 
-                //            if (this.m_hasTimestamp) {
-                //                ch.setSourceTimestamp(this.m_timestamp);
-                //            }
-
-
                 for (RTPSReader it : this.m_listenResource.getAssocReaders()) { 
 
                     //ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
                     if (it.acceptMsgDirectedTo(readerId)) {
                         it.processDataMsg(ch, this.m_listenResource, this.m_hasTimestamp, this.m_timestamp, this.m_sourceGuidPrefix);
-
-
-                        //                ReturnParam<WriterProxy> retProxy = new ReturnParam<>();
-                        //                if (it.acceptMsgDirectedTo(readerId) && it.acceptMsgFrom(ch.getWriterGUID(), retProxy)) {
-                        //                    if(it.getListener().getClass().getName() == "org.fiware.kiara.ps.rtps.builtin.discovery.endpoint.EDPSimpleSubListener") {
-                        //                        System.out.println("");
-                        //                    }
-                        //                    logger.debug("Trying to add change {} to Reader {}", ch.getSequenceNumber().toLong(), it.getGuid().getEntityId());
-                        //                    CacheChange changeToAdd = it.reserveCache();
-                        //
-                        //                    if (changeToAdd != null) {
-                        //                        if (!changeToAdd.copy(ch)) {
-                        //                            logger.warn("Problem copying CacheChange");
-                        //                            it.releaseCache(changeToAdd);
-                        //                            return false;
-                        //                        }
-                        //                    } else {
-                        //                        logger.error("Problem reserving CacheChange in reader");
-                        //                        return false;
-                        //                    }
-                        //
-                        //                    if (this.m_hasTimestamp) {
-                        //                        changeToAdd.setSourceTimestamp(this.m_timestamp);
-                        //                    }
-                        //
-                        //                    if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE && retProxy.value != null) {
-                        //                        this.m_guardWriterMutex.lock();
-                        //                        try {
-                        //                            retProxy.value.assertLiveliness();
-                        //                            if (!it.changeReceived(changeToAdd, retProxy.value)) {
-                        //                                logger.debug("MessageReceiver not adding CacheChange");
-                        //                                it.releaseCache(changeToAdd);
-                        //                            }
-                        //                        } finally {
-                        //                            this.m_guardWriterMutex.unlock();
-                        //                        }
-                        //                    } else {
-                        //                        if (!it.changeReceived(changeToAdd, null)) {
-                        //                            logger.debug("MessageReceiver not adding CacheChange");
-                        //                            it.releaseCache(changeToAdd);
-                        //                            if (it.getGuid().getEntityId().equals(new EntityId(EntityIdEnum.ENTITYID_SPDP_BUILTIN_RTPSPARTICIPANT_READER))) {
-                        //                                this.m_listenResource.getRTPSParticipant().assertRemoteRTPSParticipantLiveliness(changeToAdd.getWriterGUID().getGUIDPrefix()/*this.m_sourceGuidPrefix*/);
-                        //                            }
-                        //                        } 
-                        //                    }
-
-
                     }
                 }
 
@@ -647,8 +592,6 @@ public class MessageReceiver {
                     }
                 }
                 
-//                subMsg.addSubmessageElement(gapList.getBase());
-//                subMsg.addSubmessageElement(gapList);
             } finally {
                 this.m_listenResource.getMutex().unlock();
             }
@@ -830,40 +773,6 @@ public class MessageReceiver {
                         if (it.acceptMsgDirectedTo(readerId)) {
                             it.processHeartbeatMsg(writerGUID, hbCount, firstSN, lastSN, finalFlag, livelinessFlag);
                         }
-//                        if (it.acceptMsgFrom(writerGUID, null) && it.acceptMsgDirectedTo(readerId)) {
-//                            if (it.getAttributes().reliabilityKind == ReliabilityKind.RELIABLE) {
-//                                StatefulReader sr = (StatefulReader) it;
-//                                WriterProxy wp = sr.matchedWriterLookup(writerGUID);
-//                                if (wp != null) {
-//                                    this.m_guardWriterMutex.lock();
-//                                    try {
-//                                        if (wp.lastHeartbeatCount < hbCount) {
-//                                            wp.lastHeartbeatCount = hbCount;
-//                                            wp.lostChangesUpdate(firstSN);
-//                                            wp.missingChangesUpdate(lastSN);
-//                                            wp.hearbeatFinalFlag = finalFlag;
-//
-//                                            // Analyze whether if an ACKNACK message is needed
-//                                            if (!finalFlag) {
-//                                                wp.startHeartbeatResponse();
-//                                            } else if (!livelinessFlag) {
-//                                                if (!wp.isMissingChangesEmpty) {
-//                                                    wp.startHeartbeatResponse();
-//                                                }
-//                                            }
-//
-//                                            if (livelinessFlag) {
-//                                                wp.assertLiveliness();
-//                                            }
-//                                        }
-//                                    } finally {
-//                                        this.m_guardWriterMutex.unlock();
-//                                    }
-//                                } else {
-//                                    logger.debug("HB received is NOT from an associated writer");
-//                                }
-//                            }
-//                        }
                     } finally {
                         lock.unlock();
                     }

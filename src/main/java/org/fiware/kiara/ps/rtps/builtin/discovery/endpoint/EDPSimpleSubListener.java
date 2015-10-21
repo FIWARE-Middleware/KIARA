@@ -134,10 +134,10 @@ public class EDPSimpleSubListener extends ReaderListener {
                     }
                 }
             } else {
-                logger.info("Disposed Remote Reader {}, removing...", change.getInstanceHandle().toGUID());
                 GUID auxGUID = change.getInstanceHandle().toGUID();
                 this.edpSimple.subReaderPair.getSecond().removeChange(change);
                 this.edpSimple.removeReaderProxy(auxGUID);
+                logger.debug("Disposed Remote Reader {}, removed from EDP", auxGUID);
             }
 //        } finally {
 //            guard.unlock();

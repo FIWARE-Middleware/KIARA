@@ -148,6 +148,7 @@ public class NackResponseDelay extends TimedEvent {
                         guard.unlock();
                     }
                 } finally {
+                    
                     guardW.unlock();
                 }
 

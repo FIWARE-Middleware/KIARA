@@ -21,6 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.fiware.kiara.ps.rtps.common.Locator;
 import org.fiware.kiara.ps.rtps.common.LocatorList;
@@ -50,6 +52,11 @@ public class RTPSMessageGroup {
     private static final Logger logger = LoggerFactory.getLogger(WriterHistoryCache.class);
 
     /**
+     * Mutex
+     */
+    private static Lock m_mutex = new ReentrantLock(true);
+
+    /**
      * Sends the CacheChanges allocated inside a DATA {@link RTPSMessage}
      * 
      * @param rtpsWriter The {@link RTPSWriter} that sends the data
@@ -60,68 +67,72 @@ public class RTPSMessageGroup {
      * @param entityId {@link EntityId} of the writer 
      */
     public static void sendChangesAsData(RTPSWriter rtpsWriter, List<CacheChange> changes, LocatorList unicastLocatorList, LocatorList multicastLocatorList, boolean expectsInlineQos, EntityId entityId) {
+        m_mutex.lock();
+        try {
+            short dataMsgSize = 0;
+            short changeIndex = 1;
 
-        short dataMsgSize = 0;
-        short changeIndex = 1;
+            RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+            RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+            RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
 
-        RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-        RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-        RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
+            // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
+            msg.checkPadding(false); 
 
-        // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
-        msg.checkPadding(false); 
-
-        Iterator<CacheChange> cit = changes.iterator();
-        if (cit.hasNext()) {
-            int initialPos = msg.getBinaryOutputStream().getPosition();
-            RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-            dataMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
-            if (dataMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
-                logger.error("The Data messages are larger than max size");
-                return;
+            Iterator<CacheChange> cit = changes.iterator();
+            if (cit.hasNext()) {
+                int initialPos = msg.getBinaryOutputStream().getPosition();
+                RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
+                dataMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
+                if (dataMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
+                    logger.error("The Data messages are larger than max size");
+                    return;
+                }
+                msg.checkPadding(true);
             }
-            msg.checkPadding(true);
-        }
-        boolean first = true;
+            boolean first = true;
 
-        do {
+            do {
 
-            boolean added = false;
+                boolean added = false;
 
-            if (first) {
-                first = false;
-                added = true;
-            } else {
-                msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-                RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-                RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(false); // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
-            }
-
-            while (cit.hasNext()) {
-                if (msg.getBinaryOutputStream().getPosition() + dataMsgSize < msg.getMaxSize()) {
+                if (first) {
+                    first = false;
                     added = true;
-                    ++changeIndex;
-                    RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-                    msg.checkPadding(true);
                 } else {
-                    break;
+                    msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+                    RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+                    RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
+                    msg.checkPadding(false); // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
                 }
-            }
 
-            if (added) {
-                msg.serialize();
-                for (Locator unicastLoc : unicastLocatorList.getLocators()) {
-                    rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
+                while (cit.hasNext()) {
+                    if (msg.getBinaryOutputStream().getPosition() + dataMsgSize < msg.getMaxSize()) {
+                        added = true;
+                        ++changeIndex;
+                        RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
+                        msg.checkPadding(true);
+                    } else {
+                        break;
+                    }
                 }
-                for (Locator multicastLoc : multicastLocatorList.getLocators()) {
-                    rtpsWriter.getRTPSParticipant().sendSync(msg, multicastLoc);
-                }
-            } else {
-                logger.error("A problem occurred when adding a message");
-            }
 
-        } while (changeIndex < changes.size());
+                if (added) {
+                    msg.serialize();
+                    for (Locator unicastLoc : unicastLocatorList.getLocators()) {
+                        rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
+                    }
+                    for (Locator multicastLoc : multicastLocatorList.getLocators()) {
+                        rtpsWriter.getRTPSParticipant().sendSync(msg, multicastLoc);
+                    }
+                } else {
+                    logger.error("A problem occurred when adding a message");
+                }
+
+            } while (changeIndex < changes.size());
+        } finally {
+            m_mutex.unlock();
+        }
     }
 
     /**
@@ -134,60 +145,65 @@ public class RTPSMessageGroup {
      * @param entityId {@link EntityId} of the related Entity
      */
     public static void sendChangesAsData(RTPSWriter rtpsWriter, List<CacheChange> changes, Locator locator, boolean expectsInlineQos, EntityId entityId) {
-        short dataMsgSize = 0;
-        short changeIndex = 1;
+        m_mutex.lock();
+        try {
+            short dataMsgSize = 0;
+            short changeIndex = 1;
 
-        RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-        RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-        RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-        msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+            RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+            RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+            RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
+            msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
 
-        Iterator<CacheChange> cit = changes.iterator();
-        if (cit.hasNext()) {
-            int initialPos = msg.getBinaryOutputStream().getPosition();
-            RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-            dataMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
-            if (dataMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
-                logger.error("The Data messages are larger than max size");
-                return;
-            }
-            msg.checkPadding(true);
-        }
-        boolean first = true;
-
-        do {
-
-            boolean added = false;
-
-            if (first) {
-                first = false;
-                added = true;
-            } else {
-                msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-                RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-                RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-                msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
-            }
-
-            while (cit.hasNext()) {
-                if (msg.getBinaryOutputStream().getPosition() + dataMsgSize < msg.getMaxSize()) {
-                    added = true;
-                    ++changeIndex;
-                    RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
-                    msg.checkPadding(true);
-                } else {
-                    break;
+            Iterator<CacheChange> cit = changes.iterator();
+            if (cit.hasNext()) {
+                int initialPos = msg.getBinaryOutputStream().getPosition();
+                RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
+                dataMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
+                if (dataMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
+                    logger.error("The Data messages are larger than max size");
+                    return;
                 }
+                msg.checkPadding(true);
             }
+            boolean first = true;
 
-            if (added) {
-                msg.serialize();
-                rtpsWriter.getRTPSParticipant().sendSync(msg, locator);
-            } else {
-                logger.error("A problem occurred when adding a message");
-            }
+            do {
 
-        } while (changeIndex < changes.size());
+                boolean added = false;
+
+                if (first) {
+                    first = false;
+                    added = true;
+                } else {
+                    msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+                    RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+                    RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
+                    msg.checkPadding(false); // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+                }
+
+                while (cit.hasNext()) {
+                    if (msg.getBinaryOutputStream().getPosition() + dataMsgSize < msg.getMaxSize()) {
+                        added = true;
+                        ++changeIndex;
+                        RTPSMessageGroup.prepareSubmessageData(msg, rtpsWriter, cit.next(), expectsInlineQos, entityId);
+                        msg.checkPadding(true);
+                    } else {
+                        break;
+                    }
+                }
+
+                if (added) {
+                    msg.serialize();
+                    rtpsWriter.getRTPSParticipant().sendSync(msg, locator);
+                } else {
+                    logger.error("A problem occurred when adding a message");
+                }
+
+            } while (changeIndex < changes.size());
+        } finally {
+            m_mutex.unlock();
+        }
 
     }
 
@@ -202,69 +218,74 @@ public class RTPSMessageGroup {
      */
     public static void sendChangesAsGap(RTPSWriter rtpsWriter, List<SequenceNumber> changesSeqNum, EntityId readerId, LocatorList unicastLocatorList, LocatorList multicastLocatorList) {
 
-        short gapMsgSize = 0;
-        short changeIndex = 1;
+        m_mutex.lock();
+        try {
+            short gapMsgSize = 0;
+            short changeIndex = 1;
 
-        RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-        RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-        RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
-        // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
-        msg.checkPadding(false); 
+            RTPSMessage msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+            RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+            RTPSMessageBuilder.addSubmessageInfoTSNow(msg, false/*, false*/);
+            // TODO CHeck if this can be placed into RTPSMessageBuilder for every submessage
+            msg.checkPadding(false); 
 
-        List<Pair<SequenceNumber, SequenceNumberSet>> sequences = RTPSMessageGroup.prepareSequenceNumberSet(changesSeqNum);
-        Iterator<Pair<SequenceNumber, SequenceNumberSet>> seqit = sequences.iterator();
-        if (seqit.hasNext()) {
-            Pair<SequenceNumber, SequenceNumberSet> pair = seqit.next();
-            int initialPos = msg.getBinaryOutputStream().getPosition();
-            RTPSMessageBuilder.addSubmessageGap(msg, pair.getFirst(), pair.getSecond(), readerId, rtpsWriter.getGuid().getEntityId());
-            gapMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
-            if (gapMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
-                logger.error("The Gap messages are larger than max size");
-                return;
-            }
-            msg.checkPadding(false);
-        }
-        boolean first = true;
-
-        do {
-
-            boolean added = false;
-
-            if (first) {
-                first = false;
-                added = true;
-            } else {
-                msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
-                RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
-                // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
-                msg.checkPadding(false); 
-            }
-
-            while (seqit.hasNext()) {
+            List<Pair<SequenceNumber, SequenceNumberSet>> sequences = RTPSMessageGroup.prepareSequenceNumberSet(changesSeqNum);
+            Iterator<Pair<SequenceNumber, SequenceNumberSet>> seqit = sequences.iterator();
+            if (seqit.hasNext()) {
                 Pair<SequenceNumber, SequenceNumberSet> pair = seqit.next();
-                if (msg.getBinaryOutputStream().getPosition() + gapMsgSize < msg.getMaxSize()) {
+                int initialPos = msg.getBinaryOutputStream().getPosition();
+                RTPSMessageBuilder.addSubmessageGap(msg, pair.getFirst(), pair.getSecond(), readerId, rtpsWriter.getGuid().getEntityId());
+                gapMsgSize = (short) (msg.getBinaryOutputStream().getPosition() - initialPos);
+                if (gapMsgSize + RTPSMessage.RTPS_MESSAGE_HEADER_SIZE > msg.getMaxSize()) {
+                    logger.error("The Gap messages are larger than max size");
+                    return;
+                }
+                msg.checkPadding(false);
+            }
+            boolean first = true;
+
+            do {
+
+                boolean added = false;
+
+                if (first) {
+                    first = false;
                     added = true;
-                    ++changeIndex;
-                    RTPSMessageBuilder.addSubmessageGap(msg, pair.getFirst(), pair.getSecond(), readerId, rtpsWriter.getGuid().getEntityId());
-                    msg.checkPadding(false);
                 } else {
-                    break;
+                    msg = RTPSMessageBuilder.createMessage(RTPSEndian.LITTLE_ENDIAN);
+                    RTPSMessageBuilder.addHeader(msg, rtpsWriter.getGuid().getGUIDPrefix());
+                    // TODO Check if this can be placed into RTPSMessageBuilder for every submessage
+                    msg.checkPadding(false); 
                 }
-            }
 
-            if (added) {
-                msg.serialize();
-                for (Locator unicastLoc : unicastLocatorList.getLocators()) {
-                    rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
+                while (seqit.hasNext()) {
+                    Pair<SequenceNumber, SequenceNumberSet> pair = seqit.next();
+                    if (msg.getBinaryOutputStream().getPosition() + gapMsgSize < msg.getMaxSize()) {
+                        added = true;
+                        ++changeIndex;
+                        RTPSMessageBuilder.addSubmessageGap(msg, pair.getFirst(), pair.getSecond(), readerId, rtpsWriter.getGuid().getEntityId());
+                        msg.checkPadding(false);
+                    } else {
+                        break;
+                    }
                 }
-                for (Locator multicastLoc : multicastLocatorList.getLocators()) {
-                    rtpsWriter.getRTPSParticipant().sendSync(msg, multicastLoc);
-                }
-            } else {
-                logger.error("A problem occurred when adding a message");
-            }
 
-        } while (changeIndex < sequences.size());
+                if (added) {
+                    msg.serialize();
+                    for (Locator unicastLoc : unicastLocatorList.getLocators()) {
+                        rtpsWriter.getRTPSParticipant().sendSync(msg, unicastLoc);
+                    }
+                    for (Locator multicastLoc : multicastLocatorList.getLocators()) {
+                        rtpsWriter.getRTPSParticipant().sendSync(msg, multicastLoc);
+                    }
+                } else {
+                    logger.error("A problem occurred when adding a message");
+                }
+
+            } while (changeIndex < sequences.size());
+        } finally {
+            m_mutex.unlock();
+        }
 
     }
 
@@ -283,8 +304,7 @@ public class RTPSMessageGroup {
             // TODO Prepare inline QOS (Not supported yet)
         }
 
-        RTPSMessageBuilder.addSubmessageData(msg, change, rtpsWriter.getAttributes().topicKind, entityId, expectsInlineQos, inlineQos); 
-
+        RTPSMessageBuilder.addSubmessageData(msg, change, rtpsWriter.getAttributes().topicKind, entityId, expectsInlineQos, inlineQos);
     }
 
     /**
@@ -295,48 +315,53 @@ public class RTPSMessageGroup {
      */
     private static List<Pair<SequenceNumber, SequenceNumberSet>> prepareSequenceNumberSet(List<SequenceNumber> changesSeqNum) { // TODO Review this
 
-        List<Pair<SequenceNumber, SequenceNumberSet>> sequences = new ArrayList<Pair<SequenceNumber, SequenceNumberSet>>();
+        m_mutex.lock();
+        try {
+            List<Pair<SequenceNumber, SequenceNumberSet>> sequences = new ArrayList<Pair<SequenceNumber, SequenceNumberSet>>();
 
-        Collections.sort(changesSeqNum);
+            Collections.sort(changesSeqNum);
 
-        boolean newPair = true;
-        boolean seqNumSetInit = false;
-        int count = 0;
+            boolean newPair = true;
+            boolean seqNumSetInit = false;
+            int count = 0;
 
-        for (int i=0; i < changesSeqNum.size(); ++i) {
-            SequenceNumber it = changesSeqNum.get(i);
-            if (newPair) {
-                SequenceNumberSet seqSet = new SequenceNumberSet();
-                it.increment();
-                seqSet.setBase(it);
-                Pair<SequenceNumber, SequenceNumberSet> pair = new Pair<SequenceNumber, SequenceNumberSet>(it, seqSet);
-                sequences.add(pair);
-                newPair = false;
-                seqNumSetInit = false;
-                count = 1;
-                continue;
-            }
-            if (it.toLong() - sequences.get(sequences.size()-1).getFirst().toLong() == count) {
-                ++count;
-                it.increment();
-                sequences.get(sequences.size()-1).getSecond().setBase(it);
-                continue;
-            } else {
-                if (!seqNumSetInit) {
-                    it.decrement();
-                    sequences.get(sequences.size()-1).getSecond().setBase(it);
+            for (int i=0; i < changesSeqNum.size(); ++i) {
+                SequenceNumber it = changesSeqNum.get(i);
+                if (newPair) {
+                    SequenceNumberSet seqSet = new SequenceNumberSet();
+                    it.increment();
+                    seqSet.setBase(it);
+                    Pair<SequenceNumber, SequenceNumberSet> pair = new Pair<SequenceNumber, SequenceNumberSet>(it, seqSet);
+                    sequences.add(pair);
+                    newPair = false;
                     seqNumSetInit = false;
+                    count = 1;
+                    continue;
                 }
-                if (sequences.get(sequences.size()-1).getSecond().add(it)) {
+                if (it.toLong() - sequences.get(sequences.size()-1).getFirst().toLong() == count) {
+                    ++count;
+                    it.increment();
+                    sequences.get(sequences.size()-1).getSecond().setBase(it);
                     continue;
                 } else {
-                    --i;
-                    newPair = true;
+                    if (!seqNumSetInit) {
+                        it.decrement();
+                        sequences.get(sequences.size()-1).getSecond().setBase(it);
+                        seqNumSetInit = false;
+                    }
+                    if (sequences.get(sequences.size()-1).getSecond().add(it)) {
+                        continue;
+                    } else {
+                        --i;
+                        newPair = true;
+                    }
                 }
             }
-        }
 
-        return null;
+            return null;
+        } finally {
+            m_mutex.unlock();
+        }
     }
 
 }

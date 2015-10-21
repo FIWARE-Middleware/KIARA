@@ -28,7 +28,6 @@ import static org.fiware.kiara.ps.rtps.common.ChangeFromWriterStatus.RECEIVED;
 import org.fiware.kiara.ps.rtps.attributes.ReaderAttributes;
 import org.fiware.kiara.ps.rtps.attributes.ReaderTimes;
 import org.fiware.kiara.ps.rtps.attributes.RemoteWriterAttributes;
-import org.fiware.kiara.ps.rtps.common.ReliabilityKind;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.history.ReaderHistoryCache;
 import org.fiware.kiara.ps.rtps.messages.elements.GUID;
@@ -312,14 +311,6 @@ public class StatefulReader extends RTPSReader {
                                 // Do nothing
                             }
                         }
-                        //                        if (change.getSequenceNumber().isLowerOrEqualThan(maxSeqNumAvailable)) {
-                        //                            if (getListener() != null) {
-                        //                                //System.out.println("CALLING NEWDATAMESSAGE ");
-                        //                                getListener().onNewCacheChangeAdded(this, change);
-                        //                                //cout << "FINISH CALLING " <<endl;
-                        //                            }
-                        //                            m_history.postChange();
-                        //                        }
                         return true;
                     }
                 }

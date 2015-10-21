@@ -347,7 +347,7 @@ public class StatefulWriter extends RTPSWriter {
                 if (it.att.guid.equals(ratt.guid)) {
                     this.m_matchedReaders.remove(it);
                     i--;
-                    if (this.m_matchedReaders.size() == 0) {
+                    if (this.m_matchedReaders.size() == 0 && this.m_periodicHB != null) {
                         this.m_periodicHB.stopTimer();
                     }
                     return true;

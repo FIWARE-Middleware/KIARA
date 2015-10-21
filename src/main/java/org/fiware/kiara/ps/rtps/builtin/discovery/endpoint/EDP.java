@@ -517,7 +517,7 @@ public abstract class EDP {
     public boolean pairingReader(RTPSReader R) {
         ReaderProxyData rdata = this.m_PDP.lookupReaderProxyData(R.getGuid());
         if (rdata != null) {
-            logger.info("Pairing Reader {} in topic {}", R.getGuid(), rdata.getTopicName());
+            logger.debug("Pairing Reader {} in topic {}", R.getGuid(), rdata.getTopicName());
             final Lock mutex = m_PDP.getMutex();
             mutex.lock();
             try {
@@ -527,7 +527,7 @@ public abstract class EDP {
                     try {
                         for (WriterProxyData wdatait : pit.getWriters()) {
                             if (validMatching(rdata, wdatait)) {
-                                logger.info("Valid Matching to writerProxy: {}", wdatait.getGUID());
+                                logger.debug("Valid Matching to writerProxy: {}", wdatait.getGUID());
                                 if (R.matchedWriterAdd(wdatait.toRemoteWriterAttributes())) {
                                     //MATCHED AND ADDED CORRECTLY:
                                     if (R.getListener() != null) {
@@ -536,7 +536,7 @@ public abstract class EDP {
                                     }
                                 }
                             } else {
-                                logger.info("Valid Unmatching to writerProxy: {}", wdatait.getGUID());
+                                logger.debug("Valid Unmatching to writerProxy: {}", wdatait.getGUID());
                                 //logger.info(RTPS_EDP,RTPS_CYAN<<"Valid Matching to writerProxy: "<<(*wdatait).m_guid<<RTPS_DEF<<endl);
                                 if (R.matchedWriterIsMatched(wdatait.toRemoteWriterAttributes())
                                         && R.matchedWriterRemove(wdatait.toRemoteWriterAttributes())) {
@@ -569,7 +569,7 @@ public abstract class EDP {
     public boolean pairingWriter(RTPSWriter W) {
         WriterProxyData wdata = this.m_PDP.lookupWriterProxyData(W.getGuid());
         if (wdata != null) {
-            logger.info("Pairing Writer {} in topic {}", W.getGuid(), wdata.getTopicName());
+            logger.debug("Pairing Writer {} in topic {}", W.getGuid(), wdata.getTopicName());
             final Lock mutex = m_PDP.getMutex();
             mutex.lock();
             try {
@@ -580,7 +580,7 @@ public abstract class EDP {
                         for (ReaderProxyData rdatait : pit.getReaders()) {
                             if (validMatching(wdata, rdatait)) {
                                 //std::cout << "VALID MATCHING to " <<(*rdatait).m_guid<< std::endl;
-                                logger.info("Valid Matching to readerProxy {}", rdatait.getGUID());
+                                logger.debug("Valid Matching to readerProxy {}", rdatait.getGUID());
                                 if (W.matchedReaderAdd(rdatait.toRemoteReaderAttributes())) {
                                     //MATCHED AND ADDED CORRECTLY:
                                     if (W.getListener() != null) {
@@ -589,7 +589,7 @@ public abstract class EDP {
                                     }
                                 }
                             } else {
-                                logger.info("Valid Unmatching to readerProxy: {}", rdatait.getGUID());
+                                logger.debug("Valid Unmatching to readerProxy: {}", rdatait.getGUID());
                                 if (W.matchedReaderIsMatched(rdatait.toRemoteReaderAttributes())
                                         && W.matchedReaderRemove(rdatait.toRemoteReaderAttributes())) {
                                     //MATCHED AND ADDED CORRECTLY:

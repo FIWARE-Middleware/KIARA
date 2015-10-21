@@ -291,7 +291,7 @@ public class BuiltinProtocols {
         if (this.m_WLP != null) {
             ok |= this.m_WLP.removeLocalWriter(writer);
         }
-
+        
         if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
             ok |= this.m_PDP.getEDP().removeLocalWriter(writer);
         }
@@ -310,7 +310,7 @@ public class BuiltinProtocols {
     public boolean removeLocalReader(RTPSReader reader) {
         boolean ok = false;
 
-        logger.debug("Removing Writer {} from builtin protocol", reader.getGuid());
+        logger.debug("Removing Reader {} from builtin protocol", reader.getGuid());
 
         if (this.m_PDP != null && this.m_PDP.getEDP() != null) {
             ok |= this.m_PDP.getEDP().removeLocalReader(reader);

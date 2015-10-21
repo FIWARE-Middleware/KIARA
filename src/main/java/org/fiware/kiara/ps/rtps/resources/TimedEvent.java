@@ -45,22 +45,22 @@ public abstract class TimedEvent {
      * Event task to be executed
      */
     private final EventTask task;
-    
+
     /**
      * Scheduled furute object to execute the task
      */
     private ScheduledFuture<?> event;
-    
+
     /**
      * Time interval to execute the event
      */
     private long intervalMicrosec;
-    
+
     /**
      * Mutex
      */
     protected final Lock m_mutex = new ReentrantLock(true);
-    
+
     static {
         Kiara.addRunningService(new RunningService() {
             public void shutdownService() {
@@ -128,26 +128,15 @@ public abstract class TimedEvent {
      * Method to restart the timer.
      */
     public void restartTimer() {
-        this.m_mutex.lock();
-        try {
-            event.cancel(true);
-            event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
-        } finally {
-            this.m_mutex.unlock();
-        }
+        event.cancel(true);
+        event = service.scheduleAtFixedRate(task, 0, intervalMicrosec, TimeUnit.MICROSECONDS);
     }
 
     /**
      * Method to stop the timer.
      */
     public void stopTimer() {
-        this.m_mutex.lock();
-        try {
-            event.cancel(false);
-        } finally {
-            this.m_mutex.unlock();
-        }
-        //service.shutdown();
+        event.cancel(false);
     }
 
     /**
@@ -160,13 +149,8 @@ public abstract class TimedEvent {
      * @return true on success
      */
     public boolean updateInterval(long inter, TimeUnit timeUnit) {
-        this.m_mutex.lock();
-        try {
-            intervalMicrosec = TimeUnit.MICROSECONDS.convert(inter, timeUnit);
-            return true;
-        } finally {
-            this.m_mutex.unlock();
-        }
+        intervalMicrosec = TimeUnit.MICROSECONDS.convert(inter, timeUnit);
+        return true;
     }
 
     /**

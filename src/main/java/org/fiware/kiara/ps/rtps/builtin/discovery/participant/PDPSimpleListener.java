@@ -6,6 +6,7 @@ import java.util.concurrent.locks.Lock;
 
 import org.fiware.kiara.ps.qos.parameter.ParameterId;
 import org.fiware.kiara.ps.rtps.builtin.data.ParticipantProxyData;
+import org.fiware.kiara.ps.rtps.builtin.discovery.participant.timedevent.RemoteParticipantLeaseDuration;
 import org.fiware.kiara.ps.rtps.common.MatchingInfo;
 import org.fiware.kiara.ps.rtps.history.CacheChange;
 import org.fiware.kiara.ps.rtps.messages.common.types.ChangeKind;
@@ -85,9 +86,6 @@ public class PDPSimpleListener extends ReaderListener {
                     }
                 }
 
-                //                final Lock mutex = this.m_participantProxyData.getMutex();
-                //                mutex.lock();
-                //                try {
                 if (change.getKind() == ChangeKind.ALIVE) {
                     // Load information in temporal RTPSParticipant PROXY DATA
                     this.m_participantProxyData.clear();
@@ -142,9 +140,12 @@ public class PDPSimpleListener extends ReaderListener {
                                     pData.copy(this.m_participantProxyData);
                                     pData.setIsAlive(true);
                                     this.m_SPDP.getParticipantProxies().add(pData);
-                                    // TODO Uncomment this and handle RejectException
                                     //pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
                                     // pData.getLeaseDurationTimer().restartTimer();
+                                    
+                                    pData.setLeaseDurationTimer(new RemoteParticipantLeaseDuration(this.m_SPDP, pData, pData.getLeaseDuration().toMilliSecondsDouble()));
+                                    
+                                    
                                     this.m_SPDP.assignRemoteEndpoints(pData);
                                     this.m_SPDP.announceParticipantState(false);
                                 } finally {

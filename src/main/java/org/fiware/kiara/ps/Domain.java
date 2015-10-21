@@ -91,7 +91,7 @@ public class Domain {
                         // Found
                         current.destroy();
                         m_participants.remove(current);
-                        logger.info("Participant successfully removed"); // TODO Not in C++ implementation. Log every removal.
+                        logger.info("Participant {} successfully removed", part.getGuid());
                         return true;
                     }
                 }
@@ -117,6 +117,7 @@ public class Domain {
                     if (it.getGuid().getGUIDPrefix().equals(pub.getGuid().getGUIDPrefix())) {
                         // Found
                         result = it.removePublisher(pub);
+                        logger.info("Publisher {} successfully removed", pub.getGuid());
                         return result;
                     }
                 }
@@ -142,6 +143,7 @@ public class Domain {
                     if (it.getGuid().getGUIDPrefix().equals(sub.getGuid().getGUIDPrefix())) {
                         // Found
                         result = it.removeSubscriber(sub);
+                        logger.info("Subscriber {} successfully removed", sub.getGuid());
                         return result;
                     }
                 }
@@ -173,6 +175,7 @@ public class Domain {
 
             pubSubParticipant.setRTPSParticipant(part);
             m_participants.add(pubSubParticipant);
+            logger.info("Participant {} successfully created", pubSubParticipant.getGuid());
             return pubSubParticipant;
         } finally {
             m_mutex.unlock();

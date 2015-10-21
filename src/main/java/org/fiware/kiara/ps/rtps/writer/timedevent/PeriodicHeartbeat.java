@@ -86,8 +86,7 @@ public class PeriodicHeartbeat extends TimedEvent {
                 final LocatorList locList = new LocatorList();
                 boolean unacked_changes = false;
 
-                final Lock mutex = m_SFW.getMutex();
-                mutex.lock();
+                m_SFW.getMutex().lock();
                 try {
                     List<ChangeForReader> unack = new ArrayList<ChangeForReader>();
                     for (ReaderProxy it : m_SFW.getMatchedReaders()) {
@@ -104,7 +103,7 @@ public class PeriodicHeartbeat extends TimedEvent {
                     firstSeq.copy(m_SFW.getSeqNumMin());
                     lastSeq.copy(m_SFW.getSeqNumMax());
                 } finally {
-                    mutex.unlock();
+                    m_SFW.getMutex().unlock();
                 }
 
                 if (unacked_changes) {

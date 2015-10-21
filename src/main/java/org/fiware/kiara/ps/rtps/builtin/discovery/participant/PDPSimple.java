@@ -730,7 +730,7 @@ public class PDPSimple {
         logger.debug("Removing RemoteParticipant: " + partGUID);
         this.m_SPDPWriter.getMutex().lock();
         try {
-            this.m_SPDPReader.getMutex().unlock();
+            this.m_SPDPReader.getMutex().lock();
             try {
                 ParticipantProxyData pdata = null;
                 this.m_mutex.lock();
@@ -766,6 +766,7 @@ public class PDPSimple {
                                     break;
                                 }
                             }
+                            logger.info("Removed remote Participant {}", partGUID);
                             return true;
                         } finally {
                             pdata.getMutex().unlock();

@@ -108,7 +108,7 @@ public class WriterHistoryCache extends HistoryCache {
             }
     
             if (!change.getWriterGUID().equals(this.m_writer.getGuid())) {
-                logger.error("Change writerGUID " + change.getWriterGUID() + " different than Writer GUID " + this.m_writer.getGuid()); 
+                logger.debug("Change writerGUID " + change.getWriterGUID() + " different than Writer GUID " + this.m_writer.getGuid()); 
                 return false;
             }
     

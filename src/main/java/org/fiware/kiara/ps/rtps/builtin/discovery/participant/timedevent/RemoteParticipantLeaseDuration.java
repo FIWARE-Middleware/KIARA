@@ -60,23 +60,22 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
      */
     @Override
     public void event(EventCode code, String msg) {
-        // TODO Activate behaviour
-        /*if (code == EventCode.EVENT_SUCCESS) {
-         logger.info("Checking RTPSParticipant: " + this.m_participantProxyData.getParticipantName() + " with GUID: " + this.m_participantProxyData.getGUID().getGUIDPrefix());
-         if (this.m_participantProxyData.getIsAlive()) {
-         this.m_participantProxyData.setIsAlive(false);
-         } else {
-         logger.info("RTPSParticipant no longer ALIVE, trying to remove: " + this.m_participantProxyData.getGUID());
-         this.m_PDP.removeRemoteParticipant(this.m_participantProxyData.getGUID());
-         return;
-         }
-         this.restartTimer();
-         } else if (code == EventCode.EVENT_ABORT) {
-         logger.info("Stopped for " + this.m_participantProxyData.getParticipantName() + " with ID: " + this.m_participantProxyData.getGUID().getGUIDPrefix());
-         this.stopSemaphorePost();
-         } else {
-         logger.info("MSG: " + msg);
-         }*/
+        if (code == EventCode.EVENT_SUCCESS) {
+            logger.debug("Checking RTPSParticipant: " + this.m_participantProxyData.getParticipantName() + " with GUID: " + this.m_participantProxyData.getGUID().getGUIDPrefix());
+            if (this.m_participantProxyData.getIsAlive()) {
+                logger.debug("RTPSParticipant {} is still ALIVE", this.m_participantProxyData.getGUID());
+                this.m_participantProxyData.setIsAlive(false);
+            } else {
+                logger.debug("RTPSParticipant no longer ALIVE, trying to remove: {} ", this.m_participantProxyData.getGUID());
+                this.m_PDP.removeRemoteParticipant(this.m_participantProxyData.getGUID());
+                this.stopTimer();
+            }
+            //this.restartTimer();
+        } else if (code == EventCode.EVENT_ABORT) {
+            logger.info("Stopped for {} with ID: {}", this.m_participantProxyData.getParticipantName(), this.m_participantProxyData.getGUID().getGUIDPrefix());
+        } else {
+            logger.info("MSG: {}", msg);
+        }
     }
 
     /**
@@ -96,5 +95,5 @@ public class RemoteParticipantLeaseDuration extends TimedEvent {
     public ParticipantProxyData getParticipantProxyData() {
         return m_participantProxyData;
     }
-    
+
 }

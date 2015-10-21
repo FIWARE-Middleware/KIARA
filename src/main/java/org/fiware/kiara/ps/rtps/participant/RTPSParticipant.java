@@ -271,7 +271,7 @@ public class RTPSParticipant {
      * finishing the user's application)
      */
     public void destroy() {
-        logger.info("Removing RTPSParticipant: {}", this.getGUID().toString());
+        logger.debug("Removing RTPSParticipant: {}", this.getGUID().toString());
         while (this.m_userReaderList.size() > 0) {
             RTPSDomain.removeRTPSReader(this.m_userReaderList.get(0));
         }
@@ -771,7 +771,7 @@ public class RTPSParticipant {
                 this.m_builtinProtocols.removeLocalReader((RTPSReader) endpoint);
             }
         }
-
+        
         // Remove from threadListenList
 
         for (ListenResource lrit : this.m_listenResourceList) {
@@ -799,7 +799,7 @@ public class RTPSParticipant {
             this.m_mutex.unlock();
         }
 
-        logger.info("Endpoint {} successfully deleted from RTPSParticipant", endpointGUID);
+        logger.debug("Endpoint {} successfully deleted from RTPSParticipant", endpointGUID);
 
         return true;
 
