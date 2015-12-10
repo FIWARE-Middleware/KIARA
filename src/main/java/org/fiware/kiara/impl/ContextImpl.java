@@ -42,7 +42,9 @@ public class ContextImpl implements Context {
     // FIXME this initialization is hardcoded
     static {
         registerTransportFactory(new TcpBlockTransportFactory(/*secure = */false));
+        registerTransportFactory(new TcpBlockTransportFactory(true));
         registerTransportFactory(new HttpTransportFactory(/*secure = */false));
+        registerTransportFactory(new HttpTransportFactory(true));
         registerSerializerFactory(new CDRSerializerFactory());
     }
 

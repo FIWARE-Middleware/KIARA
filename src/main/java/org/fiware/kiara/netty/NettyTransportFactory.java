@@ -52,7 +52,7 @@ import javax.net.ssl.SSLException;
  */
 public abstract class NettyTransportFactory implements TransportFactory {
 
-    private static final boolean SSL = System.getProperty("ssl") != null;
+    private static boolean SSL = System.getProperty("ssl") != null;
     private static final EventLoopGroup bossGroup = new NioEventLoopGroup(1);
     private static final EventLoopGroup workerGroup = new NioEventLoopGroup();
 
@@ -114,6 +114,12 @@ public abstract class NettyTransportFactory implements TransportFactory {
         if (serverTransport == null) {
             throw new NullPointerException("serverTransport");
         }
+        
+        // Check if secure transport has been enabled
+        if (serverTransport.getTransportFactory().isSecureTransport()) {
+            SSL = true;
+        }
+        
         if (listener == null) {
             throw new NullPointerException("listener");
         }

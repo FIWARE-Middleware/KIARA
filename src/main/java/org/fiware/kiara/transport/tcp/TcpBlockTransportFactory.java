@@ -27,7 +27,9 @@ import org.fiware.kiara.transport.impl.TransportConnectionListener;
 import org.fiware.kiara.transport.impl.TransportImpl;
 
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
@@ -39,6 +41,7 @@ import java.security.cert.CertificateException;
 import java.util.Map;
 
 import javax.net.ssl.SSLException;
+import javax.net.ssl.TrustManagerFactory;
 
 /**
  *
@@ -104,6 +107,7 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
         final SslContext sslCtx;
         if (ssl) {
             sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
+            System.out.println(sslCtx.sessionTimeout());
         } else {
             sslCtx = null;
         }
@@ -119,7 +123,7 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
             }
 
             public void onConnectionClosed(TransportImpl connection) {
-
+                
             }
         });
 
@@ -128,7 +132,7 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
                 .channel(NioSocketChannel.class)
                 .handler(new TcpClientInitializer(sslCtx, clientHandler));
         b.connect(host, port);
-
+        
         return onConnectionActive;
     }
 
