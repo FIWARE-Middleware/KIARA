@@ -3,7 +3,7 @@ KIARA Installation and Administration Guide
 
 **Date: 10th October 2015**
 
-- Version: `0.3.5 <#>`__
+- Version: `0.4.0 <#>`__
 - Latest version: :doc:`latest <Installation_and_Admin_Guide>`
 
 Editors:
@@ -339,7 +339,7 @@ To use KIARA in your project you have to extend your build.gradle file:
 
     // In this section declare the dependencies for your production and test code
     dependencies {
-        compile group: 'org.fiware.kiara', name: 'KIARA', version: '0.3.5'
+        compile group: 'org.fiware.kiara', name: 'KIARA', version: '0.4.0'
         compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.7'
         testCompile group: 'junit', name: 'junit', version: '4.11'
     }
