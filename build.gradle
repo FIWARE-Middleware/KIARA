@@ -10,7 +10,7 @@ apply plugin: 'project-report'
 
 //general & artifact properties
 group = 'org.fiware.kiara'
-version = '0.3.5'
+version = '0.4.0'
 description = "KIARA Advanced Middleware main project"
 
 sourceCompatibility = 1.7
