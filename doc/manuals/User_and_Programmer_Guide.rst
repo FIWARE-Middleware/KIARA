@@ -3,19 +3,19 @@ KIARA User and Programmer Guide
 
 **Date: 10th October 2015**
 
-- Version: `0.3.0 <#>`__
+- Version: `0.3.0 <#>`_
 - Latest version: :doc:`latest <User_and_Programmer_Guide>`
 
 Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://www.eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`_
 -  `DFKI - German Research Center for Artificial
-   Intelligence <http://www.dfki.de/>`__
+   Intelligence <http://www.dfki.de/>`_
 -  `ZHAW - School of Engineering
-   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+   (ICCLab) <http://blog.zhaw.ch/icclab>`_
 
-Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
+Copyright 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
 --------------
 
@@ -73,20 +73,20 @@ Based on the IDL definition we generate with a precompiler stub- and skeleton-cl
 
 **Generated:** Stubs and Skeletons (at compile time) which have to be used by the application
 
-**Examples:** Corba, DDS, Thrift, …
+**Examples:** Corba, DDS, Thrift, ...
 
 Application derived operation mode
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This mode is typical for some modern (e.g. RMI, WebService,...) frameworks. Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.
 
-This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a “service registry” for remote partners.
+This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a "service registry" for remote partners.
 
 **Prerequisite:** Application-Interface-Definition (has to be the same on client and server side)
 
 **Generated:** Server-/Client-Proxies (generated at runtime)
 
-**Examples:** RMI, JAX-RS, Spring REST, …
+**Examples:** RMI, JAX-RS, Spring REST, ...
 
 Mapped operation mode
 ^^^^^^^^^^^^^^^^^^^^^
@@ -125,7 +125,7 @@ Basic procedure
 
 Before diving into the details describing the features and configure your projectfor KIARA, the following quick example should show the basic steps to create a simple client and server application in the different operation modes.
 
-Detailed instructions on how to execute the particular steps are given in chapter `Building a KIARA RPC application <#Building_a_KIARA_RPC_application>`__.
+Detailed instructions on how to execute the particular steps are given in chapter `Building a KIARA RPC application <#Building_a_KIARA_RPC_application>`_.
 
 IDL derived application process
 """""""""""""""""""""""""""""""
@@ -221,36 +221,30 @@ The usage syntax is:
 
 .. code:: bash
 
-    $ kiaragen [options] <IDL file> [<IDL file> …]
+    $ kiaragen [options] <IDL file> [<IDL file> ...]
 
 Options:
 
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| Option                         | Description                                                                                                               |
-+================================+===========================================================================================================================+
-| ``-help``                      | Shows help information                                                                                                    |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-version``                   | Shows the current version of KIARA / kiaragen                                                                             |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-package``                   | Defines the package prefix of the generated Java classes. Default: no package                                             |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-d "path"``                  | Specify the output directory for the generated files. Default: current working dir                                        |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-replace``                   | Replaces existing generated files.                                                                                        |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-example "pattern"``         | Generates the support files (interfaces, classes, stubs, skeletons,...) for the given target communication  pattern.      |
-|                                | These classes can be used by the developer to implement his application. It also creates build.gradle files.              |
-|                                | Supported values:                                                                                                         |
-|                                |                                                                                                                           |
-|                                | -  rpc: Creates an example application which uses RPC as a communication framework.                                       |
-|                                | -  ps: Creates an example application which uses Publish/Subscribe as a communication pattern.                            |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--ppDisable``                | Disables the preprocessor.                                                                                                |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``--ppPath "path"``            | Specifies the path of the preprocessor. Default: Systems C++ preprocessor                                                 |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
-| ``-t <path>``            | Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path                  |
-+--------------------------------+---------------------------------------------------------------------------------------------------------------------------+
+-help       Shows help information
+-version    Shows the current version of KIARA/kiaragen
+-package    Defines the package prefix of the generated Java classes. 
+            Default: no package
+-d <path>   Specify the output diretory for the generated Java classes.
+            Default: Current working dir
+-replace    Replaces existing generated
+--example <pattern>  Generates the support files (interfaces, classes, stubs, skeletons,...) 
+            for the given target communication  pattern. These classes can be used by the 
+            developer to implement his application. It also creates build.gradle files.
+            Supported values:
+            
+            - rpc: Creates an example application which uses RPC as a communication framework.
+            - ps: Creates an example application which uses Publish/Subscribe as a communication pattern.
+            
+-ppDisable  Disables the preprocessor.
+--ppPath <path>  Specifies the path of the preprocessor. Default: Systems C++ preprocessor
+-t <path>   Specify the output temploral directory for the files generated by the preprocessor. 
+            Default: machine temp path
+
 
 KIARA IDL
 ~~~~~~~~~
@@ -261,7 +255,11 @@ The basic structure of an IDL File is shown in the picture in the right.
 
 Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter :doc:`KIARA Interface Definition Language <../specification/Middleware_IDL_Specification>`. 
 
-\ |GitHub Workflow|\ 
+.. figure:: ./images/IDLFileStructure.png
+    :align: center
+    :width: 400px
+
+    IDL File Structure
 
 -  **Import Declarations**:
     Definitions can be split into multiple files and/or share common elements
@@ -289,9 +287,9 @@ Following, a short overview of the supported KIARA IDL elements. For a detailed 
 		Template types are frequently used data structures like the various forms of collections. The following Template Types are supported:
 		
 		-  **Lists**
-			Ordered collection of elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”
+			Ordered collection of elements of the same type. "list" is the modern variant of the OMG IDL keyword "sequence"
 		-  **Sets**
-			Ordered collection of different elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”
+			Ordered collection of different elements of the same type. "list" is the modern variant of the OMG IDL keyword "sequence"
 		-  **Maps**
 			Lists of paired objects indexed by a key
 		-  **Strings**
@@ -371,7 +369,7 @@ Using the ``-example`` option (described below), kiaragen will generate the foll
 -  ``x.y.<IDL-ServiceName>Servant``:
     This abstract class provides all the mechanisms (transport, un/marshalling, etc.) the server requires to call the server functions.
 -  ``x.y.<IDL-ServiceName>ServantExample``:
-    This class will be extended to implement the server side functions (see `Servant Implementation <#Servant_implementation>`__).
+    This class will be extended to implement the server side functions (see `Servant Implementation <#Servant_implementation>`_).
 -  ``x.y.ClientExample``:
     This class contains the code needed to run a possible example of the client side application.
 -  ``x.y.ServerExample``:
@@ -379,7 +377,7 @@ Using the ``-example`` option (described below), kiaragen will generate the foll
 -  ``x.y.IDLText``:
     This class contains a String whose value is the content of the IDL file.
 
-The package name ``x.y.`` can be declared when generating the support code using ``kiaragen`` (see ``-package`` option in ``kiaragen`` tool `description <#Kiaragen_tool>`__).
+The package name ``x.y.`` can be declared when generating the support code using ``kiaragen`` (see ``-package`` option in ``kiaragen`` tool `description <#Kiaragen_tool>`_).
 
 For our example the call could be:
 
@@ -526,9 +524,9 @@ For the client and server examples to compile, some jar files are needed. These 
 ::
 
     .
-    ├── src                           // source files
-    ├── lib                           // generated support files 
-    └── build.gradle                  // Gradle compilation script
+    ├── src                       // source files
+    ├── lib                       // generated support files 
+    └── build.gradle              // Gradle compilation script
 
 To compile the client using gradle, the call would be the next one (change target clientJar to serverJar to compile the server):
 
@@ -550,11 +548,11 @@ After compiling both of them the following files will be generated:
 
     .
     ├── src                       // source files
-    ├── build                           // generated by gradle 
-    │   ├── classes                     // Compiled .class files
-    │   ├── dependency-cache            // Inner gradle files
-    │   ├── libs                        // Executable jar files
-    │   └── tmp                        // Temporal files used by gradle
+    ├── build                     // generated by gradle 
+    │   ├── classes               // Compiled .class files
+    │   ├── dependency-cache      // Inner gradle files
+    │   ├── libs                  // Executable jar files
+    │   └── tmp                   // Temporal files used by gradle
     ├── lib                        
     └── build.gradle              //  Gradle compilation script
 
@@ -677,8 +675,8 @@ The following ServerExample class shows, how this would look like:
             substractHandler = /* Implement handler for the substract function */;
                
             // Register services
-            service.register(“Calculator.add”, addHandler);
-            service.register(“Calculator.substract”, substractHandler);
+            service.register("Calculator.add", addHandler);
+            service.register("Calculator.substract", substractHandler);
 
             //Add service waiting on TCP with CDR serialization
             server.addService(service, "tcp://0.0.0.0:9090", "cdr");
@@ -708,11 +706,11 @@ The following code shows the client implementation:
             Connection connection = 
                          context.connect("kiara://127.0.0.1:9090/service");
 
-            // Create client by using the proxy’s name
-            DynamicProxy client = connection.getDynamicProxy(“Calculator”);
+            // Create client by using the proxy's name
+            DynamicProxy client = connection.getDynamicProxy("Calculator");
 
             // Create request object
-            DynamicFunctionRequest request = client.createFunctionRequest(“add”);
+            DynamicFunctionRequest request = client.createFunctionRequest("add");
             ((DynamicPrimitive) request.getParameterAt(0)).set(8);
             ((DynamicPrimitive) request.getParameterAt(1)).set(5);
 
@@ -720,10 +718,10 @@ The following code shows the client implementation:
             DynamicFunctionResponse response = request.execute();
             if (response.isException()) {
                 DynamicData result = response.getReturnValue();
-                System.out.println(“Exception = “ + (DynamicException) result);
+                System.out.println("Exception = " + (DynamicException) result);
             } else {
                 DynamicData result = response.getReturnValue();
-                System.out.println(“Result = “ + (DynamicPrimitive) result);
+                System.out.println("Result = " + (DynamicPrimitive) result);
             }
         // shutdown the client
             Kiara.shutdown();
@@ -866,95 +864,68 @@ The writer tag is the use used to describe all the characteristics of the reader
 
 The available tags inside ``writer`` are the following:
 
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| Tag                      | Type            | Description                                                                                              |
-+==========================+=================+==========================================================================================================+
-| ``<userId>``             | element         | Integer defining the user ID for this endpoint.                                                          |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<entityId>``           | element         | Integer defining the specific ID of the endpoint.                                                        |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<topicName>``          | element         | Indicates the name of the Topic used by the endpoint.                                                    |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<topicDataName>``      | element         | Indicates the name of the data type that can be sent by the endpoint.                                    |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<topicKind>``          | element         | Indicates whether the endpoint uses keyed topics or not. Supported values:                               |
-|                          |                 |                                                                                                          |
-|                          |                 | -  WITH\_KEY                                                                                             |
-|                          |                 | -  NO\_KEY                                                                                               |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<reliabilityQos>``     | element         | Indicates which kind of reliability is used by the endpoint. Supported values:                           |
-|                          |                 |                                                                                                          |
-|                          |                 | -  RELIABLE\_RELIABILITY\_QOS                                                                            |
-|                          |                 | -  BEST\_EFFORT\_RELIABILITY\_QOS                                                                        |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<unicastLocator>``     | complexType\*   | List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:            |
-|                          |                 |                                                                                                          |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-|                          |                 | | Name          | Description                                      |                                     |
-|                          |                 | +===============+==================================================+                                     |
-|                          |                 | | ``address``   | IP address of the endpoint.                      |                                     |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-|                          |                 | | ``port``      | Integer indicating the port for communication.   |                                     |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<multicastLocator>``   | complexType\*   | List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:          |
-|                          |                 |                                                                                                          |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-|                          |                 | | Name          | Description                                      |                                     |
-|                          |                 | +===============+==================================================+                                     |
-|                          |                 | | ``address``   | IP address of the endpoint.                      |                                     |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-|                          |                 | | ``port``      | Integer indicating the port for communication.   |                                     |
-|                          |                 | +---------------+--------------------------------------------------+                                     |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<topic>``              | complexType     | Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:     |
-|                          |                 |                                                                                                          |
-|                          |                 | +----------------+-------------------------------------------------------------------+                   |
-|                          |                 | | Name           | Description                                                       |                   |
-|                          |                 | +================+===================================================================+                   |
-|                          |                 | | ``name``       | Name of the topic.                                                |                   |
-|                          |                 | +----------------+-------------------------------------------------------------------+                   |
-|                          |                 | | ``dataType``   | Name of the dataType related to this topic.                       |                   |
-|                          |                 | +----------------+-------------------------------------------------------------------+                   |
-|                          |                 | | ``kind``       | Indicates whether it is a keyed topic or not. Supported values:   |                   |
-|                          |                 | |                |                                                                   |                   |
-|                          |                 | |                | -  WITH\_KEY                                                      |                   |
-|                          |                 | |                | -  NO\_KEY                                                        |                   |
-|                          |                 | +----------------+-------------------------------------------------------------------+                   |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<durabilityQos>``      | element         | String element indicating the durability of the data send by the endpoint. Supported values:             |
-|                          |                 |                                                                                                          |
-|                          |                 | -  TRANSIENT\_LOCAL\_DURABILITY\_QOS                                                                     |
-|                          |                 | -  VOLATILE\_DURABILITY\_QOS                                                                             |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<ownershipQos>``       | element         | Complex type that describes the ownership of the data sent by the endpoint. Attributes:                  |
-|                          |                 |                                                                                                          |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+   |
-|                          |                 | | Name           | Description                                                                       |   |
-|                          |                 | +================+===================================================================================+   |
-|                          |                 | | ``kind``       | Indicates the kind of ownership. Supported values:                                |   |
-|                          |                 | |                |                                                                                   |   |
-|                          |                 | |                | -  SHARED\_OWNERSHIP\_QOS                                                         |   |
-|                          |                 | |                | -  EXCLUSIVE\_OWNERSHIP\_QOS                                                      |   |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+   |
-|                          |                 | | ``strength``   | Integer value used to give priority of the data ownership over other endpoints.   |   |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+   |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
-| ``<livelinessQos>``      | complexType     | It describes the Lliveliness QoS selected for the endpoint. Attributes:                                  |
-|                          |                 |                                                                                                          |
-|                          |                 | +------------------------+----------------------------------------------------------------+              |
-|                          |                 | | Name                   | Description                                                    |              |
-|                          |                 | +========================+================================================================+              |
-|                          |                 | | ``kind``               | Indicates the kind of liveliness selected. Supported values:   |              |
-|                          |                 | |                        |                                                                |              |
-|                          |                 | |                        | -  AUTOMATIC\_LIVELINESS\_QOS                                  |              |
-|                          |                 | |                        | -  MANUAL\_BY\_PARTICIPANT\_LIVELINESS\_QOS                    |              |
-|                          |                 | |                        |                                                                |              |
-|                          |                 | |                        | -  MANUAL\_BY\_TOPIC\_LIVELINESS\_QOS                          |              |
-|                          |                 | +------------------------+----------------------------------------------------------------+              |
-|                          |                 | | ``leaseDuration_ms``   | Integer indicating the lease duration in milliseconds.         |              |
-|                          |                 | +------------------------+----------------------------------------------------------------+              |
-+--------------------------+-----------------+----------------------------------------------------------------------------------------------------------+
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| Tag                    | Type          | Description                                                                                          |
++========================+===============+======================================================================================================+
+| ``<userId>``           | element       | Integer defining the user ID for this endpoint.                                                      |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<entityId>``         | element       | Integer defining the specific ID of the endpoint.                                                    |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicName>``        | element       | Indicates the name of the Topic used by the endpoint.                                                |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicDataName>``    | element       | Indicates the name of the data type that can be sent by the endpoint.                                |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicKind>``        | element       | Indicates whether the endpoint uses keyed topics or not. Supported values:                           |
+|                        |               |                                                                                                      |
+|                        |               | -  WITH\_KEY                                                                                         |
+|                        |               | -  NO\_KEY                                                                                           |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<reliabilityQos>``   | element       | Indicates which kind of reliability is used by the endpoint. Supported values:                       |
+|                        |               |                                                                                                      |
+|                        |               | -  RELIABLE\_RELIABILITY\_QOS                                                                        |
+|                        |               | -  BEST\_EFFORT\_RELIABILITY\_QOS                                                                    |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<unicastLocator>``   | complexType   | List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:        |
+|                        |               |                                                                                                      |
+|                        |               | :``address``:   IP address of the endpoint.                                                          |
+|                        |               | :``port``:      Integer indicating the port for communication.                                       |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<multicastLocator>`` | complexType   | List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:      |
+|                        |               |                                                                                                      |
+|                        |               | :``address``:   IP address of the endpoint.                                                          |
+|                        |               | :``port``:      Integer indicating the port for communication.                                       |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topic>``            | complexType   | Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes: |
+|                        |               |                                                                                                      |
+|                        |               | :``name``:      Name of the topic.                                                                   |
+|                        |               | :``dataType``:  Name of the dataType related to this topic.                                          |
+|                        |               | :``kind``:      Indicates whether it is a keyed topic or not. Supported values:                      |
+|                        |               |                                                                                                      |
+|                        |               |                 - WITH\_KEY                                                                          |
+|                        |               |                 - NO\_KEY                                                                            |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<durabilityQos>``    | element       | String element indicating the durability of the data send by the endpoint. Supported values:         |
+|                        |               |                                                                                                      |
+|                        |               | -  TRANSIENT\_LOCAL\_DURABILITY\_QOS                                                                 |
+|                        |               | -  VOLATILE\_DURABILITY\_QOS                                                                         |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<ownershipQos>``     | element       | Complex type that describes the ownership of the data sent by the endpoint. Attributes:              |
+|                        |               |                                                                                                      |
+|                        |               | :``kind``:     Indicates the kind of ownership. Supported values:                                    |
+|                        |               |                                                                                                      |
+|                        |               |                -  SHARED\_OWNERSHIP\_QOS                                                             |
+|                        |               |                -  EXCLUSIVE\_OWNERSHIP\_QOS                                                          |
+|                        |               | :``strength``: Integer value used to give priority of the data ownership over other endpoints.       |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<livelinessQos>``    | complexType   | It describes the Lliveliness QoS selected for the endpoint. Attributes:                              |
+|                        |               |                                                                                                      |
+|                        |               | :``kind``:     Indicates the kind of liveliness selected. Supported values:                          |
+|                        |               |                                                                                                      |
+|                        |               |                - AUTOMATIC\_LIVELINESS\_QOS                                                          |
+|                        |               |                - MANUAL\_BY\_PARTICIPANT\_LIVELINESS\_QOS                                            |
+|                        |               |                - MANUAL\_BY\_TOPIC\_LIVELINESS\_QOS                                                  |
+|                        |               | :``leaseDuration_ms``: Integer indicating the lease duration in milliseconds.                        |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
 
 reader
 """"""
@@ -963,97 +934,71 @@ The reader tag is the use used to describe all the characteristics of the reader
 
 The available tags inside ``reader`` are the following:
 
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| Tag                      | Type            | Description                                                                                                       |
-+==========================+=================+===================================================================================================================+
-| ``<userId>``             | element         | Integer defining the user ID for this endpoint.                                                                   |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<entityId>``           | element         | Integer defining the specific ID of the endpoint.                                                                 |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<topicName>``          | element         | Indicates the name of the Topic used by the endpoint.                                                             |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<topicDataName>``      | element         | Indicates the name of the data type that can be received by the endpoint.                                         |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<expectsInlineQos>``   | element         | Boolean value inticating whether the reader endpoint expects to receive inline QoS in the RTPS messages or not.   |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<topicKind>``          | element         | Indicates whether the endpoint uses keyed topics or not. Supported values:                                        |
-|                          |                 |                                                                                                                   |
-|                          |                 | -  WITH\_KEY                                                                                                      |
-|                          |                 | -  NO\_KEY                                                                                                        |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<reliabilityQos>``     | element         | Indicates which kind of reliability is used by the endpoint. Supported values:                                    |
-|                          |                 |                                                                                                                   |
-|                          |                 | -  RELIABLE\_RELIABILITY\_QOS                                                                                     |
-|                          |                 | -  BEST\_EFFORT\_RELIABILITY\_QOS                                                                                 |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<unicastLocator>``     | complexType\*   | List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:                     |
-|                          |                 |                                                                                                                   |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-|                          |                 | | Name          | Description                                      |                                              |
-|                          |                 | +===============+==================================================+                                              |
-|                          |                 | | ``address``   | IP address of the endpoint.                      |                                              |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-|                          |                 | | ``port``      | Integer indicating the port for communication.   |                                              |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<multicastLocator>``   | complexType\*   | List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:                   |
-|                          |                 |                                                                                                                   |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-|                          |                 | | Name          | Description                                      |                                              |
-|                          |                 | +===============+==================================================+                                              |
-|                          |                 | | ``address``   | IP address of the endpoint.                      |                                              |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-|                          |                 | | ``port``      | Integer indicating the port for communication.   |                                              |
-|                          |                 | +---------------+--------------------------------------------------+                                              |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<topic>``              | complexType     | Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:              |
-|                          |                 |                                                                                                                   |
-|                          |                 | +----------------+-------------------------------------------------------------------+                            |
-|                          |                 | | Name           | Description                                                       |                            |
-|                          |                 | +================+===================================================================+                            |
-|                          |                 | | ``name``       | Name of the topic.                                                |                            |
-|                          |                 | +----------------+-------------------------------------------------------------------+                            |
-|                          |                 | | ``dataType``   | Name of the dataType related to this topic.                       |                            |
-|                          |                 | +----------------+-------------------------------------------------------------------+                            |
-|                          |                 | | ``kind``       | Indicates whether it is a keyed topic or not. Supported values:   |                            |
-|                          |                 | |                |                                                                   |                            |
-|                          |                 | |                | -  WITH\_KEY                                                      |                            |
-|                          |                 | |                | -  NO\_KEY                                                        |                            |
-|                          |                 | +----------------+-------------------------------------------------------------------+                            |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<durabilityQos>``      | element         | String element indicating the durability of the data send by the endpoint. Supported values:                      |
-|                          |                 |                                                                                                                   |
-|                          |                 | -  TRANSIENT\_LOCAL\_DURABILITY\_QOS                                                                              |
-|                          |                 | -  VOLATILE\_DURABILITY\_QOS                                                                                      |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<ownershipQos>``       | element         | Complex type that describes the ownership of the data received by the endpoint. Attributes:                       |
-|                          |                 |                                                                                                                   |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+            |
-|                          |                 | | Name           | Description                                                                       |            |
-|                          |                 | +================+===================================================================================+            |
-|                          |                 | | ``kind``       | Indicates the kind of ownership. Supported values:                                |            |
-|                          |                 | |                |                                                                                   |            |
-|                          |                 | |                | -  SHARED\_OWNERSHIP\_QOS                                                         |            |
-|                          |                 | |                | -  EXCLUSIVE\_OWNERSHIP\_QOS                                                      |            |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+            |
-|                          |                 | | ``strength``   | Integer value used to give priority of the data ownership over other endpoints.   |            |
-|                          |                 | +----------------+-----------------------------------------------------------------------------------+            |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
-| ``<livelinessQos>``      | complexType     | It describes the Lliveliness QoS selected for the endpoint. Attributes:                                           |
-|                          |                 |                                                                                                                   |
-|                          |                 | +------------------------+----------------------------------------------------------------+                       |
-|                          |                 | | Name                   | Description                                                    |                       |
-|                          |                 | +========================+================================================================+                       |
-|                          |                 | | ``kind``               | Indicates the kind of liveliness selected. Supported values:   |                       |
-|                          |                 | |                        |                                                                |                       |
-|                          |                 | |                        | -  AUTOMATIC\_LIVELINESS\_QOS                                  |                       |
-|                          |                 | |                        | -  MANUAL\_BY\_PARTICIPANT\_LIVELINESS\_QOS                    |                       |
-|                          |                 | |                        |                                                                |                       |
-|                          |                 | |                        | -  MANUAL\_BY\_TOPIC\_LIVELINESS\_QOS                          |                       |
-|                          |                 | +------------------------+----------------------------------------------------------------+                       |
-|                          |                 | | ``leaseDuration_ms``   | Integer indicating the lease duration in milliseconds.         |                       |
-|                          |                 | +------------------------+----------------------------------------------------------------+                       |
-+--------------------------+-----------------+-------------------------------------------------------------------------------------------------------------------+
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| Tag                    | Type          | Description                                                                                          |
++========================+===============+======================================================================================================+
+| ``<userId>``           | element       | Integer defining the user ID for this endpoint.                                                      |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<entityId>``         | element       | Integer defining the specific ID of the endpoint.                                                    |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicName>``        | element       | Indicates the name of the Topic used by the endpoint.                                                |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicDataName>``    | element       | Indicates the name of the data type that can be received by the endpoint.                            |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<expectsInlineQos>`` | element       | Boolean value inticating whether the reader endpoint expects to receive inline QoS in                |
+|                        |               | the RTPS messages or not.                                                                            |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topicKind>``        | element       | Indicates whether the endpoint uses keyed topics or not. Supported values:                           |
+|                        |               |                                                                                                      |
+|                        |               | -  WITH\_KEY                                                                                         |
+|                        |               | -  NO\_KEY                                                                                           |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<reliabilityQos>``   | element       | Indicates which kind of reliability is used by the endpoint. Supported values:                       |
+|                        |               |                                                                                                      |
+|                        |               | -  RELIABLE\_RELIABILITY\_QOS                                                                        |
+|                        |               | -  BEST\_EFFORT\_RELIABILITY\_QOS                                                                    |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<unicastLocator>``   | complexType\* | List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:        |
+|                        |               |                                                                                                      |
+|                        |               | :``address``:   IP address of the endpoint.                                                          |
+|                        |               | :``port``:      Integer indicating the port for communication.                                       |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<multicastLocator>`` | complexType\* | List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:      |
+|                        |               |                                                                                                      |
+|                        |               | :``address``:   IP address of the endpoint.                                                          |
+|                        |               | :``port``:      Integer indicating the port for communication.                                       |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<topic>``            | complexType   | Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes: |
+|                        |               |                                                                                                      |
+|                        |               | :``name``:      Name of the topic.                                                                   |
+|                        |               | :``dataType``:  Name of the dataType related to this topic.                                          |
+|                        |               | :``kind``:      Indicates whether it is a keyed topic or not. Supported values:                      |
+|                        |               |                                                                                                      |
+|                        |               |                 -  WITH\_KEY                                                                         |
+|                        |               |                 -  NO\_KEY                                                                           |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<durabilityQos>``    | element       | String element indicating the durability of the data send by the endpoint. Supported values:         |
+|                        |               |                                                                                                      |
+|                        |               | -  TRANSIENT\_LOCAL\_DURABILITY\_QOS                                                                 |
+|                        |               | -  VOLATILE\_DURABILITY\_QOS                                                                         |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<ownershipQos>``     | element       | Complex type that describes the ownership of the data received by the endpoint. Attributes:          |
+|                        |               |                                                                                                      |
+|                        |               | :``kind``:      Indicates the kind of ownership. Supported values:                                   |
+|                        |               |                                                                                                      |
+|                        |               |                 -  SHARED\_OWNERSHIP\_QOS                                                            |
+|                        |               |                 -  EXCLUSIVE\_OWNERSHIP\_QOS                                                         |
+|                        |               | :``strength``:  Integer value used to give priority of the data ownership over other endpoints.      |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
+| ``<livelinessQos>``    | complexType   | It describes the Lliveliness QoS selected for the endpoint. Attributes:                              |
+|                        |               |                                                                                                      |
+|                        |               | :``kind``:      Indicates the kind of liveliness selected. Supported values:                         |
+|                        |               |                                                                                                      |
+|                        |               |                 - AUTOMATIC\_LIVELINESS\_QOS                                                         |
+|                        |               |                 - MANUAL\_BY\_PARTICIPANT\_LIVELINESS\_QOS                                           |
+|                        |               |                 - MANUAL\_BY\_TOPIC\_LIVELINESS\_QOS                                                 |
+|                        |               | :``leaseDuration_ms``: Integer indicating the lease duration in milliseconds.                        |
++------------------------+---------------+------------------------------------------------------------------------------------------------------+
 
 Implementing the Publisher
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -1326,5 +1271,3 @@ In order for the Participant to stop succesfully, it must be removed from the Do
         }
 
     }
-
-.. |GitHub Workflow| image:: ./images/IDLFileStructure.png

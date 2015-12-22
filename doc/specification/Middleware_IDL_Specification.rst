@@ -3,17 +3,17 @@ Advanced Middleware IDL Specification
 
 **Date: 10th October 2015**
 
-- Version: `0.3.0 <#>`__
+- Version: `0.3.0 <#>`_
 - Latest version: :doc:`latest <Middleware_IDL_Specification>`
 
 Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://www.eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`_
 -  `DFKI - German Research Center for Artificial
-   Intelligence <http://www.dfki.de/>`__
+   Intelligence <http://www.dfki.de/>`_
 -  `ZHAW - School of Engineering
-   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+   (ICCLab) <http://blog.zhaw.ch/icclab>`_
    
 Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
@@ -49,7 +49,7 @@ Status of this Document
 +-----------------+-----------------------+
 | **Date**        | **Description**       |
 +=================+=======================+
-| 8-April-2015    | 0.2.0 First Release   |
+| 8-April-2015    | Release 0.2.0         |
 +-----------------+-----------------------+
 | 10-October-2015 | Release 0.3.0         |
 +-----------------+-----------------------+
@@ -60,8 +60,8 @@ Preface
 -------
 
 The foundation of the FIWARE Middleware Interface Definition Language
-(IDL) is the Object Management Group (OMG) IDL 3.5. See `*Appendix
-C* <#appendix-c-omg-idl-3.5-grammar>`__ for the OMG IDL 3.5 grammar.
+(IDL) is the Object Management Group (OMG) IDL 3.5. See `Appendix
+C <#appendix-c-omg-idl-3.5-grammar>`_ for the OMG IDL 3.5 grammar.
 
 To maintain backward compatibility, the FIWARE Middleware IDL grammar
 embraces all OMG IDL 3.5 features. IDL parsers are not required to
@@ -74,7 +74,7 @@ supported.
 Related documentation
 ---------------------
 
--  `*OMG DDS-XTypes 1.0* <http://www.omg.org/spec/DDS-XTypes/1.0/>`__
+-  `OMG DDS-XTypes 1.0 <http://www.omg.org/spec/DDS-XTypes/1.0/>`_
 
 Syntax Definition
 -----------------
@@ -102,32 +102,32 @@ therefore will be ignored by the implmentations.
                  |   <annotation_dcl> ";"
                  |   <annotation_appl> <definition>
 
-| See section `*Import Declaration* <#import-declaration>`__ for the
+| See section `Import Declaration <#import-declaration>`_ for the
   specification of ``<import>``
-| See section `*Module Declaration* <#module-declaration>`__ for the
+| See section `Module Declaration <#module-declaration>`_ for the
   specification of ``<module\>``
-| See section `*Interface Declaration* <#interface-declaration>`__ for
+| See section `Interface Declaration <#interface-declaration>`_ for
   the specification of ``<interface>``
-| See section `*Value Declaration* <#value-declaration>`__ for the
+| See section `Value Declaration <#value-declaration>`_ for the
   specification of ``<value\>``
-| See section `*Constant Declaration* <#constant-declaration>`__ for the
+| See section `Constant Declaration <#constant-declaration>`_ for the
   specification of ``<const_dcl>``
-| See section `*Type Declaration* <#type-declaration>`__ for the
+| See section `Type Declaration <#type-declaration>`_ for the
   specification of ``<type_dcl>``
-| See section `*Exception Declaration* <#exception-declaration>`__ for
+| See section `Exception Declaration <#exception-declaration>`_ for
   the specification of ``<except_dcl>``
-| See section `*Repository Identity Related
-  Declarations* <#repository-identity-related-declarations>`__ for the
+| See section `Repository Identity Related
+  Declarations <#repository-identity-related-declarations>`_ for the
   specification of ``<type_id_dcl>`` and ``<type_prefix_dcl>``
-| See section `*Event Declaration* <#event-declaration>`__ for the
+| See section `Event Declaration <#event-declaration>`_ for the
   specification of ``<event>``
-| See section `*Component Declaration* <#component-declaration>`__ for
+| See section `Component Declaration <#component-declaration>`_ for
   the specification of ``<component>``
-| See section `*Event Declaration* <#event-declaration>`__ for the
+| See section `Event Declaration <#event-declaration>`_ for the
   specification of ``<home_dcl>``
-| See section `*Annotation Declaration* <#annotation-declaration>`__ for
+| See section `Annotation Declaration <#annotation-declaration>`_ for
   the specification of ``<annotation_dcl>``
-| See section `*Annotation Application* <#annotation-application>`__ for
+| See section `Annotation Application <#annotation-application>`_ for
   the specification of ``< annotation_appl>``
 
 Import Declaration
@@ -214,7 +214,7 @@ The interface header consists of three elements:
 An interface declaration containing the keyword ``abstract`` in its
 header, declares an abstract interface. Abstract interfaces have
 slightly different rules from *regular* interfaces, as described in
-section `*Abstract interface* <#abstract-interface>`__.
+section `Abstract interface <#abstract-interface>`_.
 
 An interface declaration containing the keyword ``local`` in its header,
 declares a local interface. Local interfaces are not currently supported
@@ -244,16 +244,16 @@ Interface Body
 
 The interface body contains the following kind of declarations:
 
--  Constant declarations whose syntax is described in section `*Constant
-   Declaration* <#constant-declaration>`__.
--  Type declarations whose syntax is described in section `*Type
-   Declaration* <#type-declaration>`__.
+-  Constant declarations whose syntax is described in section `Constant
+   Declaration <#constant-declaration>`_.
+-  Type declarations whose syntax is described in section `Type
+   Declaration <#type-declaration>`_.
 -  Exception declarations whose syntax is described in section
-   `*Exception Declaration* <#exception-declaration>`__.
+   `Exception Declaration <#exception-declaration>`_.
 -  Attribute declarations whose syntax is described in section
-   `*Attribute Declaration* <#attribute-declaration>`__.
+   `Attribute Declaration <#attribute-declaration>`_.
 -  Operation declarations whose syntax is described in section
-   `*Operation Declaration* <#operation-declaration>`__.
+   `Operation Declaration <#operation-declaration>`_.
 
 Abstract interface
 ^^^^^^^^^^^^^^^^^^
@@ -268,7 +268,7 @@ Value Declaration
 ~~~~~~~~~~~~~~~~~
 
 Value type declarations are supported by FIWARE Middleware IDL, but
-aren’t by FIWARE Middleware. Any FIWARE Middleware IDL parser has to
+aren't by FIWARE Middleware. Any FIWARE Middleware IDL parser has to
 explain that these declarations are not used and the parser will ignore
 them.
 
@@ -392,7 +392,7 @@ specifiers to represent typed value. The syntax is as follows:
 
 The ``<scoped_name\>`` in ``<simple_type_spec>`` must be a previously
 defined type introduced by a type declaration(\ ``<type_dcl>`` - see
-section `*Type Declaration* <#type-declaration>`__).
+section `Type Declaration <#type-declaration>`_).
 
 The next subsections describe basic and constructed type specifiers.
 
@@ -758,22 +758,22 @@ An operation declaration consists of:
 
 -  An optional *operation attribute* that is supported by FIWARE
    Middleware IDL for backward compatibility. Operation attributes are
-   described in section `*Operation
-   attribute* <#operation-attribute>`__.
--  The *type* of the operation’s return result. Operations that do not
+   described in section `Operation
+   attribute <#operation-attribute>`_.
+-  The *type* of the operation's return result. Operations that do not
    return a result must specify the void type.
 -  An *identifier* that names the operation in the scope of the
    interface in which it is defined.
 -  A *parameter list* that specifies zero or more parameter declarations
    for the operation. Parameter declaration is described in section
-   `*Parameter Declarations* <#parameter-declarations>`__.
+   `Parameter Declarations <#parameter-declarations>`_.
 -  An optional *raises expression* that indicates which exception may be
    raised as a result of an invocation of this operation. Raises
-   expression are described in section `*Raises
-   Expressions* <#raises-expressions>`__.
+   expression are described in section `Raises
+   Expressions <#raises-expressions>`_.
 -  An optional *context expression* that is inherited from OMG IDL 3.5,
    but FIWARE Middleware will not use. Context expressions are described
-   in section `*Context Expressions* <#context-expressions>`__.
+   in section `Context Expressions <#context-expressions>`_.
 
 Operation attribute
 ^^^^^^^^^^^^^^^^^^^
@@ -787,7 +787,7 @@ The syntax for operation attributes is as follows:
 This attribute is supported in FIWARE Middleware for backward
 compatibility. But in FIWARE Middleware IDL the preferedby way to define
 a **oneway** function is using the **@Oneway** annotation as described
-in section `*Oneway functions* <#oneway-functions>`__.
+in section `Oneway functions <#oneway-functions>`_.
 
 Parameter Declarations
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -1059,10 +1059,10 @@ syntax:
 
 Applying an annotation consists in prefixing the element under
 annotation with: - The annotation name prefixed with a commercial at (@)
-- Followed by the list of values given to the annotation’s members
+- Followed by the list of values given to the annotation's members
 within parentheses and separated by comma. Each parameter value consist
 in: - The name of the member - The symbol '=' - A constant expression,
-whose type must be compatible with the member’s declaration.
+whose type must be compatible with the member's declaration.
 
 Members may be indicated in any order. Members with no default value
 must be given a value. Members with default value may be omitted. In
@@ -1074,13 +1074,13 @@ by '@' - In case there is only one member, the annotation application
 may be as short as the name of the annotation prefixed by '@' and
 followed with the constant value of that unique member within (). The
 type of the provided constant expression must compatible with the
-members’ declaration
+members' declaration
 
 An annotation may be applied to almost any IDL construct or
 sub-construct. Applying and annotation consists actually in adding the
 related meta-data to the element under annotation. Full FIWARE
-Middleware IDL described in section `*Appendix B: FIWARE Middleware IDL
-Grammar* <#h.h832exl87ix3>`__ shows this.
+Middleware IDL described in section `Appendix B: FIWARE Middleware IDL
+Grammar <#h.h832exl87ix3>`_ shows this.
 
 Built-in annotations
 ~~~~~~~~~~~~~~~~~~~~
@@ -1094,7 +1094,7 @@ Member IDs
 All members of aggregated types have an integral member ID that uniquely
 identifies them within their defining type. Because OMG IDL 3.5 has no
 native syntax for expressing this information, IDs by default are
-defined implicitly based on the members’ relative declaration order. The
+defined implicitly based on the members' relative declaration order. The
 first member (which, in a union type, is the discriminator) has ID 0,
 the second ID 1, the third ID 2, and so on.
 
@@ -1235,41 +1235,41 @@ This section summarizes in one block all changes applied from OMG IDL
 3.5 to the FIWARE Middleware IDL:
 
 -  Modern keyword for modules. New keyword is ``namespace``. See section
-   `*Module Declaration* <#module-declaration>`__.
+   `Module Declaration <#module-declaration>`_.
 -  Modern keyword for interfaces. New keyword is ``service``. See
-   section `*Interface Header* <#interface-header>`__.
--  Modern keywords for basic types. See section `*Basic
-   Types* <#basic-types>`__.
--  New template types. See section `*Template
-   Types* <#template-types>`__.
+   section `Interface Header <#interface-header>`_.
+-  Modern keywords for basic types. See section `Basic
+   Types <#basic-types>`_.
+-  New template types. See section `Template
+   Types <#template-types>`_.
 -  FIWARE Middleware IDL only uses input parameters. See section
-   `*Parameter Declarations* <#parameter-declarations>`__
--  FIWARE Middleware IDL adds annotations. See sections `*Annotation
-   Declaration* <#annotation-declaration>`__ and `*Annotation
-   Application* <#annotation-application>`__.
+   `Parameter Declarations <#parameter-declarations>`_
+-  FIWARE Middleware IDL adds annotations. See sections `Annotation
+   Declaration <#annotation-declaration>`_ and `Annotation
+   Application <#annotation-application>`_.
 
 Also FIWARE Middleware IDL does **not** use and support (and therefore
 ignores) several OMG IDL 3.5 constructs:
 
--  Import declarations. See section `*Import
-   Declaration* <#import-declaration>`__.
--  Value declarations. See section `*Value
-   Declaration* <#value-declaration>`__.
--  'Any' type. See section `*Basic Types* <#basic-types>`__.
--  Native types. See section `*Native Types* <#native-types>`__.
--  Context expressions. See section `*Context
-   Expressions* <#context-expressions>`__.
--  Attribute declarations. See section `*Attribute
-   Declaration* <#attribute-declaration>`__.
--  Repository Identity Related Declarations. See section `*Repository
+-  Import declarations. See section `Import
+   Declaration <#import-declaration>`_.
+-  Value declarations. See section `Value
+   Declaration <#value-declaration>`_.
+-  'Any' type. See section `Basic Types <#basic-types>`_.
+-  Native types. See section `Native Types <#native-types>`_.
+-  Context expressions. See section `Context
+   Expressions <#context-expressions>`_.
+-  Attribute declarations. See section `Attribute
+   Declaration <#attribute-declaration>`_.
+-  Repository Identity Related Declarations. See section `Repository
    Identity Related
-   Declarations* <#repository-identity-related-declarations>`__.
--  Event declarations. See section `*Event
-   Declaration* <#event-declaration>`__.
--  Component declarations. See section `*Component
-   Declaration* <#component-declaration>`__.
--  Home declarations. See section `*Home
-   Declaration* <#home-declaration>`__.
+   Declarations <#repository-identity-related-declarations>`_.
+-  Event declarations. See section `Event
+   Declaration <#event-declaration>`_.
+-  Component declarations. See section `Component
+   Declaration <#component-declaration>`_.
+-  Home declarations. See section `Home
+   Declaration <#home-declaration>`_.
 
 Appendix B: FIWARE Middleware IDL Grammar
 -----------------------------------------
@@ -1426,7 +1426,7 @@ Appendix B: FIWARE Middleware IDL Grammar
     <constr_type_spec> ::= <struct_type>
                        |   <union_type>
                        |   <enum_type>
-    <declarators> ::= <declarator> { "," <declarator> }∗
+    <declarators> ::= <declarator> { "," <declarator> }*
     <declarator> ::= <simple_declarator>
                  |   <complex_declarator>
     <simple_declarator> ::= <identifier>
@@ -1483,7 +1483,7 @@ Appendix B: FIWARE Middleware IDL Grammar
     <element_spec> ::= <type_spec> <declarator>
                    |   <annotation_appl> <type_spec> <declarator>
     <enum_type> ::= "enum" <identifier>
-                    "{" <enumerator> { "," <enumerator> } ∗ "}"
+                    "{" <enumerator> { "," <enumerator> } * "}"
     <enumerator> ::= <identifier>
     <sequence_type> ::= "sequence" "<" <simple_type_spec> "," <positive_int_const> ">"
                     |   "sequence" "<" <simple_type_spec> ">"
@@ -1509,7 +1509,7 @@ Appendix B: FIWARE Middleware IDL Grammar
     <op_attribute> ::= "oneway"
     <op_type_spec> ::= <param_type_spec>
                    | "void"
-    <parameter_dcls> ::= "(" <param_dcl> { "," <param_dcl> } ∗ ")"
+    <parameter_dcls> ::= "(" <param_dcl> { "," <param_dcl> } * ")"
                      |   "(" ")"
     <param_dcl> ::= [<param_attribute>] <param_type_spec> <simple_declarator>
                 |   [<param_attribute>] <annotation_appl>
@@ -1518,9 +1518,9 @@ Appendix B: FIWARE Middleware IDL Grammar
                       |   "out"
                       |   "inout"
     <raises_expr> ::= "raises" "(" <scoped_name>
-                      { "," <scoped_name> } ∗ ")"
+                      { "," <scoped_name> } * ")"
     <context_expr> ::= "context" "(" <string_literal>
-                       { "," <string_literal> } ∗ ")"
+                       { "," <string_literal> } * ")"
     <param_type_spec> ::= <base_type_spec>
                       |   <string_type>
                       |   <wide_string_type>
@@ -1741,7 +1741,7 @@ Appendix C: OMG IDL 3.5 Grammar
     <constr_type_spec> ::= <struct_type>
                        |   <union_type>
                        |   <enum_type>
-    <declarators> ::= <declarator> { "," <declarator> }∗
+    <declarators> ::= <declarator> { "," <declarator> }*
     <declarator> ::= <simple_declarator>
                  |   <complex_declarator>
     <simple_declarator> ::= <identifier>
@@ -1786,7 +1786,7 @@ Appendix C: OMG IDL 3.5 Grammar
                  |   "default" ":"
     <element_spec> ::= <type_spec> <declarator>
     <enum_type> ::= "enum" <identifier>
-                    "{" <enumerator> { "," <enumerator> } ∗ "}"
+                    "{" <enumerator> { "," <enumerator> } * "}"
     <enumerator> ::= <identifier>
     <sequence_type> ::= "sequence" "<" <simple_type_spec> "," <positive_int_const> ">"
                     |   "sequence" "<" <simple_type_spec> ">"
@@ -1805,16 +1805,16 @@ Appendix C: OMG IDL 3.5 Grammar
     <op_attribute> ::= "oneway"
     <op_type_spec> ::= <param_type_spec>
                    | "void"
-    <parameter_dcls> ::= "(" <param_dcl> { "," <param_dcl> } ∗ ")"
+    <parameter_dcls> ::= "(" <param_dcl> { "," <param_dcl> } * ")"
                      |   "(" ")"
     <param_dcl> ::= <param_attribute> <param_type_spec> <simple_declarator>
     <param_attribute> ::= "in"
                       |   "out"
                       |   "inout"
     <raises_expr> ::= "raises" "(" <scoped_name>
-                      { "," <scoped_name> } ∗ ")"
+                      { "," <scoped_name> } * ")"
     <context_expr> ::= "context" "(" <string_literal>
-                       { "," <string_literal> } ∗ ")"
+                       { "," <string_literal> } * ")"
     <param_type_spec> ::= <base_type_spec>
                       |   <string_type>
                       |   <wide_string_type>

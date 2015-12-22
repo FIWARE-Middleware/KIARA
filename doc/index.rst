@@ -21,11 +21,12 @@ Later versions will include additional features like:
 
 KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.
 
-The documentation for this site is organized in multiple sections:
+.. The documentation for this site is organized in multiple sections:
 
 * :ref:`manual`
 * :ref:`architecture`
 * :ref:`specification`
+* :ref:`api_specification`
 
 Please also check out our `Github repository`_
 
@@ -49,9 +50,15 @@ Please also check out our `Github repository`_
 .. _specification:
 .. toctree::
    :maxdepth: 2
-   :caption: API Specification
+   :caption: Open Specification
 
    specification/OpenSpecification
+
+.. _api_specification:
+.. toctree::
+   :maxdepth: 2
+   :caption: API Specification
+
    specification/Middleware_RPC_API_Specification
    specification/Middleware_RPC_Dynamic_Types_API_Specification
    specification/Middleware_PUBSUB_API_Specification
