@@ -84,11 +84,18 @@
                 <p class="caption"><span class="caption-text">Manuals</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../manuals/Installation_and_Admin_Guide.html">KIARA Installation and Administration Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../manuals/User_and_Programmer_Guide.html">KIARA User and Programmer Guide</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
-<ul class="current">
+<p class="caption"><span class="caption-text">Architecture</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Architecture.html">Advanced Middleware Architecture</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Open Specification</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="OpenSpecification.html">Open Specifiation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Specification</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="">Advanced Middleware RPC Dynamic Types API Specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#abstract">Abstract</a></li>
@@ -99,7 +106,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#a-quick-example">A quick Example</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#loading-the-services-definitions">Loading the services’ definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loading-the-services-definitions">Loading the services&#8217; definitions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#creating-a-client">Creating a client</a></li>
 </ul>
 </li>
@@ -164,10 +171,10 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#detailed-api">Detailed API</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Main entry point</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Client API</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">TypeDescriptor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Dynamic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Main entry point</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Client API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">TypeDescriptor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Dynamic</a></li>
 </ul>
 </li>
 </ul>
@@ -288,10 +295,8 @@ Middleware GE.</p>
 <div class="section" id="reference-material">
 <h3>Reference Material<a class="headerlink" href="#reference-material" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><a class="reference external" href="./Middleware_IDL_Specification.md">*Advanced Middleware IDL
-Specification*</a></li>
-<li><a class="reference external" href="./Middleware_RPC_API_Specification.md">*Advanced Middleware RPC API
-Specification*</a></li>
+<li><a class="reference internal" href="Middleware_IDL_Specification.html"><em>Advanced Middleware IDL Specification</em></a></li>
+<li><a class="reference internal" href="Middleware_RPC_API_Specification.html"><em>Advanced Middleware RPC API Specification</em></a></li>
 </ul>
 </div>
 </div>
@@ -301,7 +306,7 @@ Specification*</a></li>
 Types API, a quick example is provided. This example shows how a client
 should use this dynamic API framework to call a remote server and how a
 server can send the response.</p>
-<p>First of all, let’s bear in mind that the server provides an IDL
+<p>First of all, let&#8217;s bear in mind that the server provides an IDL
 defining the services and their functions. The example uses the
 following Advanced Middleware interface definition:</p>
 <div class="highlight-python"><div class="highlight"><pre>service Calculator
@@ -311,7 +316,7 @@ following Advanced Middleware interface definition:</p>
 </pre></div>
 </div>
 <div class="section" id="loading-the-services-definitions">
-<h3>Loading the services’ definitions<a class="headerlink" href="#loading-the-services-definitions" title="Permalink to this headline">¶</a></h3>
+<h3>Loading the services&#8217; definitions<a class="headerlink" href="#loading-the-services-definitions" title="Permalink to this headline">¶</a></h3>
 <p>To be able to call remote functions dynamically, it is required to know
 the services and what functions they offer. The use case is to load the
 <code class="docutils literal"><span class="pre">TypeCode</span></code>elements when creating the connection, so it will be the
@@ -325,7 +330,7 @@ static API from the developers point of view in terms of creating the
 connection. In the dynamic case this connection will be used to obtain
 all the types and functions offered by the server.</p>
 <p>This means, the user has to create a connection and then use it to get a
-definition of the function he wants to execute. Let’s walk through it
+definition of the function he wants to execute. Let&#8217;s walk through it
 based on the following example.</p>
 <div class="code java highlight-python"><div class="highlight"><pre>// Create context and connect with the server
 Context context = Kiara.createContext();
@@ -337,7 +342,7 @@ Connection connection = context.connect(&quot;kiara://127.0.0.1:8080/service&quo
 </div>
 <p>When connecting to the server, the scheme specified in the URI is used
 by the Context to decide from where to download the information. In this
-example, the scheme “kiara” means the connection information is going to
+example, the scheme &#8220;kiara&#8221; means the connection information is going to
 be downloaded from the server and then used in the negotiation process.
 Otherwise, information such as the transport protocol and serialization
 mechanism must be specified in the URI itself.</p>
@@ -355,7 +360,7 @@ defined inside the service are available. To use them, two objects are
 necessary, the <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> and the
 <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code>.</p>
 <p>The <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> object is created at run-time by using
-the name of the function the user wants to execute on the server’s side.
+the name of the function the user wants to execute on the server&#8217;s side.
 If there is a function whose name fits the one specified, this object
 will be filled with all the <code class="docutils literal"><span class="pre">DynamicValue</span></code> objects necessary to
 execute the function.</p>
@@ -372,7 +377,7 @@ DynamicFunctionResponse response = drequest.execute();
 </pre></div>
 </div>
 <p>In this example, the <code class="docutils literal"><span class="pre">createFunctionRequest</span></code> method has been executed
-specifying “add as” the function name. Therefore, the
+specifying &#8220;add as&#8221; the function name. Therefore, the
 <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> object will have two primitive
 <code class="docutils literal"><span class="pre">DynamicValue</span></code> objects (<code class="docutils literal"><span class="pre">DynamicPrimitive</span></code>) inside (one for each
 parameter defined in the IDL description of the function). The user can
@@ -386,7 +391,7 @@ going to be executed.</p>
 <p>The same thing happens with the return type of each function. Depending
 on the <code class="docutils literal"><span class="pre">DynamicValue</span></code> that defines it, a different deserialization
 method will be executed. By using this method, the user only has to
-specify which function must be executed on the server’s side, and all
+specify which function must be executed on the server&#8217;s side, and all
 the information will be (de)serialized automatically.</p>
 <p>In order to know if the function finished the way it should, the
 <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object offers a function named
@@ -422,11 +427,9 @@ the type <code class="docutils literal"><span class="pre">DescriptorBuilder</spa
 <li><strong>getDynamicValueBuilder</strong>: This function returns an instance of the
 <code class="docutils literal"><span class="pre">DynamicValueBuilder</span></code> described below.</li>
 <li><strong>createContext</strong>: This function creates a new instance of the
-Context class, which is part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC
-API</a> .</li>
+Context class, which is part of the public <a class="reference internal" href="Middleware_RPC_API_Specification.html"><em>Advanced Middleware RPC API</em></a>.</li>
 <li><strong>shutdown</strong>: This function closes releases all internal Advanced
-Middleware structures, and is a part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced
-Middleware RPC API</a>.</li>
+Middleware structures, and is a part of the public <a class="reference internal" href="Middleware_RPC_API_Specification.html"><em>Advanced Middleware RPC API</em></a>.</li>
 </ul>
 </div>
 </div>
@@ -434,8 +437,7 @@ Middleware RPC API</a>.</li>
 <h3>Serialization mechanisms<a class="headerlink" href="#serialization-mechanisms" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="org-fiware-kiara-serialization-serializer">
 <h4>org.fiware.kiara.serialization.Serializer<a class="headerlink" href="#org-fiware-kiara-serialization-serializer" title="Permalink to this headline">¶</a></h4>
-<p>This interface is part of the public <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC
-API</a>.</p>
+<p>This interface is part of the public <a class="reference internal" href="Middleware_RPC_API_Specification.html"><em>Advanced Middleware RPC API</em></a>.</p>
 </div>
 <div class="section" id="org-fiware-kiara-serialization-impl-serializable">
 <h4>org.fiware.kiara.serialization.impl.Serializable<a class="headerlink" href="#org-fiware-kiara-serialization-impl-serializable" title="Permalink to this headline">¶</a></h4>
@@ -443,8 +445,7 @@ API</a>.</p>
 defined data types in order to be serializable. It defines the methods
 <code class="docutils literal"><span class="pre">serialize</span></code> and <code class="docutils literal"><span class="pre">deserialize</span></code> for each data type. This class will
 not be described in this document, for more information take a look at
-the <a class="reference external" href="./Middleware_RPC_API_Specification.md">Advanced Middleware RPC API
-Specification</a> document.</p>
+the <a class="reference internal" href="Middleware_RPC_API_Specification.html"><em>Advanced Middleware RPC API</em></a> document.</p>
 </div>
 </div>
 <div class="section" id="client-api">
@@ -471,9 +472,11 @@ in such a service.</li>
 <p>This subsection contains the interfaces and classes that are dependent
 on the user. This section will use the example in section API Usage
 Examples to define them.</p>
-<p><img alt="Figure: Class Diagram TypeDescriptor" src="../_images/MiddlewareClassDiagramTypeDescriptor.png" /></p>
-<center><p>Figure: Class Diagram TypeDescriptor</p>
-</center><hr class="docutils" />
+<div class="figure align-center" id="id6">
+<img alt="../_images/MiddlewareClassDiagramTypeDescriptor.png" src="../_images/MiddlewareClassDiagramTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Class Diagram TypeDescriptor</span></p>
+</div>
+<hr class="docutils" />
 <div class="section" id="org-fiware-kiara-typecode-typedescriptorbuilder">
 <h4>org.fiware.kiara.typecode.TypeDescriptorBuilder<a class="headerlink" href="#org-fiware-kiara-typecode-typedescriptorbuilder" title="Permalink to this headline">¶</a></h4>
 <p>This interface defined the operations used to create type-describing
@@ -508,7 +511,7 @@ repeated objects.</li>
 (RPC).</li>
 <li><strong>createServiceType</strong>: Function that creates a new
 <code class="docutils literal"><span class="pre">ServiceTypeDescriptor</span></code> object used to represent a service defined
-in the server’s side.</li>
+in the server&#8217;s side.</li>
 </ul>
 </div>
 <hr class="docutils" />
@@ -517,9 +520,11 @@ in the server’s side.</li>
 <p>This class is used to manipulate the objects used to describe the data
 types. It allows the users to know what type of data an object
 represents.</p>
-<p><img alt="Figure: Interface TypeDescriptor" src="../_images/MiddlewareInterfaceTypeDescriptor.png" /></p>
-<center><p>Figure: Interface TypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id7">
+<img alt="../_images/MiddlewareInterfaceTypeDescriptor.png" src="../_images/MiddlewareInterfaceTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface TypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getKind:</strong> Function that returns the <code class="docutils literal"><span class="pre">TypeKind</span></code> of a
 <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object.</li>
@@ -565,9 +570,11 @@ is a description of a service.</li>
 <p>Interface that represents the top level class of the data type
 hierarchy. It is used as a generic type to englobe only and exclusively
 data type descriptors.</p>
-<p><img alt="Figure: Interface DataTypeDescriptor" src="../_images/MiddlewareInterfaceDataTypeDescriptor.png" /></p>
-<center><p>Figure: Interface DataTypeDescriptor</p>
-</center><p><strong>Functions</strong>: None</p>
+<div class="figure align-center" id="id8">
+<img alt="../_images/MiddlewareInterfaceDataTypeDescriptor.png" src="../_images/MiddlewareInterfaceDataTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface DataTypeDescriptor</span></p>
+</div>
+<p><strong>Functions</strong>: None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-typecode-data-primitivetypedescriptor">
@@ -575,9 +582,11 @@ data type descriptors.</p>
 <p>Interface that represents a primitive data type. Primitive types include
 <strong>boolean</strong>, <strong>byte</strong>, <strong>i16</strong>, <strong>ui16</strong>, <strong>i32</strong>, <strong>ui32</strong>, <strong>i64</strong>,
 <strong>ui64</strong>, <strong>float32</strong>, <strong>float64</strong>, <strong>char</strong> and <strong>string</strong>.</p>
-<p><img alt="Figure: Interface PrimitiveTypeDescriptor" src="../_images/MiddlewareInterfacePrimitiveTypeDescriptor.png" /></p>
-<center><p>Figure: Interface PrimitiveTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id9">
+<img alt="../_images/MiddlewareInterfacePrimitiveTypeDescriptor.png" src="../_images/MiddlewareInterfacePrimitiveTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface PrimitiveTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>isString</strong>: This function returns true if and only if the
 <code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> object represents a string data type.</li>
@@ -594,9 +603,11 @@ represents a string data type.</li>
 <h4>org.fiware.kiara.typecode.data.ContainerTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-containertypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a container data type. Container data types
 are <strong>arrays</strong>, <strong>lists</strong>, <strong>maps</strong> and <strong>sets</strong>.</p>
-<p><img alt="Figure: Interface ContainerTypeDescriptor" src="../_images/MiddlewareInterfaceContainerTypeDescriptor.png" /></p>
-<center><p>Figure: Interface ContainerTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id10">
+<img alt="../_images/MiddlewareInterfaceContainerTypeDescriptor.png" src="../_images/MiddlewareInterfaceContainerTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface ContainerTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>setMaxSize</strong>: This function sets the maximum size of a container
 data type.</li>
@@ -609,9 +620,11 @@ data type.</li>
 <h4>org.fiware.kiara.typecode.data.ArrayTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-arraytypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents an array data type. Arrays can hold multiple
 repeated objects of the same data type inside.</p>
-<p><img alt="Figure: Interface ArrayTypeDescriptor" src="../_images/MiddlewareInterfaceArrayTypeDescriptor.png" /></p>
-<center><p>Figure: Interface ArrayTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id11">
+<img alt="../_images/MiddlewareInterfaceArrayTypeDescriptor.png" src="../_images/MiddlewareInterfaceArrayTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface ArrayTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
 object describing the content type of the array.</li>
@@ -627,9 +640,11 @@ the array.</li>
 <h4>org.fiware.kiara.typecode.data.ListTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-listtypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a list data type. Lists can hold multiple
 repeated objects of the same data type inside.</p>
-<p><img alt="Figure: Interface ListTypeDescriptor" src="../_images/MiddlewareInterfaceListTypeDescriptor.png" /></p>
-<center><p>Figure: Interface ListTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id12">
+<img alt="../_images/MiddlewareInterfaceListTypeDescriptor.png" src="../_images/MiddlewareInterfaceListTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface ListTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
 object describing the content type of the list.</li>
@@ -642,9 +657,11 @@ object describing the content type of the list.</li>
 <h4>org.fiware.kiara.typecode.data.SetTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-settypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a set data type. Sets can have non repeated
 objects of the same data type inside.</p>
-<p><img alt="Figure: Interface SetTypeDescriptor" src="../_images/MiddlewareInterfaceSetTypeDescriptor.png" /></p>
-<center><p>Figure: Interface SetTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id13">
+<img alt="../_images/MiddlewareInterfaceSetTypeDescriptor.png" src="../_images/MiddlewareInterfaceSetTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface SetTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getElementType</strong>: This function returns the <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
 object describing the content type of the set.</li>
@@ -657,9 +674,11 @@ object describing the content type of the set.</li>
 <h4>org.fiware.kiara.typecode.data.MapTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-maptypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a map data type. Maps can hold multiple
 key-object pairs inside if and only if the key objects are unique.</p>
-<p><img alt="Figure: Interface MapTypeDescriptor" src="../_images/MiddlewareInterfaceMapTypeDescriptor.png" /></p>
-<center><p>Figure: Interface MapTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id14">
+<img alt="../_images/MiddlewareInterfaceMapTypeDescriptor.png" src="../_images/MiddlewareInterfaceMapTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface MapTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getKeyTypeDescriptor</strong>: This function returns the
 <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> object describing the key type of the map.</li>
@@ -676,9 +695,11 @@ key-object pairs inside if and only if the key objects are unique.</p>
 <h4>org.fiware.kiara.typecode.data.MemberedTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-memberedtypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a membered data type. <code class="docutils literal"><span class="pre">Membered</span></code> data types
 are <strong>structs</strong>, <strong>enumerations</strong>, <strong>unions</strong> and <strong>exceptions</strong>.</p>
-<p><img alt="Figure: Interface MemberedTypeDescriptor" src="../_images/MiddlewareInterfaceMemberedTypeDescriptor.png" /></p>
-<center><p>Figure: Interface MemberedTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id15">
+<img alt="../_images/MiddlewareInterfaceMemberedTypeDescriptor.png" src="../_images/MiddlewareInterfaceMemberedTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface MemberedTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getMembers</strong>: This function returns the list of member objects
 stored in a <code class="docutils literal"><span class="pre">ContainerTypeDescriptor</span></code> object.</li>
@@ -692,9 +713,11 @@ stored in a <code class="docutils literal"><span class="pre">ContainerTypeDescri
 <p>Interface that represents a struct data type. Structs can have multiple
 different <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> objects inside stored as members. Every
 struct member is identified by a unique name.</p>
-<p><img alt="Figure: Interface StructTypeDescriptor" src="../_images/MiddlewareInterfaceStructTypeDescriptor.png" /></p>
-<center><p>Figure: Interface StructTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id16">
+<img alt="../_images/MiddlewareInterfaceStructTypeDescriptor.png" src="../_images/MiddlewareInterfaceStructTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface StructTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
 a member using a specific name.</li>
@@ -707,9 +730,11 @@ identified by the name introduced as a parameter.</li>
 <h4>org.fiware.kiara.typecode.data.EnumTypeDescriptor<a class="headerlink" href="#org-fiware-kiara-typecode-data-enumtypedescriptor" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents an enumeration data type. Enumerations are
 formed by a group of different string values.</p>
-<p><img alt="Figure: Interface EnumTypeDescriptor" src="../_images/MiddlewareInterfaceEnumTypeDescriptor.png" /></p>
-<center><p>Figure: Interface EnumTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id17">
+<img alt="../_images/MiddlewareInterfaceEnumTypeDescriptor.png" src="../_images/MiddlewareInterfaceEnumTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface EnumTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>addValue</strong>: This function adds a new value to the enumeration using
 the string object received as a parameter.</li>
@@ -721,9 +746,11 @@ the string object received as a parameter.</li>
 <p>Interface that represents a union data type. Unions are formed by a
 group of members identified by their names and the labels of the
 discriminator to which they are assigned.</p>
-<p><img alt="Figure: Interface UnionTypeDescriptor" src="../_images/MiddlewareInterfaceUnionTypeDescriptor.png" /></p>
-<center><p>Figure: Interface UnionTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id18">
+<img alt="../_images/MiddlewareInterfaceUnionTypeDescriptor.png" src="../_images/MiddlewareInterfaceUnionTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface UnionTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
 a member using a specific name and the labels of the discriminator.</li>
@@ -735,9 +762,11 @@ a member using a specific name and the labels of the discriminator.</li>
 <p>Interface that represents a struct data type. Exceptions can have
 multiple different <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> objects inside stored as
 members. Every struct member is identified by a unique name.</p>
-<p><img alt="Figure: Interface ExceptionTypeDescriptor" src="../_images/MiddlewareInterfaceExceptionTypeDescriptor.png" /></p>
-<center><p>Figure: Interface ExceptionTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id19">
+<img alt="../_images/MiddlewareInterfaceExceptionTypeDescriptor.png" src="../_images/MiddlewareInterfaceExceptionTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface ExceptionTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>addMember</strong>: This function adds a new <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object as
 a member using a specific name.</li>
@@ -753,11 +782,13 @@ exception name.</li>
 <p>Interface that represents a member of a <code class="docutils literal"><span class="pre">MemberedTypeDescriptor</span></code>
 object. Each member is identified by its name and the <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>
 object that it holds.</p>
-<p><img alt="Figure: Interface Member" src="../_images/MiddlewareInterfaceMember.png" /></p>
-<center><p>Figure: Interface Member</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id20">
+<img alt="../_images/MiddlewareInterfaceMember.png" src="../_images/MiddlewareInterfaceMember.png" />
+<p class="caption"><span class="caption-text">Interface Member</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
-<li><strong>getName</strong>: This function returns the member’s name.</li>
+<li><strong>getName</strong>: This function returns the member&#8217;s name.</li>
 <li><strong>getTypeDescriptor</strong>: This function returns a <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code>
 object stored inside the member.</li>
 </ul>
@@ -768,18 +799,22 @@ object stored inside the member.</li>
 <p>Interface that represents a member of a <code class="docutils literal"><span class="pre">EnumTypeDescriptor</span></code> object.
 It inherits from <code class="docutils literal"><span class="pre">Member</span></code> interface and therefore it has no new
 methods.</p>
-<p><img alt="Figure: Interface EnumMember" src="../_images/MiddlewareInterfaceMember.png" /></p>
-<center><p>Figure: Interface EnumMember</p>
-</center><p><strong>Functions:</strong> None</p>
+<div class="figure align-center" id="id21">
+<img alt="../_images/MiddlewareInterfaceEnumMember.png" src="../_images/MiddlewareInterfaceEnumMember.png" />
+<p class="caption"><span class="caption-text">Interface EnumMember</span></p>
+</div>
+<p><strong>Functions:</strong> None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-typecode-data-unionmember">
 <h4>org.fiware.kiara.typecode.data.UnionMember<a class="headerlink" href="#org-fiware-kiara-typecode-data-unionmember" title="Permalink to this headline">¶</a></h4>
 <p>Interface that represents a member of a <code class="docutils literal"><span class="pre">UnionTypeDescriptor</span></code> object.
 It inherits from Member interface and therefore it has no new methods.</p>
-<p><img alt="Figure: Interface UnionMember" src="../_images/MiddlewareInterfaceUnionMember.png" /></p>
-<center><p>Figure: Interface UnionMember</p>
-</center><p><strong>Functions:</strong> None</p>
+<div class="figure align-center" id="id22">
+<img alt="../_images/MiddlewareInterfaceUnionMember.png" src="../_images/MiddlewareInterfaceUnionMember.png" />
+<p class="caption"><span class="caption-text">Interface UnionMember</span></p>
+</div>
+<p><strong>Functions:</strong> None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-typecode-services-functiontypedescriptor">
@@ -787,9 +822,11 @@ It inherits from Member interface and therefore it has no new methods.</p>
 <p>This interface represents a function, providing methods to easily
 describe it by setting its return type, parameters and exceptions that
 it might throw.</p>
-<p><img alt="Figure: Interface FunctionTypeDescriptor" src="../_images/MiddlewareInterfaceFunctionTypeDescriptor.png" /></p>
-<center><p>Figure: Interface FunctionTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id23">
+<img alt="../_images/MiddlewareInterfaceFunctionTypeDescriptor.png" src="../_images/MiddlewareInterfaceFunctionTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface FunctionTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getReturnType</strong>:This function returns the return
 <code class="docutils literal"><span class="pre">DataTypeDescriptor</span></code> of the function.</li>
@@ -819,9 +856,11 @@ defined.</li>
 <p>This interface represents a service, providing methods to add the
 FunctionTypeDescriptor objects representing every function defined in a
 specific service.</p>
-<p><img alt="Figure: Interface ServiceTypeDescriptor" src="../_images/MiddlewareInterfaceServiceTypeDescriptor.png" /></p>
-<center><p>Figure: Interface ServiceTypeDescriptor</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id24">
+<img alt="../_images/MiddlewareInterfaceServiceTypeDescriptor.png" src="../_images/MiddlewareInterfaceServiceTypeDescriptor.png" />
+<p class="caption"><span class="caption-text">Interface ServiceTypeDescriptor</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getName</strong>: This function returns the service name.</li>
 <li><strong>getScopedName</strong>: This function returns the service scoped name.</li>
@@ -838,16 +877,20 @@ the list of functions defined inside the service.</li>
 <p>This subsection contains the interfaces and classes that are designed to
 provide the developer with functions to create and manage dynamic data
 types.</p>
-<p><img alt="Figure: Class Diagramm DynamicValue" src="../_images/MiddlewareClassDiagramDynamicValue.png" /></p>
-<center><p>Figure: Class Diagramm DynamicValue</p>
-</center><hr class="docutils" />
+<div class="figure align-center" id="id25">
+<img alt="../_images/MiddlewareClassDiagramDynamicValue.png" src="../_images/MiddlewareClassDiagramDynamicValue.png" />
+<p class="caption"><span class="caption-text">Class Diagramm DynamicValue</span></p>
+</div>
+<hr class="docutils" />
 <div class="section" id="org-fiware-kiara-dynamic-dynamicvaluebuilder">
 <h4>org.fiware.kiara.dynamic.DynamicValueBuilder<a class="headerlink" href="#org-fiware-kiara-dynamic-dynamicvaluebuilder" title="Permalink to this headline">¶</a></h4>
 <p>This class allows the users to create new data types based on their
 <code class="docutils literal"><span class="pre">TypeCode</span></code> descriptions.</p>
-<p><img alt="Figure: Interface DynamicValueBuilder" src="../_images/MiddlewareInterfaceDynamicValueBuilder.png" /></p>
-<center><p>Figure: Interface DynamicValueBuilder</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id26">
+<img alt="../_images/MiddlewareInterfaceDynamicValueBuilder.png" src="../_images/MiddlewareInterfaceDynamicValueBuilder.png" />
+<p class="caption"><span class="caption-text">Interface DynamicValueBuilder</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>createData:</strong> This function allows the user to create new
 <code class="docutils literal"><span class="pre">DynamicData</span></code> objects by using their <code class="docutils literal"><span class="pre">TypeDescriptor</span></code>.</li>
@@ -872,9 +915,11 @@ managed. Every <code class="docutils literal"><span class="pre">DynamicValue</sp
 <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> which is used to describe the data. It defines the
 common serialization functions as well as a function to retrieve the
 <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> object it was created from.</p>
-<p><img alt="Figure: Interface DynamicValue" src="../_images/MiddlewareInterfaceDynamicValue.png" /></p>
-<center><p>Figure: Interface DynamicValue</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id27">
+<img alt="../_images/MiddlewareInterfaceDynamicValue.png" src="../_images/MiddlewareInterfaceDynamicValue.png" />
+<p class="caption"><span class="caption-text">Interface DynamicValue</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getTypeDescriptor</strong>: This function returns the TypeDescriptor used
 when creating the DynamicValue object.</li>
@@ -889,18 +934,22 @@ BinaryInputStream message into a DynamicValue object.</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicData<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicdata" title="Permalink to this headline">¶</a></h4>
 <p>Interface that is used to group all the <code class="docutils literal"><span class="pre">DynamicValues</span></code> representing
 data types.</p>
-<p><img alt="Figure: Interface DynamicData" src="../_images/MiddlewareInterfaceDynamicData.png" /></p>
-<center><p>Figure: Interface DynamicData</p>
-</center><p><strong>Functions:</strong> None</p>
+<div class="figure align-center" id="id28">
+<img alt="../_images/MiddlewareInterfaceDynamicData.png" src="../_images/MiddlewareInterfaceDynamicData.png" />
+<p class="caption"><span class="caption-text">Interface DynamicData</span></p>
+</div>
+<p><strong>Functions:</strong> None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-dynamic-data-dynamicprimitive">
 <h4>org.fiware.kiara.dynamic.data.DynamicPrimitive<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicprimitive" title="Permalink to this headline">¶</a></h4>
 <p>This class allows the users to manipulate <code class="docutils literal"><span class="pre">DynamicData</span></code> objects made
 from <code class="docutils literal"><span class="pre">PrimitiveTypeDescriptor</span></code> objects.</p>
-<p><img alt="Figure: Interface DynamicPrimitive" src="../_images/MiddlewareInterfaceDynamicPrimitive.png" /></p>
-<center><p>Figure: Interface DynamicPrimitive</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id29">
+<img alt="../_images/MiddlewareInterfaceDynamicPrimitive.png" src="../_images/MiddlewareInterfaceDynamicPrimitive.png" />
+<p class="caption"><span class="caption-text">Interface DynamicPrimitive</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>set:</strong> This function sets the inner value of a <code class="docutils literal"><span class="pre">DynamicPrimitive</span></code>
 object according to the <code class="docutils literal"><span class="pre">TypeDescriptor</span></code> specified when creating
@@ -914,9 +963,11 @@ object.</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicContainer<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamiccontainer" title="Permalink to this headline">¶</a></h4>
 <p>This class holds the data values of a <code class="docutils literal"><span class="pre">DynamicData</span></code> object created
 from a <code class="docutils literal"><span class="pre">ContainerTypeDescriptor</span></code>.</p>
-<p><img alt="Figure: Interface DynamicContainer" src="../_images/MiddlewareInterfaceDynamicContainer.png" /></p>
-<center><p>Figure: Interface DynamicContainer</p>
-</center><p><strong>Functions:</strong> None</p>
+<div class="figure align-center" id="id30">
+<img alt="../_images/MiddlewareInterfaceDynamicContainer.png" src="../_images/MiddlewareInterfaceDynamicContainer.png" />
+<p class="caption"><span class="caption-text">Interface DynamicContainer</span></p>
+</div>
+<p><strong>Functions:</strong> None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-dynamic-data-dynamicarray">
@@ -925,9 +976,11 @@ from a <code class="docutils literal"><span class="pre">ContainerTypeDescriptor<
 from an <code class="docutils literal"><span class="pre">ArrayTypeDescriptor</span></code>. A <code class="docutils literal"><span class="pre">DynamicArray</span></code> contains a group of
 <code class="docutils literal"><span class="pre">DynamicData</span></code> objects (all must be the same type) stored in single or
 multi dimensional matrixes.</p>
-<p><img alt="Figure: Interface DynamicArray" src="../_images/MiddlewareInterfaceDynamicArray.png" /></p>
-<center><p>Figure: Interface DynamicArray</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id31">
+<img alt="../_images/MiddlewareInterfaceDynamicArray.png" src="../_images/MiddlewareInterfaceDynamicArray.png" />
+<p class="caption"><span class="caption-text">Interface DynamicArray</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getElementAt:</strong> This function returns <code class="docutils literal"><span class="pre">DynamicData</span></code> object stored
 in a certain position or coordinate..</li>
@@ -943,9 +996,11 @@ dimensions, the object will be set in a specific coordinate.</li>
 ListTypeDescriptor. A list can only have one dimension and it has a
 maximum length. All the DynamicData objects stored inside a DynamicList
 must have been created from the same TypeDescriptor definition.</p>
-<p><img alt="Figure: Interface DynamicList" src="../_images/MiddlewareInterfaceDynamicList.png" /></p>
-<center><p>Figure: Interface DynamicList</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id32">
+<img alt="../_images/MiddlewareInterfaceDynamicList.png" src="../_images/MiddlewareInterfaceDynamicList.png" />
+<p class="caption"><span class="caption-text">Interface DynamicList</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>add:</strong> This function adds a <code class="docutils literal"><span class="pre">DynamicData</span></code> object into the list in
 the last position or in the position specified via parameter.</li>
@@ -963,9 +1018,11 @@ SetTypeDescriptor. A set can only have one dimension and it has a
 maximum length. All the DynamicData objects stored inside a DynamicSet
 must have been created from the same TypeDescriptor definition and it
 cannot be duplicated objects.</p>
-<p><img alt="Figure: Interface DynamicSet" src="../_images/MiddlewareInterfaceDynamicSet.png" /></p>
-<center><p>Figure: Interface DynamicSet</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id33">
+<img alt="../_images/MiddlewareInterfaceDynamicSet.png" src="../_images/MiddlewareInterfaceDynamicSet.png" />
+<p class="caption"><span class="caption-text">Interface DynamicSet</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>add:</strong> This function adds a <code class="docutils literal"><span class="pre">DynamicData</span></code> object into the list in
 the last position or in the position specified via parameter.</li>
@@ -980,9 +1037,11 @@ empty.</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicMap<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicmap" title="Permalink to this headline">¶</a></h4>
 <p>This class holds a list of pairs key-value instances of DynamicData. In
 a DynamicMap, the key values cannot be duplicated.</p>
-<p><img alt="Figure: Interface DynamicMap" src="../_images/MiddlewareInterfaceDynamicMap.png" /></p>
-<center><p>Figure: Interface DynamicMap</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id34">
+<img alt="../_images/MiddlewareInterfaceDynamicMap.png" src="../_images/MiddlewareInterfaceDynamicMap.png" />
+<p class="caption"><span class="caption-text">Interface DynamicMap</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>put:</strong> This function adds a new key-value pair using the
 DynamicData objets introduces as parameters. It will return false if
@@ -1002,18 +1061,22 @@ pair whose key is equal to the one introduced as a parameter.</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicMembered<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicmembered" title="Permalink to this headline">¶</a></h4>
 <p>This class represents a <code class="docutils literal"><span class="pre">DynamicData</span></code> type formed by multiple
 <code class="docutils literal"><span class="pre">DynamicData</span></code> objects stored into a class named <code class="docutils literal"><span class="pre">DynamicMember</span></code>.</p>
-<p><img alt="Figure: Interface DynamicMembered" src="../_images/MiddlewareInterfaceDynamicMembered.png" /></p>
-<center><p>Figure: Interface DynamicMembered</p>
-</center><p><strong>Functions:</strong> None</p>
+<div class="figure align-center" id="id35">
+<img alt="../_images/MiddlewareInterfaceDynamicMembered.png" src="../_images/MiddlewareInterfaceDynamicMembered.png" />
+<p class="caption"><span class="caption-text">Interface DynamicMembered</span></p>
+</div>
+<p><strong>Functions:</strong> None</p>
 </div>
 <hr class="docutils" />
 <div class="section" id="org-fiware-kiara-dynamic-data-dynamicstruct">
 <h4>org.fiware.kiara.dynamic.data.DynamicStruct<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicstruct" title="Permalink to this headline">¶</a></h4>
 <p>This class holds group of <code class="docutils literal"><span class="pre">DynamicData</span></code> objects acting as members of a
 stucture. Each member is identified by its name.</p>
-<p><img alt="Figure: Interface DynamicStruct" src="../_images/MiddlewareInterfaceDynamicStruct.png" /></p>
-<center><p>Figure: Interface DynamicStruct</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id36">
+<img alt="../_images/MiddlewareInterfaceDynamicStruct.png" src="../_images/MiddlewareInterfaceDynamicStruct.png" />
+<p class="caption"><span class="caption-text">Interface DynamicStruct</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getMember:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object (acting
 as a member of the structure) whose name is the same as the one
@@ -1025,9 +1088,11 @@ introduced as a parameter.</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicEnum<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicenum" title="Permalink to this headline">¶</a></h4>
 <p>This class is used to dynamically manipulate enumerations described by a
 specific <code class="docutils literal"><span class="pre">EnumTypeDescriptor</span></code> object.</p>
-<p><img alt="Figure: Interface DynamicEnum" src="../_images/MiddlewareInterfaceDynamicEnum.png" /></p>
-<center><p>Figure: Interface DynamicEnum</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id37">
+<img alt="../_images/MiddlewareInterfaceDynamicEnum.png" src="../_images/MiddlewareInterfaceDynamicEnum.png" />
+<p class="caption"><span class="caption-text">Interface DynamicEnum</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>set:</strong> This function sets the actual value of the DynamicEnum
 object to the one specified as a parameter.</li>
@@ -1042,9 +1107,11 @@ object.</li>
 specific <code class="docutils literal"><span class="pre">UnionTypeDescriptor</span></code> object. A union is formed by some
 <code class="docutils literal"><span class="pre">DynamicData</span></code> objects, and the valid one is selected by using a
 discriminator.</p>
-<p><img alt="Figure: Interface DynamicUnion" src="../_images/MiddlewareInterfaceDynamicUnion.png" /></p>
-<center><p>Figure: Interface DynamicUnion</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id38">
+<img alt="../_images/MiddlewareInterfaceDynamicUnion.png" src="../_images/MiddlewareInterfaceDynamicUnion.png" />
+<p class="caption"><span class="caption-text">Interface DynamicUnion</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>_d:</strong> This function either returns the discriminator or sets a new
 one, depending on the existence of an object parameter indicating a
@@ -1061,9 +1128,11 @@ introduced (if and only if the discriminator value is correct).</li>
 <h4>org.fiware.kiara.dynamic.data.DynamicException<a class="headerlink" href="#org-fiware-kiara-dynamic-data-dynamicexception" title="Permalink to this headline">¶</a></h4>
 <p>This class holds group of <code class="docutils literal"><span class="pre">DynamicData</span></code> objects acting as members of
 an exception. Each member is identified by its own name.</p>
-<p><img alt="Figure: Interface DynamicException" src="../_images/MiddlewareInterfaceDynamicException.png" /></p>
-<center><p>Figure: Interface DynamicException</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id39">
+<img alt="../_images/MiddlewareInterfaceDynamicException.png" src="../_images/MiddlewareInterfaceDynamicException.png" />
+<p class="caption"><span class="caption-text">Interface DynamicException</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getMember:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object whose
 name is the same as the one introduced as a parameter.</li>
@@ -1075,11 +1144,13 @@ name is the same as the one introduced as a parameter.</li>
 <p>This class represents a dynamic member of any DynamicMembered object. It
 is used to store the DynamicData objects inside structures, unions,
 enumerations and exceptions.</p>
-<p><img alt="Figure: Interface DynamicMember" src="../_images/MiddlewareInterfaceDynamicMember.png" /></p>
-<center><p>Figure: Interface DynamicMember</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id40">
+<img alt="../_images/MiddlewareInterfaceDynamicMember.png" src="../_images/MiddlewareInterfaceDynamicMember.png" />
+<p class="caption"><span class="caption-text">Interface DynamicMember</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
-<li><strong>getName:</strong> This function returns the member’s name.</li>
+<li><strong>getName:</strong> This function returns the member&#8217;s name.</li>
 <li><strong>getDynamicData</strong>: This function returns the <code class="docutils literal"><span class="pre">DynamicData</span></code> stored
 inside a <code class="docutils literal"><span class="pre">DynamicMember</span></code> object.</li>
 <li><strong>equals</strong>: It returns true if two <code class="docutils literal"><span class="pre">DynamicMember</span></code> objects are
@@ -1091,9 +1162,11 @@ equal.</li>
 <h4>org.fiware.kiara.dynamic.service.DynamicFunctionRequest<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicfunctionrequest" title="Permalink to this headline">¶</a></h4>
 <p>This class represents a dynamic function request. This class is used to
 create objects whose objective is to invoke functions remotely.</p>
-<p><img alt="Figure: Interface DynamicFunctionRequest" src="../_images/MiddlewareInterfaceDynamicFunctionRequest.png" /></p>
-<center><p>Figure: Interface DynamicFunctionRequest</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id41">
+<img alt="../_images/MiddlewareInterfaceDynamicFunctionRequest.png" src="../_images/MiddlewareInterfaceDynamicFunctionRequest.png" />
+<p class="caption"><span class="caption-text">Interface DynamicFunctionRequest</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getParameter:</strong> This function returns a <code class="docutils literal"><span class="pre">DynamicData</span></code> object
 stored in the parameter list depending on its name or its position in
@@ -1112,9 +1185,11 @@ executed when the response arrives from the server.</li>
 <p>This class represents a dynamic function response. This class is used to
 retrieve the information sent from the server after a remote procedure
 call.</p>
-<p><img alt="Figure: Interface DynamicFunctionResponse" src="../_images/MiddlewareInterfaceDynamicFunctionResponse.png" /></p>
-<center><p>Figure: Interface DynamicFunctionResponse</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id42">
+<img alt="../_images/MiddlewareInterfaceDynamicFunctionResponse.png" src="../_images/MiddlewareInterfaceDynamicFunctionResponse.png" />
+<p class="caption"><span class="caption-text">Interface DynamicFunctionResponse</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>isException:</strong> This function returns true if the server raised an
 exception when executing the function.</li>
@@ -1133,9 +1208,11 @@ representing the result of the remote call.</li>
 instance of DynamicFunctionRequest or a DynamicFunctionResponse
 depending if the user wants an object to execute a remote call or to
 store the result.</p>
-<p><img alt="Figure: Interface DynamicProxy" src="../_images/MiddlewareInterfaceDynamicProxy.png" /></p>
-<center><p>Figure: Interface DynamicProxy</p>
-</center><p><strong>Functions:</strong></p>
+<div class="figure align-center" id="id43">
+<img alt="../_images/MiddlewareInterfaceDynamicProxy.png" src="../_images/MiddlewareInterfaceDynamicProxy.png" />
+<p class="caption"><span class="caption-text">Interface DynamicProxy</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>getServiceName:</strong> This function returns the service name.</li>
 <li><strong>createFunctionRequest</strong>: This function creates a new object
@@ -1151,11 +1228,13 @@ instance of <code class="docutils literal"><span class="pre">DynamicFunctionResp
 <h4>org.fiware.kiara.dynamic.service.DynamicFunctionHandler<a class="headerlink" href="#org-fiware-kiara-dynamic-service-dynamicfunctionhandler" title="Permalink to this headline">¶</a></h4>
 <p>This class represents a dynamic object used to hold the implementation
 of a specific function. Its process method must be defined by the user
-when creating the object, and it will be used to register the service’s
-functions on the server’s side.</p>
-<p><img alt="Figure: Interface DynamicFunctionHandler" src="../_images/MiddlewareInterfaceDynamicFunctionHandler.png" /></p>
-<center><p>Figure: Interface DynamicFunctionHandler</p>
-</center><p><strong>Functions:</strong></p>
+when creating the object, and it will be used to register the service&#8217;s
+functions on the server&#8217;s side.</p>
+<div class="figure align-center" id="id44">
+<img alt="../_images/MiddlewareInterfaceDynamicFunctionHandler.png" src="../_images/MiddlewareInterfaceDynamicFunctionHandler.png" />
+<p class="caption"><span class="caption-text">Interface DynamicFunctionHandler</span></p>
+</div>
+<p><strong>Functions:</strong></p>
 <ul class="simple">
 <li><strong>process:</strong> This function is the one that will be registered to be
 executed when a client invokes remotely a function. It must be
@@ -1168,8 +1247,8 @@ implemented by the user.</li>
 <h2>Detailed API<a class="headerlink" href="#detailed-api" title="Permalink to this headline">¶</a></h2>
 <p>This section defines in detail the API provided by the classes defined
 above.</p>
-<div class="section" id="id1">
-<h3>Main entry point<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id2">
+<h3>Main entry point<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <table border="1" class="docutils">
 <colgroup>
 <col width="36%" />
@@ -1233,8 +1312,8 @@ above.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="id2">
-<h3>Client API<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id3">
+<h3>Client API<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
 <p>This classes are those related to the client side API. This section
 includes all the relevant classes, attributes and methods.</p>
 <table border="1" class="docutils">
@@ -1310,9 +1389,9 @@ includes all the relevant classes, attributes and methods.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="id3">
-<h3>TypeDescriptor<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
-<p>This classes are those related to the client’s side API. This section
+<div class="section" id="id4">
+<h3>TypeDescriptor<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<p>This classes are those related to the client&#8217;s side API. This section
 includes all the relevant classes, attributes and methods.</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -2485,8 +2564,8 @@ includes all the relevant classes, attributes and methods.</p>
 </tbody>
 </table>
 </div>
-<div class="section" id="id4">
-<h3>Dynamic<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id5">
+<h3>Dynamic<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
 <p>The following classes are those related to creation and management of
 dynamic types, including data definition and function description and
 execution.</p>

@@ -112,7 +112,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#idl-derived-operation-mode-in-rpc">IDL derived operation mode in RPC</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#defining-a-set-of-remote-procedures-using-the-kiara-idl">Defining a set of remote procedures using the KIARA IDL</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#generating-remote-procedure-call-support-code">Generating remote procedure call support code</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#servant-implementation">Servant implementation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Servant implementation</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#implementing-the-server">Implementing the server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#implementing-the-client">Implementing the client</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#compiling-the-client-and-the-server">Compiling the client and the server</a></li>
@@ -120,8 +120,8 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#using-kiara-to-create-an-rpc-application-using-the-dynamic-api">Using KIARA to create an RPC application (using the dynamic API)</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#declaring-the-remote-calls-and-data-types-at-runtime">Declaring the remote calls and data types at runtime</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1">Implementing the server</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2">Implementing the client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Implementing the server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Implementing the client</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#using-kiara-to-create-a-pub-sub-application">Using KIARA to create a Pub/Sub application</a><ul>
@@ -138,16 +138,16 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Architecture and API Specification</span></p>
+<p class="caption"><span class="caption-text">Architecture</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html">Advanced Middleware Architecture</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#copyright">Copyright</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#legal-notice">Legal Notice</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#overview">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#basic-concepts">Basic Concepts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#main-interactions">Main Interactions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../specification/Architecture.html#basic-design-principles">Basic Design Principles</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Open Specification</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../specification/OpenSpecification.html">Open Specifiation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Specification</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../specification/Middleware_PUBSUB_API_Specification.html">Advanced Middleware Publication Subscription API Specification</a></li>
@@ -212,7 +212,7 @@ Intelligence</a></li>
 <li><a class="reference external" href="http://blog.zhaw.ch/icclab">ZHAW - School of Engineering
 (ICCLab)</a></li>
 </ul>
-<p>Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
+<p>Copyright 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved</p>
 <hr class="docutils" />
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
@@ -254,15 +254,15 @@ of functions and data type mapping.</li>
 <p>Based on the IDL definition we generate with a precompiler stub- and skeleton-classes, which have to be used by the application to implement the server and client (or Pub/Sub) application parts.</p>
 <p><strong>Prerequisite:</strong> IDL definition</p>
 <p><strong>Generated:</strong> Stubs and Skeletons (at compile time) which have to be used by the application</p>
-<p><strong>Examples:</strong> Corba, DDS, Thrift, …</p>
+<p><strong>Examples:</strong> Corba, DDS, Thrift, ...</p>
 </div>
 <div class="section" id="application-derived-operation-mode">
 <h4>Application derived operation mode<a class="headerlink" href="#application-derived-operation-mode" title="Permalink to this headline">¶</a></h4>
 <p>This mode is typical for some modern (e.g. RMI, WebService,...) frameworks. Based on an application specific interface definitions, the framework automatically generates Server- and Client-Proxy-Classes, which serialize the application internal data structures and send them over the wire. Using Annotations, the required serialization and transport mechanisms and type mappings can be influenced.</p>
-<p>This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a “service registry” for remote partners.</p>
+<p>This mode implicitly generates an IDL definition based on the Java interfaces definition and provide this IDL through a &#8220;service registry&#8221; for remote partners.</p>
 <p><strong>Prerequisite:</strong> Application-Interface-Definition (has to be the same on client and server side)</p>
 <p><strong>Generated:</strong> Server-/Client-Proxies (generated at runtime)</p>
-<p><strong>Examples:</strong> RMI, JAX-RS, Spring REST, …</p>
+<p><strong>Examples:</strong> RMI, JAX-RS, Spring REST, ...</p>
 </div>
 <div class="section" id="mapped-operation-mode">
 <h4>Mapped operation mode<a class="headerlink" href="#mapped-operation-mode" title="Permalink to this headline">¶</a></h4>
@@ -382,54 +382,54 @@ can be found in the .</p>
 <p>To call <code class="docutils literal"><span class="pre">kiaragen</span></code> manually it has to be installed and in your run
 path.</p>
 <p>The usage syntax is:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>$ kiaragen [options] &lt;IDL file&gt; [&lt;IDL file&gt; …]
+<div class="code bash highlight-python"><div class="highlight"><pre>$ kiaragen [options] &lt;IDL file&gt; [&lt;IDL file&gt; ...]
 </pre></div>
 </div>
 <p>Options:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="21%" />
-<col width="79%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Option</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="docutils option-list" frame="void" rules="none">
+<col class="option" />
+<col class="description" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">-help</span></code></td>
-<td>Shows help information</td>
+<tr><td class="option-group">
+<kbd><span class="option">-h<var>elp</var></span></kbd></td>
+<td>Shows help information</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-v<var>ersion</var></span></kbd></td>
+<td>Shows the current version of KIARA/kiaragen</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>ackage</var></span></kbd></td>
+<td>Defines the package prefix of the generated Java classes.
+Default: no package</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-d <var>&lt;path&gt;</var></span></kbd></td>
+<td>Specify the output diretory for the generated Java classes.
+Default: Current working dir</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-r<var>eplace</var></span></kbd></td>
+<td>Replaces existing generated</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--example <var>&lt;pattern&gt;</var></span></kbd></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-version</span></code></td>
-<td>Shows the current version of KIARA / kiaragen</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">-package</span></code></td>
-<td>Defines the package prefix of the generated Java classes. Default: no package</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-d</span> <span class="pre">&quot;path&quot;</span></code></td>
-<td>Specify the output directory for the generated files. Default: current working dir</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">-replace</span></code></td>
-<td>Replaces existing generated files.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-example</span> <span class="pre">&quot;pattern&quot;</span></code></td>
-<td><p class="first">Generates the support files (interfaces, classes, stubs, skeletons,...) for the given target communication  pattern.
-These classes can be used by the developer to implement his application. It also creates build.gradle files.
+<tr><td>&nbsp;</td><td><p class="first">Generates the support files (interfaces, classes, stubs, skeletons,...)
+for the given target communication  pattern. These classes can be used by the
+developer to implement his application. It also creates build.gradle files.
 Supported values:</p>
 <ul class="last simple">
 <li>rpc: Creates an example application which uses RPC as a communication framework.</li>
 <li>ps: Creates an example application which uses Publish/Subscribe as a communication pattern.</li>
 </ul>
-</td>
+</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-p<var>pDisable</var></span></kbd></td>
+<td>Disables the preprocessor.</td></tr>
+<tr><td class="option-group" colspan="2">
+<kbd><span class="option">--ppPath <var>&lt;path&gt;</var></span></kbd></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--ppDisable</span></code></td>
-<td>Disables the preprocessor.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--ppPath</span> <span class="pre">&quot;path&quot;</span></code></td>
-<td>Specifies the path of the preprocessor. Default: Systems C++ preprocessor</td>
-</tr>
-<tr class="row-even"><td colspan="2"><code class="docutils literal"><span class="pre">-t</span> <span class="pre">&lt;path&gt;</span></code>            | Specify the output temploral directory for the files generated by the preprocessor. Default: machine temp path</td>
-</tr>
+<tr><td>&nbsp;</td><td>Specifies the path of the preprocessor. Default: Systems C++ preprocessor</td></tr>
+<tr><td class="option-group">
+<kbd><span class="option">-t <var>&lt;path&gt;</var></span></kbd></td>
+<td>Specify the output temploral directory for the files generated by the preprocessor.
+Default: machine temp path</td></tr>
 </tbody>
 </table>
 </div>
@@ -439,7 +439,10 @@ Supported values:</p>
 <p>The KIARA Interface Definition Language (IDL) can be used to describe data types, namespaces, constants and even remote functions the server will offer (when using RPC pattern). In addition the KIARA IDL supports the declaration and application of Annotations to add metadata to almost any IDL element. These can be used by the code generator, when implementing the service functionality or configure some specific runtime functionality. The IDL syntax is based on the OMG IDL 3.5.</p>
 <p>The basic structure of an IDL File is shown in the picture in the right.</p>
 <p>Following, a short overview of the supported KIARA IDL elements. For a detailed description please see KIARA IDL Specification chapter <a class="reference internal" href="../specification/Middleware_IDL_Specification.html"><em>KIARA Interface Definition Language</em></a>.</p>
-<p><img alt="GitHub Workflow" src="../_images/IDLFileStructure.png" /></p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="../_images/IDLFileStructure.png"><img alt="../_images/IDLFileStructure.png" src="../_images/IDLFileStructure.png" style="width: 400px;" /></a>
+<p class="caption"><span class="caption-text">IDL File Structure</span></p>
+</div>
 <ul>
 <li><dl class="first docutils">
 <dt><strong>Import Declarations</strong>:</dt>
@@ -500,13 +503,13 @@ among multiple definitions using the import statement.</p>
 <ul class="last">
 <li><dl class="first docutils">
 <dt><strong>Lists</strong></dt>
-<dd><p class="first last">Ordered collection of elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”</p>
+<dd><p class="first last">Ordered collection of elements of the same type. &#8220;list&#8221; is the modern variant of the OMG IDL keyword &#8220;sequence&#8221;</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
 <dt><strong>Sets</strong></dt>
-<dd><p class="first last">Ordered collection of different elements of the same type. “list” is the modern variant of the OMG IDL keyword “sequence”</p>
+<dd><p class="first last">Ordered collection of different elements of the same type. &#8220;list&#8221; is the modern variant of the OMG IDL keyword &#8220;sequence&#8221;</p>
 </dd>
 </dl>
 </li>
@@ -692,8 +695,8 @@ Generating common client side files... OK
 </pre></div>
 </div>
 </div>
-<div class="section" id="servant-implementation">
-<h4>Servant implementation<a class="headerlink" href="#servant-implementation" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id2">
+<h4>Servant implementation<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
 <p>Please note that the code inside the file <code class="docutils literal"><span class="pre">x.y.&lt;IDL-ServiceName&gt;ServantExample.java</span></code> (which in this case is <code class="docutils literal"><span class="pre">CalculatorServantExample.java</span></code>) has to be modified in order to specify the behaviour of each declared function.</p>
 <div class="code java highlight-python"><div class="highlight"><pre>class CalculatorServantExample extends CalculatorServant {
 
@@ -784,9 +787,9 @@ when the remote procedure is executed.</li>
 <h4>Compiling the client and the server<a class="headerlink" href="#compiling-the-client-and-the-server" title="Permalink to this headline">¶</a></h4>
 <p>For the client and server examples to compile, some jar files are needed. These files are located under the lib directory provided with this distribution, and they must be placed in the root working directory, under the lib folder:</p>
 <div class="highlight-python"><div class="highlight"><pre>.
-├── src                           // source files
-├── lib                           // generated support files
-└── build.gradle                  // Gradle compilation script
+├── src                       // source files
+├── lib                       // generated support files
+└── build.gradle              // Gradle compilation script
 </pre></div>
 </div>
 <p>To compile the client using gradle, the call would be the next one (change target clientJar to serverJar to compile the server):</p>
@@ -804,11 +807,11 @@ Total time: 3.426 secs
 <p>After compiling both of them the following files will be generated:</p>
 <div class="highlight-python"><div class="highlight"><pre>.
 ├── src                       // source files
-├── build                           // generated by gradle
-│   ├── classes                     // Compiled .class files
-│   ├── dependency-cache            // Inner gradle files
-│   ├── libs                        // Executable jar files
-│   └── tmp                        // Temporal files used by gradle
+├── build                     // generated by gradle
+│   ├── classes               // Compiled .class files
+│   ├── dependency-cache      // Inner gradle files
+│   ├── libs                  // Executable jar files
+│   └── tmp                   // Temporal files used by gradle
 ├── lib
 └── build.gradle              //  Gradle compilation script
 </pre></div>
@@ -886,8 +889,8 @@ service.register(&quot;Calculator.add&quot;, addHandler);
 </div>
 </div>
 </div>
-<div class="section" id="id1">
-<h4>Implementing the server<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id3">
+<h4>Implementing the server<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
 <p>Because the server functionality is not encapsuled in generated Servant classes, the server implmentation is a bit more extensive. It still follows the same pattern as in the static API, but the implementation and registration of the dynamic functions has to be done completely by the developer.</p>
 <p>The following ServerExample class shows, how this would look like:</p>
 <div class="code java highlight-python"><div class="highlight"><pre>public class ServerExample {
@@ -916,8 +919,8 @@ service.register(&quot;Calculator.add&quot;, addHandler);
         substractHandler = /* Implement handler for the substract function */;
 
         // Register services
-        service.register(“Calculator.add”, addHandler);
-        service.register(“Calculator.substract”, substractHandler);
+        service.register(&quot;Calculator.add&quot;, addHandler);
+        service.register(&quot;Calculator.substract&quot;, substractHandler);
 
         //Add service waiting on TCP with CDR serialization
         server.addService(service, &quot;tcp://0.0.0.0:9090&quot;, &quot;cdr&quot;);
@@ -928,8 +931,8 @@ service.register(&quot;Calculator.add&quot;, addHandler);
 </pre></div>
 </div>
 </div>
-<div class="section" id="id2">
-<h4>Implementing the client<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="id4">
+<h4>Implementing the client<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h4>
 <p>On the client side the key point is the negotiation with the server to download the IDL it provides. After downloading, it will automatically parse the content and generate the necessary information to create the dynamic objects.</p>
 <p>When the <code class="docutils literal"><span class="pre">DynamicProxy</span></code> is created the functions provided by the server can be executed by using <code class="docutils literal"><span class="pre">DynamicFunctionRequest</span></code> objects. The parameters of the functions have to be set in the request using <code class="docutils literal"><span class="pre">DynamicData</span></code> objects. The call of the request function <code class="docutils literal"><span class="pre">execute()</span></code> will finally perform the call to the server and return the result in a <code class="docutils literal"><span class="pre">DynamicFunctionResponse</span></code> object.</p>
 <p>The following code shows the client implementation:</p>
@@ -943,11 +946,11 @@ service.register(&quot;Calculator.add&quot;, addHandler);
         Connection connection =
                      context.connect(&quot;kiara://127.0.0.1:9090/service&quot;);
 
-        // Create client by using the proxy’s name
-        DynamicProxy client = connection.getDynamicProxy(“Calculator”);
+        // Create client by using the proxy&#39;s name
+        DynamicProxy client = connection.getDynamicProxy(&quot;Calculator&quot;);
 
         // Create request object
-        DynamicFunctionRequest request = client.createFunctionRequest(“add”);
+        DynamicFunctionRequest request = client.createFunctionRequest(&quot;add&quot;);
         ((DynamicPrimitive) request.getParameterAt(0)).set(8);
         ((DynamicPrimitive) request.getParameterAt(1)).set(5);
 
@@ -955,10 +958,10 @@ service.register(&quot;Calculator.add&quot;, addHandler);
         DynamicFunctionResponse response = request.execute();
         if (response.isException()) {
             DynamicData result = response.getReturnValue();
-            System.out.println(“Exception = “ + (DynamicException) result);
+            System.out.println(&quot;Exception = &quot; + (DynamicException) result);
         } else {
             DynamicData result = response.getReturnValue();
-            System.out.println(“Result = “ + (DynamicPrimitive) result);
+            System.out.println(&quot;Result = &quot; + (DynamicPrimitive) result);
         }
     // shutdown the client
         Kiara.shutdown();
@@ -1114,7 +1117,7 @@ Generating GRADLE compilation script... OK
 <colgroup>
 <col width="17%" />
 <col width="11%" />
-<col width="71%" />
+<col width="72%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Tag</th>
@@ -1158,48 +1161,30 @@ Generating GRADLE compilation script... OK
 </td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;unicastLocator&gt;</span></code></td>
-<td>complexType*</td>
+<td>complexType</td>
 <td><p class="first">List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="23%" />
-<col width="77%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
-<td>IP address of the endpoint.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">address</span></code>:</th><td class="field-body">IP address of the endpoint.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
-<td>Integer indicating the port for communication.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">port</span></code>:</th><td class="field-body">Integer indicating the port for communication.</td>
 </tr>
 </tbody>
 </table>
 </td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;multicastLocator&gt;</span></code></td>
-<td>complexType*</td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;multicastLocator&gt;</span></code></td>
+<td>complexType</td>
 <td><p class="first">List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="23%" />
-<col width="77%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
-<td>IP address of the endpoint.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">address</span></code>:</th><td class="field-body">IP address of the endpoint.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
-<td>Integer indicating the port for communication.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">port</span></code>:</th><td class="field-body">Integer indicating the port for communication.</td>
 </tr>
 </tbody>
 </table>
@@ -1208,25 +1193,17 @@ Generating GRADLE compilation script... OK
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topic&gt;</span></code></td>
 <td>complexType</td>
 <td><p class="first">Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="19%" />
-<col width="81%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">name</span></code></td>
-<td>Name of the topic.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">name</span></code>:</th><td class="field-body"><p class="first">Name of the topic.</p>
+</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">dataType</span></code></td>
-<td>Name of the dataType related to this topic.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">dataType</span></code>:</th><td class="field-body"><p class="first">Name of the dataType related to this topic.</p>
+</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
 <ul class="last simple">
 <li>WITH_KEY</li>
 <li>NO_KEY</li>
@@ -1249,57 +1226,42 @@ Generating GRADLE compilation script... OK
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;ownershipQos&gt;</span></code></td>
 <td>element</td>
 <td><p class="first">Complex type that describes the ownership of the data sent by the endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="16%" />
-<col width="84%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates the kind of ownership. Supported values:</p>
-<ul class="last simple">
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates the kind of ownership. Supported values:</p>
+<ul class="simple">
 <li>SHARED_OWNERSHIP_QOS</li>
 <li>EXCLUSIVE_OWNERSHIP_QOS</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">strength</span></code></td>
-<td>Integer value used to give priority of the data ownership over other endpoints.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">strength</span></code>:</th><td class="field-body"><p class="first last">Integer value used to give priority of the data ownership over other endpoints.</p>
+</td>
 </tr>
 </tbody>
 </table>
 </td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;livelinessQos&gt;</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;livelinessQos&gt;</span></code></td>
 <td>complexType</td>
 <td><p class="first">It describes the Lliveliness QoS selected for the endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="27%" />
-<col width="73%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
-<ul class="last simple">
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
+<ul class="simple">
 <li>AUTOMATIC_LIVELINESS_QOS</li>
 <li>MANUAL_BY_PARTICIPANT_LIVELINESS_QOS</li>
 <li>MANUAL_BY_TOPIC_LIVELINESS_QOS</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code></td>
-<td>Integer indicating the lease duration in milliseconds.</td>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">Integer indicating the lease duration in milliseconds.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1314,9 +1276,9 @@ Generating GRADLE compilation script... OK
 <p>The available tags inside <code class="docutils literal"><span class="pre">reader</span></code> are the following:</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="16%" />
+<col width="17%" />
 <col width="11%" />
-<col width="73%" />
+<col width="72%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Tag</th>
@@ -1343,7 +1305,8 @@ Generating GRADLE compilation script... OK
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;expectsInlineQos&gt;</span></code></td>
 <td>element</td>
-<td>Boolean value inticating whether the reader endpoint expects to receive inline QoS in the RTPS messages or not.</td>
+<td>Boolean value inticating whether the reader endpoint expects to receive inline QoS in
+the RTPS messages or not.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;topicKind&gt;</span></code></td>
 <td>element</td>
@@ -1366,22 +1329,13 @@ Generating GRADLE compilation script... OK
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;unicastLocator&gt;</span></code></td>
 <td>complexType*</td>
 <td><p class="first">List of unicastLocator types indicating the unicast IP adresses of this endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="23%" />
-<col width="77%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
-<td>IP address of the endpoint.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">address</span></code>:</th><td class="field-body">IP address of the endpoint.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
-<td>Integer indicating the port for communication.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">port</span></code>:</th><td class="field-body">Integer indicating the port for communication.</td>
 </tr>
 </tbody>
 </table>
@@ -1390,49 +1344,32 @@ Generating GRADLE compilation script... OK
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;multicastLocator&gt;</span></code></td>
 <td>complexType*</td>
 <td><p class="first">List of unicastLocator types indicating the multicast IP adresses of this endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="23%" />
-<col width="77%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">address</span></code></td>
-<td>IP address of the endpoint.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">address</span></code>:</th><td class="field-body">IP address of the endpoint.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">port</span></code></td>
-<td>Integer indicating the port for communication.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">port</span></code>:</th><td class="field-body">Integer indicating the port for communication.</td>
 </tr>
 </tbody>
 </table>
 </td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;topic&gt;</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;topic&gt;</span></code></td>
 <td>complexType</td>
 <td><p class="first">Entity inticading the name, data type and kind of the topic this endpoint is related to. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="19%" />
-<col width="81%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">name</span></code></td>
-<td>Name of the topic.</td>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">name</span></code>:</th><td class="field-body"><p class="first">Name of the topic.</p>
+</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">dataType</span></code></td>
-<td>Name of the dataType related to this topic.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">dataType</span></code>:</th><td class="field-body"><p class="first">Name of the dataType related to this topic.</p>
+</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates whether it is a keyed topic or not. Supported values:</p>
 <ul class="last simple">
 <li>WITH_KEY</li>
 <li>NO_KEY</li>
@@ -1443,7 +1380,7 @@ Generating GRADLE compilation script... OK
 </table>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;durabilityQos&gt;</span></code></td>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;durabilityQos&gt;</span></code></td>
 <td>element</td>
 <td><p class="first">String element indicating the durability of the data send by the endpoint. Supported values:</p>
 <ul class="last simple">
@@ -1452,30 +1389,22 @@ Generating GRADLE compilation script... OK
 </ul>
 </td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;ownershipQos&gt;</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">&lt;ownershipQos&gt;</span></code></td>
 <td>element</td>
 <td><p class="first">Complex type that describes the ownership of the data received by the endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="16%" />
-<col width="84%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates the kind of ownership. Supported values:</p>
-<ul class="last simple">
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates the kind of ownership. Supported values:</p>
+<ul class="simple">
 <li>SHARED_OWNERSHIP_QOS</li>
 <li>EXCLUSIVE_OWNERSHIP_QOS</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">strength</span></code></td>
-<td>Integer value used to give priority of the data ownership over other endpoints.</td>
+<tr class="field-even field"><th class="field-name"><code class="docutils literal"><span class="pre">strength</span></code>:</th><td class="field-body"><p class="first last">Integer value used to give priority of the data ownership over other endpoints.</p>
+</td>
 </tr>
 </tbody>
 </table>
@@ -1484,28 +1413,21 @@ Generating GRADLE compilation script... OK
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">&lt;livelinessQos&gt;</span></code></td>
 <td>complexType</td>
 <td><p class="first">It describes the Lliveliness QoS selected for the endpoint. Attributes:</p>
-<table border="1" class="last docutils">
-<colgroup>
-<col width="27%" />
-<col width="73%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">kind</span></code></td>
-<td><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
-<ul class="last simple">
+<tr class="field-odd field"><th class="field-name"><code class="docutils literal"><span class="pre">kind</span></code>:</th><td class="field-body"><p class="first">Indicates the kind of liveliness selected. Supported values:</p>
+<ul class="simple">
 <li>AUTOMATIC_LIVELINESS_QOS</li>
 <li>MANUAL_BY_PARTICIPANT_LIVELINESS_QOS</li>
 <li>MANUAL_BY_TOPIC_LIVELINESS_QOS</li>
 </ul>
 </td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code></td>
-<td>Integer indicating the lease duration in milliseconds.</td>
+<tr class="field-even field"><th class="field-name" colspan="2"><code class="docutils literal"><span class="pre">leaseDuration_ms</span></code>:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body"><p class="first last">Integer indicating the lease duration in milliseconds.</p>
+</td>
 </tr>
 </tbody>
 </table>
