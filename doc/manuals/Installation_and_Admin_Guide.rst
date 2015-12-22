@@ -1,7 +1,7 @@
 KIARA Installation and Administration Guide
 ===========================================
 
-**Date: 10th October 2015**
+**Date: 11th December 2015**
 
 - Version: `0.4.0 <#>`__
 - Latest version: :doc:`latest <Installation_and_Admin_Guide>`
@@ -9,11 +9,11 @@ KIARA Installation and Administration Guide
 Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://www.eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`_
 -  `DFKI - German Research Center for Artificial
-   Intelligence <http://www.dfki.de/>`__
+   Intelligence <http://www.dfki.de/>`_
 -  `ZHAW - School of Engineering
-   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+   (ICCLab) <http://blog.zhaw.ch/icclab>`_
 
 Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
@@ -49,7 +49,7 @@ Hardware Requirements
 
 The hardware requirements depend on the application to be developed. Any hardware running Java JRE/JDK 7 or later is supported.
 
-This `Oracle JDK Webpage <http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html>`__ provides specific minimal hardware requirements (Disk, Memory, CPU).
+This `Oracle JDK Webpage <http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_system_requirements.html>`_ provides specific minimal hardware requirements (Disk, Memory, CPU).
 
 Software Requirements
 ~~~~~~~~~~~~~~~~~~~~~
@@ -78,9 +78,9 @@ Installation of the Java JDK
 
 Please follow the installation instructions of the respective Java distribution:
 
--  `OpenJDK <http://openjdk.java.net/install/>`__ (Default on most Linux-Systems)
--  `Oracle Java SE JDK <http://docs.oracle.com/javase/8/docs/technotes/guides/install>`__ (Linux, Windows, OS X, Solaris)
--  `IBM Java SE JDK <http://www-01.ibm.com/support/knowledgecenter/#!/SSYKE2_7.0.0/welcome/welcome_javasdk_version71.html>`__ (Linux, Windows, AIX, z/OS)
+-  `OpenJDK <http://openjdk.java.net/install/>`_ (Default on most Linux-Systems)
+-  `Oracle Java SE JDK <http://docs.oracle.com/javase/8/docs/technotes/guides/install>`_ (Linux, Windows, OS X, Solaris)
+-  `IBM Java SE JDK <http://www-01.ibm.com/support/knowledgecenter/#!/SSYKE2_7.0.0/welcome/welcome_javasdk_version71.html>`_ (Linux, Windows, AIX, z/OS)
 
 To verify that the installation is correct please open a terminal/shell/command line interface (cmd.exe, sh/bash/zsh) and check, that the java command is executable:
 
@@ -91,26 +91,26 @@ To verify that the installation is correct please open a terminal/shell/command 
     OpenJDK Runtime Environment (IcedTea 2.5.3) (7u71-2.5.3-0ubuntu0.14.04.1)
     OpenJDK 64-Bit Server VM (build 24.65-b04, mixed mode)
 
-If the java command is not found, please make sure, that the ``<java_home>/bin`` directory is in your ``PATH`` environment variable and the ``JAVA_HOME`` environment variable is set (see troubleshooting instructions on the `Oracle Website <http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_jdk_install.html#BABGDJFH>`__).
+If the java command is not found, please make sure, that the ``<java_home>/bin`` directory is in your ``PATH`` environment variable and the ``JAVA_HOME`` environment variable is set (see troubleshooting instructions on the `Oracle Website <http://docs.oracle.com/javase/8/docs/technotes/guides/install/windows_jdk_install.html#BABGDJFH>`_).
 
 Installation of Build Tools
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-On development systems developers should use a build tool to compile, test, package and deploy applications. In the Java (JVM) world the most commonly used tools are `Gradle <http://www.gradle.org>`__ and `Apache Maven <http://maven.apache.org>`__. An alternative approach is to use the built in build-management of IDEs like Eclipse, IntelliJ IDEA or Netbeans.
+On development systems developers should use a build tool to compile, test, package and deploy applications. In the Java (JVM) world the most commonly used tools are `Gradle <http://www.gradle.org>`_ and `Apache Maven <http://maven.apache.org>`_. An alternative approach is to use the built in build-management of IDEs like Eclipse, IntelliJ IDEA or Netbeans.
 
 In the following section covers the Installation of these tools.
 
 Gradle
 ^^^^^^
 
-`Gradle <http://www.gradle.org>`__ is the newest and most flexible build tool for Java. It provides every good and detailed `documentation <http://www.gradle.org/documentation>`__ and `tutorials <http://www.gradle.org/docs/current/userguide/tutorials.html>`__ to get developers started. Official installation instructions are `here <http://www.gradle.org/docs/current/userguide/installation.html>`__.
+`Gradle <http://www.gradle.org>`_ is the newest and most flexible build tool for Java. It provides every good and detailed `documentation <http://www.gradle.org/documentation>`_ and `tutorials <http://www.gradle.org/docs/current/userguide/tutorials.html>`_ to get developers started. Official installation instructions are `here <http://www.gradle.org/docs/current/userguide/installation.html>`_.
 
-The official way to install Gradle is to `download <http://www.gradle.org/downloads>`__ and unpack the binary ZIP file to a common directory, set the environment variable ``GRADLE_HOME`` and add the bin directory to your ``PATH`` environment variable.
+The official way to install Gradle is to `download <http://www.gradle.org/downloads>`_ and unpack the binary ZIP file to a common directory, set the environment variable ``GRADLE_HOME`` and add the bin directory to your ``PATH`` environment variable.
 
 Windows installation
 """"""""""""""""""""
 
-Download newest gradle-x.x.x-all.zip from http://www.gradle.org/downloads. 
+Download newest gradle-x.x.x-all.zip from http://www.gradle.org/downloads.
 
 Open CLI (cmd.exe)
 
@@ -144,14 +144,14 @@ Open ``~/.profile`` (single user) or ``/etc/profile`` (all users) and add the fo
 Unix (Linux / OS X / Solaris / FreeBSD) installation using gvm
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-An alternative and simpler option to install gradle for a single user is to use the `Groovy enVironment Manager (gvm) <http://gvmtool.net>`__ to install and update Gradle. You need the commands/packages curl and unzip to be installed on your system.
+An alternative and simpler option to install gradle for a single user is to use the `Groovy enVironment Manager (gvm) <http://gvmtool.net>`_ to install and update Gradle. You need the commands/packages curl and unzip to be installed on your system.
 
 Open shell:
 
 ::
 
     $ curl -s get.gvmtool.net | bash
-    … follow instructions
+    ... follow instructions
     $ gvm install gradle
 
 See gvm help to get more infos about other options of gvm, like updating or switching between different versions.
@@ -180,15 +180,15 @@ Open a new shell or cmd.exe session and test if gradle is available:
 Apache Maven
 ^^^^^^^^^^^^
 
-`Apache Maven <http://maven.apache.org>`__ is a very common build tool in the Java/JVM world and is very well known for its dependency management and its `central artifact repository
-(mavencentral) <http://search.maven.org>`__. Find the documentation and tutorials on the `main page <http://maven.apache.org>`__. Installation instructions and downloads are `here <http://maven.apache.org/download.cgi>`__.
+`Apache Maven <http://maven.apache.org>`_ is a very common build tool in the Java/JVM world and is very well known for its dependency management and its `central artifact repository
+(mavencentral) <http://search.maven.org>`_. Find the documentation and tutorials on the `main page <http://maven.apache.org>`_. Installation instructions and downloads are `here <http://maven.apache.org/download.cgi>`_.
 
-The official way to install Maven is to `download <http://maven.apache.org/download.cgi>`__ and unpack the binary ZIP file to a common directory, set the environment variable ``M2_HOME`` and add the bin directory to your ``PATH`` environment variable.
+The official way to install Maven is to `download <http://maven.apache.org/download.cgi>`_ and unpack the binary ZIP file to a common directory, set the environment variable ``M2_HOME`` and add the bin directory to your ``PATH`` environment variable.
 
 Windows installation
 """"""""""""""""""""
 
-Follow process in the `install instructions <http://books.sonatype.com/mvnex-book/reference/installation-sect-maven-install.html>`__.
+Follow process in the `install instructions <http://books.sonatype.com/mvnex-book/reference/installation-sect-maven-install.html>`_.
 
 Unix (Linux / OS X / Solaris / FreeBSD) manual installation
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -217,14 +217,14 @@ An alternative option to install maven is to use the package manager of the unix
 -  on DEB based systems (Debian,Ubuntu,...) ``$ sudo apt-get install maven`` (this is a quite outdated version 3.0.x)
 -  on RPM based systems (RedHat,CentOS,Fedora,...) exists no official package (use above manual instructions).
 -  on OS X you can install Maven using a packet manager for OS X like Homebrew or MacPorts. Because the packages are usually compiled during installation you need to install Xcode beforehand. This is recommended especially, if you already have Xcode installed or you would like to install also other common unix packages.
-   
+
 Homebrew (http://brew.sh):
-	
+
 ::
     ``$ brew install maven``
-	
+
 MacPorts (http://www.macports.org/install.php):
-	
+
 ::
     ``$ port install maven2``
 
@@ -249,9 +249,9 @@ Integraded Development Environments (IDE)
 To install your IDE please check the webpage of your prefered IDE
 product:
 
--  `Eclipse <http://eclipse.org>`__
--  `IntelliJ IDEA <https://www.jetbrains.com/idea/>`__
--  `Netbeans <https://netbeans.org>`__
+-  `Eclipse <http://eclipse.org>`_
+-  `IntelliJ IDEA <https://www.jetbrains.com/idea/>`_
+-  `Netbeans <https://netbeans.org>`_
 
 These IDEs typically integrate well with Gradle and Apache Maven using plugins. Alternatively you have to copy the KIARA libraries manually to the library folder of your project and add them to your classpath.
 
@@ -260,7 +260,7 @@ Installation of the kiaragen tool
 
 The kiaragen tool is part of the KIARA components available on Maven Central. Depending on your build tool kiaragen can be easily integrated or it can be called with a shell/batch script.
 
-If you are using Maven or an IDE you can download an executable jar file of kiaragen from the `ga\|1\|g:org.fiware.kiara\|KIARA Maven-Central <http://search.maven.org/#search>`__ repository, or you
+If you are using Maven or an IDE you can download an executable jar file of kiaragen from the `ga\|1\|g:org.fiware.kiara\|KIARA Maven-Central <http://search.maven.org/#search>`_ repository, or you
 can find it in a standalone distribution available online.
 
 On Windows:
@@ -312,7 +312,7 @@ If you do not yet have a project you can setup the basic structure using the gra
 
 ::
 
-    $ mkdir calculator 
+    $ mkdir calculator
     $ cd calculator
     $ gradle init --type java-library
 
@@ -368,7 +368,7 @@ The following is a typical file structure for a gradle project using KIARA:
     │   │               ├── ClientExample.class
     │   │               ├── IDLText.class
     │   │               └── ServerExample.class
-    │   ├── generated-src                           // generated support classes 
+    │   ├── generated-src                           // generated support classes
     │   │   └── kiara
     │   │       └── com
     │   │           └── example
@@ -378,21 +378,21 @@ The following is a typical file structure for a gradle project using KIARA:
     │   │               ├── CalculatorProcess.java
     │   │               ├── CalculatorProxy.java
     │   │               └── CalculatorServant.java
-    │   └── libs                                   
+    │   └── libs
     │       └── Calculator-1.0.jar                 // packaged application
     ├── build.gradle                               // gradle build file
-    ├── gradle                                     
+    ├── gradle
     │   └── wrapper                                // gradle wrapper files
     │       └── ...
     ├── gradlew                                    // gradle wrapper unix script
     ├── gradlew.bat                                // gradle wrapper windows script
-    ├── settings.gradle   
+    ├── settings.gradle
     └── src                                        // source files
         ├── main
         │   ├── idl                                // IDL definitions for KIARA
-        │   │   └── com  
+        │   │   └── com
         │   │       └── example
-        │   │           └── Calculator.idl  
+        │   │           └── Calculator.idl
         │   └── java                               // application code
         │       └── com
         │           └── example
@@ -425,9 +425,6 @@ If you do not yet have a maven project you can setup the basic structure using t
 
 This will create a basic directory structure for your source and test code and create a commented ``pom.xml`` file for a Java application.
 
-.. raw:: mediawiki
-
-   {{TOCright}}
 
 Sanity Check Procedures
 -----------------------
@@ -437,7 +434,7 @@ End to End testing
 
 To verify your development environment you can download and run the KIARA Calculator example application.
 
-Download the example application from `Github <https://github.com/FIWARE-Middleware/Examples>`__. You can clone it using git or download the ZIP archive and unzip it to an empty directory.
+Download the example application from `Github <https://github.com/FIWARE-Middleware/Examples>`_. You can clone it using git or download the ZIP archive and unzip it to an empty directory.
 
 ::
 
