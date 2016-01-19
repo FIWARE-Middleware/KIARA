@@ -48,7 +48,7 @@ import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
 public class CalculatorDynamicTest {
-
+    
     static {
         //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
@@ -57,15 +57,15 @@ public class CalculatorDynamicTest {
 
         @Override
         public int add(int param1, int param2) {
-            System.out.println("Current thread: " + Thread.currentThread().toString());
-            System.out.println("Adding " + param1 + " and " + param2);
+            //System.out.println("Current thread: " + Thread.currentThread().toString());
+            //System.out.println("Adding " + param1 + " and " + param2);
             return param1 + param2;
         }
 
         @Override
         public int subtract(int param1, int param2) {
-            System.out.println("Current thread: " + Thread.currentThread().toString());
-            System.out.println("Subtracting " + param1 + " and " + param2);
+            //System.out.println("Current thread: " + Thread.currentThread().toString());
+            //System.out.println("Subtracting " + param1 + " and " + param2);
             return param1 - param2;
         }
     }
@@ -92,7 +92,7 @@ public class CalculatorDynamicTest {
 
                 @Override
                 public void process(DynamicFunctionRequest request, DynamicFunctionResponse response) {
-                    System.out.println("Current thread: " + Thread.currentThread().toString());
+                    //System.out.println("Current thread: " + Thread.currentThread().toString());
 
                     int a = (Integer) ((DynamicPrimitive) request.getParameterAt(0)).get();
                     int b = (Integer) ((DynamicPrimitive) request.getParameterAt(1)).get();
@@ -100,11 +100,11 @@ public class CalculatorDynamicTest {
                     final DynamicPrimitive intVal = (DynamicPrimitive) builder.createData(intTy);
 
                     if ("add".equals(((FunctionTypeDescriptor) request.getTypeDescriptor()).getName())) {
-                        System.out.println("Adding " + a + " and " + b);
+                        //System.out.println("Adding " + a + " and " + b);
 
                         intVal.set(a + b);
                     } else if ("subtract".equals(((FunctionTypeDescriptor) request.getTypeDescriptor()).getName())) {
-                        System.out.println("Subtracting " + a + " and " + b);
+                        //System.out.println("Subtracting " + a + " and " + b);
 
                         intVal.set(a - b);
                     }
@@ -165,8 +165,10 @@ public class CalculatorDynamicTest {
     @After
     public void tearDown() throws Exception {
         calculatorSetup.shutdown();
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.MINUTES);
+        if (executor != null) {
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.MINUTES);
+        }
     }
 
     @Parameterized.Parameters
@@ -314,7 +316,7 @@ public class CalculatorDynamicTest {
                 @Override
                 public Integer call() throws Exception {
                     final int result = call_add(arg, arg);
-                    System.err.println(arg + "+" + arg + "=" + result);
+//                    System.out.println(arg + "+" + arg + "=" + result);
                     assertEquals(arg + arg, result);
                     return result;
                 }
@@ -334,7 +336,7 @@ public class CalculatorDynamicTest {
                 @Override
                 public Integer call() throws Exception {
                     final int result = call_subtract(resultLength, arg);
-                    System.err.println(resultLength + "-" + arg + "=" + result);
+//                    System.out.println(resultLength + "-" + arg + "=" + result);
                     assertEquals(resultLength - arg, result);
                     return result;
                 }
@@ -359,7 +361,7 @@ public class CalculatorDynamicTest {
 
                 @Override
                 public void onSuccess(Integer result) {
-                    System.err.println(arg + "+" + arg + "=" + result);
+//                    System.out.println(arg + "+" + arg + "=" + result);
                     assertEquals(arg + arg, result.intValue());
                     resultValue.set(result);
                 }
@@ -385,7 +387,7 @@ public class CalculatorDynamicTest {
 
                 @Override
                 public void onSuccess(Integer result) {
-                    System.err.println(resultLength + "-" + arg + "=" + result);
+//                    System.out.println(resultLength + "-" + arg + "=" + result);
                     assertEquals(resultLength - arg, result.intValue());
                     resultValue.set(result);
                 }

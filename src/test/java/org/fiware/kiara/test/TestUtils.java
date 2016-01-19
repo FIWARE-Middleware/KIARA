@@ -85,7 +85,7 @@ public class TestUtils {
 
     public static Collection<?> createDefaultTestConfig() {
         Collection<Object[]> params = new ArrayList<>();
-        final String[] transports = {"tcp"};
+        final String[] transports = {"tcp", "tcps"};
         final String[] protocols = {"cdr"};
         final TypeFactory[] executorFactories = TestUtils.createExecutorFactories();
 
@@ -99,7 +99,7 @@ public class TestUtils {
         }
         return params;
     }
-
+    
     public static Collection<?> createHttpTestConfig() {
         Collection<Object[]> params = new ArrayList<>();
         final String[] transports = {"http"};

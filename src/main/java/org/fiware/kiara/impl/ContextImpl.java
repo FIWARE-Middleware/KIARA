@@ -130,7 +130,7 @@ public class ContextImpl implements Context {
             ParserContextImpl ctx = null;
 
             final URI uri = new URI(url);
-
+            
             ListMultimap<String, EndpointInfo> serviceProviders = ArrayListMultimap.create();
 
             if (uri.getScheme().equals("kiara")) {
@@ -218,26 +218,27 @@ public class ContextImpl implements Context {
                     }
                 }
 
-                if (serviceProviders.isEmpty()) {
+                if (serviceProviders.isEmpty()) { // TODO Check if user's configuration in connection chain matches the server
                     throw new ConnectException("No matching endpoint found");
                 }
 
                 return new ConnectionImpl(configUri, serviceProviders);
             } else {
                 QueryStringDecoder decoder = new QueryStringDecoder(uri);
-
+                
                 String serializerName = null;
-
+                
                 List<String> parameters = decoder.parameters().get("serialization");
                 if (parameters != null && !parameters.isEmpty()) {
                     serializerName = parameters.get(0);
                 }
-
+                
                 if (serializerName == null) {
                     throw new IllegalArgumentException("No serializer is specified as a part of the URI");
                 }
-
+                
                 final TransportFactory transportFactory = getTransportFactoryByURI(uri);
+                
                 final SerializerFactory serializerFactory = getSerializerFactoryByName(serializerName);
 
                 // create pseudo endpoint
@@ -246,9 +247,10 @@ public class ContextImpl implements Context {
                 si.transport.name = transportFactory.getName();
                 si.transport.url = uri.toString();
                 final EndpointInfo esi = new EndpointInfo(si, transportFactory, serializerFactory);
-
+                
                 // register endpoint for all services
                 serviceProviders.put("*", esi);
+                
                 return new ConnectionImpl(null, serviceProviders);
             }
         } catch (URISyntaxException ex) {

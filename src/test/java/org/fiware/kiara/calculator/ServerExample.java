@@ -104,6 +104,7 @@ public class ServerExample {
         service.register("Calculator.subtract", handler);
 
         //Add service waiting on TCP with CDR serialization
+        //server.addService(service, "tcps://0.0.0.0:9090", protocol);
         server.addService(service, "tcp://0.0.0.0:9090", protocol);
 
         server.run();

@@ -1,9 +1,9 @@
 Advanced Middleware RPC API Specification
 =========================================
 
-**Date: 10th October 2015**
+**Date: 18th January 2016**
 
-- Version: `0.3.0 <#>`_
+- Version: `0.4.0 <#>`_
 - Latest version: :doc:`latest <Middleware_RPC_API_Specification>`
 
 Editors:
@@ -45,6 +45,8 @@ Status of this Document
 | 8-April-2015      | Release 0.2.0        |
 +-------------------+----------------------+
 | 10-October-2015   | Release 0.3.0        |
++-------------------+----------------------+
+| 18-January-2016   | Release 0.4.0        |
 +-------------------+----------------------+
 
 --------------
@@ -644,6 +646,25 @@ procedure.
 ``Transport`` and ``Serialization`` instances are implizitly created by
 the connection, based on the string parameter of the ``connect`` method.
 
+Secure connection to remote service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+KIARA also provides a way to stablish secure TCP connections with servers
+running in secure mode. To to so, simply change the connection URL to use
+TCPS instead of TCP.
+
+.. code:: java
+
+    Context context = Kiara.createContext();
+    Connection connection = context.connect("tcps://192.168.1.18:8080?serialization=cdr");
+    CalculatorClient client = connection.getServiceProxy(CalculatorClient.class);
+
+    int result = client.add(3,4);
+	
+Note that a client running normal (non secure) TCP transport can initialize a
+connection with a non-secure TCP server, but this does not happen in the 
+opposite way.
+
 Explicitly instanciate and configure Advanced Middleware components
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -693,7 +714,7 @@ method.
 Explicitly instanciate and configure Advanced Middleware components
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This examples shows how to provide a service as above, but using a TCP
+This example shows how to provide a service as above, but using a TCP
 transport and CDR serialization created and configured explicitly by the
 user.
 
@@ -715,3 +736,36 @@ user.
     server.addService(service, transport, serializer);
 
     server.run();
+	
+Secure TCP server
+~~~~~~~~~~~~~~~~~
+
+KIARA allows the server to initialize using a secure TCP layer so that 
+only clients using the same protocol can establish a connection with
+it. 
+
+The transport used to handle secure connections is SSL v3.0 (Secure Sockets 
+Layer) over TLS v1.2 (Transport Layer Security). In order to start a 
+secure server, the only change the user has to take into account is
+changing the URL of the server so that it uses TCPS instead of TCP.
+
+This example shows how to create a secure server and add a service to it.
+
+.. code:: java
+
+    Context context = Kiara.createContext();
+    Server server = context.createServer();
+    Service service = context.createService();
+
+    // User creates and registers it's implementation of the servant.
+    Calculator calculator_impl = new CalculatorServantImpl();
+    service.register(calculator_impl);
+
+    // Add the service to the server
+    server.addService(service, "tcps://0.0.0.0:8080", "cdr");
+
+    server.run();
+
+``Transport`` and ``Serialization`` instances are implizitly created by
+the connection, based on the string parameters of the ``addService``
+method.

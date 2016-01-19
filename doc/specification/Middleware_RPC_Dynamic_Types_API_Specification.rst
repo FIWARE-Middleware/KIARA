@@ -1,9 +1,9 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
 
-**Date: 10th October 2015**
+**Date: 18th January 2016**
 
-- Version: `0.3.0 <#>`_
+- Version: `0.4.0 <#>`_
 - Latest version: :doc:`latest <Middleware_RPC_Dynamic_Types_API_Specification>`
 
 Editors:
@@ -22,7 +22,7 @@ Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 Abstract
 --------
 
-Ahe Advanced Middleware GE enables flexible, efficient, scalable, and
+The Advanced Middleware GE enables flexible, efficient, scalable, and
 secure communication between distributed applications and to/between
 FIWARE GEs. The **Middleware RPC Dynamic Types API Specification**
 describes the extensions to the **Middleware RPC API Specification** to
@@ -46,6 +46,8 @@ Status of this Document
 | 08-April-2015      | Release 0.2.0                 |
 +--------------------+-------------------------------+
 | 10-October-2015    | Release 0.3.0                 |
++--------------------+-------------------------------+
+| 18-January-2016    | Release 0.4.0                 |
 +--------------------+-------------------------------+
 
 --------------
@@ -194,6 +196,14 @@ raise an exception. The following code snippet shows this behaviour:
         DynamicData result = dresponse.getReturnValue();
         System.out.println("Result = " + ((DynamicPrimitive) result).get());
     }
+	
+Creating a secure client
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+KIARA allows to use the Dynamic RPC API to connecto to a secure TCP server. This
+behaviour does not apply to the dynamic API, and therefore it can be found in 
+the :doc:`Advanced Middleware RPC API Specification <./Middleware_RPC_API_Specification>` 
+document, in the section API Usage Examples.
 
 API Overview
 ------------

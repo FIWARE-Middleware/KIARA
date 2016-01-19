@@ -162,7 +162,15 @@ public abstract class BaseHandler<I, T extends TransportFactory> extends SimpleC
             logger.debug("Class: "+getClass().getName()+", channel closed {}", ctx);
         }
         state = State.CLOSED;
-        channel = null;
+        
+        // NEW
+        //channel = null;
+        if (channel != null) {
+            channel.disconnect();
+            channel.close();
+        }
+        // END NEW
+        
         if (connectionListener != null) {
             connectionListener.onConnectionClosed(this);
         }

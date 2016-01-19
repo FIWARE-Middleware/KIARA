@@ -118,6 +118,8 @@ public abstract class NettyTransportFactory implements TransportFactory {
         // Check if secure transport has been enabled
         if (serverTransport.getTransportFactory().isSecureTransport()) {
             SSL = true;
+        } else {
+            SSL = false;
         }
         
         if (listener == null) {

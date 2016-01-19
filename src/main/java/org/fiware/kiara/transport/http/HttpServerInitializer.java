@@ -34,7 +34,7 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
     private final TransportConnectionListener connectionListener;
     private final HttpTransportFactory transport;
     private final String path;
-
+    
     public HttpServerInitializer(HttpTransportFactory transport, SslContext sslCtx, String path, TransportConnectionListener connectionListener) {
         this.sslCtx = sslCtx;
         this.connectionListener = connectionListener;

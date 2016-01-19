@@ -132,7 +132,7 @@ public class TransportTest {
 
     }
 
-    private static final String transportName = "tcp";
+    private static final String transportName = "tcps";
     private static final int transportPort = 5555;
 
     private Context context;

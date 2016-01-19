@@ -31,15 +31,21 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.ssl.JdkSslClientContext;
 import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.KeyStore;
+import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.Map;
 
+import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.TrustManagerFactory;
 
@@ -107,10 +113,10 @@ public class TcpBlockTransportFactory extends NettyTransportFactory {
         final SslContext sslCtx;
         if (ssl) {
             sslCtx = SslContext.newClientContext(InsecureTrustManagerFactory.INSTANCE);
-            System.out.println(sslCtx.sessionTimeout());
         } else {
             sslCtx = null;
         }
+        
 
         // Configure the client.
         final SettableFuture<Transport> onConnectionActive = SettableFuture.create();

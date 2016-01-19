@@ -38,7 +38,7 @@ test {
       //events "started" // uncomment to also log the start of a test.
       events "passed", "skipped", "failed"
       // show standard out and standard error of the test JVM(s) on the console
-      //showStandardStreams = false
+      //showStandardStreams = true
     }
     // print summary
     afterSuite { desc, result ->

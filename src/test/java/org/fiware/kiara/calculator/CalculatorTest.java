@@ -31,22 +31,22 @@ import org.junit.runners.Parameterized;
 public class CalculatorTest {
 
     static {
-        System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
+        //System.setProperty("java.util.logging.config.file", "/home/rubinste/.kiara/logging.properties");
     }
 
     public static class CalculatorServantImpl extends CalculatorServant {
 
         @Override
         public int add(int param1, int param2) {
-            System.out.println("Current thread: " + Thread.currentThread().toString());
-            System.out.println("Adding " + param1 + " and " + param2);
+            //System.out.println("Current thread: " + Thread.currentThread().toString());
+            //System.out.println("Adding " + param1 + " and " + param2);
             return param1 + param2;
         }
 
         @Override
         public int subtract(int param1, int param2) {
-            System.out.println("Current thread: " + Thread.currentThread().toString());
-            System.out.println("Subtracting " + param1 + " and " + param2);
+            //System.out.println("Current thread: " + Thread.currentThread().toString());
+            //System.out.println("Subtracting " + param1 + " and " + param2);
             return param1 - param2;
         }
     }
@@ -66,7 +66,7 @@ public class CalculatorTest {
             CalculatorServant impl = new CalculatorServantImpl();
             service.register(impl);
 
-            System.out.printf("Starting server...%n");
+            System.out.printf("Starting server, protocol = " + transport +" ...%n");
 
             Server server = context.createServer();
             //server.addService(service, makeServerTransportUri(transport, port), protocol);
@@ -110,8 +110,10 @@ public class CalculatorTest {
     @After
     public void tearDown() throws Exception {
         calculatorSetup.shutdown();
-        executor.shutdown();
-        executor.awaitTermination(10, TimeUnit.MINUTES);
+        if (executor != null) {
+            executor.shutdown();
+            executor.awaitTermination(10, TimeUnit.MINUTES);
+        }
     }
 
     @Parameterized.Parameters
@@ -177,7 +179,7 @@ public class CalculatorTest {
             assertEquals(resultLength - i, result[i].get().intValue());
         }
     }
-
+    
     @Test
     public void testCalcAsync() throws Exception {
         // Synchronous parallel test

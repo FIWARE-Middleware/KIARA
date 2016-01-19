@@ -40,6 +40,8 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
     protected String makeClientTransportUri(String transport, int port, String protocol) {
         if ("tcp".equals(transport)) {
             return "tcp://0.0.0.0:" + port + "/?serialization=" + protocol;
+        } else if ("tcps".equals(transport)) {
+            return "tcps://0.0.0.0:" + port + "/?serialization=" + protocol;
         }
 
         throw new IllegalArgumentException("Unknown transport " + transport);
@@ -48,6 +50,8 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
     protected String makeServerTransportUri(String transport, int port) {
         if ("tcp".equals(transport)) {
             return "tcp://0.0.0.0:" + port;
+        } else if ("tcps".equals(transport)) {
+            return "tcps://0.0.0.0:" + port;
         }
         throw new IllegalArgumentException("Unknown transport " + transport);
     }
@@ -75,28 +79,31 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
     }
 
     public CLIENT_INTERFACE start(int timeout) throws Exception {
+        
         serverCtx = Kiara.createContext();
         server = createServer(serverCtx, port, transport, protocol, configPath);
-        System.out.println("Starting server...");
+        System.out.println("Starting server, transport = " + transport + " ...");
         server.run();
-
+        
         if (!checkConnection(timeout)) {
             throw new IOException("Could not start server");
         }
-
+        
         clientCtx = Kiara.createContext();
-
+        
         System.out.printf("Opening connection to %s with protocol %s...%n", transport, protocol);
-        Connection connection = clientCtx.connect(makeClientTransportUri(transport, port, protocol)); // TODO delete
-
+        Connection connection = clientCtx.connect(makeClientTransportUri(transport, port, protocol));
+        
         return createClient(connection);
+             
     }
 
     public void shutdown() throws Exception {
-        System.out.println("Shutdown");
+        
         if (server != null) {
             server.close();
         }
+        
         if (clientCtx != null) {
             clientCtx.close();
         }
@@ -107,6 +114,7 @@ public abstract class TestSetup<CLIENT_INTERFACE> {
             serverDispatchingExecutor.shutdown();
             serverDispatchingExecutor.awaitTermination(10, TimeUnit.MINUTES);
         }
+        
     }
 
 }
