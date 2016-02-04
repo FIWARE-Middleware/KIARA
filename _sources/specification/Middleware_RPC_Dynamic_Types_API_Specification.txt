@@ -1,21 +1,19 @@
 Advanced Middleware RPC Dynamic Types API Specification
 =======================================================
 
-*Date: 8th April 2015*
+**Date: 18th January 2016**
 
-| This version: :doc:`0.2.0 <Middleware_RPC_Dynamic_Types_API_Specification>`
-| Previous version: n/a
-| Latest version: :doc:`latest <Middleware_RPC_Dynamic_Types_API_Specification>`
-|
+- Version: `0.4.0 <#>`_
+- Latest version: :doc:`latest <Middleware_RPC_Dynamic_Types_API_Specification>`
 
-**Editors:**
+Editors:
 
 -  `eProsima - The Middleware
-   Experts <http://eprosima.com/index.php/en/>`__
+   Experts <http://www.eprosima.com/index.php/en/>`_
 -  `DFKI - German Research Center for Artificial
-   Intelligence <http://www.dfki.de/>`__
+   Intelligence <http://www.dfki.de/>`_
 -  `ZHAW - School of Engineering
-   (ICCLab) <http://blog.zhaw.ch/icclab>`__
+   (ICCLab) <http://blog.zhaw.ch/icclab>`_
 
 Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 
@@ -24,7 +22,7 @@ Copyright © 2013-2015 by eProsima, DFKI, ZHAW. All Rights Reserved
 Abstract
 --------
 
-Ahe Advanced Middleware GE enables flexible, efficient, scalable, and
+The Advanced Middleware GE enables flexible, efficient, scalable, and
 secure communication between distributed applications and to/between
 FIWARE GEs. The **Middleware RPC Dynamic Types API Specification**
 describes the extensions to the **Middleware RPC API Specification** to
@@ -47,6 +45,10 @@ Status of this Document
 +--------------------+-------------------------------+
 | 08-April-2015      | Release 0.2.0                 |
 +--------------------+-------------------------------+
+| 10-October-2015    | Release 0.3.0                 |
++--------------------+-------------------------------+
+| 18-January-2016    | Release 0.4.0                 |
++--------------------+-------------------------------+
 
 --------------
 
@@ -63,10 +65,9 @@ Middleware GE.
 Reference Material
 ~~~~~~~~~~~~~~~~~~
 
--  :doc:`Advanced Middleware IDL
-   Specification <./Middleware_IDL_Specification>`
--  :doc:`Advanced Middleware RPC API
-   Specification <./Middleware_RPC_API_Specification>`
+-  :doc:`Advanced Middleware IDL Specification <./Middleware_IDL_Specification>`
+-  :doc:`Advanced Middleware RPC API Specification <./Middleware_RPC_API_Specification>`
+   
 
 A quick Example
 ---------------
@@ -76,7 +77,7 @@ Types API, a quick example is provided. This example shows how a client
 should use this dynamic API framework to call a remote server and how a
 server can send the response.
 
-First of all, let’s bear in mind that the server provides an IDL
+First of all, let's bear in mind that the server provides an IDL
 defining the services and their functions. The example uses the
 following Advanced Middleware interface definition:
 
@@ -87,7 +88,7 @@ following Advanced Middleware interface definition:
         i32 add(i32 num1, i32 num2);
     };
 
-Loading the services’ definitions
+Loading the services' definitions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To be able to call remote functions dynamically, it is required to know
@@ -105,7 +106,7 @@ connection. In the dynamic case this connection will be used to obtain
 all the types and functions offered by the server.
 
 This means, the user has to create a connection and then use it to get a
-definition of the function he wants to execute. Let’s walk through it
+definition of the function he wants to execute. Let's walk through it
 based on the following example.
 
 .. code:: java
@@ -119,7 +120,7 @@ based on the following example.
 
 When connecting to the server, the scheme specified in the URI is used
 by the Context to decide from where to download the information. In this
-example, the scheme “kiara” means the connection information is going to
+example, the scheme "kiara" means the connection information is going to
 be downloaded from the server and then used in the negotiation process.
 Otherwise, information such as the transport protocol and serialization
 mechanism must be specified in the URI itself.
@@ -141,7 +142,7 @@ necessary, the ``DynamicFunctionRequest`` and the
 ``DynamicFunctionResponse``.
 
 The ``DynamicFunctionRequest`` object is created at run-time by using
-the name of the function the user wants to execute on the server’s side.
+the name of the function the user wants to execute on the server's side.
 If there is a function whose name fits the one specified, this object
 will be filled with all the ``DynamicValue`` objects necessary to
 execute the function.
@@ -161,7 +162,7 @@ execution is finished (either if it finished properly or not).
     DynamicFunctionResponse response = drequest.execute();
 
 In this example, the ``createFunctionRequest`` method has been executed
-specifying “add as” the function name. Therefore, the
+specifying "add as" the function name. Therefore, the
 ``DynamicFunctionRequest`` object will have two primitive
 ``DynamicValue`` objects (``DynamicPrimitive``) inside (one for each
 parameter defined in the IDL description of the function). The user can
@@ -177,7 +178,7 @@ going to be executed.
 The same thing happens with the return type of each function. Depending
 on the ``DynamicValue`` that defines it, a different deserialization
 method will be executed. By using this method, the user only has to
-specify which function must be executed on the server’s side, and all
+specify which function must be executed on the server's side, and all
 the information will be (de)serialized automatically.
 
 In order to know if the function finished the way it should, the
@@ -195,6 +196,14 @@ raise an exception. The following code snippet shows this behaviour:
         DynamicData result = dresponse.getReturnValue();
         System.out.println("Result = " + ((DynamicPrimitive) result).get());
     }
+	
+Creating a secure client
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+KIARA allows to use the Dynamic RPC API to connecto to a secure TCP server. This
+behaviour does not apply to the dynamic API, and therefore it can be found in 
+the :doc:`Advanced Middleware RPC API Specification <./Middleware_RPC_API_Specification>` 
+document, in the section API Usage Examples.
 
 API Overview
 ------------
@@ -219,11 +228,9 @@ Middleware interfaces, especially ``Context``.
 -  **getDynamicValueBuilder**: This function returns an instance of the
    ``DynamicValueBuilder`` described below.
 -  **createContext**: This function creates a new instance of the
-   Context class, which is part of the public :doc:`Advanced Middleware RPC
-   API <./Middleware_RPC_API_Specification>` .
+   Context class, which is part of the public :doc:`Advanced Middleware RPC API  <Middleware_RPC_API_Specification>`.
 -  **shutdown**: This function closes releases all internal Advanced
-   Middleware structures, and is a part of the public :doc:`Advanced
-   Middleware RPC API <./Middleware_RPC_API_Specification>`.
+   Middleware structures, and is a part of the public :doc:`Advanced Middleware RPC API  <Middleware_RPC_API_Specification>`.
 
 Serialization mechanisms
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -231,8 +238,7 @@ Serialization mechanisms
 org.fiware.kiara.serialization.Serializer
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This interface is part of the public :doc:`Advanced Middleware RPC
-API <./Middleware_RPC_API_Specification>`.
+This interface is part of the public :doc:`Advanced Middleware RPC API  <Middleware_RPC_API_Specification>`.
 
 org.fiware.kiara.serialization.impl.Serializable
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -241,8 +247,7 @@ This interface is the one that must be implemented by all the used
 defined data types in order to be serializable. It defines the methods
 ``serialize`` and ``deserialize`` for each data type. This class will
 not be described in this document, for more information take a look at
-the :doc:`Advanced Middleware RPC API
-Specification <./Middleware_RPC_API_Specification>` document.
+the :doc:`Advanced Middleware RPC API  <Middleware_RPC_API_Specification>` document.
 
 Client API
 ~~~~~~~~~~
@@ -271,17 +276,11 @@ This subsection contains the interfaces and classes that are dependent
 on the user. This section will use the example in section API Usage
 Examples to define them.
 
-|Figure: Class Diagram TypeDescriptor|
+.. figure:: images/MiddlewareClassDiagramTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Class Diagram TypeDescriptor
 
-   <center>
-
-Figure: Class Diagram TypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 --------------
 
@@ -321,7 +320,7 @@ Advanced Middleware by acting as a single access builder.
    (RPC).
 -  **createServiceType**: Function that creates a new
    ``ServiceTypeDescriptor`` object used to represent a service defined
-   in the server’s side.
+   in the server's side.
 
 --------------
 
@@ -332,17 +331,10 @@ This class is used to manipulate the objects used to describe the data
 types. It allows the users to know what type of data an object
 represents.
 
-|Figure: Interface TypeDescriptor|
+.. figure:: images/MiddlewareInterfaceTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface TypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface TypeDescriptor
 
 **Functions:**
 
@@ -392,17 +384,10 @@ Interface that represents the top level class of the data type
 hierarchy. It is used as a generic type to englobe only and exclusively
 data type descriptors.
 
-|Figure: Interface DataTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceDataTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DataTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface DataTypeDescriptor
 
 **Functions**: None
 
@@ -415,17 +400,10 @@ Interface that represents a primitive data type. Primitive types include
 **boolean**, **byte**, **i16**, **ui16**, **i32**, **ui32**, **i64**,
 **ui64**, **float32**, **float64**, **char** and **string**.
 
-|Figure: Interface PrimitiveTypeDescriptor|
+.. figure:: images/MiddlewareInterfacePrimitiveTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface PrimitiveTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface PrimitiveTypeDescriptor
 
 **Functions:**
 
@@ -446,17 +424,11 @@ org.fiware.kiara.typecode.data.ContainerTypeDescriptor
 Interface that represents a container data type. Container data types
 are **arrays**, **lists**, **maps** and **sets**.
 
-|Figure: Interface ContainerTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceContainerTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface ContainerTypeDescriptor
 
-   <center>
-
-Figure: Interface ContainerTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -473,17 +445,11 @@ org.fiware.kiara.typecode.data.ArrayTypeDescriptor
 Interface that represents an array data type. Arrays can hold multiple
 repeated objects of the same data type inside.
 
-|Figure: Interface ArrayTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceArrayTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface ArrayTypeDescriptor
 
-   <center>
-
-Figure: Interface ArrayTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -503,17 +469,11 @@ org.fiware.kiara.typecode.data.ListTypeDescriptor
 Interface that represents a list data type. Lists can hold multiple
 repeated objects of the same data type inside.
 
-|Figure: Interface ListTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceListTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface ListTypeDescriptor
 
-   <center>
-
-Figure: Interface ListTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -530,17 +490,11 @@ org.fiware.kiara.typecode.data.SetTypeDescriptor
 Interface that represents a set data type. Sets can have non repeated
 objects of the same data type inside.
 
-|Figure: Interface SetTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceSetTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface SetTypeDescriptor
 
-   <center>
-
-Figure: Interface SetTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -557,17 +511,11 @@ org.fiware.kiara.typecode.data.MapTypeDescriptor
 Interface that represents a map data type. Maps can hold multiple
 key-object pairs inside if and only if the key objects are unique.
 
-|Figure: Interface MapTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceMapTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface MapTypeDescriptor
 
-   <center>
-
-Figure: Interface MapTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -588,17 +536,11 @@ org.fiware.kiara.typecode.data.MemberedTypeDescriptor
 Interface that represents a membered data type. ``Membered`` data types
 are **structs**, **enumerations**, **unions** and **exceptions**.
 
-|Figure: Interface MemberedTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceMemberedTypeDescriptor.png
+   :align: center
 
-.. raw:: html
+   Interface MemberedTypeDescriptor
 
-   <center>
-
-Figure: Interface MemberedTypeDescriptor
-
-.. raw:: html
-
-   </center>
 
 **Functions:**
 
@@ -616,17 +558,10 @@ Interface that represents a struct data type. Structs can have multiple
 different ``DataTypeDescriptor`` objects inside stored as members. Every
 struct member is identified by a unique name.
 
-|Figure: Interface StructTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceStructTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface StructTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface StructTypeDescriptor
 
 **Functions:**
 
@@ -643,17 +578,10 @@ org.fiware.kiara.typecode.data.EnumTypeDescriptor
 Interface that represents an enumeration data type. Enumerations are
 formed by a group of different string values.
 
-|Figure: Interface EnumTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceEnumTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface EnumTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface EnumTypeDescriptor
 
 **Functions:**
 
@@ -669,17 +597,10 @@ Interface that represents a union data type. Unions are formed by a
 group of members identified by their names and the labels of the
 discriminator to which they are assigned.
 
-|Figure: Interface UnionTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceUnionTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface UnionTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface UnionTypeDescriptor
 
 **Functions:**
 
@@ -695,17 +616,10 @@ Interface that represents a struct data type. Exceptions can have
 multiple different ``DataTypeDescriptor`` objects inside stored as
 members. Every struct member is identified by a unique name.
 
-|Figure: Interface ExceptionTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceExceptionTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface ExceptionTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface ExceptionTypeDescriptor
 
 **Functions:**
 
@@ -725,21 +639,14 @@ Interface that represents a member of a ``MemberedTypeDescriptor``
 object. Each member is identified by its name and the ``TypeDescriptor``
 object that it holds.
 
-|Figure: Interface Member|
+.. figure:: images/MiddlewareInterfaceMember.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface Member
-
-.. raw:: html
-
-   </center>
+   Interface Member
 
 **Functions:**
 
--  **getName**: This function returns the member’s name.
+-  **getName**: This function returns the member's name.
 -  **getTypeDescriptor**: This function returns a ``DataTypeDescriptor``
    object stored inside the member.
 
@@ -752,17 +659,10 @@ Interface that represents a member of a ``EnumTypeDescriptor`` object.
 It inherits from ``Member`` interface and therefore it has no new
 methods.
 
-|Figure: Interface EnumMember|
+.. figure:: images/MiddlewareInterfaceEnumMember.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface EnumMember
-
-.. raw:: html
-
-   </center>
+   Interface EnumMember
 
 **Functions:** None
 
@@ -774,17 +674,10 @@ org.fiware.kiara.typecode.data.UnionMember
 Interface that represents a member of a ``UnionTypeDescriptor`` object.
 It inherits from Member interface and therefore it has no new methods.
 
-|Figure: Interface UnionMember|
+.. figure:: images/MiddlewareInterfaceUnionMember.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface UnionMember
-
-.. raw:: html
-
-   </center>
+   Interface UnionMember
 
 **Functions:** None
 
@@ -797,17 +690,10 @@ This interface represents a function, providing methods to easily
 describe it by setting its return type, parameters and exceptions that
 it might throw.
 
-|Figure: Interface FunctionTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceFunctionTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface FunctionTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface FunctionTypeDescriptor
 
 **Functions:**
 
@@ -841,17 +727,10 @@ This interface represents a service, providing methods to add the
 FunctionTypeDescriptor objects representing every function defined in a
 specific service.
 
-|Figure: Interface ServiceTypeDescriptor|
+.. figure:: images/MiddlewareInterfaceServiceTypeDescriptor.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface ServiceTypeDescriptor
-
-.. raw:: html
-
-   </center>
+   Interface ServiceTypeDescriptor
 
 **Functions:**
 
@@ -870,17 +749,11 @@ This subsection contains the interfaces and classes that are designed to
 provide the developer with functions to create and manage dynamic data
 types.
 
-|Figure: Class Diagramm DynamicValue|
+.. figure:: images/MiddlewareClassDiagramDynamicValue.png
+   :align: center
 
-.. raw:: html
+   Class Diagramm DynamicValue
 
-   <center>
-
-Figure: Class Diagramm DynamicValue
-
-.. raw:: html
-
-   </center>
 
 --------------
 
@@ -890,17 +763,10 @@ org.fiware.kiara.dynamic.DynamicValueBuilder
 This class allows the users to create new data types based on their
 ``TypeCode`` descriptions.
 
-|Figure: Interface DynamicValueBuilder|
+.. figure:: images/MiddlewareInterfaceDynamicValueBuilder.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicValueBuilder
-
-.. raw:: html
-
-   </center>
+   Interface DynamicValueBuilder
 
 **Functions:**
 
@@ -929,17 +795,10 @@ managed. Every ``DynamicValue`` object is defined by using a
 common serialization functions as well as a function to retrieve the
 ``TypeDescriptor`` object it was created from.
 
-|Figure: Interface DynamicValue|
+.. figure:: images/MiddlewareInterfaceDynamicValue.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicValue
-
-.. raw:: html
-
-   </center>
+   Interface DynamicValue
 
 **Functions:**
 
@@ -958,17 +817,10 @@ org.fiware.kiara.dynamic.data.DynamicData
 Interface that is used to group all the ``DynamicValues`` representing
 data types.
 
-|Figure: Interface DynamicData|
+.. figure:: images/MiddlewareInterfaceDynamicData.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicData
-
-.. raw:: html
-
-   </center>
+   Interface DynamicData
 
 **Functions:** None
 
@@ -980,17 +832,10 @@ org.fiware.kiara.dynamic.data.DynamicPrimitive
 This class allows the users to manipulate ``DynamicData`` objects made
 from ``PrimitiveTypeDescriptor`` objects.
 
-|Figure: Interface DynamicPrimitive|
+.. figure:: images/MiddlewareInterfaceDynamicPrimitive.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicPrimitive
-
-.. raw:: html
-
-   </center>
+   Interface DynamicPrimitive
 
 **Functions:**
 
@@ -1008,17 +853,10 @@ org.fiware.kiara.dynamic.data.DynamicContainer
 This class holds the data values of a ``DynamicData`` object created
 from a ``ContainerTypeDescriptor``.
 
-|Figure: Interface DynamicContainer|
+.. figure:: images/MiddlewareInterfaceDynamicContainer.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicContainer
-
-.. raw:: html
-
-   </center>
+   Interface DynamicContainer
 
 **Functions:** None
 
@@ -1032,17 +870,10 @@ from an ``ArrayTypeDescriptor``. A ``DynamicArray`` contains a group of
 ``DynamicData`` objects (all must be the same type) stored in single or
 multi dimensional matrixes.
 
-|Figure: Interface DynamicArray|
+.. figure:: images/MiddlewareInterfaceDynamicArray.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicArray
-
-.. raw:: html
-
-   </center>
+   Interface DynamicArray
 
 **Functions:**
 
@@ -1062,17 +893,10 @@ ListTypeDescriptor. A list can only have one dimension and it has a
 maximum length. All the DynamicData objects stored inside a DynamicList
 must have been created from the same TypeDescriptor definition.
 
-|Figure: Interface DynamicList|
+.. figure:: images/MiddlewareInterfaceDynamicList.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicList
-
-.. raw:: html
-
-   </center>
+   Interface DynamicList
 
 **Functions:**
 
@@ -1094,17 +918,10 @@ maximum length. All the DynamicData objects stored inside a DynamicSet
 must have been created from the same TypeDescriptor definition and it
 cannot be duplicated objects.
 
-|Figure: Interface DynamicSet|
+.. figure:: images/MiddlewareInterfaceDynamicSet.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicSet
-
-.. raw:: html
-
-   </center>
+   Interface DynamicSet
 
 **Functions:**
 
@@ -1123,17 +940,10 @@ org.fiware.kiara.dynamic.data.DynamicMap
 This class holds a list of pairs key-value instances of DynamicData. In
 a DynamicMap, the key values cannot be duplicated.
 
-|Figure: Interface DynamicMap|
+.. figure:: images/MiddlewareInterfaceDynamicMap.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicMap
-
-.. raw:: html
-
-   </center>
+   Interface DynamicMap
 
 **Functions:**
 
@@ -1157,17 +967,10 @@ org.fiware.kiara.dynamic.data.DynamicMembered
 This class represents a ``DynamicData`` type formed by multiple
 ``DynamicData`` objects stored into a class named ``DynamicMember``.
 
-|Figure: Interface DynamicMembered|
+.. figure:: images/MiddlewareInterfaceDynamicMembered.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicMembered
-
-.. raw:: html
-
-   </center>
+   Interface DynamicMembered
 
 **Functions:** None
 
@@ -1179,17 +982,10 @@ org.fiware.kiara.dynamic.data.DynamicStruct
 This class holds group of ``DynamicData`` objects acting as members of a
 stucture. Each member is identified by its name.
 
-|Figure: Interface DynamicStruct|
+.. figure:: images/MiddlewareInterfaceDynamicStruct.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicStruct
-
-.. raw:: html
-
-   </center>
+   Interface DynamicStruct
 
 **Functions:**
 
@@ -1205,17 +1001,10 @@ org.fiware.kiara.dynamic.data.DynamicEnum
 This class is used to dynamically manipulate enumerations described by a
 specific ``EnumTypeDescriptor`` object.
 
-|Figure: Interface DynamicEnum|
+.. figure:: images/MiddlewareInterfaceDynamicEnum.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicEnum
-
-.. raw:: html
-
-   </center>
+   Interface DynamicEnum
 
 **Functions:**
 
@@ -1234,17 +1023,10 @@ specific ``UnionTypeDescriptor`` object. A union is formed by some
 ``DynamicData`` objects, and the valid one is selected by using a
 discriminator.
 
-|Figure: Interface DynamicUnion|
+.. figure:: images/MiddlewareInterfaceDynamicUnion.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicUnion
-
-.. raw:: html
-
-   </center>
+   Interface DynamicUnion
 
 **Functions:**
 
@@ -1265,17 +1047,10 @@ org.fiware.kiara.dynamic.data.DynamicException
 This class holds group of ``DynamicData`` objects acting as members of
 an exception. Each member is identified by its own name.
 
-|Figure: Interface DynamicException|
+.. figure:: images/MiddlewareInterfaceDynamicException.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicException
-
-.. raw:: html
-
-   </center>
+   Interface DynamicException
 
 **Functions:**
 
@@ -1291,21 +1066,14 @@ This class represents a dynamic member of any DynamicMembered object. It
 is used to store the DynamicData objects inside structures, unions,
 enumerations and exceptions.
 
-|Figure: Interface DynamicMember|
+.. figure:: images/MiddlewareInterfaceDynamicMember.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicMember
-
-.. raw:: html
-
-   </center>
+   Interface DynamicMember
 
 **Functions:**
 
--  **getName:** This function returns the member’s name.
+-  **getName:** This function returns the member's name.
 -  **getDynamicData**: This function returns the ``DynamicData`` stored
    inside a ``DynamicMember`` object.
 -  **equals**: It returns true if two ``DynamicMember`` objects are
@@ -1319,17 +1087,10 @@ org.fiware.kiara.dynamic.service.DynamicFunctionRequest
 This class represents a dynamic function request. This class is used to
 create objects whose objective is to invoke functions remotely.
 
-|Figure: Interface DynamicFunctionRequest|
+.. figure:: images/MiddlewareInterfaceDynamicFunctionRequest.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicFunctionRequest
-
-.. raw:: html
-
-   </center>
+   Interface DynamicFunctionRequest
 
 **Functions:**
 
@@ -1352,17 +1113,10 @@ This class represents a dynamic function response. This class is used to
 retrieve the information sent from the server after a remote procedure
 call.
 
-|Figure: Interface DynamicFunctionResponse|
+.. figure:: images/MiddlewareInterfaceDynamicFunctionResponse.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicFunctionResponse
-
-.. raw:: html
-
-   </center>
+   Interface DynamicFunctionResponse
 
 **Functions:**
 
@@ -1385,17 +1139,10 @@ instance of DynamicFunctionRequest or a DynamicFunctionResponse
 depending if the user wants an object to execute a remote call or to
 store the result.
 
-|Figure: Interface DynamicProxy|
+.. figure:: images/MiddlewareInterfaceDynamicProxy.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicProxy
-
-.. raw:: html
-
-   </center>
+   Interface DynamicProxy
 
 **Functions:**
 
@@ -1414,20 +1161,13 @@ org.fiware.kiara.dynamic.service.DynamicFunctionHandler
 
 This class represents a dynamic object used to hold the implementation
 of a specific function. Its process method must be defined by the user
-when creating the object, and it will be used to register the service’s
-functions on the server’s side.
+when creating the object, and it will be used to register the service's
+functions on the server's side.
 
-|Figure: Interface DynamicFunctionHandler|
+.. figure:: images/MiddlewareInterfaceDynamicFunctionHandler.png
+   :align: center
 
-.. raw:: html
-
-   <center>
-
-Figure: Interface DynamicFunctionHandler
-
-.. raw:: html
-
-   </center>
+   Interface DynamicFunctionHandler
 
 **Functions:**
 
@@ -1501,7 +1241,7 @@ includes all the relevant classes, attributes and methods.
 TypeDescriptor
 ~~~~~~~~~~~~~~
 
-This classes are those related to the client’s side API. This section
+This classes are those related to the client's side API. This section
 includes all the relevant classes, attributes and methods.
 
 +-------------------------------------------------------+---------------------+---------------------------+------------+
@@ -2412,43 +2152,3 @@ execution.
 +---------------------------------------------------------------+----------------+---------------------------+------------+
 |                                                               | response       | DynamicFunctionResponse   |            |
 +---------------------------------------------------------------+----------------+---------------------------+------------+
-
-.. |Figure: Class Diagram TypeDescriptor| image:: images/MiddlewareClassDiagramTypeDescriptor.png
-.. |Figure: Interface TypeDescriptor| image:: images/MiddlewareInterfaceTypeDescriptor.png
-.. |Figure: Interface DataTypeDescriptor| image:: images/MiddlewareInterfaceDataTypeDescriptor.png
-.. |Figure: Interface PrimitiveTypeDescriptor| image:: images/MiddlewareInterfacePrimitiveTypeDescriptor.png
-.. |Figure: Interface ContainerTypeDescriptor| image:: images/MiddlewareInterfaceContainerTypeDescriptor.png
-.. |Figure: Interface ArrayTypeDescriptor| image:: images/MiddlewareInterfaceArrayTypeDescriptor.png
-.. |Figure: Interface ListTypeDescriptor| image:: images/MiddlewareInterfaceListTypeDescriptor.png
-.. |Figure: Interface SetTypeDescriptor| image:: images/MiddlewareInterfaceSetTypeDescriptor.png
-.. |Figure: Interface MapTypeDescriptor| image:: images/MiddlewareInterfaceMapTypeDescriptor.png
-.. |Figure: Interface MemberedTypeDescriptor| image:: images/MiddlewareInterfaceMemberedTypeDescriptor.png
-.. |Figure: Interface StructTypeDescriptor| image:: images/MiddlewareInterfaceStructTypeDescriptor.png
-.. |Figure: Interface EnumTypeDescriptor| image:: images/MiddlewareInterfaceEnumTypeDescriptor.png
-.. |Figure: Interface UnionTypeDescriptor| image:: images/MiddlewareInterfaceUnionTypeDescriptor.png
-.. |Figure: Interface ExceptionTypeDescriptor| image:: images/MiddlewareInterfaceExceptionTypeDescriptor.png
-.. |Figure: Interface Member| image:: images/MiddlewareInterfaceMember.png
-.. |Figure: Interface EnumMember| image:: images/MiddlewareInterfaceMember.png
-.. |Figure: Interface UnionMember| image:: images/MiddlewareInterfaceUnionMember.png
-.. |Figure: Interface FunctionTypeDescriptor| image:: images/MiddlewareInterfaceFunctionTypeDescriptor.png
-.. |Figure: Interface ServiceTypeDescriptor| image:: images/MiddlewareInterfaceServiceTypeDescriptor.png
-.. |Figure: Class Diagramm DynamicValue| image:: images/MiddlewareClassDiagramDynamicValue.png
-.. |Figure: Interface DynamicValueBuilder| image:: images/MiddlewareInterfaceDynamicValueBuilder.png
-.. |Figure: Interface DynamicValue| image:: images/MiddlewareInterfaceDynamicValue.png
-.. |Figure: Interface DynamicData| image:: images/MiddlewareInterfaceDynamicData.png
-.. |Figure: Interface DynamicPrimitive| image:: images/MiddlewareInterfaceDynamicPrimitive.png
-.. |Figure: Interface DynamicContainer| image:: images/MiddlewareInterfaceDynamicContainer.png
-.. |Figure: Interface DynamicArray| image:: images/MiddlewareInterfaceDynamicArray.png
-.. |Figure: Interface DynamicList| image:: images/MiddlewareInterfaceDynamicList.png
-.. |Figure: Interface DynamicSet| image:: images/MiddlewareInterfaceDynamicSet.png
-.. |Figure: Interface DynamicMap| image:: images/MiddlewareInterfaceDynamicMap.png
-.. |Figure: Interface DynamicMembered| image:: images/MiddlewareInterfaceDynamicMembered.png
-.. |Figure: Interface DynamicStruct| image:: images/MiddlewareInterfaceDynamicStruct.png
-.. |Figure: Interface DynamicEnum| image:: images/MiddlewareInterfaceDynamicEnum.png
-.. |Figure: Interface DynamicUnion| image:: images/MiddlewareInterfaceDynamicUnion.png
-.. |Figure: Interface DynamicException| image:: images/MiddlewareInterfaceDynamicException.png
-.. |Figure: Interface DynamicMember| image:: images/MiddlewareInterfaceDynamicMember.png
-.. |Figure: Interface DynamicFunctionRequest| image:: images/MiddlewareInterfaceDynamicFunctionRequest.png
-.. |Figure: Interface DynamicFunctionResponse| image:: images/MiddlewareInterfaceDynamicFunctionResponse.png
-.. |Figure: Interface DynamicProxy| image:: images/MiddlewareInterfaceDynamicProxy.png
-.. |Figure: Interface DynamicFunctionHandler| image:: images/MiddlewareInterfaceDynamicFunctionHandler.png

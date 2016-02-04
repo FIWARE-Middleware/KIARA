@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Welcome to FIWARE Advanced Middleware KIARA documentation! &mdash; FIWARE Advanced Middleware KIARA 0.3.0 documentation</title>
+  <title>Welcome to FIWARE Advanced Middleware KIARA documentation! &mdash; FIWARE Advanced Middleware KIARA 0.4.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.3.0 documentation" href="#"/>
+    <link rel="top" title="FIWARE Advanced Middleware KIARA 0.4.0 documentation" href="#"/>
         <link rel="next" title="KIARA Installation and Administration Guide" href="manuals/Installation_and_Admin_Guide.html"/> 
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                0.3.0
+                0.4.0
               </div>
             
           
@@ -89,9 +89,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/Architecture.html">Advanced Middleware Architecture</a></li>
 </ul>
-<p class="caption"><span class="caption-text">API Specification</span></p>
+<p class="caption"><span class="caption-text">Open Specification</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/OpenSpecification.html">Open Specifiation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Specification</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a></li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_PUBSUB_API_Specification.html">Advanced Middleware Publication Subscription API Specification</a></li>
@@ -159,11 +162,11 @@ efficient and secure applications.</p>
 <li>Additional communication patterns like publish/subscribe.</li>
 </ul>
 <p>KIARA Advanced Middleware is essentially a library which is incorporated into the developed applications, the requirements are rather minimal. In particular it requires no service running in the background.</p>
-<p>The documentation for this site is organized in multiple sections:</p>
 <ul class="simple">
 <li><a class="reference internal" href="#manual"><span>Manuals</span></a></li>
 <li><a class="reference internal" href="#architecture"><span>Architecture</span></a></li>
-<li><a class="reference internal" href="#specification"><span>API Specification</span></a></li>
+<li><a class="reference internal" href="#specification"><span>Open Specification</span></a></li>
+<li><a class="reference internal" href="#api-specification"><span>API Specification</span></a></li>
 </ul>
 <p>Please also check out our <a class="reference external" href="https://github.com/FIWARE-Middleware/KIARA">Github repository</a></p>
 <div class="toctree-wrapper compound" id="manuals">
@@ -189,27 +192,39 @@ efficient and secure applications.</p>
 <p class="caption"><span class="caption-text">Architecture</span><a class="headerlink" href="#architecture" title="Permalink to this toctree">¶</a></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/Architecture.html">Advanced Middleware Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#copyright">Copyright</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#legal-notice">Legal Notice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#general-note">General Note</a></li>
-<li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#the-advanced-middleware-ge-components">The Advanced Middleware GE components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#generic-architecture">Generic Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#main-interactions">Main Interactions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Architecture.html#basic-design-principles">Basic Design Principles</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="toctree-wrapper compound" id="api-specification">
-<span id="specification"></span><p class="caption"><span class="caption-text">API Specification</span><a class="headerlink" href="#api-specification" title="Permalink to this toctree">¶</a></p>
+<div class="toctree-wrapper compound" id="open-specification">
+<span id="specification"></span><p class="caption"><span class="caption-text">Open Specification</span><a class="headerlink" href="#open-specification" title="Permalink to this toctree">¶</a></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/OpenSpecification.html">Open Specifiation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#preface">Preface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#copyright">Copyright</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#legal-notice">Legal Notice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#basic-concepts">Basic Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#generic-architecture">Generic Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#main-interactions">Main Interactions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#basic-design-principles">Basic Design Principles</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#detailed-specifications">Detailed Specifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#re-utilised-technologies-specifications">Re-utilised Technologies/Specifications</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/OpenSpecification.html#terms-and-definitions">Terms and definitions</a></li>
 </ul>
 </li>
+</ul>
+</div>
+<div class="toctree-wrapper compound" id="id1">
+<span id="api-specification"></span><p class="caption"><span class="caption-text">API Specification</span><a class="headerlink" href="#id1" title="Permalink to this toctree">¶</a></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html">Advanced Middleware RPC API Specification</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#abstract">Abstract</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#status-of-this-document">Status of this Document</a></li>
@@ -217,7 +232,7 @@ efficient and secure applications.</p>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#a-quick-example">A quick Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#api-overview">API Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#detailed-api">Detailed API</a></li>
-<li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#api-usage-examples">API Usage Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/Middleware_RPC_API_Specification.html#id6">API Usage Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="specification/Middleware_RPC_Dynamic_Types_API_Specification.html">Advanced Middleware RPC Dynamic Types API Specification</a><ul>
@@ -246,7 +261,7 @@ efficient and secure applications.</p>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#syntax-definition">Syntax Definition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#idl-complete-example">IDL Complete Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#appendix-a-changes-from-omg-idl-3-5">Appendix A: Changes from OMG IDL 3.5</a></li>
-<li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#appendix-b-fiware-middleware-idl-grammar">Appendix B: FIWARE Middleware IDL Grammar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#id44">Appendix B: FIWARE Middleware IDL Grammar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="specification/Middleware_IDL_Specification.html#appendix-c-omg-idl-3-5-grammar">Appendix C: OMG IDL 3.5 Grammar</a></li>
 </ul>
 </li>
@@ -293,7 +308,7 @@ efficient and secure applications.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.3.0',
+            VERSION:'0.4.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
