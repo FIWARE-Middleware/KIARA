@@ -666,7 +666,7 @@ connection with a non-secure TCP server, but this does not happen in the
 opposite way.
 
 Explicitly instanciate and configure Advanced Middleware components
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This examples shows how to create a direct connection as above, but
 using a TCP transport and CDR serialization created and configured
@@ -688,7 +688,7 @@ Server API
 ~~~~~~~~~~
 
 Providing a service
-~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^
 
 This examples shows how to create a server and add a service to it.
 
@@ -712,7 +712,7 @@ the connection, based on the string parameters of the ``addService``
 method.
 
 Explicitly instanciate and configure Advanced Middleware components
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This example shows how to provide a service as above, but using a TCP
 transport and CDR serialization created and configured explicitly by the
@@ -738,13 +738,13 @@ user.
     server.run();
 	
 Secure TCP server
-~~~~~~~~~~~~~~~~~
+^^^^^^^^^^^^^^^^^
 
 KIARA allows the server to initialize using a secure TCP layer so that 
 only clients using the same protocol can establish a connection with
 it. 
 
-The transport used to handle secure connections is SSL v3.0 (Secure Sockets 
+The transport used to handle secure connections is SSL v3.1 (Secure Sockets 
 Layer) over TLS v1.2 (Transport Layer Security). In order to start a 
 secure server, the only change the user has to take into account is
 changing the URL of the server so that it uses TCPS instead of TCP.
@@ -766,6 +766,6 @@ This example shows how to create a secure server and add a service to it.
 
     server.run();
 
-``Transport`` and ``Serialization`` instances are implizitly created by
+``Transport`` and ``Serialization`` instances are implicitly created by
 the connection, based on the string parameters of the ``addService``
 method.

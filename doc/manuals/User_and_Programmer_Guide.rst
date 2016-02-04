@@ -442,7 +442,7 @@ Please note that the code inside the file ``x.y.<IDL-ServiceName>ServantExample.
 Implementing the server
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The source code generated using kiaragen tool (by using the ``-example`` option) contains a simple implementation of a server. This implementation can obviously be extended as far as the user wants, this is just a very simple server capable of executing remote procedures.
+The source code generated using kiaragen tool (by using the ``-example rpc`` option) contains a simple implementation of a server. This implementation can obviously be extended as far as the user wants, this is just a very simple server capable of executing remote procedures.
 
 The class containing the mentioned code is named ServerExample, and its code is shown below:
 
@@ -463,7 +463,7 @@ The class containing the mentioned code is named ServerExample, and its code is 
 
             service.register(Calculator_impl);
 
-            //Add service waiting on TCP with CDR serialization
+            //Add service waiting on TCP using CDR serialization
             server.addService(service, "tcp://0.0.0.0:9090", "cdr");
 
             server.run();
@@ -471,11 +471,22 @@ The class containing the mentioned code is named ServerExample, and its code is 
         }
 
     }
+	
+**Creating a secure TCP server (SSL)**
 
+In order to create a secure TCP server, the URL specified to listen into must be different. In this case, we would use ``tcps`` as a network protocol instead of ``tpc``. The only change that has to be done in the code is to change the service address. 
+
+This is shown in the following snippet:
+
+.. code:: java
+
+            //Add service waiting on SSL TCP using CDR serialization
+            server.addService(service, "tcps://0.0.0.0:9090", "cdr");
+	
 Implementing the client
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-The source code generated using kiaragen tool (by using the ``-example`` option) contains a simple implementation of a client. This implementation must be extended in order to show the output received from the server.
+The source code generated using kiaragen tool (by using the ``-example rpc`` option) contains a simple implementation of a client. This implementation must be extended in order to show the output received from the server.
 
 In the KIARA Calculator example, as we have defined first the add function in the IDL file, this will be the one used by default in the generated code. The code for doing this is shown in the following snippet:
 
@@ -492,6 +503,7 @@ In the KIARA Calculator example, as we have defined first the add function in th
 
             Context context = Kiara.createContext();
 
+			//Connect to server listening in 127.0.0.1:9090 (TCP)
             Connection connection =
                          context.connect("tcp://127.0.0.1:9090?serialization=cdr");
             Calculator client = connection.getServiceProxy(CalculatorClient.class);
@@ -515,6 +527,18 @@ only two differences:
    initialized to random values (in this case 3 and 5).
 -  Result printing: To have feedback of the response sent by the server
    when the remote procedure is executed.
+   
+**Creating a secure TCP client (SSL)**
+
+In order to create a secure TCP client, the URI to connect to must be that of the server (who must also be using SSL TCP for a full secure communication). 
+
+This is shown in the following snippet:
+
+.. code:: java
+
+            //Connect to server listening in 127.0.0.1:9090 (SSL)
+            Connection connection =
+                         context.connect("tcps://127.0.0.1:9090?serialization=cdr");
 
 Compiling the client and the server
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -684,6 +708,24 @@ The following ServerExample class shows, how this would look like:
             server.run();
         }
     }
+	
+**Creating a secure TCP server (SSL)**
+
+In order to create a secure TCP server, the URL specified to listen into must be different. In this case, we would use ``tcps`` as a network protocol instead of ``tpc``. The only change that has to be done in the code is to change the service address. 
+
+This is shown in the following snippet:
+
+.. code:: java
+
+			// Enable negotiation with clients
+            server.enableNegotiationService("0.0.0.0", 8080, "/service");
+			
+			...
+
+            //Add service waiting on SSL TCP using CDR serialization
+            server.addService(service, "tcps://0.0.0.0:9090", "cdr");
+			
+Please note that the negotiation service has to be enabled first, otherwise the client will not be able to retrieve the connection information from the server.
 
 Implementing the client
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -727,7 +769,19 @@ The following code shows the client implementation:
             Kiara.shutdown();
         }
     }
+	
+**Creating a secure TCP client (SSL)**
 
+In order to create a secure TCP client, the URI to connect to must be that of the server's negotiation endpoint. When using the dynamic API, KIARA will automatically match the type of connection the server is using, whether it is TCP or TCPS (if the networking card of the computer supports it)
+
+For this, the code for the client is exactly the same (note this in the following snippet):
+
+.. code:: java
+
+            // Create connection indicating the negotiation service
+            Connection connection =
+                         context.connect("kiara://127.0.0.1:9090/service");
+						 
 Using KIARA to create a Pub/Sub application
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1271,3 +1325,22 @@ In order for the Participant to stop succesfully, it must be removed from the Do
         }
 
     }
+	
+Concerns
+~~~~~~~~
+	
+Connection compatibilities when using SSL over TCP
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+A secure connection is made by using TLS v1.2 (Transport Layer Security), an updated version of the SSL v3.1(Secure Sockets Layer). The use of this security layer carries a procedure to establish a connection between two endpoints, more than the classical Three-Way Handshake used in standard TCP. When using SSL, after the Three-Way Handshake, the client sends a ``Client Hello`` package that the server must answer with a ``Server Hello``, and then the connection can be negotiated and established.
+
+When the connection protocol specified is TCPS (SSL), there are some minor compatibility concerns that must be taken into account. The following table shows how the secure connections work depending on the side (client or server).
+
++-----------------+------------------+-------------------+
+| Server Protocol |    TCP Client    |    TCPS Client    |
++=================+==================+===================+
+|       TCP       |        OK        |       ERROR*      | 
++-----------------+------------------+-------------------+
+|       TCPS      |       ERROR      |        OK         |
++-----------------+------------------+-------------------+
+
+* The problem when only the client is TCPS is that the TCP connection is succesfully established, but the server will not answer the ``Hello`` package from the client, so this last one will never detect the connection as literally finished.

@@ -1,7 +1,7 @@
 Advanced Middleware Publication Subscription API Specification
 ==============================================================
 
-**Date: 10th October 2015**
+**Date: 01th November 2015**
 
 - Version: `0.3.0 <#>`_
 - Latest version: :doc:`latest <Middleware_PUBSUB_API_Specification>`
