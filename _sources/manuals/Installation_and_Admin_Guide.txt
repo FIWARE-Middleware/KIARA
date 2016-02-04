@@ -217,6 +217,16 @@ An alternative option to install maven is to use the package manager of the unix
 -  on DEB based systems (Debian,Ubuntu,...) ``$ sudo apt-get install maven`` (this is a quite outdated version 3.0.x)
 -  on RPM based systems (RedHat,CentOS,Fedora,...) exists no official package (use above manual instructions).
 -  on OS X you can install Maven using a packet manager for OS X like Homebrew or MacPorts. Because the packages are usually compiled during installation you need to install Xcode beforehand. This is recommended especially, if you already have Xcode installed or you would like to install also other common unix packages.
+   
+Homebrew (http://brew.sh):
+	
+::
+    ``$ brew install maven``
+	
+MacPorts (http://www.macports.org/install.php):
+	
+::
+    ``$ port install maven2``
 
 Homebrew (http://brew.sh):
 
