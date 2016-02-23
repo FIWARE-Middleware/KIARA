@@ -455,8 +455,17 @@ public class CDRSerializer implements SerializerImpl {
     public void serializeString(BinaryOutputStream message, String name, String value) throws IOException
     {
         byte[] bytes = value.getBytes();
-        this.serializeI32(message, "", bytes.length);
-        message.write(bytes);
+        byte[] dest = new byte[bytes.length + 1];
+     
+        // copy ciphertext into start of destination (from pos 0, copy ciphertext.length bytes)
+        System.arraycopy(bytes, 0, dest, 0, bytes.length);
+
+        // copy mac into end of destination (from pos ciphertext.length, copy mac.length bytes)
+        System.arraycopy(new byte[]{'\0'}, 0, dest, bytes.length, 1);
+        
+        // Serialization
+        this.serializeI32(message, "", dest.length);
+        message.write(dest);
     }
 
     @Override
@@ -466,7 +475,9 @@ public class CDRSerializer implements SerializerImpl {
         length = this.deserializeI32(message, "");
         byte[] bytes = new byte[length];
         message.readFully(bytes);
-        return new String(bytes);
+        byte[] finalBytes = new byte[bytes.length - 1];
+        System.arraycopy(bytes, 0, finalBytes, 0, bytes.length - 1);
+        return new String(finalBytes);
     }
 
 

@@ -314,7 +314,8 @@ public class SendResource {
                     if (m_sendEndpointV4.getPort() > 0) {
                         if (m_sendNext) {
                             try {
-                                if (!this.m_sendEndpointV4.getAddress().equals(InetAddress.getByAddress(new byte[] {0,0,0,0}))) { // TODO Fix 0.0.0.0 case
+                                if (!this.m_sendEndpointV4.getAddress().equals(InetAddress.getByAddress(new byte[] {127,0,0,1})) && // Cannot bind to localhost
+                                        !this.m_sendEndpointV4.getAddress().equals(InetAddress.getByAddress(new byte[] {0,0,0,0}))) { // TODO Fix 0.0.0.0 case
                                     sockit.writeAndFlush(new DatagramPacket(
                                             Unpooled.wrappedBuffer(msg.getBuffer()),
                                             m_sendEndpointV4)).syncUninterruptibly();

@@ -272,7 +272,7 @@ public class MessageReceiver {
                 if (!this.m_destGuidPrefix.equals(RTPSParticipantGuidPrefix)) {
                     logger.info("InfoDST Submsg ignored, DST is another RTPSParticipant");
                 } else {
-                    logger.info("InfoDST Cubmsg received, processing...");
+                    logger.info("InfoDST Submsg received, processing...");
                     valid = processSubmessageInfoDst(msg, subMsg);
                     msg.addSubmessage(subMsg);
                 }

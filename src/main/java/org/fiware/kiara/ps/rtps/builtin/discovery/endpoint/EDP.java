@@ -362,6 +362,9 @@ public abstract class EDP {
      * @return True if the two can be matched.
      */
     public boolean validMatching(WriterProxyData wdata, ReaderProxyData rdata) {
+        /*if (!Objects.equals(wdata.getTopicName(), rdata.getTopicName())) {
+            return false;
+        }*/
         if (!Objects.equals(wdata.getTopicName(), rdata.getTopicName())) {
             return false;
         }

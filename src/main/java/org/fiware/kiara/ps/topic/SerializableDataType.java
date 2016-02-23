@@ -68,6 +68,7 @@ public abstract class SerializableDataType<T extends Serializable & KeyedType> e
     @Override
     public boolean serialize(T data, SerializedPayload payload) {
         BinaryOutputStream bos = new BinaryOutputStream();
+        payload.updateSerializer();
         SerializerImpl ser = payload.getSerializer();
         try {
             ser.serialize(bos, "", data);
@@ -84,6 +85,7 @@ public abstract class SerializableDataType<T extends Serializable & KeyedType> e
     @Override
     public T deserialize(SerializedPayload payload) throws InstantiationException, IllegalAccessException {
         BinaryInputStream bis = new BinaryInputStream(payload.getBuffer(), 0, payload.getLength());
+        payload.updateSerializer();
         SerializerImpl ser = payload.getSerializer();
         try {
             return ser.deserialize(bis, "", dataClass);

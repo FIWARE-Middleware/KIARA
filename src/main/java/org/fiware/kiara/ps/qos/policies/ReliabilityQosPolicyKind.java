@@ -28,11 +28,11 @@ public enum ReliabilityQosPolicyKind {
     /**
      * Best Effort reliability (default for Subscribers).
      */
-    BEST_EFFORT_RELIABILITY_QOS((byte) 0),
+    BEST_EFFORT_RELIABILITY_QOS((byte) 1),
     /**
      * Reliable reliability (default for Publishers).
      */
-    RELIABLE_RELIABILITY_QOS((byte) 1);
+    RELIABLE_RELIABILITY_QOS((byte) 2);
 
     /**
      * Enumeration value
@@ -65,9 +65,9 @@ public enum ReliabilityQosPolicyKind {
      */
     public static ReliabilityQosPolicyKind getFromValue(byte value) {
         switch(value) {
-        case 0:
-            return ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
         case 1:
+            return ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
+        case 2:
             return ReliabilityQosPolicyKind.RELIABLE_RELIABILITY_QOS;
         default:
             return ReliabilityQosPolicyKind.BEST_EFFORT_RELIABILITY_QOS;
