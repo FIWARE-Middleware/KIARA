@@ -1,4 +1,7 @@
 # KIARA Advanced Middleware
+[![License badge](https://img.shields.io/badge/license-LGPLv3-blue.svg)](https://opensource.org/licenses/AGPL-3.0)
+[![Documentation badge](http://readthedocs.org/projects/fiware-middleware-kiara/badge/?version=latest)](http://fiware-middleware-kiara.readthedocs.org/en/latest/?badge=latest)
+[![Support badge]( https://img.shields.io/badge/support-sof-yellowgreen.svg)](http://stackoverflow.com/questions/tagged/fiware-middleware)
 
 ## Introduction
 
