@@ -45,22 +45,22 @@ Please also check out our `Github repository`_
    :maxdepth: 2
    :caption: Architecture
    
-   specification/Architecture
+..   specification/Architecture
 
 .. _specification:
 .. toctree::
    :maxdepth: 2
    :caption: Open Specification
 
-   specification/OpenSpecification
+..   specification/OpenSpecification
 
 .. _api_specification:
 .. toctree::
    :maxdepth: 2
    :caption: API Specification
 
-   specification/Middleware_RPC_API_Specification
-   specification/Middleware_RPC_Dynamic_Types_API_Specification
-   specification/Middleware_PUBSUB_API_Specification
-   specification/Middleware_IDL_Specification
+..   specification/Middleware_RPC_API_Specification
+..   specification/Middleware_RPC_Dynamic_Types_API_Specification
+..   specification/Middleware_PUBSUB_API_Specification
+..   specification/Middleware_IDL_Specification
 
