@@ -37,6 +37,5 @@ Please also check out our `Github repository`_
    :maxdepth: 2
    :caption: Manuals
 
-   manuals/Installation_and_Admin_Guide
-..   manuals/User_and_Programmer_Guide
+   manuals/User_and_Programmer_Guide
    
