@@ -24,9 +24,9 @@ KIARA Advanced Middleware is essentially a library which is incorporated into th
 .. The documentation for this site is organized in multiple sections:
 
 * :ref:`manual`
-* :ref:`architecture`
-* :ref:`specification`
-* :ref:`api_specification`
+.. * :ref:`architecture`
+.. * :ref:`specification`
+.. * :ref:`api_specification`
 
 Please also check out our `Github repository`_
 
@@ -38,7 +38,7 @@ Please also check out our `Github repository`_
    :caption: Manuals
 
    manuals/Installation_and_Admin_Guide
-   manuals/User_and_Programmer_Guide
+..   manuals/User_and_Programmer_Guide
    
 .. architecture:
 .. toctree::
