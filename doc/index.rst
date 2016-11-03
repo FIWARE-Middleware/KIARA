@@ -23,14 +23,36 @@ KIARA Advanced Middleware is essentially a library which is incorporated into th
 
 .. The documentation for this site is organized in multiple sections:
 
-.. * :ref:`manual`
-.. * :ref:`architecture`
-.. * :ref:`specification`
+* :ref:`manual`
+* :ref:`architecture`
+* :ref:`specification`
 * :ref:`api_specification`
 
 Please also check out our `Github repository`_
 
 .. _Github repository: https://github.com/FIWARE-Middleware/KIARA
+
+.. _manual:
+.. toctree::
+   :maxdepth: 2
+   :caption: Manuals
+
+   manuals/Installation_and_Admin_Guide
+   manuals/User_and_Programmer_Guide
+   
+.. architecture:
+.. toctree::
+   :maxdepth: 2
+   :caption: Architecture
+   
+   specification/Architecture
+
+.. _specification:
+.. toctree::
+   :maxdepth: 2
+   :caption: Open Specification
+
+   specification/OpenSpecification
 
 .. _api_specification:
 .. toctree::
@@ -41,4 +63,3 @@ Please also check out our `Github repository`_
    specification/Middleware_RPC_Dynamic_Types_API_Specification
    specification/Middleware_PUBSUB_API_Specification
    specification/Middleware_IDL_Specification
-   
